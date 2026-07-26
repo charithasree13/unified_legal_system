@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Jane Doe",
+    "phone": "9876543210",
+    "email": "janedoe@example.com",
+    "password": "$2a$10$Px4AlVWn9tPjaJmdOvOW9.mA/U6r.WThnQiG/JNflSzFBHDicE.xO",
+    "role": "Admin",
+    "enrollmentYear": "2020",
+    "isVerified": true,
+    "otp": null,
+    "otpExpires": null,
+    "_id": "6hzvukt0",
+    "createdAt": "2026-07-23T16:26:46.029Z",
+    "updatedAt": "2026-07-23T16:27:54.858Z"
+  },
+  {
+    "name": "P V Prasad",
+    "phone": "9247253096",
+    "email": "pvprasadvmpl@gmail.com",
+    "password": "$2a$10$SgUFC2b0oHoMPkIL7hvXXe/NDeY.n5dZrEjX4aJGt8id9/2Xjp3hy",
+    "role": "Admin",
+    "enrollmentYear": "1998",
+    "isVerified": true,
+    "otp": null,
+    "otpExpires": null,
+    "_id": "y2ypmedw",
+    "createdAt": "2026-07-23T16:32:15.021Z",
+    "updatedAt": "2026-07-23T16:32:27.063Z"
+  }
+]

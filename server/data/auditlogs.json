@@ -1,0 +1,101 @@
+[
+  {
+    "userId": "6hzvukt0",
+    "userName": "Jane Doe",
+    "role": "Admin",
+    "action": "USER_REGISTERED",
+    "ip": "::1",
+    "details": "New Admin registration pending email OTP verification.",
+    "_id": "twist6g9",
+    "createdAt": "2026-07-23T16:26:46.118Z",
+    "updatedAt": "2026-07-23T16:26:46.118Z"
+  },
+  {
+    "userId": "6hzvukt0",
+    "userName": "Jane Doe",
+    "role": "Admin",
+    "action": "EMAIL_VERIFIED",
+    "ip": "::1",
+    "details": "Account successfully verified via OTP.",
+    "_id": "lemsbzs5",
+    "createdAt": "2026-07-23T16:27:54.860Z",
+    "updatedAt": "2026-07-23T16:27:54.860Z"
+  },
+  {
+    "userId": "6hzvukt0",
+    "userName": "Jane Doe",
+    "role": "Admin",
+    "action": "USER_LOGIN",
+    "ip": "::1",
+    "details": "Successful sign-in. RememberMe: No",
+    "_id": "jkpv9h08",
+    "createdAt": "2026-07-23T16:29:32.394Z",
+    "updatedAt": "2026-07-23T16:29:32.394Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "USER_REGISTERED",
+    "ip": "::1",
+    "details": "New Admin registration pending email OTP verification.",
+    "_id": "m71xqxe9",
+    "createdAt": "2026-07-23T16:32:15.022Z",
+    "updatedAt": "2026-07-23T16:32:15.022Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "EMAIL_VERIFIED",
+    "ip": "::1",
+    "details": "Account successfully verified via OTP.",
+    "_id": "ukep1gu3",
+    "createdAt": "2026-07-23T16:32:27.064Z",
+    "updatedAt": "2026-07-23T16:32:27.064Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "USER_LOGIN",
+    "ip": "::1",
+    "details": "Successful sign-in. RememberMe: No",
+    "_id": "0ab4xa8e",
+    "createdAt": "2026-07-23T16:32:45.624Z",
+    "updatedAt": "2026-07-23T16:32:45.624Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "JUDGEMENT_UPLOADED",
+    "ip": "::1",
+    "details": "Uploaded Judgement: history of india (History6.pdf)",
+    "_id": "cs5zhwsx",
+    "createdAt": "2026-07-23T16:37:06.091Z",
+    "updatedAt": "2026-07-23T16:37:06.091Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "USER_LOGIN",
+    "ip": "::1",
+    "details": "Successful sign-in. RememberMe: No",
+    "_id": "d5yyjkbm",
+    "createdAt": "2026-07-23T16:40:16.301Z",
+    "updatedAt": "2026-07-23T16:40:16.301Z"
+  },
+  {
+    "userId": "y2ypmedw",
+    "userName": "P V Prasad",
+    "role": "Admin",
+    "action": "USER_LOGIN",
+    "ip": "::1",
+    "details": "Successful sign-in. RememberMe: No",
+    "_id": "nkuexzvx",
+    "createdAt": "2026-07-24T02:19:15.888Z",
+    "updatedAt": "2026-07-24T02:19:15.888Z"
+  }
+]
