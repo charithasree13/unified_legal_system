@@ -11,12 +11,12 @@ const createToken = (payload: any, secret: any, expires: any) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { name, phone, email, password, confirmPassword, role, enrollmentYear } = req.body;
+  const { name, phone, email, password, confirmPassword, role, enrollmentNumber, enrollmentYear } = req.body;
 
   try {
     // 1. Basic validation
-    if (!name || !phone || !email || !password || !confirmPassword || !role) {
-      return res.status(400).json({ success: false, message: 'All fields are required.' });
+    if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
+      return res.status(400).json({ success: false, message: 'All fields including Advocate Bar Council Enrollment Number are required.' });
     }
 
     if (role === 'Admin' || role === 'admin') {
@@ -66,7 +66,8 @@ export const register = async (req: Request, res: Response) => {
       phone,
       email,
       password: hashedPassword,
-      role,
+      role: 'User',
+      enrollmentNumber,
       enrollmentYear: role === 'Admin' ? enrollmentYear : undefined,
       isVerified: false,
       otp: mockOtp,
@@ -191,6 +192,7 @@ export const login = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         phone: user.phone,
+        enrollmentNumber: (user as any).enrollmentNumber,
         profilePhoto: user.profilePhoto,
         enrollmentYear: user.enrollmentYear
       }

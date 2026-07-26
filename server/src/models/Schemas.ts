@@ -148,6 +148,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['Admin', 'User'], default: 'User' },
+  enrollmentNumber: { type: String }, // Bar Council Enrollment Number
   enrollmentYear: { type: String }, // For admin advocates
   isVerified: { type: Boolean, default: false },
   profilePhoto: { type: String },

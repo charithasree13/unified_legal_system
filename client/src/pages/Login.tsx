@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [enrollmentYear, setEnrollmentYear] = useState('');
+  const [enrollmentNumber, setEnrollmentNumber] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   
   // OTP states
@@ -58,7 +58,7 @@ export const Login: React.FC = () => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-    setEnrollmentYear('');
+    setEnrollmentNumber('');
     setErrorMsg('');
     setSuccessMsg('');
   };
@@ -107,8 +107,8 @@ export const Login: React.FC = () => {
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone || !email || !password || !confirmPassword) {
-      setErrorMsg('Please fill in all required fields.');
+    if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
+      setErrorMsg('Please fill in all required fields including Advocate Enrollment Number.');
       return;
     }
 
@@ -126,7 +126,7 @@ export const Login: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, phone, email, password, confirmPassword, role: 'User'
+          name, phone, email, password, confirmPassword, enrollmentNumber, role: 'User'
         })
       });
       const data = await res.json();
@@ -433,6 +433,25 @@ export const Login: React.FC = () => {
                     required
                     className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
                     placeholder="Advocate Name"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                  Advocate Enrollment Number (Bar Council Reg.)
+                </label>
+                <div className="relative mt-1">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                    <Landmark size={14} />
+                  </span>
+                  <input
+                    type="text"
+                    value={enrollmentNumber}
+                    onChange={(e) => setEnrollmentNumber(e.target.value)}
+                    required
+                    className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
+                    placeholder="e.g. MAH/1234/2021"
                   />
                 </div>
               </div>
