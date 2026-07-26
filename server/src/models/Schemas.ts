@@ -145,10 +145,10 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   phone: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: false },
   password: { type: String, required: true },
-  role: { type: String, enum: ['Admin', 'User'], default: 'User' },
-  enrollmentNumber: { type: String }, // Bar Council Enrollment Number
+  role: { type: String, enum: ['Admin', 'Advocate', 'Client', 'User'], default: 'Client' },
+  enrollmentNumber: { type: String }, // Bar Council Enrollment Number (Advocates)
   enrollmentYear: { type: String }, // For admin advocates
   isVerified: { type: Boolean, default: false },
   profilePhoto: { type: String },

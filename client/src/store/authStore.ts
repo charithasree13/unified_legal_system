@@ -3,10 +3,11 @@ import { create } from 'zustand';
 export interface UserProfile {
   id: string;
   name: string;
-  email: string;
-  role: 'Admin' | 'User';
+  email?: string;
+  role: 'Admin' | 'Advocate' | 'Client' | 'User';
   phone: string;
   profilePhoto?: string;
+  enrollmentNumber?: string;
   enrollmentYear?: string;
 }
 

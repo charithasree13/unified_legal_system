@@ -14,9 +14,9 @@ export const Login: React.FC = () => {
 
   // Auth Modes: 'login' | 'signup' | 'forgot' | 'otp' | 'reset'
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'otp' | 'reset'>('login');
-  
+
   // State variables for form fields
-  const [role, setRole] = useState<'Admin' | 'User'>('User');
+  const [signupRole, setSignupRole] = useState<'Advocate' | 'Client'>('Advocate');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -70,7 +70,7 @@ export const Login: React.FC = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setErrorMsg('Please enter both email and password.');
+      setErrorMsg('Please enter both Email/Phone and password.');
       return;
     }
 
@@ -107,9 +107,16 @@ export const Login: React.FC = () => {
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
-      setErrorMsg('Please fill in all required fields including Advocate Enrollment Number.');
-      return;
+    if (signupRole === 'Advocate') {
+      if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
+        setErrorMsg('Please fill in all required advocate fields.');
+        return;
+      }
+    } else {
+      if (!name || !phone || !password || !confirmPassword) {
+        setErrorMsg('Please fill in all required fields (Name, Phone, Password).');
+        return;
+      }
     }
 
     if (password !== confirmPassword) {
@@ -126,7 +133,7 @@ export const Login: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, phone, email, password, confirmPassword, enrollmentNumber, role: 'User'
+          name, phone, email, password, confirmPassword, enrollmentNumber: signupRole === 'Advocate' ? enrollmentNumber : undefined, role: signupRole
         })
       });
       const data = await res.json();
@@ -134,9 +141,11 @@ export const Login: React.FC = () => {
       if (!res.ok) {
         setErrorMsg(data.message || 'Registration failed.');
       } else {
-        setSuccessMsg(data.message || 'OTP verification sent.');
-        setDemoOtp(data.otp || '');
-        setMode('otp');
+        setSuccessMsg(data.message || 'Registration successful! You can now log in.');
+        setTimeout(() => {
+          setMode('login');
+          clearForm();
+        }, 1500);
       }
     } catch (err) {
       setErrorMsg('Network error during registration.');
@@ -257,13 +266,13 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-slate-100 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 transition-colors">
-      
+
       {/* LEFT CANVAS PANEL */}
       <div className="hidden lg:flex lg:w-1/2 bg-primary dark:bg-slate-900 justify-center items-center p-12 relative overflow-hidden">
         {/* Glow grid background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(79,195,247,0.15),transparent_60%)]" />
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]" />
-        
+
         <div className="relative text-center max-w-lg z-10 animate-slide-up">
           <div className="bg-secondary/10 inline-flex p-4 rounded-3xl text-secondary mb-6 border border-secondary/20 shadow-lg">
             <Scale size={48} className="stroke-[1.5] animate-pulse-slow" />
@@ -287,7 +296,7 @@ export const Login: React.FC = () => {
       {/* RIGHT AUTH CARD PANEL */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-800/80 p-8 glass animate-slide-up">
-          
+
           {/* Header */}
           <div className="mb-6 flex justify-between items-center">
             <div>
@@ -300,7 +309,7 @@ export const Login: React.FC = () => {
               </h2>
               <p className="text-xs text-slate-400 mt-1">
                 {mode === 'login' && 'Access the secure legal environment'}
-                {mode === 'signup' && 'Register advocate credentials to start'}
+                {mode === 'signup' && 'Register as an Advocate or Client to start'}
                 {mode === 'forgot' && 'Provide account email to fetch OTP code'}
                 {mode === 'otp' && `Verification code sent to ${email}`}
                 {mode === 'reset' && 'Provide secure keys and update credentials'}
@@ -336,19 +345,19 @@ export const Login: React.FC = () => {
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
-                  Email Address
+                  Email Address or Phone Number
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                     <Mail size={16} />
                   </span>
                   <input
-                    type="email"
+                    type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all placeholder:text-slate-400"
-                    placeholder="advocate@court.org"
+                    placeholder="email@court.org or 9876543210"
                   />
                 </div>
               </div>
@@ -418,9 +427,36 @@ export const Login: React.FC = () => {
 
           {mode === 'signup' && (
             <form onSubmit={handleSignupSubmit} className="space-y-3.5">
+              
+              {/* Role Selection Tabs */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setSignupRole('Advocate')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                    signupRole === 'Advocate' 
+                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  Advocate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSignupRole('Client')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                    signupRole === 'Client' 
+                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  Client / Citizen
+                </button>
+              </div>
+
               <div>
                 <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
-                  Full Professional Name
+                  {signupRole === 'Advocate' ? 'Full Professional Name' : 'Full Name'}
                 </label>
                 <div className="relative mt-1">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
@@ -432,29 +468,31 @@ export const Login: React.FC = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                     className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
-                    placeholder="Advocate Name"
+                    placeholder={signupRole === 'Advocate' ? 'Advocate Name' : 'John Doe'}
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
-                  Advocate Enrollment Number (Bar Council Reg.)
-                </label>
-                <div className="relative mt-1">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                    <Landmark size={14} />
-                  </span>
-                  <input
-                    type="text"
-                    value={enrollmentNumber}
-                    onChange={(e) => setEnrollmentNumber(e.target.value)}
-                    required
-                    className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
-                    placeholder="e.g. MAH/1234/2021"
-                  />
+              {signupRole === 'Advocate' && (
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                    Advocate Enrollment Number (Bar Council Reg.)
+                  </label>
+                  <div className="relative mt-1">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                      <Landmark size={14} />
+                    </span>
+                    <input
+                      type="text"
+                      value={enrollmentNumber}
+                      onChange={(e) => setEnrollmentNumber(e.target.value)}
+                      required
+                      className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
+                      placeholder="e.g. MAH/1234/2021"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -479,7 +517,7 @@ export const Login: React.FC = () => {
 
                 <div>
                   <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
-                    Email Address
+                    Email Address {signupRole === 'Client' && '(Optional)'}
                   </label>
                   <div className="relative mt-1">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
@@ -489,9 +527,9 @@ export const Login: React.FC = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      required
+                      required={signupRole === 'Advocate'}
                       className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
-                      placeholder="advocate@court.org"
+                      placeholder={signupRole === 'Advocate' ? 'advocate@court.org' : 'email@example.com (Optional)'}
                     />
                   </div>
                 </div>

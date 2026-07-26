@@ -11,14 +11,9 @@ const createToken = (payload: any, secret: any, expires: any) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { name, phone, email, password, confirmPassword, role, enrollmentNumber, enrollmentYear } = req.body;
+  const { name, phone, email, password, confirmPassword, role, enrollmentNumber } = req.body;
 
   try {
-    // 1. Basic validation
-    if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
-      return res.status(400).json({ success: false, message: 'All fields including Advocate Bar Council Enrollment Number are required.' });
-    }
-
     if (role === 'Admin' || role === 'admin') {
       return res.status(403).json({
         success: false,
@@ -26,23 +21,39 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
+    const assignedRole = role === 'Advocate' ? 'Advocate' : 'Client';
+
+    // 1. Basic validation based on role
+    if (assignedRole === 'Advocate') {
+      if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
+        return res.status(400).json({ success: false, message: 'All advocate fields including Bar Council Enrollment Number are required.' });
+      }
+    } else {
+      if (!name || !phone || !password || !confirmPassword) {
+        return res.status(400).json({ success: false, message: 'Name, phone number, and passwords are required.' });
+      }
+    }
+
     if (password !== confirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match.' });
     }
 
     // Phone validation (simple 10-digit check)
+    const cleanPhone = phone.replace(/\D/g, '');
     const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phone.replace(/\D/g, ''))) {
+    if (!phoneRegex.test(cleanPhone)) {
       return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit phone number.' });
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+    // Email validation if provided
+    if (email && email.trim() !== '') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+      }
     }
 
-    // Strong password check (min 8 chars, one uppercase, one number, one special char)
+    // Strong password check
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
@@ -51,10 +62,14 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    // 2. Check if user already exists
-    const existingUser = await User.findOne({ email });
+    // 2. Check if user already exists by phone or email
+    const queryConditions: any[] = [{ phone: cleanPhone }];
+    if (email && email.trim() !== '') {
+      queryConditions.push({ email: email.trim().toLowerCase() });
+    }
+    const existingUser = await User.findOne({ $or: queryConditions });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
+      return res.status(400).json({ success: false, message: 'An account with this phone number or email already exists.' });
     }
 
     // 3. Hash password and save
@@ -63,15 +78,14 @@ export const register = async (req: Request, res: Response) => {
     
     const newUser = await User.create({
       name,
-      phone,
-      email,
+      phone: cleanPhone,
+      email: email ? email.trim().toLowerCase() : undefined,
       password: hashedPassword,
-      role: 'User',
-      enrollmentNumber,
-      enrollmentYear: role === 'Admin' ? enrollmentYear : undefined,
-      isVerified: false,
+      role: assignedRole,
+      enrollmentNumber: assignedRole === 'Advocate' ? enrollmentNumber : undefined,
+      isVerified: true, // Auto-verify for seamless onboarding
       otp: mockOtp,
-      otpExpires: new Date(Date.now() + 10 * 60 * 1000) // 10 mins expiry
+      otpExpires: new Date(Date.now() + 10 * 60 * 1000)
     });
 
     // Write audit log
@@ -144,10 +158,20 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Email and password are required.' });
+      return res.status(400).json({ success: false, message: 'Email/Phone number and password are required.' });
     }
 
-    const user = await User.findOne({ email });
+    const cleanInput = email.trim();
+    const cleanDigits = cleanInput.replace(/\D/g, '');
+
+    const user = await User.findOne({
+      $or: [
+        { email: cleanInput.toLowerCase() },
+        { phone: cleanInput },
+        ...(cleanDigits.length === 10 ? [{ phone: cleanDigits }] : [])
+      ]
+    });
+
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid credentials.' });
     }
@@ -157,18 +181,8 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    if (!user.isVerified) {
-      return res.status(403).json({
-        success: false,
-        message: 'Your account is not verified. Please verify your OTP code first.',
-        requiresVerification: true,
-        email: user.email,
-        otp: user.otp // Return the verification OTP so they can easily enter it
-      });
-    }
-
     // Generate tokens
-    const tokenPayload = { id: user._id, email: user.email, role: user.role, name: user.name };
+    const tokenPayload = { id: user._id, email: user.email, role: user.role, name: user.name, phone: user.phone };
     const accessToken = createToken(tokenPayload, JWT_SECRET, rememberMe ? '30d' : '1h');
     const refreshToken = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
 

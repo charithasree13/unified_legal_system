@@ -69,13 +69,16 @@ export const UserDashboard: React.FC = () => {
           
           <div className="z-10">
             <span className="bg-secondary/20 border border-secondary/30 px-3 py-1 rounded-full text-xs font-semibold text-secondary tracking-wide uppercase">
-              Advocate Portal Active
+              {user?.role === 'Client' ? 'Client Portal Active' : 'Advocate Portal Active'}
             </span>
             <h1 className="text-3xl font-bold font-sans mt-4">
-              Welcome back, {user?.name || 'Counselor'}!
+              Welcome back, {user?.name || 'User'}!
             </h1>
             <p className="text-white/80 text-xs mt-2 max-w-md leading-relaxed">
-              Unified Legal Professional System gives you secure end-to-end client communications, shared folder indexing, state land converters, and task calendars.
+              {user?.role === 'Client' 
+                ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate state court fees and land conversions.'
+                : 'Unified Legal System gives you secure end-to-end client communications, case management, land converters, and task calendars.'
+              }
             </p>
           </div>
 
@@ -84,13 +87,13 @@ export const UserDashboard: React.FC = () => {
               to="/directory"
               className="px-4 py-2 bg-secondary hover:bg-secondary-hover text-primary font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 shadow-md"
             >
-              Search Directories <ArrowRight size={14} />
+              Search Advocates <ArrowRight size={14} />
             </Link>
             <Link 
               to="/calculators"
               className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-lg transition-all border border-white/10"
             >
-              Open Fee Calculators
+              Fee & Land Calculators
             </Link>
           </div>
         </div>
@@ -98,7 +101,7 @@ export const UserDashboard: React.FC = () => {
         {/* Stats Column */}
         <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
           {[
-            { label: 'Assigned Cases', count: stats.activeCases, icon: Scale, color: 'text-primary dark:text-sky-400', bg: 'bg-primary/5 dark:bg-sky-400/5' },
+            { label: user?.role === 'Client' ? 'My Case Files' : 'Assigned Cases', count: stats.activeCases, icon: Scale, color: 'text-primary dark:text-sky-400', bg: 'bg-primary/5 dark:bg-sky-400/5' },
             { label: 'Saved Documents', count: stats.savedDocuments, icon: FileText, color: 'text-emerald-500', bg: 'bg-emerald-500/5' },
             { label: 'Active Tasks', count: recentCases.reduce((acc, c) => acc + (c.tasks?.filter((t: any) => t.status !== 'Done').length || 0), 0), icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/5' }
           ].map((item, idx) => (
@@ -126,7 +129,7 @@ export const UserDashboard: React.FC = () => {
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
               <Scale size={18} className="text-primary dark:text-sky-400" />
-              Active Cases & Collaborations
+              {user?.role === 'Client' ? 'My Related Cases' : 'Active Cases & Collaborations'}
             </h3>
             <Link to="/projects" className="text-xs text-primary dark:text-sky-400 font-semibold hover:underline flex items-center gap-0.5">
               All Cases <ArrowRight size={12} />
@@ -136,10 +139,16 @@ export const UserDashboard: React.FC = () => {
           <div className="space-y-3">
             {recentCases.length === 0 ? (
               <div className="text-center py-10 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-400">
-                You are not currently assigned to any collaboration case. 
-                <Link to="/projects" className="text-primary dark:text-sky-400 font-semibold hover:underline block mt-1.5">
-                  + Create New Project
-                </Link>
+                {user?.role === 'Client' ? (
+                  <span>No active legal cases are linked to your phone number ({user?.phone || 'N/A'}). When your advocate adds a case associated with your phone number, it will automatically appear here.</span>
+                ) : (
+                  <>
+                    You are not currently assigned to any collaboration case. 
+                    <Link to="/projects" className="text-primary dark:text-sky-400 font-semibold hover:underline block mt-1.5">
+                      + Create New Project
+                    </Link>
+                  </>
+                )}
               </div>
             ) : (
               recentCases.map((proj: any) => {

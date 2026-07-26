@@ -6,6 +6,17 @@ import { AuthenticatedRequest } from '../middleware/auth';
 export const getProjects = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const list = await Project.find();
+    
+    // Filter cases for Client role based on matching client phone number
+    if (req.user?.role === 'Client') {
+      const userPhoneDigits = (req.user.phone || '').replace(/\D/g, '');
+      const filtered = list.filter((p: any) => {
+        const projectPhoneDigits = (p.clientPhone || '').replace(/\D/g, '');
+        return projectPhoneDigits && userPhoneDigits && projectPhoneDigits === userPhoneDigits;
+      });
+      return res.status(200).json({ success: true, projects: filtered });
+    }
+
     return res.status(200).json({ success: true, projects: list });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to retrieve cases.' });

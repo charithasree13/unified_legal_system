@@ -6,9 +6,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecretlegaljwttokenkey12345!'
 export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
-    email: string;
-    role: 'Admin' | 'User';
+    email?: string;
+    role: 'Admin' | 'Advocate' | 'Client' | 'User';
     name: string;
+    phone?: string;
   };
 }
 
