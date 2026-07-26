@@ -234,30 +234,36 @@ export const Collaboration: React.FC = () => {
             <div className="flex-1 p-6 bg-slate-100/50 dark:bg-slate-950/20">
               <textarea
                 value={docContent}
-                onChange={handleTextChange}
-                placeholder="Start drafting your collaborative petition, contract, or suit outline here. All text changes will instantly sync in real-time..."
+                onChange={user?.role !== 'Client' ? handleTextChange : undefined}
+                readOnly={user?.role === 'Client'}
+                placeholder={user?.role === 'Client' 
+                  ? "View-only document draft mode. Case document updates are managed by your advocate." 
+                  : "Start drafting your collaborative petition, contract, or suit outline here. All text changes will instantly sync in real-time..."
+                }
                 className="w-full h-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-inner p-6 text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-primary font-mono text-slate-800 dark:text-slate-250 placeholder:text-slate-350"
               />
             </div>
 
             {/* Save Version Snapshot Form */}
-            <form onSubmit={handleSaveVersion} className="p-4 bg-slate-50 dark:bg-slate-950/40 border-t border-slate-200 dark:border-slate-800 flex items-center gap-3">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Version Snapshot:</span>
-              <input
-                type="text"
-                value={newVersionTitle}
-                onChange={(e) => setNewVersionTitle(e.target.value)}
-                required
-                placeholder="e.g. Draft v1.0 - Client Approved"
-                className="flex-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow cursor-pointer"
-              >
-                <Save size={14} /> Snapshot
-              </button>
-            </form>
+            {user?.role !== 'Client' && (
+              <form onSubmit={handleSaveVersion} className="p-4 bg-slate-50 dark:bg-slate-950/40 border-t border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Version Snapshot:</span>
+                <input
+                  type="text"
+                  value={newVersionTitle}
+                  onChange={(e) => setNewVersionTitle(e.target.value)}
+                  required
+                  placeholder="e.g. Draft v1.0 - Client Approved"
+                  className="flex-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow cursor-pointer"
+                >
+                  <Save size={14} /> Snapshot
+                </button>
+              </form>
+            )}
           </div>
 
           {/* Right Side Panel tabs: Versions, Comments, Timeline */}

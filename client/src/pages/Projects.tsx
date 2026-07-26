@@ -236,13 +236,15 @@ export const Projects: React.FC = () => {
             </button>
           ))}
           
-          <button
-            onClick={() => setShowAddProject(true)}
-            className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 rounded-lg transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
-            title="Create New Case Project"
-          >
-            <Plus size={14} />
-          </button>
+          {user?.role !== 'Client' && (
+            <button
+              onClick={() => setShowAddProject(true)}
+              className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 rounded-lg transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+              title="Create New Case Project"
+            >
+              <Plus size={14} />
+            </button>
+          )}
         </div>
 
         {/* View Mode controls */}
@@ -298,12 +300,14 @@ export const Projects: React.FC = () => {
                   </p>
                 </div>
                 
-                <button
-                  onClick={() => setShowAddTask(true)}
-                  className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
-                >
-                  <PlusCircle size={14} /> Add Task
-                </button>
+                {user?.role !== 'Client' && (
+                  <button
+                    onClick={() => setShowAddTask(true)}
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <PlusCircle size={14} /> Add Task
+                  </button>
+                )}
               </div>
 
               {/* View Render switch */}
@@ -324,8 +328,10 @@ export const Projects: React.FC = () => {
                           {colTasks.map((task: any) => (
                             <div 
                               key={task._id} 
-                              onClick={() => toggleTaskStatus(task._id, task.status)}
-                              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg shadow-sm hover:border-slate-350 cursor-pointer transition-all hover:translate-y-[-2px] relative overflow-hidden group"
+                              onClick={() => user?.role !== 'Client' && toggleTaskStatus(task._id, task.status)}
+                              className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg shadow-sm relative overflow-hidden group ${
+                                user?.role !== 'Client' ? 'hover:border-slate-350 cursor-pointer transition-all hover:translate-y-[-2px]' : ''
+                              }`}
                             >
                               <span className={`absolute top-0 left-0 w-1.5 h-full ${
                                 task.priority === 'High' ? 'bg-red-500' : 'bg-primary dark:bg-sky-400'
@@ -338,9 +344,11 @@ export const Projects: React.FC = () => {
                               </div>
                               
                               {/* Hover click prompt */}
-                              <span className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity text-[8px] uppercase tracking-wider text-primary dark:text-sky-400 font-bold">
-                                Update
-                              </span>
+                              {user?.role !== 'Client' && (
+                                <span className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity text-[8px] uppercase tracking-wider text-primary dark:text-sky-400 font-bold">
+                                  Update
+                                </span>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -392,8 +400,10 @@ export const Projects: React.FC = () => {
                     activeProj.tasks.map((task: any) => (
                       <div 
                         key={task._id} 
-                        onClick={() => toggleTaskStatus(task._id, task.status)}
-                        className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between cursor-pointer"
+                        onClick={() => user?.role !== 'Client' && toggleTaskStatus(task._id, task.status)}
+                        className={`p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between ${
+                          user?.role !== 'Client' ? 'cursor-pointer' : ''
+                        }`}
                       >
                         <div className="flex items-center gap-3">
                           {task.status === 'Done' ? (
@@ -524,7 +534,10 @@ export const Projects: React.FC = () => {
           <Scale size={48} className="mx-auto text-slate-350 mb-3" />
           <h4 className="font-bold text-sm">No Active Litigation Projects</h4>
           <p className="text-xs text-slate-400 mt-1">
-            Click the "+" icon above to initialize a case file, assign advocates, and setup checklists.
+            {user?.role === 'Client' 
+              ? `No active legal cases are linked to your phone number (${user?.phone || 'N/A'}). When your advocate adds a case associated with your phone number, it will automatically appear here.`
+              : 'Click the "+" icon above to initialize a case file, assign advocates, and setup checklists.'
+            }
           </p>
         </div>
       )}

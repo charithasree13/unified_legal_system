@@ -24,14 +24,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => 
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Advocate Directory', path: '/directory', icon: Users },
     { name: 'Calculators', path: '/calculators', icon: Calculator },
-    { name: 'Judgements', path: '/judgements', icon: Gavel },
-    { name: 'Laws & Acts', path: '/laws', icon: BookOpen },
+    { name: 'Judgements', path: '/judgements', icon: Gavel, clientHide: true },
+    { name: 'Laws & Acts', path: '/laws', icon: BookOpen, clientHide: true },
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },
     { name: 'Doc Collaboration', path: '/collaboration', icon: FileText },
     { name: 'Case Projects', path: '/projects', icon: Scale },
     { name: 'My Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
-  ];
+  ].filter(item => !(user?.role === 'Client' && item.clientHide));
 
   return (
     <div 

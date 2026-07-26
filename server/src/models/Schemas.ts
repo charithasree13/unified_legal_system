@@ -277,6 +277,175 @@ const AuditLogSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // -------------------------------------------------------------
+// COURT FEE CALCULATION MODULE SCHEMAS
+// -------------------------------------------------------------
+
+const StateSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  code: { type: String, required: true },
+  type: { type: String, enum: ['State', 'Union Territory'], default: 'State' },
+  defaultActName: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const CourtTypeSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  code: { type: String, required: true },
+  pecuniaryLimitMin: { type: Number, default: 0 },
+  pecuniaryLimitMax: { type: Number }, // null means unlimited
+  description: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const CaseTypeSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  code: { type: String, required: true },
+  category: { type: String, enum: ['Civil', 'Criminal', 'Commercial', 'Special', 'Consumer', 'Tribunal'], default: 'Civil' },
+  description: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const ReliefTypeSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  code: { type: String, required: true },
+  caseTypeName: { type: String, required: true },
+  valuationBasis: { type: String, enum: ['ClaimAmount', 'MarketValue', 'AgreementValue', 'Fixed', 'LoanAmount', 'CompensationAmount'], default: 'ClaimAmount' },
+  description: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const DistrictSchema = new mongoose.Schema({
+  stateName: { type: String, required: true },
+  name: { type: String, required: true },
+  code: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const ScheduleSchema = new mongoose.Schema({
+  actName: { type: String, required: true },
+  name: { type: String, required: true }, // e.g. Schedule I, Schedule II
+  description: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const ArticleSchema = new mongoose.Schema({
+  actName: { type: String, required: true },
+  scheduleName: { type: String, required: true },
+  articleNo: { type: String, required: true }, // e.g. Article 1
+  description: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const CourtFeeActSchema = new mongoose.Schema({
+  stateName: { type: String, required: true },
+  actName: { type: String, required: true },
+  shortTitle: { type: String },
+  enactmentYear: { type: Number },
+  effectiveDate: { type: String },
+  isActive: { type: Boolean, default: true }
+}, { timestamps: true });
+
+const CourtFeeRuleSchema = new mongoose.Schema({
+  stateName: { type: String, required: true },
+  courtTypeName: { type: String, required: true },
+  caseTypeName: { type: String, required: true },
+  reliefTypeName: { type: String, required: true },
+  
+  // Legal Citation References
+  actName: { type: String, required: true },
+  section: { type: String, default: 'General' },
+  schedule: { type: String, default: 'Schedule I' },
+  article: { type: String, default: 'Article 1' },
+  notificationNo: { type: String, default: '' },
+  notificationDate: { type: String, default: '' },
+
+  // Rule Formula Configuration
+  feeType: { type: String, enum: ['Fixed', 'AdValorem', 'SlabBased', 'Percentage', 'MarketValue', 'Custom'], default: 'AdValorem' },
+  fixedFee: { type: Number, default: 0 },
+  ratePercentage: { type: Number, default: 0 },
+  valuationMultiplier: { type: Number, default: 1.0 },
+  minFee: { type: Number, default: 0 },
+  maxFee: { type: Number }, // null means no cap
+  roundingIncrement: { type: Number, default: 1 },
+
+  effectiveDate: { type: String },
+  expiryDate: { type: String },
+  version: { type: Number, default: 1 },
+  isActive: { type: Boolean, default: true },
+  remarks: { type: String }
+}, { timestamps: true });
+
+const CourtFeeSlabSchema = new mongoose.Schema({
+  ruleId: { type: String, required: true },
+  minVal: { type: Number, required: true },
+  maxVal: { type: Number }, // null means infinity
+  ratePercentage: { type: Number, default: 0 },
+  ratePerUnit: { type: Number, default: 0 },
+  unitSize: { type: Number, default: 1000 },
+  fixedAddition: { type: Number, default: 0 },
+  cumulativeBaseFee: { type: Number, default: 0 },
+  version: { type: Number, default: 1 }
+}, { timestamps: true });
+
+const LegalNotificationSchema = new mongoose.Schema({
+  notificationNo: { type: String, required: true },
+  stateName: { type: String, required: true },
+  actName: { type: String, required: true },
+  title: { type: String, required: true },
+  issuedBy: { type: String, required: true },
+  effectiveDate: { type: String, required: true },
+  summary: { type: String }
+}, { timestamps: true });
+
+const RuleVersionSchema = new mongoose.Schema({
+  ruleId: { type: String, required: true },
+  version: { type: Number, required: true },
+  modifiedBy: { type: String, required: true },
+  changeDescription: { type: String, required: true },
+  previousConfig: { type: Object }
+}, { timestamps: true });
+
+const CalculationHistorySchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  userName: { type: String, required: true },
+  userRole: { type: String, required: true },
+  stateName: { type: String, required: true },
+  district: { type: String },
+  courtTypeName: { type: String, required: true },
+  caseTypeName: { type: String, required: true },
+  reliefTypeName: { type: String, required: true },
+  claimAmount: { type: Number, default: 0 },
+  marketValue: { type: Number, default: 0 },
+  agreementValue: { type: Number, default: 0 },
+  loanAmount: { type: Number, default: 0 },
+  compensationAmount: { type: Number, default: 0 },
+  suitValuation: { type: Number, required: true },
+  calculatedFee: { type: Number, required: true },
+  appliedRuleId: { type: String },
+  legalProvision: { type: String, required: true },
+  breakdown: { type: [String], default: [] },
+  warning: { type: String }
+}, { timestamps: true });
+
+const OTPVerificationSchema = new mongoose.Schema({
+  identifier: { type: String, required: true },
+  identifierType: { type: String, enum: ['email', 'mobile'], required: true },
+  role: { type: String, enum: ['Admin', 'Advocate', 'Client', 'User'], default: 'Client' },
+  hashedOTP: { type: String, required: true },
+  expiresAt: { type: Date, required: true },
+  verified: { type: Boolean, default: false },
+  resendCount: { type: Number, default: 0 },
+  attempts: { type: Number, default: 0 }
+}, { timestamps: true });
+
+const RefreshTokenSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  token: { type: String, required: true },
+  expiresAt: { type: Date, required: true },
+  revoked: { type: Boolean, default: false }
+}, { timestamps: true });
+
+// -------------------------------------------------------------
 // 3. UNIFIED EXPORTS (Mongoose or Mock Database Fallback)
 // -------------------------------------------------------------
 export let User: any;
@@ -288,6 +457,22 @@ export let Project: any;
 export let Notification: any;
 export let AuditLog: any;
 
+export let State: any;
+export let District: any;
+export let CourtType: any;
+export let CaseType: any;
+export let ReliefType: any;
+export let CourtFeeAct: any;
+export let Schedule: any;
+export let Article: any;
+export let CourtFeeRule: any;
+export let CourtFeeSlab: any;
+export let LegalNotification: any;
+export let RuleVersion: any;
+export let CalculationHistory: any;
+export let OTPVerification: any;
+export let RefreshToken: any;
+
 if (!USE_MOCK_DB) {
   User = mongoose.model('User', UserSchema);
   Advocate = mongoose.model('Advocate', AdvocateSchema);
@@ -297,6 +482,22 @@ if (!USE_MOCK_DB) {
   Project = mongoose.model('Project', ProjectSchema);
   Notification = mongoose.model('Notification', NotificationSchema);
   AuditLog = mongoose.model('AuditLog', AuditLogSchema);
+
+  State = mongoose.model('State', StateSchema);
+  District = mongoose.model('District', DistrictSchema);
+  CourtType = mongoose.model('CourtType', CourtTypeSchema);
+  CaseType = mongoose.model('CaseType', CaseTypeSchema);
+  ReliefType = mongoose.model('ReliefType', ReliefTypeSchema);
+  CourtFeeAct = mongoose.model('CourtFeeAct', CourtFeeActSchema);
+  Schedule = mongoose.model('Schedule', ScheduleSchema);
+  Article = mongoose.model('Article', ArticleSchema);
+  CourtFeeRule = mongoose.model('CourtFeeRule', CourtFeeRuleSchema);
+  CourtFeeSlab = mongoose.model('CourtFeeSlab', CourtFeeSlabSchema);
+  LegalNotification = mongoose.model('LegalNotification', LegalNotificationSchema);
+  RuleVersion = mongoose.model('RuleVersion', RuleVersionSchema);
+  CalculationHistory = mongoose.model('CalculationHistory', CalculationHistorySchema);
+  OTPVerification = mongoose.model('OTPVerification', OTPVerificationSchema);
+  RefreshToken = mongoose.model('RefreshToken', RefreshTokenSchema);
 } else {
   User = new MockModel('User');
   Advocate = new MockModel('Advocate');
@@ -306,4 +507,20 @@ if (!USE_MOCK_DB) {
   Project = new MockModel('Project');
   Notification = new MockModel('Notification');
   AuditLog = new MockModel('AuditLog');
+
+  State = new MockModel('State');
+  District = new MockModel('District');
+  CourtType = new MockModel('CourtType');
+  CaseType = new MockModel('CaseType');
+  ReliefType = new MockModel('ReliefType');
+  CourtFeeAct = new MockModel('CourtFeeAct');
+  Schedule = new MockModel('Schedule');
+  Article = new MockModel('Article');
+  CourtFeeRule = new MockModel('CourtFeeRule');
+  CourtFeeSlab = new MockModel('CourtFeeSlab');
+  LegalNotification = new MockModel('LegalNotification');
+  RuleVersion = new MockModel('RuleVersion');
+  CalculationHistory = new MockModel('CalculationHistory');
+  OTPVerification = new MockModel('OTPVerification');
+  RefreshToken = new MockModel('RefreshToken');
 }

@@ -37,12 +37,92 @@ export const AdminDashboard: React.FC = () => {
   const [uploadMsg, setUploadMsg] = useState('');
   const [uploadError, setUploadError] = useState('');
 
+  // Court Fee Rules Admin States
+  const [adminRules, setAdminRules] = useState<any[]>([]);
+  const [showAddRuleModal, setShowAddRuleModal] = useState(false);
+  const [newRuleState, setNewRuleState] = useState('Delhi');
+  const [newRuleCourt, setNewRuleCourt] = useState('District Court');
+  const [newRuleCaseType, setNewRuleCaseType] = useState('Money Recovery Suit');
+  const [newRuleRelief, setNewRuleRelief] = useState('Money Claim Recovery');
+  const [newRuleAct, setNewRuleAct] = useState('Delhi Court Fees Act');
+  const [newRuleSection, setNewRuleSection] = useState('Section 7(i)');
+  const [newRuleFeeType, setNewRuleFeeType] = useState('AdValorem');
+  const [newRuleFixedFee, setNewRuleFixedFee] = useState('0');
+  const [newRuleRate, setNewRuleRate] = useState('5.0');
+  const [newRuleRemarks, setNewRuleRemarks] = useState('');
+
   // Fetch initial dashboard stats & logs
   useEffect(() => {
     fetchStats();
     fetchLogs();
     fetchPendingAdvocates();
+    fetchAdminRules();
   }, [token]);
+
+  const fetchAdminRules = async () => {
+    try {
+      const res = await fetch('/api/admin/court-fee/rules', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && Array.isArray(data.rules)) {
+        setAdminRules(data.rules);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleToggleRule = async (ruleId: string) => {
+    try {
+      const res = await fetch(`/api/admin/court-fee/rules/${ruleId}/toggle`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        addNotification('Court Fee Rule Updated', 'Rule status successfully updated.', 'info');
+        fetchAdminRules();
+        fetchLogs();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCreateRule = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/admin/court-fee/rules', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          stateName: newRuleState,
+          courtTypeName: newRuleCourt,
+          caseTypeName: newRuleCaseType,
+          reliefTypeName: newRuleRelief,
+          actName: newRuleAct,
+          section: newRuleSection,
+          feeType: newRuleFeeType,
+          fixedFee: Number(newRuleFixedFee) || 0,
+          ratePercentage: Number(newRuleRate) || 0,
+          remarks: newRuleRemarks
+        })
+      });
+
+      if (res.ok) {
+        addNotification('Court Fee Rule Added', `Statutory rule published for ${newRuleState}.`, 'success');
+        setShowAddRuleModal(false);
+        setNewRuleRemarks('');
+        fetchAdminRules();
+        fetchLogs();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -509,8 +589,238 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-
       </div>
+
+      {/* COURT FEE RULES MANAGER */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <Database size={20} className="text-primary dark:text-sky-400" />
+              Court Fee Rules & Statutory Slabs Manager
+            </h3>
+            <p className="text-xs text-slate-400 mt-1">Configure statutory rules, legal provisions, ad-valorem percentages, and slab boundaries across all 36 jurisdictions.</p>
+          </div>
+
+          <button
+            onClick={() => setShowAddRuleModal(true)}
+            className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer flex items-center gap-1.5"
+          >
+            + Add Statutory Rule
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 dark:bg-slate-950 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200 dark:border-slate-800">
+              <tr>
+                <th className="py-3 px-4">State</th>
+                <th className="py-3 px-4">Court Forum</th>
+                <th className="py-3 px-4">Case / Relief</th>
+                <th className="py-3 px-4">Statutory Act & Section</th>
+                <th className="py-3 px-4">Fee Formula</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-850">
+              {adminRules.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
+                    No Court Fee rules loaded. Click "+ Add Statutory Rule" to create a new database rule.
+                  </td>
+                </tr>
+              ) : (
+                adminRules.map((rule) => (
+                  <tr key={rule._id} className="hover:bg-slate-50 dark:hover:bg-slate-850/40 transition-colors">
+                    <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">{rule.stateName}</td>
+                    <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{rule.courtTypeName}</td>
+                    <td className="py-3 px-4">
+                      <p className="font-semibold text-slate-800 dark:text-slate-200">{rule.caseTypeName}</p>
+                      <p className="text-[10px] text-slate-400">{rule.reliefTypeName}</p>
+                    </td>
+                    <td className="py-3 px-4 text-sky-600 dark:text-sky-400 font-medium">
+                      {rule.actName}, {rule.section}
+                    </td>
+                    <td className="py-3 px-4 font-mono text-[11px]">
+                      {rule.feeType === 'Fixed' ? `Flat ₹${rule.fixedFee}` : `${rule.ratePercentage}% ${rule.feeType}`}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        rule.isActive ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'
+                      }`}>
+                        {rule.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <button
+                        onClick={() => handleToggleRule(rule._id)}
+                        className={`px-3 py-1 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                          rule.isActive 
+                            ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100' 
+                            : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100'
+                        }`}
+                      >
+                        {rule.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ADD COURT FEE RULE MODAL */}
+      {showAddRuleModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
+            <div className="h-14 bg-primary flex justify-between items-center px-6 text-white">
+              <h3 className="font-bold text-sm">Add Statutory Court Fee Rule</h3>
+            </div>
+
+            <form onSubmit={handleCreateRule} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">State / UT</label>
+                  <input
+                    type="text"
+                    value={newRuleState}
+                    onChange={(e) => setNewRuleState(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. Delhi"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Court Forum</label>
+                  <input
+                    type="text"
+                    value={newRuleCourt}
+                    onChange={(e) => setNewRuleCourt(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. District Court"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Case Type</label>
+                  <input
+                    type="text"
+                    value={newRuleCaseType}
+                    onChange={(e) => setNewRuleCaseType(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. Money Recovery Suit"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Relief Type</label>
+                  <input
+                    type="text"
+                    value={newRuleRelief}
+                    onChange={(e) => setNewRuleRelief(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. Money Claim Recovery"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Statutory Act Name</label>
+                  <input
+                    type="text"
+                    value={newRuleAct}
+                    onChange={(e) => setNewRuleAct(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. Delhi Court Fees Act"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Section / Provision</label>
+                  <input
+                    type="text"
+                    value={newRuleSection}
+                    onChange={(e) => setNewRuleSection(e.target.value)}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. Section 7(i)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Fee Type</label>
+                  <select
+                    value={newRuleFeeType}
+                    onChange={(e) => setNewRuleFeeType(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  >
+                    <option value="AdValorem">AdValorem</option>
+                    <option value="Percentage">Percentage</option>
+                    <option value="Fixed">Fixed</option>
+                    <option value="SlabBased">SlabBased</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Fixed Fee (INR)</label>
+                  <input
+                    type="number"
+                    value={newRuleFixedFee}
+                    onChange={(e) => setNewRuleFixedFee(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Rate %</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={newRuleRate}
+                    onChange={(e) => setNewRuleRate(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase">Remarks / Gazette Citation</label>
+                <textarea
+                  value={newRuleRemarks}
+                  onChange={(e) => setNewRuleRemarks(e.target.value)}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-16"
+                  placeholder="Notes on gazette notification, amendment year, caps..."
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850">
+                <button
+                  type="button"
+                  onClick={() => setShowAddRuleModal(false)}
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded text-xs font-semibold text-slate-500 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded text-xs font-bold cursor-pointer"
+                >
+                  Publish Rule
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

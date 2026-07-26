@@ -228,17 +228,19 @@ export const UserDashboard: React.FC = () => {
           </div>
 
           {/* Legal Resources Quick Panel */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
-            <h4 className="font-semibold text-xs text-slate-400 mb-2.5 uppercase tracking-wider">Quick Legal Resources</h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <Link to="/judgements" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
-                <Scale size={14} /> Judgements
-              </Link>
-              <Link to="/laws" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
-                <BookOpen size={14} /> Bare Acts
-              </Link>
+          {user?.role !== 'Client' && (
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
+              <h4 className="font-semibold text-xs text-slate-400 mb-2.5 uppercase tracking-wider">Quick Legal Resources</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <Link to="/judgements" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
+                  <Scale size={14} /> Judgements
+                </Link>
+                <Link to="/laws" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
+                  <BookOpen size={14} /> Bare Acts
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
       </div>

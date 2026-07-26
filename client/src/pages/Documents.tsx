@@ -4,6 +4,7 @@ import {
   Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 
 export const Documents: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
@@ -21,6 +22,7 @@ export const Documents: React.FC = () => {
   const [judgeFilter, setJudgeFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [lawCategory, setLawCategory] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Reader Modal States
   const [readingDoc, setReadingDoc] = useState<any | null>(null);
@@ -34,6 +36,7 @@ export const Documents: React.FC = () => {
   }, [token, tab, courtFilter, stateFilter, judgeFilter, yearFilter, lawCategory]);
 
   const fetchDocuments = async () => {
+    setLoading(true);
     try {
       const queryParams = new URLSearchParams();
       if (search) queryParams.append('search', search);
@@ -60,6 +63,8 @@ export const Documents: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -294,7 +299,11 @@ export const Documents: React.FC = () => {
       </div>
 
       {/* Library Grid */}
-      {tab === 'judgement' ? (
+      {loading ? (
+        <div className="py-12 flex justify-center">
+          <LegalTriviaLoader loadingText="Fetching Legal Database Records & Bare Acts..." />
+        </div>
+      ) : tab === 'judgement' ? (
         // Judgements Grid List
         judgements.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 max-w-lg mx-auto">

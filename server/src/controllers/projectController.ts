@@ -30,6 +30,20 @@ export const getProjectById = async (req: AuthenticatedRequest, res: Response) =
     if (!project) {
       return res.status(404).json({ success: false, message: 'Case project not found.' });
     }
+
+    if (req.user?.role === 'Client') {
+      const userPhoneDigits = (req.user.phone || '').replace(/\D/g, '');
+      const userPltDefName = (req.user.name || '').trim().toLowerCase();
+      const projectPhoneDigits = (project.clientPhone || '').replace(/\D/g, '');
+      const plt = (project.plaintiffName || '').trim().toLowerCase();
+      const def = (project.defendantName || '').trim().toLowerCase();
+      const isPhoneMatch = projectPhoneDigits && userPhoneDigits && projectPhoneDigits === userPhoneDigits;
+      const isNameMatch = userPltDefName && (plt.includes(userPltDefName) || userPltDefName.includes(plt) || def.includes(userPltDefName) || userPltDefName.includes(def));
+      if (!isPhoneMatch && !isNameMatch) {
+        return res.status(403).json({ success: false, message: 'Access denied. You can only view case details applicable to you.' });
+      }
+    }
+
     return res.status(200).json({ success: true, project });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to fetch case details.' });
@@ -39,6 +53,9 @@ export const getProjectById = async (req: AuthenticatedRequest, res: Response) =
 // Create Project
 export const createProject = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot create new case files.' });
+    }
     const { name, description, priority, deadline, teamMembers, caseNo, nextHearingDate, plaintiffName, defendantName, clientPhone, courtType, courtCity, caseType } = req.body;
     if (!name) {
       return res.status(400).json({ success: false, message: 'Case Name is required.' });
@@ -94,6 +111,9 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
 // Update Project Properties (Status, Priority, etc.)
 export const updateProject = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot edit case details.' });
+    }
     const { status, priority, progress, deadline } = req.body;
     const project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ success: false, message: 'Case not found.' });
@@ -143,6 +163,9 @@ export const updateProject = async (req: AuthenticatedRequest, res: Response) =>
 // Add Task inside Project
 export const addTask = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot add case tasks.' });
+    }
     const { title, assignedTo, priority, deadline } = req.body;
     if (!title) return res.status(400).json({ success: false, message: 'Task Title is required.' });
 
@@ -178,6 +201,9 @@ export const addTask = async (req: AuthenticatedRequest, res: Response) => {
 // Toggle Task Status (Todo -> In Progress -> Done)
 export const updateTaskStatus = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot modify task status.' });
+    }
     const { taskId, status } = req.body;
     const { id } = req.params;
 
@@ -249,6 +275,9 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) => {
 // Save document changes & Create Snapshot version
 export const saveDraft = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot edit case document drafts.' });
+    }
     const { content } = req.body;
     const updated = await Project.findByIdAndUpdate(req.params.id, {
       currentDocContent: content || ''
@@ -261,6 +290,9 @@ export const saveDraft = async (req: AuthenticatedRequest, res: Response) => {
 
 export const createVersion = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot save version snapshots.' });
+    }
     const { title, content } = req.body;
     const project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ success: false, message: 'Case not found.' });
