@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
 
 // Configure dotenv
@@ -186,6 +187,17 @@ app.post('/api/system/backup', authenticateToken, requireAdmin, async (req: Auth
     return res.status(500).json({ success: false, message: 'Backup generation failed.' });
   }
 });
+
+// SERVE PRODUCTION CLIENT STATIC ASSETS (If client/dist exists)
+const clientDistPath = path.join(__dirname, '../../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(clientDistPath, 'index.html'));
+    }
+  });
+}
 
 // Start Server
 server.listen(PORT, () => {
