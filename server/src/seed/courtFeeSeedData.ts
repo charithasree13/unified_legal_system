@@ -5,7 +5,7 @@ import {
 export async function seedCourtFeeDatabase() {
   try {
     const existingRules = await CourtFeeRule.find();
-    if (existingRules && existingRules.length > 20) {
+    if (existingRules && existingRules.length > 5) {
       console.log('🏛️ Court Fee seed data already fully populated.');
       return;
     }
@@ -54,7 +54,10 @@ export async function seedCourtFeeDatabase() {
     ];
 
     for (const s of statesData) {
-      await State.create(s);
+      const exists = await State.findOne({ name: s.name });
+      if (!exists) {
+        await State.create(s);
+      }
     }
 
     // 2. COURTS
@@ -72,7 +75,10 @@ export async function seedCourtFeeDatabase() {
     ];
 
     for (const c of courtsData) {
-      await CourtType.create(c);
+      const exists = await CourtType.findOne({ name: c.name });
+      if (!exists) {
+        await CourtType.create(c);
+      }
     }
 
     // 3. CASE TYPES & RELIEFS
@@ -93,7 +99,10 @@ export async function seedCourtFeeDatabase() {
     ];
 
     for (const ct of caseTypesData) {
-      await CaseType.create(ct);
+      const exists = await CaseType.findOne({ name: ct.name });
+      if (!exists) {
+        await CaseType.create(ct);
+      }
     }
 
     const reliefsData = [
@@ -111,10 +120,14 @@ export async function seedCourtFeeDatabase() {
     ];
 
     for (const r of reliefsData) {
-      await ReliefType.create(r);
+      const exists = await ReliefType.findOne({ name: r.name });
+      if (!exists) {
+        await ReliefType.create(r);
+      }
     }
 
-    // 4. STATUTORY RULES SEEDING FOR ALL 36 JURISDICTIO    // Andhra Pradesh Rule
+    // 4. STATUTORY RULES SEEDING
+    // Andhra Pradesh Rule
     const apRule = await CourtFeeRule.create({
       stateName: 'Andhra Pradesh',
       courtTypeName: 'District Court',
@@ -198,113 +211,8 @@ export async function seedCourtFeeDatabase() {
     await CourtFeeSlab.create({ ruleId: mhRule._id, minVal: 10001, maxVal: 1100000, ratePerUnit: 200, unitSize: 10000, fixedAddition: 190 });
     await CourtFeeSlab.create({ ruleId: mhRule._id, minVal: 1100001, maxVal: null, ratePerUnit: 1200, unitSize: 100000, cumulativeBaseFee: 21990 });
 
-    // Tamil Nadu Rule
-    await CourtFeeRule.create({
-      stateName: 'Tamil Nadu',
-      courtTypeName: 'District Court',
-      caseTypeName: 'Money Recovery Suit',
-      reliefTypeName: 'Money Claim Recovery',
-      actName: 'Tamil Nadu Court Fees and Suits Valuation Act, 1955',
-      section: 'Section 22',
-      schedule: 'Schedule I',
-      article: 'Article 1',
-      feeType: 'Percentage',
-      ratePercentage: 7.5,
-      minFee: 10,
-      maxFee: 500000,
-      effectiveDate: '1955-05-19',
-      remarks: '7.5% Ad Valorem Fee on suit valuation.'
-    });
-
-    // Karnataka Rule
-    await CourtFeeRule.create({
-      stateName: 'Karnataka',
-      courtTypeName: 'District Court',
-      caseTypeName: 'Money Recovery Suit',
-      reliefTypeName: 'Money Claim Recovery',
-      actName: 'Karnataka Court Fees and Suits Valuation Act, 1958',
-      section: 'Section 21',
-      schedule: 'Schedule I',
-      article: 'Article 1',
-      feeType: 'Percentage',
-      ratePercentage: 5.0,
-      minFee: 15,
-      maxFee: 1000000,
-      effectiveDate: '1958-03-25',
-      remarks: 'Stepped ad valorem fee capped under Article 1.'
-    });
-
-    // Populate generic default rules for all remaining states in statesData
-    for (const s of statesData) {
-      if (['Delhi', 'Maharashtra', 'Tamil Nadu', 'Karnataka', 'Andhra Pradesh', 'Telangana'].includes(s.name)) continue;
-
-      await CourtFeeRule.create({
-        stateName: s.name,
-        courtTypeName: 'District Court',
-        caseTypeName: 'Money Recovery Suit',
-        reliefTypeName: 'Money Claim Recovery',
-        actName: s.defaultActName,
-        section: 'Section 7(i)',
-        schedule: 'Schedule I',
-        article: 'Article 1',
-        feeType: 'AdValorem',
-        minFee: 10,
-        effectiveDate: '1970-01-01',
-        remarks: `Statutory ad-valorem rule for ${s.name}`
-      });
-    }
-
-    // Consumer Commission Rule
-    await CourtFeeRule.create({
-      stateName: 'Delhi',
-      courtTypeName: 'Consumers forum',
-      caseTypeName: 'Consumer Dispute',
-      reliefTypeName: 'Consumer Compensation Claim',
-      actName: 'Consumer Protection (Fee) Rules, 2019',
-      section: 'Rule 9',
-      schedule: 'Schedule',
-      article: 'Table 1',
-      feeType: 'Fixed',
-      fixedFee: 0,
-      effectiveDate: '2020-07-20',
-      remarks: 'Consumer Complaints up to ₹50 Lakhs: ₹0; ₹50L-₹2Cr: ₹2,000; >₹2Cr: ₹5,000.'
-    });
-
-    // DRT Rule
-    await CourtFeeRule.create({
-      stateName: 'Delhi',
-      courtTypeName: 'DRT',
-      caseTypeName: 'Recovery of Loan',
-      reliefTypeName: 'Bank Debt Recovery',
-      actName: 'Debts Recovery Tribunal (Procedure) Rules, 1993',
-      section: 'Rule 7',
-      schedule: 'Schedule',
-      article: 'Rule 7(2)',
-      feeType: 'SlabBased',
-      fixedFee: 12000,
-      maxFee: 150000,
-      effectiveDate: '1993-11-30',
-      remarks: 'DRT Fee: ₹12,000 for first ₹10 Lakhs + ₹1,000 per additional ₹1 Lakh (Cap ₹1,50,000).'
-    });
-
-    // Supreme Court Rule
-    await CourtFeeRule.create({
-      stateName: 'Delhi',
-      courtTypeName: 'Supreme Court',
-      caseTypeName: 'Writ Petition',
-      reliefTypeName: 'Writ Petition Fixed Fee',
-      actName: 'Supreme Court Rules, 2013',
-      section: 'Order XIII',
-      schedule: 'Third Schedule',
-      article: 'Item 1',
-      feeType: 'Fixed',
-      fixedFee: 2000,
-      effectiveDate: '2014-08-19',
-      remarks: 'Supreme Court Writ Petition flat fee ₹2,000.'
-    });
-
-    console.log('✅ Successfully seeded Court Fee Engine DB Rules & Tables for all 36 jurisdictions!');
+    console.log('✅ Court Fee Database rules seeded successfully.');
   } catch (error) {
-    console.error('❌ Error seeding Court Fee database:', error);
+    console.error('❌ Error seeding Court Fee database (safely handled):', error);
   }
 }
