@@ -7,7 +7,7 @@ import {
 import { useAuthStore } from '../store/authStore';
 
 export const Projects: React.FC = () => {
-  const { token, addNotification } = useAuthStore();
+  const { token, user, addNotification } = useAuthStore();
   const [projects, setProjects] = useState<any[]>([]);
   const [activeProj, setActiveProj] = useState<any | null>(null);
   
@@ -506,14 +506,16 @@ export const Projects: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
-              <button
-                onClick={() => handleDeleteProject(activeProj._id)}
-                className="w-full py-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/45 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Trash2 size={13} /> Delete Case File
-              </button>
-            </div>
+            {user?.role !== 'Client' && (
+              <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
+                <button
+                  onClick={() => handleDeleteProject(activeProj._id)}
+                  className="w-full py-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/45 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Trash2 size={13} /> Delete Case File
+                </button>
+              </div>
+            )}
           </div>
 
         </div>

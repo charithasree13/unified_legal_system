@@ -294,6 +294,10 @@ export const createVersion = async (req: AuthenticatedRequest, res: Response) =>
 // Delete Project
 export const deleteProject = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (req.user?.role === 'Client') {
+      return res.status(403).json({ success: false, message: 'Access denied. Clients do not have permission to delete case files.' });
+    }
+
     const project = await Project.findById(req.params.id);
     if (!project) {
       return res.status(404).json({ success: false, message: 'Case project not found.' });
