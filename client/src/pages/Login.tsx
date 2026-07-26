@@ -108,17 +108,12 @@ export const Login: React.FC = () => {
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone || !email || !password || !confirmPassword) {
-      setErrorMsg('Please fill in all standard fields.');
+      setErrorMsg('Please fill in all required fields.');
       return;
     }
 
     if (password !== confirmPassword) {
       setErrorMsg('Passwords do not match.');
-      return;
-    }
-
-    if (role === 'Admin' && !enrollmentYear) {
-      setErrorMsg('Advocate Enrollment Year is required for Administrators.');
       return;
     }
 
@@ -131,7 +126,7 @@ export const Login: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, phone, email, password, confirmPassword, role, enrollmentYear
+          name, phone, email, password, confirmPassword, role: 'User'
         })
       });
       const data = await res.json();
@@ -423,33 +418,6 @@ export const Login: React.FC = () => {
 
           {mode === 'signup' && (
             <form onSubmit={handleSignupSubmit} className="space-y-3.5">
-              
-              {/* Role Selection Tabs */}
-              <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setRole('User')}
-                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    role === 'User' 
-                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  Advocate (User)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole('Admin')}
-                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    role === 'Admin' 
-                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  Legal Administrator
-                </button>
-              </div>
-
               <div>
                 <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   Full Professional Name
@@ -509,27 +477,6 @@ export const Login: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {role === 'Admin' && (
-                <div className="animate-slide-up">
-                  <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
-                    Advocate Enrollment Year
-                  </label>
-                  <div className="relative mt-1">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                      <Landmark size={14} />
-                    </span>
-                    <input
-                      type="number"
-                      value={enrollmentYear}
-                      onChange={(e) => setEnrollmentYear(e.target.value)}
-                      required
-                      className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
-                      placeholder="e.g. 2012"
-                    />
-                  </div>
-                </div>
-              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>

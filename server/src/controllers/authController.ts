@@ -19,6 +19,13 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
 
+    if (role === 'Admin' || role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Legal Administrator accounts cannot be self-registered. Please contact system management.'
+      });
+    }
+
     if (password !== confirmPassword) {
       return res.status(400).json({ success: false, message: 'Passwords do not match.' });
     }
