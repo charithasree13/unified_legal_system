@@ -42,6 +42,9 @@ export const Login: React.FC = () => {
     setSuccessMsg('');
   };
 
+  // API Base URL (defaults to live Render backend)
+  const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? '' : 'https://unified-legal-system.onrender.com');
+
   // -------------------------------------------------------------
   // API HANDLERS
   // -------------------------------------------------------------
@@ -59,7 +62,7 @@ export const Login: React.FC = () => {
     setSuccessMsg('');
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, rememberMe })
@@ -105,7 +108,7 @@ export const Login: React.FC = () => {
     setSuccessMsg('');
 
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -155,7 +158,7 @@ export const Login: React.FC = () => {
     setSuccessMsg('');
 
     try {
-      const res = await fetch('/api/auth/forgot-password', {
+      const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

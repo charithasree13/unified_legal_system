@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://unified-legal-system-api.onrender.com/api/:path*"
+      "destination": "https://unified-legal-system.onrender.com/api/:path*"
     },
     {
       "source": "/socket.io/:path*",
-      "destination": "https://unified-legal-system-api.onrender.com/socket.io/:path*"
+      "destination": "https://unified-legal-system.onrender.com/socket.io/:path*"
     },
     {
       "source": "/(.*)",
