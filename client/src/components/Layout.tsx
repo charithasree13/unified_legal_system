@@ -6,9 +6,10 @@ import { useAuthStore } from '../store/authStore';
 
 export const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const { 
     user, 
     darkMode, 
@@ -57,7 +58,12 @@ export const Layout: React.FC = () => {
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
       {/* Sidebar */}
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+      <Sidebar 
+        collapsed={collapsed} 
+        setCollapsed={setCollapsed} 
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -67,10 +73,11 @@ export const Layout: React.FC = () => {
           {/* Left: Collapsible Toggle Menu & Global Search */}
           <div className="flex items-center gap-4 flex-1">
             <button 
-              onClick={() => setCollapsed(!collapsed)}
-              className="md:hidden p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+              title="Toggle Navigation Menu"
             >
-              <Menu size={20} />
+              <Menu size={22} />
             </button>
 
             {/* Global Search Bar */}
