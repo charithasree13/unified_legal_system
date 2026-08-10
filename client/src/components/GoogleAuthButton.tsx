@@ -31,7 +31,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   const hiddenBtnRef = useRef<HTMLDivElement>(null);
 
   const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? '' : 'https://unified-legal-system.onrender.com');
-  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1048382910482-demoappclientid.apps.googleusercontent.com';
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '300143041269-oa6toeacsqdo25rg31n0g3hagbkiaird.apps.googleusercontent.com';
 
   // Load Google Identity Services SDK dynamically if not loaded
   useEffect(() => {
