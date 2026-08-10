@@ -21,9 +21,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Uploads
+# Uploads and Mock DB Data
 server/uploads/*
 !server/uploads/.gitkeep
+server/data/*.json
 
 # Editor directories and files
 .vscode/*

@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User, AuditLog, RefreshToken } from '../models/Schemas';
+import { OAuth2Client } from 'google-auth-library';
+import { User, Advocate, AuditLog, RefreshToken } from '../models/Schemas';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretlegaljwttokenkey12345!';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'supersecretlegalrefreshjwttokenkey67890!';
@@ -271,5 +272,191 @@ export const refreshToken = async (req: Request, res: Response) => {
     });
   } catch (error) {
     return res.status(401).json({ success: false, message: 'Invalid refresh token session.' });
+  }
+};
+
+// ------------------------------------------------------------------
+// 4. GOOGLE AUTHENTICATION (ID TOKEN VERIFICATION)
+// ------------------------------------------------------------------
+export const googleAuth = async (req: Request, res: Response) => {
+  const { credential, accountType } = req.body;
+
+  try {
+    if (!credential) {
+      return res.status(400).json({ success: false, message: 'Google authentication credential is required.' });
+    }
+
+    const normalizedRole = (accountType === 'Advocate' || accountType === 'ADVOCATE') ? 'Advocate' : 'Client';
+    const googleClientId = process.env.GOOGLE_CLIENT_ID || '';
+
+    let googleSub = '';
+    let email = '';
+    let emailVerified = false;
+    let name = '';
+    let picture = '';
+
+    if (googleClientId && !googleClientId.includes('your_google_client_id_here')) {
+      try {
+        const client = new OAuth2Client(googleClientId);
+        const ticket = await client.verifyIdToken({
+          idToken: credential,
+          audience: googleClientId
+        });
+        const payload = ticket.getPayload();
+        if (!payload) {
+          return res.status(401).json({ success: false, message: 'Invalid Google authentication token payload.' });
+        }
+
+        googleSub = payload.sub;
+        email = payload.email ? payload.email.trim().toLowerCase() : '';
+        emailVerified = payload.email_verified === true;
+        name = payload.name || payload.given_name || 'Google User';
+        picture = payload.picture || '';
+      } catch (tokenErr: any) {
+        console.error('🛡️ Google Token Verification Failure:', tokenErr.message);
+        return res.status(401).json({ success: false, message: 'Invalid or unverified Google authentication credential.' });
+      }
+    } else {
+      // Dev/Testing fallback verification when GOOGLE_CLIENT_ID is a placeholder
+      try {
+        const base64Url = credential.split('.')[1];
+        if (!base64Url) {
+          return res.status(401).json({ success: false, message: 'Invalid Google token structure.' });
+        }
+        const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
+        const payload = JSON.parse(decodedJson);
+        if (!payload || !payload.sub) {
+          return res.status(401).json({ success: false, message: 'Invalid Google token payload structure.' });
+        }
+        googleSub = payload.sub;
+        email = payload.email ? payload.email.trim().toLowerCase() : '';
+        emailVerified = payload.email_verified === true;
+        name = payload.name || payload.given_name || 'Google User';
+        picture = payload.picture || '';
+      } catch (err: any) {
+        return res.status(401).json({ success: false, message: 'Invalid or malformed Google token credential.' });
+      }
+    }
+
+    if (!googleSub) {
+      return res.status(401).json({ success: false, message: 'Could not extract valid Google account identifier.' });
+    }
+
+    // CASE A: Existing Google account by googleSub
+    let user = await User.findOne({ googleSub });
+
+    if (user) {
+      // Account type validation check
+      if (user.role !== normalizedRole) {
+        return res.status(400).json({
+          success: false,
+          message: `This Google account is registered as a ${user.role}. Please log in using the ${user.role} sign in option.`
+        });
+      }
+
+      // Update safe profile image if available
+      if (!user.profilePhoto && picture) {
+        await User.findByIdAndUpdate(user._id, { profilePhoto: picture });
+        user.profilePhoto = picture;
+      }
+    } else {
+      // CASE B: Email conflict check (existing email/password account)
+      if (email) {
+        const existingEmailUser = await User.findOne({ email });
+        if (existingEmailUser) {
+          return res.status(400).json({
+            success: false,
+            message: 'An account with this email address already exists. Please sign in with your email and password.'
+          });
+        }
+      }
+
+      // CASE C: Completely new account creation
+      const isAdvocate = normalizedRole === 'Advocate';
+      user = await User.create({
+        name,
+        email: email || undefined,
+        googleSub,
+        authProvider: 'GOOGLE',
+        emailVerified,
+        role: normalizedRole,
+        profilePhoto: picture,
+        isVerified: !isAdvocate // User is auto-verified, Advocate requires admin approval
+      });
+
+      if (isAdvocate) {
+        const existingAdv = await Advocate.findOne({ email });
+        if (!existingAdv) {
+          await Advocate.create({
+            name,
+            email: email || `${googleSub}@google.user`,
+            googleSub,
+            authProvider: 'GOOGLE',
+            emailVerified,
+            photo: picture,
+            isVerified: false,
+            availability: 'Available'
+          });
+        }
+      }
+
+      await AuditLog.create({
+        userId: user._id,
+        userName: user.name,
+        role: user.role,
+        action: 'GOOGLE_USER_REGISTERED',
+        ip: req.ip || '127.0.0.1',
+        details: `New ${normalizedRole} account registered via Continue with Google.`
+      });
+    }
+
+    // Generate JWT Tokens using existing application secrets & payload structure
+    const tokenPayload = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      phone: user.phone
+    };
+    const accessToken = createToken(tokenPayload, JWT_SECRET, '1h');
+    const refreshTokenStr = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
+
+    await RefreshToken.create({
+      userId: user._id,
+      token: refreshTokenStr,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      revoked: false
+    });
+
+    await AuditLog.create({
+      userId: user._id,
+      userName: user.name,
+      role: user.role,
+      action: 'GOOGLE_USER_LOGIN',
+      ip: req.ip || '127.0.0.1',
+      details: `Successful sign-in via Continue with Google (${normalizedRole}).`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Google login successful.',
+      accessToken,
+      refreshToken: refreshTokenStr,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone || '',
+        enrollmentNumber: (user as any).enrollmentNumber || '',
+        profilePhoto: user.profilePhoto || picture
+      }
+    });
+  } catch (error: any) {
+    console.error('❌ Google Authentication Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: error?.message || 'Google authentication server error.'
+    });
   }
 };

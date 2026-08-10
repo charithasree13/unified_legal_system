@@ -144,10 +144,13 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  phone: { type: String, required: true },
+  phone: { type: String, required: false },
   email: { type: String, required: false },
-  password: { type: String, required: true },
+  password: { type: String, required: false },
   role: { type: String, enum: ['Admin', 'Advocate', 'Client', 'User'], default: 'Client' },
+  googleSub: { type: String, unique: true, sparse: true },
+  authProvider: { type: String, enum: ['LOCAL', 'GOOGLE'], default: 'LOCAL' },
+  emailVerified: { type: Boolean, default: false },
   enrollmentNumber: { type: String }, // Bar Council Enrollment Number (Advocates)
   enrollmentYear: { type: String }, // For admin advocates
   isVerified: { type: Boolean, default: false },
@@ -158,15 +161,18 @@ const UserSchema = new mongoose.Schema({
 
 const AdvocateSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  phone: { type: String, required: true },
+  phone: { type: String, required: false },
   email: { type: String, required: true },
-  enrollmentNumber: { type: String, required: true },
-  enrollmentDate: { type: String, required: true },
-  specialization: { type: String, required: true },
-  court: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  experience: { type: Number, required: true },
+  googleSub: { type: String, sparse: true },
+  authProvider: { type: String, enum: ['LOCAL', 'GOOGLE'], default: 'LOCAL' },
+  emailVerified: { type: Boolean, default: false },
+  enrollmentNumber: { type: String, required: false },
+  enrollmentDate: { type: String, required: false },
+  specialization: { type: String, required: false },
+  court: { type: String, required: false },
+  city: { type: String, required: false },
+  state: { type: String, required: false },
+  experience: { type: Number, default: 0 },
   photo: { type: String },
   bio: { type: String },
   address: { type: String },

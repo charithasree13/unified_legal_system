@@ -67,6 +67,7 @@ app.post('/api/auth/logout', authCtrl.logout);
 app.post('/api/auth/refresh-token', authCtrl.refreshToken);
 app.post('/api/auth/register', authCtrl.register);
 app.post('/api/auth/login', authCtrl.login);
+app.post('/api/auth/google', authCtrl.googleAuth);
 app.post('/api/auth/forgot-password', authCtrl.forgotPassword);
 app.post('/api/auth/reset-password', authCtrl.resetPassword);
 

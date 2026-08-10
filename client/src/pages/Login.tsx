@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Scale, Mail, Lock, Phone, User, Landmark, ShieldAlert, CheckCircle2, ArrowLeft, KeyRound } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { GoogleAuthButton } from '../components/GoogleAuthButton';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export const Login: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
 
   // Role Selection: 'Advocate' | 'Client'
+  const [authRole, setAuthRole] = useState<'Advocate' | 'Client'>('Advocate');
   const [signupRole, setSignupRole] = useState<'Advocate' | 'Client'>('Advocate');
 
   // Form Field States
@@ -253,93 +255,137 @@ export const Login: React.FC = () => {
 
           {/* 1. PASSWORD SIGN-IN FORM */}
           {mode === 'login' && (
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
-                  Email Address or Mobile Number
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                    <Mail size={16} />
-                  </span>
-                  <input
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all font-semibold"
-                    placeholder="email@court.org or 9876543210"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-1.5">
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
-                    Security Password
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => { setErrorMsg(''); setMode('forgot'); }}
-                    className="text-xs text-primary dark:text-sky-400 hover:underline"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                    <Lock size={16} />
-                  </span>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
-                    placeholder="••••••••••••"
-                  />
-                </div>
-              </div>
-
-              {/* Remember Me */}
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 dark:border-slate-800 text-primary focus:ring-primary"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-xs text-slate-500 dark:text-slate-400 select-none">
-                  Remember my session key on this browser
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
-              >
-                {loading ? 'Authenticating Credentials...' : 'Sign In'}
-              </button>
-
-              <div className="mt-6 text-center text-xs text-slate-500">
-                Don't have an account?{' '}
+            <div className="space-y-4">
+              {/* Role Selection Tabs for Sign In */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
                 <button
                   type="button"
-                  onClick={() => { clearForm(); setMode('signup'); }}
-                  className="text-primary dark:text-sky-400 font-semibold hover:underline"
+                  onClick={() => setAuthRole('Advocate')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                    authRole === 'Advocate' 
+                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm font-bold' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
                 >
-                  Create Account
+                  Advocate Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuthRole('Client')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                    authRole === 'Client' 
+                      ? 'bg-white dark:bg-slate-800 text-primary dark:text-sky-400 shadow-sm font-bold' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  User Sign In
                 </button>
               </div>
-            </form>
+
+              {/* Continue with Google Button */}
+              <GoogleAuthButton
+                accountType={authRole}
+                onStart={() => { setErrorMsg(''); setSuccessMsg(''); }}
+                onError={(msg) => setErrorMsg(msg)}
+                onSuccess={(msg) => setSuccessMsg(msg)}
+              />
+
+              {/* Divider */}
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                  Or sign in with password
+                </span>
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
+                    Email Address or Mobile Number
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                      <Mail size={16} />
+                    </span>
+                    <input
+                      type="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all font-semibold"
+                      placeholder="email@court.org or 9876543210"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                      Security Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => { setErrorMsg(''); setMode('forgot'); }}
+                      className="text-xs text-primary dark:text-sky-400 hover:underline"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                      <Lock size={16} />
+                    </span>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
+                      placeholder="••••••••••••"
+                    />
+                  </div>
+                </div>
+
+                {/* Remember Me */}
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 dark:border-slate-800 text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-xs text-slate-500 dark:text-slate-400 select-none">
+                    Remember my session key on this browser
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+                >
+                  {loading ? 'Authenticating Credentials...' : 'Sign In'}
+                </button>
+
+                <div className="mt-6 text-center text-xs text-slate-500">
+                  Don't have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => { clearForm(); setMode('signup'); }}
+                    className="text-primary dark:text-sky-400 font-semibold hover:underline"
+                  >
+                    Create Account
+                  </button>
+                </div>
+              </form>
+            </div>
           )}
 
           {/* 2. SIGNUP FORM */}
           {mode === 'signup' && (
-            <form onSubmit={handleSignupSubmit} className="space-y-3.5">
-              
+            <div className="space-y-3.5">
               {/* Role Selection Tabs */}
               <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
                 <button
@@ -351,7 +397,7 @@ export const Login: React.FC = () => {
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  Advocate
+                  Advocate Signup
                 </button>
                 <button
                   type="button"
@@ -362,12 +408,30 @@ export const Login: React.FC = () => {
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  Client / Citizen
+                  User / Citizen Signup
                 </button>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
+              {/* Continue with Google Button */}
+              <GoogleAuthButton
+                accountType={signupRole}
+                onStart={() => { setErrorMsg(''); setSuccessMsg(''); }}
+                onError={(msg) => setErrorMsg(msg)}
+                onSuccess={(msg) => setSuccessMsg(msg)}
+              />
+
+              {/* Divider */}
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                  Or register with details
+                </span>
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+              </div>
+
+              <form onSubmit={handleSignupSubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   {signupRole === 'Advocate' ? 'Full Professional Name' : 'Full Name'}
                 </label>
                 <div className="relative mt-1">
@@ -506,6 +570,7 @@ export const Login: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
           )}
 
           {/* 3. RESET PASSWORD FORM */}
