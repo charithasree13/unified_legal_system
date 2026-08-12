@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Bell, Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-react';
 import { Sidebar } from './Sidebar';
+import { LegalTickerFooter } from './LegalTickerFooter';
 import { useAuthStore } from '../store/authStore';
 
 export const Layout: React.FC = () => {
@@ -181,6 +182,9 @@ export const Layout: React.FC = () => {
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
+
+        {/* Continuous Scrolling Legal Principles Footer */}
+        <LegalTickerFooter />
       </div>
     </div>
   );
