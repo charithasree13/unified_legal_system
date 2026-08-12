@@ -205,7 +205,7 @@ export const Login: React.FC = () => {
             Unified Legal Professional System
           </h1>
           <p className="text-white/70 text-sm leading-relaxed mb-8">
-            An enterprise workflow collaboration suite, built for practicing advocates, corporate counsels, and legal administrators. Secured by JWT encryption.
+            An enterprise workflow collaboration suite, built for practicing advocates, corporate counsels, and legal administrators.
           </p>
           <div className="flex gap-4 justify-center text-xs text-secondary font-semibold uppercase tracking-wider">
             <span>Encrypted Chat</span>

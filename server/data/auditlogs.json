@@ -97,5 +97,104 @@
     "_id": "nkuexzvx",
     "createdAt": "2026-07-24T02:19:15.888Z",
     "updatedAt": "2026-07-24T02:19:15.888Z"
+  },
+  {
+    "userId": "s3ywlvb8",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account registered directly via Continue with Google.",
+    "_id": "rh3tsu1l",
+    "createdAt": "2026-08-12T14:20:48.652Z",
+    "updatedAt": "2026-08-12T14:20:48.652Z"
+  },
+  {
+    "userId": "s3ywlvb8",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Client).",
+    "_id": "s6qdtg71",
+    "createdAt": "2026-08-12T14:20:48.682Z",
+    "updatedAt": "2026-08-12T14:20:48.682Z"
+  },
+  {
+    "userId": "s3ywlvb8",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Client).",
+    "_id": "45wc1jyn",
+    "createdAt": "2026-08-12T14:20:48.799Z",
+    "updatedAt": "2026-08-12T14:20:48.799Z"
+  },
+  {
+    "userId": "s3ywlvb8",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Client).",
+    "_id": "vho23zo5",
+    "createdAt": "2026-08-12T14:20:48.908Z",
+    "updatedAt": "2026-08-12T14:20:48.908Z"
+  },
+  {
+    "userId": "18lc4144",
+    "userName": "Advocate Jane Doe",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account registered directly via Continue with Google.",
+    "_id": "j1qcpmvm",
+    "createdAt": "2026-08-12T14:20:49.055Z",
+    "updatedAt": "2026-08-12T14:20:49.055Z"
+  },
+  {
+    "userId": "18lc4144",
+    "userName": "Advocate Jane Doe",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Advocate).",
+    "_id": "ccz0kt4h",
+    "createdAt": "2026-08-12T14:20:49.067Z",
+    "updatedAt": "2026-08-12T14:20:49.067Z"
+  },
+  {
+    "userId": "18lc4144",
+    "userName": "Advocate Jane Doe",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Advocate).",
+    "_id": "x0tbhqqw",
+    "createdAt": "2026-08-12T14:20:49.161Z",
+    "updatedAt": "2026-08-12T14:20:49.161Z"
+  },
+  {
+    "userId": "tf44ll52",
+    "userName": "Local Password User",
+    "role": "Client",
+    "action": "USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account created successfully.",
+    "_id": "8cz7y5zj",
+    "createdAt": "2026-08-12T14:20:49.460Z",
+    "updatedAt": "2026-08-12T14:20:49.460Z"
+  },
+  {
+    "userId": "tf44ll52",
+    "userName": "Local Password User",
+    "role": "Client",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Successful sign-in via Google (Client).",
+    "_id": "8exhuj2s",
+    "createdAt": "2026-08-12T14:20:49.554Z",
+    "updatedAt": "2026-08-12T14:20:49.554Z"
   }
 ]

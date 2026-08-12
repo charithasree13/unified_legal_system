@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "name": "Advocate Jane Doe",
+    "email": "jane.advocate@court.org",
+    "googleSub": "google_sub_advocate_test_88888",
+    "authProvider": "GOOGLE",
+    "emailVerified": true,
+    "photo": "https://example.com/adv_photo.jpg",
+    "isVerified": true,
+    "availability": "Available",
+    "_id": "9tm1c1y5",
+    "createdAt": "2026-08-12T14:20:49.043Z",
+    "updatedAt": "2026-08-12T14:20:49.043Z"
+  }
+]
