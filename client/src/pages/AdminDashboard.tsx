@@ -192,6 +192,26 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleDeleteAdvocate = async (advocateId: string, advocateName: string) => {
+    const confirmed = window.confirm(`Are you sure you want to permanently delete the advocate profile for "${advocateName}"?`);
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/advocates/${advocateId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        addNotification('Advocate Deleted', `Advocate profile for "${advocateName}" deleted successfully.`, 'info');
+        fetchStats();
+        fetchPendingAdvocates();
+        fetchLogs();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleBackup = async () => {
     try {
       const res = await fetch('/api/system/backup', {
@@ -539,6 +559,12 @@ export const AdminDashboard: React.FC = () => {
                       <p className="text-[10px] text-slate-400">Court: {adv.court}</p>
                     </div>
                     <div className="flex justify-end gap-2 mt-3.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-800/50">
+                      <button
+                        onClick={() => handleDeleteAdvocate(adv._id, adv.name)}
+                        className="px-2.5 py-1 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 rounded text-[10px] font-bold cursor-pointer transition-colors border border-red-200/60 dark:border-red-800/60 flex items-center gap-1"
+                      >
+                        <Trash2 size={12} /> Reject & Delete
+                      </button>
                       <button
                         onClick={() => handleVerify(adv._id, true)}
                         className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-[10px] font-bold cursor-pointer transition-colors shadow-sm"

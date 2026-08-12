@@ -158,3 +158,87 @@ export const verifyAdvocate = async (req: AuthenticatedRequest, res: Response) =
     return res.status(500).json({ success: false, message: 'Error verifying credentials.' });
   }
 };
+
+// Update Advocate details (Admin Only)
+export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const advocate = await Advocate.findById(id);
+    if (!advocate) {
+      return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
+    }
+
+    const {
+      name, phone, email, enrollmentNumber, enrollmentDate,
+      specialization, court, city, state, experience,
+      photo, bio, address, availability, isVerified
+    } = req.body;
+
+    const updatedData: any = {};
+    if (name !== undefined) updatedData.name = name;
+    if (phone !== undefined) updatedData.phone = phone;
+    if (email !== undefined) updatedData.email = email;
+    if (enrollmentNumber !== undefined) updatedData.enrollmentNumber = enrollmentNumber;
+    if (enrollmentDate !== undefined) updatedData.enrollmentDate = enrollmentDate;
+    if (specialization !== undefined) updatedData.specialization = specialization;
+    if (court !== undefined) updatedData.court = court;
+    if (city !== undefined) updatedData.city = city;
+    if (state !== undefined) updatedData.state = state;
+    if (experience !== undefined) updatedData.experience = Number(experience);
+    if (photo !== undefined) updatedData.photo = photo;
+    if (bio !== undefined) updatedData.bio = bio;
+    if (address !== undefined) updatedData.address = address;
+    if (availability !== undefined) updatedData.availability = availability;
+    if (isVerified !== undefined) updatedData.isVerified = isVerified === true || isVerified === 'true';
+
+    const updatedAdvocate = await Advocate.findByIdAndUpdate(id, updatedData, { new: true });
+
+    await AuditLog.create({
+      userId: req.user?.id || 'system',
+      userName: req.user?.name || 'Administrator',
+      role: 'Admin',
+      action: 'ADVOCATE_UPDATED',
+      ip: req.ip || '127.0.0.1',
+      details: `Updated advocate profile details for ${advocate.name}`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Advocate details updated successfully.',
+      advocate: updatedAdvocate
+    });
+  } catch (error) {
+    console.error('Error updating advocate:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error updating advocate.' });
+  }
+};
+
+// Delete Advocate profile (Admin Only)
+export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const advocate = await Advocate.findById(id);
+    if (!advocate) {
+      return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
+    }
+
+    await Advocate.findByIdAndDelete(id);
+
+    await AuditLog.create({
+      userId: req.user?.id || 'system',
+      userName: req.user?.name || 'Administrator',
+      role: 'Admin',
+      action: 'ADVOCATE_DELETED',
+      ip: req.ip || '127.0.0.1',
+      details: `Deleted advocate profile: ${advocate.name} (Enrollment: ${advocate.enrollmentNumber || 'N/A'})`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Advocate profile for ${advocate.name} deleted successfully.`
+    });
+  } catch (error) {
+    console.error('Error deleting advocate:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error deleting advocate.' });
+  }
+};

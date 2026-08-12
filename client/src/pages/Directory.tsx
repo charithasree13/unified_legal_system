@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, Search, Filter, Star, Phone, Mail, Award, Landmark, MapPin, 
-  Share2, ArrowUpDown, ShieldCheck, Download, Plus, X, AwardIcon
+  Share2, ArrowUpDown, ShieldCheck, Download, Plus, X, AwardIcon, Edit3, Trash2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import QRCode from 'qrcode';
@@ -33,8 +33,130 @@ export const Directory: React.FC = () => {
     specialization: '', court: '',
     city: '', state: '', experience: 1, bio: '', address: ''
   });
-  
   const [formErr, setFormErr] = useState('');
+
+  // Edit Advocate Modal (Admin Only)
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingAdv, setEditingAdv] = useState<any | null>(null);
+  const [selectedEditSpecs, setSelectedEditSpecs] = useState<string[]>([]);
+  const [selectedEditCourts, setSelectedEditCourts] = useState<string[]>([]);
+  const [editFormData, setEditFormData] = useState({
+    name: '', phone: '', email: '', enrollmentNumber: '', enrollmentDate: '',
+    specialization: '', court: '',
+    city: '', state: '', experience: 1, bio: '', address: '', isVerified: true
+  });
+  const [editErr, setEditErr] = useState('');
+
+  const handleEditSpecToggle = (spec: string) => {
+    setSelectedEditSpecs(prev => 
+      prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
+    );
+  };
+
+  const handleEditCourtToggle = (crt: string) => {
+    setSelectedEditCourts(prev => 
+      prev.includes(crt) ? prev.filter(c => c !== crt) : [...prev, crt]
+    );
+  };
+
+  const openEditForm = (adv: any) => {
+    setEditingAdv(adv);
+    setEditFormData({
+      name: adv.name || '',
+      phone: adv.phone || '',
+      email: adv.email || '',
+      enrollmentNumber: adv.enrollmentNumber || '',
+      enrollmentDate: adv.enrollmentDate || '',
+      specialization: adv.specialization || '',
+      court: adv.court || '',
+      city: adv.city || '',
+      state: adv.state || '',
+      experience: adv.experience !== undefined ? adv.experience : 1,
+      bio: adv.bio || '',
+      address: adv.address || '',
+      isVerified: adv.isVerified === true
+    });
+
+    const specs = adv.specialization ? adv.specialization.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+    const crts = adv.court ? adv.court.split(',').map((c: string) => c.trim()).filter(Boolean) : [];
+    setSelectedEditSpecs(specs);
+    setSelectedEditCourts(crts);
+    setEditErr('');
+    setShowEditForm(true);
+  };
+
+  const handleUpdateAdvocate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAdv) return;
+    setEditErr('');
+
+    if (selectedEditSpecs.length === 0) {
+      setEditErr('Please select at least one Specialization.');
+      return;
+    }
+    if (selectedEditCourts.length === 0) {
+      setEditErr('Please select at least one Practicing Court.');
+      return;
+    }
+
+    const payload = {
+      ...editFormData,
+      specialization: selectedEditSpecs.join(', '),
+      court: selectedEditCourts.join(', ')
+    };
+
+    try {
+      const res = await fetch(`/api/advocates/${editingAdv._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setEditErr(data.message || 'Failed to update advocate profile.');
+      } else {
+        addNotification('Advocate Profile Updated', `Profile details for ${payload.name} updated successfully.`, 'success');
+        setShowEditForm(false);
+        setEditingAdv(null);
+        if (selectedAdv?._id === editingAdv._id) {
+          setSelectedAdv(data.advocate || { ...selectedAdv, ...payload });
+        }
+        fetchDirectory();
+      }
+    } catch (err) {
+      setEditErr('Failed to establish server connection.');
+    }
+  };
+
+  const handleDeleteAdvocate = async (adv: any) => {
+    if (!adv || !adv._id) return;
+    const confirmed = window.confirm(`Are you sure you want to permanently delete the advocate profile for "${adv.name}"?`);
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/advocates/${adv._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        addNotification('Delete Failed', data.message || 'Failed to delete advocate profile.', 'warning');
+      } else {
+        addNotification('Advocate Profile Deleted', `Advocate profile for "${adv.name}" deleted successfully.`, 'info');
+        if (selectedAdv?._id === adv._id) setSelectedAdv(null);
+        fetchDirectory();
+      }
+    } catch (err) {
+      addNotification('Delete Error', 'Network error while attempting to delete advocate profile.', 'warning');
+    }
+  };
 
   const handleSpecToggle = (spec: string) => {
     setSelectedSpecs(prev => 
@@ -415,10 +537,28 @@ export const Directory: React.FC = () => {
                     {adv.experience} Years Exp
                   </span>
                   
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 items-center">
+                    {user?.role === 'Admin' && (
+                      <>
+                        <button
+                          onClick={() => openEditForm(adv)}
+                          className="px-2 py-1 text-[11px] bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-sky-200/60 dark:border-sky-800/60"
+                          title="Edit Advocate Details"
+                        >
+                          <Edit3 size={12} /> Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAdvocate(adv)}
+                          className="px-2 py-1 text-[11px] bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-red-200/60 dark:border-red-800/60"
+                          title="Delete Advocate Profile"
+                        >
+                          <Trash2 size={12} /> Delete
+                        </button>
+                      </>
+                    )}
                     <button
                       onClick={() => { setSelectedAdv(adv); setShowQr(false); }}
-                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-sky-400 font-bold hover:underline"
+                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-sky-400 font-bold hover:underline ml-1"
                     >
                       View Details
                     </button>
@@ -536,17 +676,36 @@ export const Directory: React.FC = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="bg-slate-50 dark:bg-slate-950 p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between gap-2">
-              <button
-                onClick={() => setShowQr(!showQr)}
-                className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-400"
-              >
-                <Share2 size={14} /> {showQr ? 'Hide Contact QR' : 'Share QR Code'}
-              </button>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowQr(!showQr)}
+                  className="px-3 py-1.5 border border-slate-200 dark:border-slate-800 hover:bg-slate-200/50 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-400"
+                >
+                  <Share2 size={14} /> {showQr ? 'Hide QR' : 'Share QR'}
+                </button>
+
+                {user?.role === 'Admin' && (
+                  <>
+                    <button
+                      onClick={() => { const target = selectedAdv; setSelectedAdv(null); openEditForm(target); }}
+                      className="px-3 py-1.5 bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer border border-sky-200/60 dark:border-sky-800/60"
+                    >
+                      <Edit3 size={14} /> Edit
+                    </button>
+                    <button
+                      onClick={() => { const target = selectedAdv; setSelectedAdv(null); handleDeleteAdvocate(target); }}
+                      className="px-3 py-1.5 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer border border-red-200/60 dark:border-red-800/60"
+                    >
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  </>
+                )}
+              </div>
 
               <button
                 onClick={() => setSelectedAdv(null)}
-                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-semibold cursor-pointer"
+                className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-semibold cursor-pointer"
               >
                 Close Profile
               </button>
@@ -781,6 +940,253 @@ export const Directory: React.FC = () => {
                   className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold cursor-pointer"
                 >
                   Publish Profile
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Edit Advocate Profile Modal */}
+      {showEditForm && editingAdv && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden animate-slide-up relative">
+            
+            <div className="h-16 bg-sky-600 dark:bg-sky-700 flex justify-between items-center px-6 text-white">
+              <h3 className="font-bold text-base flex items-center gap-2">
+                <Edit3 size={18} /> Edit Advocate Profile Details
+              </h3>
+              <button 
+                onClick={() => { setShowEditForm(false); setEditingAdv(null); }}
+                className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateAdvocate} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+              {editErr && <p className="text-xs text-red-500 font-semibold">{editErr}</p>}
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Advocate Name</label>
+                  <input
+                    type="text"
+                    value={editFormData.name}
+                    onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                    placeholder="Advocate Name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Enrollment Number</label>
+                  <input
+                    type="text"
+                    value={editFormData.enrollmentNumber}
+                    onChange={(e) => setEditFormData({ ...editFormData, enrollmentNumber: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="e.g. BAR/DEL/123/2015"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Phone</label>
+                  <input
+                    type="tel"
+                    value={editFormData.phone}
+                    onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
+                    required
+                    maxLength={10}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="10 digit number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Email</label>
+                  <input
+                    type="email"
+                    value={editFormData.email}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="email@court.org"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Enrollment Date</label>
+                  <input
+                    type="date"
+                    value={editFormData.enrollmentDate}
+                    onChange={(e) => setEditFormData({ ...editFormData, enrollmentDate: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Specialization(s)</label>
+                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                    {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary'].map((spec) => (
+                      <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedEditSpecs.includes(spec)}
+                          onChange={() => handleEditSpecToggle(spec)}
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                        />
+                        {spec}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Practicing Court(s)</label>
+                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                    {['Supreme Court of India', 'High Court', 'Senior civil judges court', 'Junior civil Judges court', 'Judicial magistrate of 1st class', 'Consumers forum', 'DRT'].map((crt) => (
+                      <label key={crt} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedEditCourts.includes(crt)}
+                          onChange={() => handleEditCourtToggle(crt)}
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                        />
+                        {crt}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Experience (Years)</label>
+                  <input
+                    type="number"
+                    value={editFormData.experience}
+                    onChange={(e) => setEditFormData({ ...editFormData, experience: Number(e.target.value) })}
+                    required
+                    min={0}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Verification Status</label>
+                  <select
+                    value={editFormData.isVerified ? 'true' : 'false'}
+                    onChange={(e) => setEditFormData({ ...editFormData, isVerified: e.target.value === 'true' })}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  >
+                    <option value="true">Verified Credentials</option>
+                    <option value="false">Pending Verification</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">City</label>
+                  <input
+                    type="text"
+                    value={editFormData.city}
+                    onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">State</label>
+                  <select
+                    value={editFormData.state}
+                    onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })}
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-855 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  >
+                    <option value="">Select State / UT</option>
+                    <optgroup label="States">
+                      <option>Andhra Pradesh</option>
+                      <option>Arunachal Pradesh</option>
+                      <option>Assam</option>
+                      <option>Bihar</option>
+                      <option>Chhattisgarh</option>
+                      <option>Goa</option>
+                      <option>Gujarat</option>
+                      <option>Haryana</option>
+                      <option>Himachal Pradesh</option>
+                      <option>Jharkhand</option>
+                      <option>Karnataka</option>
+                      <option>Kerala</option>
+                      <option>Madhya Pradesh</option>
+                      <option>Maharashtra</option>
+                      <option>Manipur</option>
+                      <option>Meghalaya</option>
+                      <option>Mizoram</option>
+                      <option>Nagaland</option>
+                      <option>Odisha</option>
+                      <option>Punjab</option>
+                      <option>Rajasthan</option>
+                      <option>Sikkim</option>
+                      <option>Tamil Nadu</option>
+                      <option>Telangana</option>
+                      <option>Tripura</option>
+                      <option>Uttarakhand</option>
+                      <option>Uttar Pradesh</option>
+                      <option>West Bengal</option>
+                    </optgroup>
+                    <optgroup label="Union Territories">
+                      <option>Andaman and Nicobar Islands</option>
+                      <option>Chandigarh</option>
+                      <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                      <option>Delhi</option>
+                      <option>Jammu and Kashmir</option>
+                      <option>Ladakh</option>
+                      <option>Lakshadweep</option>
+                      <option>Puducherry</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Office Address</label>
+                <input
+                  type="text"
+                  value={editFormData.address}
+                  onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  placeholder="e.g. Chamber 456, High Court Chambers"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Professional Biography</label>
+                <textarea
+                  value={editFormData.bio}
+                  onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-16"
+                  placeholder="Practices primarily in Constitutional and Corporate litigation..."
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850">
+                <button
+                  type="button"
+                  onClick={() => { setShowEditForm(false); setEditingAdv(null); }}
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950 rounded-lg text-xs font-semibold text-slate-500 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold cursor-pointer shadow"
+                >
+                  Save & Update Details
                 </button>
               </div>
             </form>

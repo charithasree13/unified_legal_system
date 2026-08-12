@@ -75,6 +75,8 @@ app.post('/api/auth/reset-password', authCtrl.resetPassword);
 app.post('/api/advocates', authenticateToken, requireAdmin, advCtrl.addAdvocate);
 app.get('/api/advocates', authenticateToken, advCtrl.getAdvocates);
 app.get('/api/advocates/:id', authenticateToken, advCtrl.getAdvocateById);
+app.put('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.updateAdvocate);
+app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.deleteAdvocate);
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 
 // DOCUMENTS / REPOSITORY
