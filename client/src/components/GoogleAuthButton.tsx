@@ -149,9 +149,13 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   };
 
   return (
-    <div className="w-full relative">
-      {/* Hidden container where official GIS button renders for native popup triggering */}
-      <div ref={hiddenBtnRef} className="hidden" aria-hidden="true" />
+    <div className="w-full relative overflow-hidden rounded-lg">
+      {/* Container where official GIS iframe renders as an invisible overlay for direct native clicks */}
+      <div 
+        ref={hiddenBtnRef} 
+        className="absolute inset-0 opacity-0 z-10 cursor-pointer overflow-hidden flex items-center justify-center scale-150" 
+        aria-hidden="true" 
+      />
 
       {/* Styled visible button conforming to project aesthetics */}
       <button

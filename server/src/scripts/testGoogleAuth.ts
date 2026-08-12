@@ -98,19 +98,19 @@ async function testSuite() {
     );
 
     // -------------------------------------------------------------
-    // Test 5: Role Security - User Google account attempting Advocate Login
+    // Test 5: Returning Google User Login (Seamless direct login into existing account)
     // -------------------------------------------------------------
     const req5: any = { body: { credential: mockUserToken, accountType: 'Advocate' }, ip: '127.0.0.1' };
     const res5 = createMockRes();
     await googleAuth(req5, res5);
 
     assert(
-      res5.statusCode === 400 && res5.data?.message?.includes('registered as a Client'),
-      'Test 5: Cross-Role Security blocks Client Google account from Advocate login'
+      res5.statusCode === 200 && res5.data?.success === true && res5.data?.user?.id === dbUser._id,
+      'Test 5: Google Auth directly logs user into existing account'
     );
 
     // -------------------------------------------------------------
-    // Test 6: New Advocate Google Signup
+    // Test 6: New Advocate Google Signup (Directly verified, no manual verification barrier)
     // -------------------------------------------------------------
     const mockAdvSub = 'google_sub_advocate_test_88888';
     const mockAdvPayload = Buffer.from(JSON.stringify({
@@ -132,22 +132,22 @@ async function testSuite() {
     );
 
     const dbAdvUser = await User.findOne({ googleSub: mockAdvSub });
-    assert(dbAdvUser && dbAdvUser.isVerified === false, 'Test 6b: Advocate isVerified remains false (awaiting admin approval)');
+    assert(dbAdvUser && dbAdvUser.isVerified === true, 'Test 6b: Advocate isVerified is true directly (verification process off)');
 
     // -------------------------------------------------------------
-    // Test 7: Advocate Google account attempting User Login
+    // Test 7: Direct login into Advocate Google account
     // -------------------------------------------------------------
     const req7: any = { body: { credential: mockAdvToken, accountType: 'Client' }, ip: '127.0.0.1' };
     const res7 = createMockRes();
     await googleAuth(req7, res7);
 
     assert(
-      res7.statusCode === 400 && res7.data?.message?.includes('registered as a Advocate'),
-      'Test 7: Cross-Role Security blocks Advocate Google account from User login'
+      res7.statusCode === 200 && res7.data?.user?.id === dbAdvUser._id,
+      'Test 7: Direct login into existing Advocate account via Google token'
     );
 
     // -------------------------------------------------------------
-    // Test 8: Password account conflict prevention
+    // Test 8: Auto-linking existing local email account with Google login
     // -------------------------------------------------------------
     // Create standard password account
     const regReq: any = {
@@ -164,7 +164,7 @@ async function testSuite() {
     const regRes = createMockRes();
     await register(regReq, regRes);
 
-    // Attempt Google login with same email
+    // Attempt Google login with same email -> Should auto link & log in directly
     const conflictSub = 'google_sub_conflict_77777';
     const conflictPayload = Buffer.from(JSON.stringify({
       sub: conflictSub,
@@ -179,8 +179,8 @@ async function testSuite() {
     await googleAuth(req8, res8);
 
     assert(
-      res8.statusCode === 400 && res8.data?.message?.includes('already exists'),
-      'Test 8: Google login rejects collision with existing local password account'
+      res8.statusCode === 200 && res8.data?.user?.email === 'local.user@example.com',
+      'Test 8: Google login seamlessly links & logs into existing local email account'
     );
 
     // Cleanup mock data created in test
