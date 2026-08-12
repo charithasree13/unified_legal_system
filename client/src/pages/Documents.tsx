@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
   Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2
@@ -8,6 +9,11 @@ import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 
 export const Documents: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
+
+  // For normal users (Client role), Judgements & Laws/Bare Acts are hidden
+  if (user?.role === 'Client') {
+    return <Navigate to="/dashboard" replace />;
+  }
   const [tab, setTab] = useState<'judgement' | 'law'>('judgement');
   const [search, setSearch] = useState('');
   

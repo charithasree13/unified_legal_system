@@ -102,7 +102,7 @@ export const UserDashboard: React.FC = () => {
         <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
           {[
             { label: user?.role === 'Client' ? 'My Case Files' : 'Assigned Cases', count: stats.activeCases, icon: Scale, color: 'text-primary dark:text-sky-400', bg: 'bg-primary/5 dark:bg-sky-400/5' },
-            { label: 'Saved Documents', count: stats.savedDocuments, icon: FileText, color: 'text-emerald-500', bg: 'bg-emerald-500/5' },
+            { label: user?.role === 'Client' ? 'Saved Advocates' : 'Saved Documents', count: user?.role === 'Client' ? favoriteAdvocates.length : stats.savedDocuments, icon: user?.role === 'Client' ? Users : FileText, color: 'text-emerald-500', bg: 'bg-emerald-500/5' },
             { label: 'Active Tasks', count: recentCases.reduce((acc, c) => acc + (c.tasks?.filter((t: any) => t.status !== 'Done').length || 0), 0), icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/5' }
           ].map((item, idx) => (
             <div key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
