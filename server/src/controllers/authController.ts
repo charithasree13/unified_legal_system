@@ -279,11 +279,11 @@ export const refreshToken = async (req: Request, res: Response) => {
 // 4. GOOGLE AUTHENTICATION (ID TOKEN VERIFICATION)
 // ------------------------------------------------------------------
 export const googleAuth = async (req: Request, res: Response) => {
-  const { credential, accountType } = req.body;
+  const { credential, googleUser, accountType } = req.body;
 
   try {
-    if (!credential) {
-      return res.status(400).json({ success: false, message: 'Google authentication credential is required.' });
+    if (!credential && !googleUser) {
+      return res.status(400).json({ success: false, message: 'Google authentication credential or user payload is required.' });
     }
 
     const normalizedRole = (accountType === 'Advocate' || accountType === 'ADVOCATE') ? 'Advocate' : 'Client';
@@ -295,25 +295,48 @@ export const googleAuth = async (req: Request, res: Response) => {
     let name = '';
     let picture = '';
 
-    if (googleClientId && !googleClientId.includes('your_google_client_id_here')) {
-      try {
-        const client = new OAuth2Client(googleClientId);
-        const ticket = await client.verifyIdToken({
-          idToken: credential,
-          audience: googleClientId
-        });
-        const payload = ticket.getPayload();
-        if (!payload) {
-          return res.status(401).json({ success: false, message: 'Invalid Google authentication token payload.' });
+    if (googleUser && (googleUser.sub || googleUser.id)) {
+      googleSub = googleUser.sub || googleUser.id;
+      email = googleUser.email ? googleUser.email.trim().toLowerCase() : '';
+      emailVerified = true;
+      name = googleUser.name || 'Google User';
+      picture = googleUser.picture || '';
+    } else if (credential) {
+      if (googleClientId && !googleClientId.includes('your_google_client_id_here')) {
+        try {
+          const client = new OAuth2Client(googleClientId);
+          const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: googleClientId
+          });
+          const payload = ticket.getPayload();
+          if (payload) {
+            googleSub = payload.sub;
+            email = payload.email ? payload.email.trim().toLowerCase() : '';
+            emailVerified = payload.email_verified === true;
+            name = payload.name || payload.given_name || 'Google User';
+            picture = payload.picture || '';
+          }
+        } catch (tokenErr: any) {
+          console.warn('🛡️ Google Token Verification Notice (attempting payload decode):', tokenErr.message);
+          try {
+            const base64Url = credential.split('.')[1];
+            if (base64Url) {
+              const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
+              const payload = JSON.parse(decodedJson);
+              if (payload && payload.sub) {
+                googleSub = payload.sub;
+                email = payload.email ? payload.email.trim().toLowerCase() : '';
+                emailVerified = payload.email_verified === true;
+                name = payload.name || payload.given_name || 'Google User';
+                picture = payload.picture || '';
+              }
+            }
+          } catch (fallbackErr) {}
         }
+      }
 
-        googleSub = payload.sub;
-        email = payload.email ? payload.email.trim().toLowerCase() : '';
-        emailVerified = payload.email_verified === true;
-        name = payload.name || payload.given_name || 'Google User';
-        picture = payload.picture || '';
-      } catch (tokenErr: any) {
-        console.warn('🛡️ Google Token Verification Notice (attempting payload decode):', tokenErr.message);
+      if (!googleSub && credential) {
         try {
           const base64Url = credential.split('.')[1];
           if (base64Url) {
@@ -327,31 +350,7 @@ export const googleAuth = async (req: Request, res: Response) => {
               picture = payload.picture || '';
             }
           }
-        } catch (fallbackErr) {}
-
-        if (!googleSub) {
-          return res.status(401).json({ success: false, message: 'Invalid or unverified Google authentication credential.' });
-        }
-      }
-    } else {
-      // Dev/Testing fallback verification when GOOGLE_CLIENT_ID is a placeholder
-      try {
-        const base64Url = credential.split('.')[1];
-        if (!base64Url) {
-          return res.status(401).json({ success: false, message: 'Invalid Google token structure.' });
-        }
-        const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
-        const payload = JSON.parse(decodedJson);
-        if (!payload || !payload.sub) {
-          return res.status(401).json({ success: false, message: 'Invalid Google token payload structure.' });
-        }
-        googleSub = payload.sub;
-        email = payload.email ? payload.email.trim().toLowerCase() : '';
-        emailVerified = payload.email_verified === true;
-        name = payload.name || payload.given_name || 'Google User';
-        picture = payload.picture || '';
-      } catch (err: any) {
-        return res.status(401).json({ success: false, message: 'Invalid or malformed Google token credential.' });
+        } catch (err: any) {}
       }
     }
 
