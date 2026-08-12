@@ -717,11 +717,13 @@ export const Directory: React.FC = () => {
 
       {/* Admin Add Advocate Profile Modal */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden animate-slide-up relative">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-slide-up relative">
             
-            <div className="h-16 bg-primary flex justify-between items-center px-6 text-white">
-              <h3 className="font-bold text-base">Index New Advocate Profile</h3>
+            <div className="h-14 bg-primary flex justify-between items-center px-6 text-white flex-shrink-0">
+              <h3 className="font-bold text-base flex items-center gap-2">
+                <Plus size={18} /> Index New Advocate Profile
+              </h3>
               <button 
                 onClick={() => setShowAddForm(false)}
                 className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
@@ -730,7 +732,7 @@ export const Directory: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleAddAdvocate} className="p-6 space-y-4">
+            <form onSubmit={handleAddAdvocate} className="flex-1 overflow-y-auto p-5 space-y-3.5 scrollbar-thin">
               {formErr && <p className="text-xs text-red-500 font-semibold">{formErr}</p>}
               
               <div className="grid grid-cols-2 gap-3">
@@ -794,35 +796,35 @@ export const Directory: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Specialization(s)</label>
-                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Specialization(s) (Select Multiple)</label>
+                  <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
                     {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary'].map((spec) => (
                       <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
                           checked={selectedSpecs.includes(spec)}
                           onChange={() => handleSpecToggle(spec)}
-                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5 cursor-pointer"
                         />
-                        {spec}
+                        <span>{spec}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Practicing Court(s)</label>
-                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Practicing Court(s) (Select Multiple)</label>
+                  <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
                     {['Supreme Court of India', 'High Court', 'Senior civil judges court', 'Junior civil Judges court', 'Judicial magistrate of 1st class', 'Consumers forum', 'DRT'].map((crt) => (
                       <label key={crt} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
                           checked={selectedCourts.includes(crt)}
                           onChange={() => handleCourtToggle(crt)}
-                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5 cursor-pointer"
                         />
-                        {crt}
+                        <span>{crt}</span>
                       </label>
                     ))}
                   </div>
@@ -927,7 +929,7 @@ export const Directory: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850 mt-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
@@ -937,7 +939,7 @@ export const Directory: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold cursor-pointer"
+                  className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold cursor-pointer shadow"
                 >
                   Publish Profile
                 </button>
@@ -949,10 +951,10 @@ export const Directory: React.FC = () => {
 
       {/* Admin Edit Advocate Profile Modal */}
       {showEditForm && editingAdv && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden animate-slide-up relative">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-slide-up relative">
             
-            <div className="h-16 bg-sky-600 dark:bg-sky-700 flex justify-between items-center px-6 text-white">
+            <div className="h-14 bg-sky-600 dark:bg-sky-700 flex justify-between items-center px-6 text-white flex-shrink-0">
               <h3 className="font-bold text-base flex items-center gap-2">
                 <Edit3 size={18} /> Edit Advocate Profile Details
               </h3>
@@ -964,7 +966,7 @@ export const Directory: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUpdateAdvocate} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <form onSubmit={handleUpdateAdvocate} className="flex-1 overflow-y-auto p-5 space-y-3.5 scrollbar-thin">
               {editErr && <p className="text-xs text-red-500 font-semibold">{editErr}</p>}
               
               <div className="grid grid-cols-2 gap-3">
@@ -1028,35 +1030,35 @@ export const Directory: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Specialization(s)</label>
-                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Specialization(s) (Select Multiple)</label>
+                  <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
                     {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary'].map((spec) => (
                       <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
                           checked={selectedEditSpecs.includes(spec)}
                           onChange={() => handleEditSpecToggle(spec)}
-                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5 cursor-pointer"
                         />
-                        {spec}
+                        <span>{spec}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Practicing Court(s)</label>
-                  <div className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg p-2 text-xs bg-slate-50 dark:bg-slate-950 max-h-[110px] overflow-y-auto space-y-1.5 scrollbar-thin">
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Practicing Court(s) (Select Multiple)</label>
+                  <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
                     {['Supreme Court of India', 'High Court', 'Senior civil judges court', 'Junior civil Judges court', 'Judicial magistrate of 1st class', 'Consumers forum', 'DRT'].map((crt) => (
                       <label key={crt} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
                           checked={selectedEditCourts.includes(crt)}
                           onChange={() => handleEditCourtToggle(crt)}
-                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                          className="rounded border-slate-300 text-primary focus:ring-primary h-3.5 w-3.5 cursor-pointer"
                         />
-                        {crt}
+                        <span>{crt}</span>
                       </label>
                     ))}
                   </div>
@@ -1174,7 +1176,7 @@ export const Directory: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-850 mt-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => { setShowEditForm(false); setEditingAdv(null); }}
