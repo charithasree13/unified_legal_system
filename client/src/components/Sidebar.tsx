@@ -22,18 +22,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     navigate('/login');
   };
 
+  const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
+
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Advocate Directory', path: '/directory', icon: Users },
     { name: 'Calculators', path: '/calculators', icon: Calculator },
-    { name: 'Judgements', path: '/judgements', icon: Gavel, clientHide: true },
-    { name: 'Laws & Acts', path: '/laws', icon: BookOpen, clientHide: true },
+    { name: 'Judgements', path: '/judgements', icon: Gavel, normalUserHide: true },
+    { name: 'Laws & Acts', path: '/laws', icon: BookOpen, normalUserHide: true },
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },
     { name: 'Doc Collaboration', path: '/collaboration', icon: FileText },
     { name: 'Case Projects', path: '/projects', icon: Scale },
     { name: 'My Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
-  ].filter(item => !(user?.role === 'Client' && item.clientHide));
+  ].filter(item => !(isNormalUser && item.normalUserHide));
 
   return (
     <>

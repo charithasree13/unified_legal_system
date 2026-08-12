@@ -10,8 +10,9 @@ import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 export const Documents: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
 
-  // For normal users (Client role), Judgements & Laws/Bare Acts are hidden
-  if (user?.role === 'Client') {
+  // For normal users (non-Admin & non-Advocate), Judgements & Laws/Bare Acts are hidden
+  const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
+  if (isNormalUser) {
     return <Navigate to="/dashboard" replace />;
   }
   const [tab, setTab] = useState<'judgement' | 'law'>('judgement');
