@@ -71,6 +71,69 @@ const DEFAULT_BARE_ACTS = [
     pdfUrl: "https://consumeraffairs.nic.in/sites/default/files/CP%20Act%202019.pdf",
     fileName: "Consumer_Protection_Act_2019.pdf",
     uploadedBy: "Ministry of Consumer Affairs"
+  },
+  {
+    _id: "act_it_2000",
+    title: "The Information Technology Act, 2000 (IT Act)",
+    category: "Act",
+    description: "Act No. 21 of 2000. Provides legal recognition for transactions carried out by means of electronic data interchange, cyber offenses, digital signatures, and intermediary liabilities.",
+    pdfUrl: "https://www.meity.gov.in/writereaddata/files/itact2000/it_amended_act2008.pdf",
+    fileName: "Information_Technology_Act_2000.pdf",
+    uploadedBy: "Ministry of Electronics & IT"
+  },
+  {
+    _id: "act_pocso_2012",
+    title: "The Protection of Children from Sexual Offences Act, 2012 (POCSO)",
+    category: "Act",
+    description: "Act No. 32 of 2012. Special statutory law to protect children from sexual assault, harassment, and pornography, establishing Special Courts and child-friendly trial procedures.",
+    pdfUrl: "https://wcd.nic.in/sites/default/files/POCSO%20Act%202012.pdf",
+    fileName: "POCSO_Act_2012.pdf",
+    uploadedBy: "Ministry of Women & Child Development"
+  },
+  {
+    _id: "act_hindu_marriage_1955",
+    title: "The Hindu Marriage Act, 1955",
+    category: "Act",
+    description: "Act No. 25 of 1955. Codifies laws relating to marriage, restitution of conjugal rights, judicial separation, void marriages, and divorce among Hindus, Buddhists, Jains, and Sikhs.",
+    pdfUrl: "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051612.pdf",
+    fileName: "Hindu_Marriage_Act_1955.pdf",
+    uploadedBy: "Legislative Department"
+  },
+  {
+    _id: "act_special_marriage_1954",
+    title: "The Special Marriage Act, 1954",
+    category: "Act",
+    description: "Act No. 43 of 1954. Provides a special form of marriage for the people of India and all Indian nationals in foreign countries, irrespective of the religion or faith followed by either party.",
+    pdfUrl: "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051614.pdf",
+    fileName: "Special_Marriage_Act_1954.pdf",
+    uploadedBy: "Legislative Department"
+  },
+  {
+    _id: "act_advocates_1961",
+    title: "The Advocates Act, 1961",
+    category: "Act",
+    description: "Act No. 25 of 1961. Amends and consolidates the law relating to legal practitioners and provides for the constitution of Bar Councils and an All-India Bar.",
+    pdfUrl: "https://www.barcouncilofindia.org/wp-content/uploads/2010/05/Advocates-Act-1961.pdf",
+    fileName: "Advocates_Act_1961.pdf",
+    uploadedBy: "Bar Council of India"
+  },
+  {
+    _id: "act_environment_1986",
+    title: "The Environment Protection Act, 1986",
+    category: "Act",
+    description: "Act No. 29 of 1986. Umbrella legislation designed to provide a framework for Central Government coordination of activities of various central and state authorities under environmental laws.",
+    pdfUrl: "https://cpcb.nic.in/displaypdf.php?id=RW52aXJvbm1lbnRQcm90ZWN0aW9uQWN0MTk4Ni5wZGY=",
+    fileName: "Environment_Protection_Act_1986.pdf",
+    uploadedBy: "Ministry of Environment & Forests"
+  },
+  {
+    _id: "act_industrial_disputes_1947",
+    title: "The Industrial Disputes Act, 1947",
+    category: "Act",
+    description: "Act No. 14 of 1947. Regulates industrial relations, investigation and settlement of industrial disputes, strikes, lockouts, retrenchment, and lay-off compensation.",
+    pdfUrl: "https://labour.gov.in/sites/default/files/industrial_disputes_act_1947.pdf",
+    fileName: "Industrial_Disputes_Act_1947.pdf",
+    uploadedBy: "Ministry of Labour & Employment"
   }
 ];
 
@@ -874,6 +937,122 @@ export const Documents: React.FC = () => {
           </div>
           <p className="text-xs leading-relaxed text-justify">
             Act No. 35 of 2019. Replaced 1986 law to protect consumers against unfair trade practices and e-commerce frauds.
+          </p>
+        </div>
+      );
+    }
+    if (titleLower.includes('information technology') || titleLower.includes('it act')) {
+      return (
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Cyber Highlights (IT Act 2000)
+              </h4>
+            </div>
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Intermediary Liability (Sec 79):</strong> Safe harbor protections for network service providers and social media platforms subject to due diligence.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Cyber Offenses Penalties:</strong> Hacking (Sec 66), Identity Theft (Sec 66C), Cheating by Personation (Sec 66D), Cyberterrorism (Sec 66F).</span>
+              </li>
+            </ul>
+          </div>
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Cyber Law Framework
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              Act No. 21 of 2000. Provides legal recognition to electronic commerce, digital signatures, electronic contracts, and creates the Cyber Appellate Tribunal.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    if (titleLower.includes('pocso') || titleLower.includes('protection of children')) {
+      return (
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Protection Highlights (POCSO Act 2012)
+              </h4>
+            </div>
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Mandatory Reporting (Sec 19):</strong> Imposes strict duty on any person or professional to report sexual child abuse cases.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Special Courts & Child Protection:</strong> Mandates in-camera trials, child assistance, and fast-track disposal within 1 year.</span>
+              </li>
+            </ul>
+          </div>
+          <p className="text-xs leading-relaxed text-justify">
+            Act No. 32 of 2012. Protects individuals below 18 years from sexual offenses, assault, and child pornography.
+          </p>
+        </div>
+      );
+    }
+
+    if (titleLower.includes('hindu marriage')) {
+      return (
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Matrimonial Code (Hindu Marriage Act 1955)
+              </h4>
+            </div>
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Divorce Grounds (Sec 13 & 13B):</strong> Cruelty, desertion, conversion, and Divorce by Mutual Consent.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Restitution of Conjugal Rights (Sec 9):</strong> Judicial decree for spouse cohabitation restoration.</span>
+              </li>
+            </ul>
+          </div>
+          <p className="text-xs leading-relaxed text-justify">
+            Act No. 25 of 1955. Regulates Hindu matrimonial ceremonies, validity conditions, voidable marriages, maintenance pendente lite (Sec 24), and permanent alimony (Sec 25).
+          </p>
+        </div>
+      );
+    }
+
+    if (titleLower.includes('advocates act') || titleLower.includes('advocates')) {
+      return (
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Bar Ethics (Advocates Act 1961)
+              </h4>
+            </div>
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Right to Practice (Sec 30):</strong> Grants enrolled Advocates exclusive statutory right to practice before all Courts, Tribunals, and Authorities in India.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Disciplinary Proceedings (Sec 35):</strong> State Bar Councils & BCI Disciplinary Committees enforce professional conduct and ethics.</span>
+              </li>
+            </ul>
+          </div>
+          <p className="text-xs leading-relaxed text-justify">
+            Act No. 25 of 1961. Consolidates laws on legal practitioners, State Bar Council enrollment, Senior Advocate designations, and Bar Council of India rulemaking powers.
           </p>
         </div>
       );
