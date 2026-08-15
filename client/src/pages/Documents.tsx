@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
   Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2,
-  Gavel, BookOpen, CloudUpload, Filter, Edit3
+  Gavel, BookOpen, CloudUpload, Filter, Edit3, ShieldAlert, Sparkles, CheckCircle2, BookMarked
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
@@ -428,264 +428,688 @@ export const Documents: React.FC = () => {
     setEditLawProgress(false);
   };
 
-  // Helper to generate dynamic, authentic, act-specific statutory content & sections
+  // Comprehensive, Act-Specific Content Generator with Prominent Key Takeaways Banner at Top
   const getActSpecificContent = (doc: any) => {
     if (!doc) return null;
     const titleLower = (doc.title || '').toLowerCase();
 
     if (titleLower.includes('nyaya sanhita') || titleLower.includes('bns')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Legislative Scope:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Enacted by Parliament as Act No. 45 of 2023 (Effective July 1, 2024). Replaced the Indian Penal Code (1860). Modernizes criminal law, introduces community service for minor infractions, penalizes mob lynching, cyber crimes, and terrorism, and establishes gender-neutral sexual offense protections.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Statutory Highlights (BNS 2023)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 45 of 2023</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enforcement</span>
+                <span className="font-bold text-white">1 July 2024</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">20 Chapters / 358 Sec</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Replaces</span>
+                <span className="font-bold text-white">Indian Penal Code 1860</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Community Service Penalty:</strong> Introduced community service as a statutory punishment for petty first-time offenses for the first time in Indian criminal history.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Strict Mob Lynching Penalty (Sec 103(2)):</strong> Imposes death penalty or mandatory life imprisonment for mob violence committed on grounds of race, caste, or community.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>New Offense of Snatching (Sec 304):</strong> Separately categorizes snatching from general theft with severe imprisonment terms.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Deceitful Marriage Offense (Sec 69):</strong> Penalizes sexual intercourse committed by false promises of marriage or employment.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. LEGISLATIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Legislative Purpose
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Bharatiya Nyaya Sanhita, 2023 (BNS) was enacted by Parliament to replace the colonial Indian Penal Code, 1860. The primary objective is to shift the criminal justice paradigm from punitive retributive enforcement to justice-oriented, victim-centric accountability. It modernizes offenses by accounting for cybercrimes, organized crime syndicates, and digital economic fraud while ensuring strict protections for women and children.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">CHAPTER I: PRELIMINARY (SECTIONS 1–3)</p>
-          <p>
-            <strong>Section 1 (Short Title & Extent):</strong> This Act may be called the Bharatiya Nyaya Sanhita, 2023. It extends to the whole of India and applies to any offense committed by any citizen of India beyond the territory of India.
-          </p>
-          <p>
-            <strong>Section 2 (Definitions):</strong> Defines "child", "community service", "electronic & digital records", "gender-neutral victim terms", "organized crime syndicate", and "terrorism".
-          </p>
+          {/* II. CHAPTER BREAKDOWN */}
+          <div className="space-y-3">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Scale size={16} /> II. Comprehensive Chapter & Section Breakdown
+            </h3>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">CHAPTER II: OF OFFENCES AGAINST THE HUMAN BODY (SECTIONS 100–146)</p>
-          <p>
-            <strong>Section 103 (Punishment for Murder):</strong> Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine. Sub-section (2) prescribes death penalty or life imprisonment for mob lynching based on race, caste, or community.
-          </p>
-          <p>
-            <strong>Section 109 (Attempt to Murder):</strong> Punishes attempt to murder with imprisonment up to ten years or life imprisonment.
-          </p>
-          <p>
-            <strong>Section 74 (Outraging Modesty of Woman):</strong> Assault or use of criminal force to any woman intending to outrage her modesty carries a mandatory term of 1 to 5 years with fine.
-          </p>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+              <div>
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter I: Preliminary (Sections 1–3)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 1 (Extraterritorial Jurisdiction):</strong> Applies across India and to Indian citizens committing offenses outside India, or on ships/aircraft registered in India.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 2 (Definitions):</strong> Statutorily defines "child", "community service", "electronic records", "transgender", and "organized crime syndicate".
+                </p>
+              </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">CHAPTER III: OF OFFENCES AGAINST PROPERTY (SECTIONS 303–334)</p>
-          <p>
-            <strong>Section 303 (Theft) & Section 304 (Snatching):</strong> Defines theft under Section 303(1). Section 304 introduces a distinct statutory offense for "Snatching" by sudden theft using force or quick movement.
-          </p>
-          <p>
-            <strong>Section 316 (Criminal Breach of Trust):</strong> Punishes dishonest misappropriation of property by public servants, bankers, or agents with imprisonment up to ten years.
-          </p>
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter V: Offences Against Woman & Child (Sections 63–99)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 64 (Rape & Penalties):</strong> Prescribes rigorous imprisonment of minimum 10 years up to life imprisonment.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 69 (Sexual Intercourse by Deceit):</strong> Penalizes non-consensual sexual relations under false promise of marriage or suppression of identity with up to 10 years imprisonment.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 74 (Outraging Modesty):</strong> Mandatory 1 to 5 years imprisonment with fine for assault on women.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter VI: Offences Against Human Body (Sections 100–146)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 103 (Murder & Lynching):</strong> Sub-section (1) punishes murder with death or life imprisonment. Sub-section (2) specifically penalizes mob lynching.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 109 (Attempt to Murder):</strong> Punishment of up to 10 years or life imprisonment.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 115 & 117 (Hurt & Grievous Hurt):</strong> Clear grading of hurt and acid attack offenses.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter XVII: Offences Against Property (Sections 303–334)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 303 (Theft) & Section 304 (Snatching):</strong> Establishes snatching as a distinct cognizable offense.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 316 (Criminal Breach of Trust):</strong> Up to 10 years imprisonment for breach of trust by agents/public servants.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* III. ADVOCATE LITIGATION GUIDANCE */}
+          <div className="bg-amber-50/60 dark:bg-amber-950/30 p-4 rounded-xl border border-amber-200 dark:border-amber-900 text-xs font-sans">
+            <h4 className="font-bold text-amber-900 dark:text-amber-300 uppercase text-[11px] flex items-center gap-1">
+              <ShieldAlert size={14} /> Practice Pointer for Advocates & Researchers
+            </h4>
+            <p className="text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">
+              Verify the exact date of offense commission: Offenses committed on or before June 30, 2024 must be charged under IPC 1860. Offenses committed on or after July 1, 2024 must be charged under BNS 2023.
+            </p>
+          </div>
+
         </div>
       );
     }
 
     if (titleLower.includes('nagarik suraksha') || titleLower.includes('bnss')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Procedural Guidelines:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Enacted as Act No. 46 of 2023. Replaced the Code of Criminal Procedure (1973). Enforces mandatory zero FIR registration, forensic evidence collection for serious offenses, electronic summons via SMS/email, and binding timelines for trial completions.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Procedural Highlights (BNSS 2023)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 46 of 2023</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enforcement</span>
+                <span className="font-bold text-white">1 July 2024</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">39 Chapters / 531 Sec</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Replaces</span>
+                <span className="font-bold text-white">CrPC 1973</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Mandatory Zero FIR (Sec 173):</strong> Citizens can lodge an FIR at ANY police station in India regardless of territorial jurisdiction boundaries.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Mandatory Forensic Evidence (Sec 176):</strong> Forensic experts MUST visit crime scenes for any offense carrying 7+ years imprisonment.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Strict Trial Timelines:</strong> Charges framed within 60 days of first hearing; judgment delivered within 45 days of trial completion.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Audio-Video Search Recording:</strong> All police searches, seizures, and inventory memos must be video recorded on smartphones/cameras.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. LEGISLATIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Procedural Scope
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS) replaced the Code of Criminal Procedure, 1973. It establishes a modernized procedural mechanism integrating digital summons, electronic FIRs, mandatory forensic collection, and time-bound court trial management.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">CHAPTER I & II: CONSTITUTION OF CRIMINAL COURTS (SECTIONS 1–29)</p>
-          <p>
-            <strong>Section 2 (Cognizable & Bailable Offence Definitions):</strong> Outlines classification of offenses. Mandates electronic communication for summons, notices, and witness testimonies.
-          </p>
+          {/* II. CHAPTER BREAKDOWN */}
+          <div className="space-y-3">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Scale size={16} /> II. Key Chapter & Section Breakdown
+            </h3>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">CHAPTER V: ARREST OF PERSONS & ZERO FIR (SECTIONS 35–62)</p>
-          <p>
-            <strong>Section 35 (Notice of Appearance):</strong> Police officer shall issue a notice directing the accused person to appear before him when arrest is not immediately necessary.
-          </p>
-          <p>
-            <strong>Section 173 (Zero FIR & Electronic FIR):</strong> Mandates that information regarding cognizable offenses can be registered at any police station irrespective of territorial jurisdiction (Zero FIR).
-          </p>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+              <div>
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter V: Arrest of Persons (Sections 35–62)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 35 (Notice of Appearance):</strong> Police must issue notice to appear prior to arrest when imprisonment is under 7 years.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 37 (District Arrest Information Officer):</strong> Mandatory display of arrested persons' names in every police station.
+                </p>
+              </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">CHAPTER XII & XXIV: INVESTIGATION & TRIAL TIMELINES (SECTIONS 176–325)</p>
-          <p>
-            <strong>Section 176 (Mandatory Forensic Evidence):</strong> Mandatory visit by forensic experts to crime scenes for offenses punishable with seven years or more imprisonment.
-          </p>
-          <p>
-            <strong>Section 258 & 313 (Binding Trial Timelines):</strong> Charges must be framed within 60 days of first hearing; judgement must be delivered within 45 days after trial completion.
-          </p>
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter XII: Investigation Powers (Sections 173–196)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 173 (Zero FIR & E-FIR):</strong> Registration of FIR permitted via electronic communication or at any police station.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 176 (Forensic Mandate):</strong> Mandatory crime scene visits by forensic teams for serious offenses.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Chapter XXXIII: Bail & Undertrial Relief (Sections 478–496)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 479 (First-Time Offender Undertrial Relief):</strong> Grants automatic bail to first-time offenders who have completed 1/3rd of the maximum sentence term in custody.
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       );
     }
 
     if (titleLower.includes('sakshya adhiniyam') || titleLower.includes('bsa')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Evidence Principles:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Enacted as Act No. 47 of 2023. Replaced the Indian Evidence Act (1872). Establishes legal equivalence between electronic/digital records (emails, server logs, mobile messages, CCTV) and physical paper documents in judicial proceedings.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Evidence Highlights (BSA 2023)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 47 of 2023</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enforcement</span>
+                <span className="font-bold text-white">1 July 2024</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">12 Chapters / 170 Sec</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Replaces</span>
+                <span className="font-bold text-white">Indian Evidence Act 1872</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Digital Evidence Primary Equality (Sec 61):</strong> Electronic logs, WhatsApp chats, emails, and cloud storage have equal legal standing to paper documents.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Automated Hash Verification (Sec 62):</strong> Validates digital file integrity via automated hash signatures and server certificates.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Expanded Secondary Evidence (Sec 58):</strong> Mechanical, digital, and optical reproductions explicitly qualify as secondary evidence.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. LEGISLATIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Law of Evidence
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Bharatiya Sakshya Adhiniyam, 2023 replaced the Indian Evidence Act, 1872. It aligns the rules of evidence with modern technology, giving full legal recognition to digital records, electronic signatures, and smartphone communications.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">CHAPTER I: RELEVANCY OF FACTS (SECTIONS 1–15)</p>
-          <p>
-            <strong>Section 3 (Definitions of Evidence):</strong> Includes electronic and digital records, semiconductor memory logs, mobile messages, emails, and cloud data under the primary definition of evidence.
-          </p>
+          {/* II. KEY SECTIONS */}
+          <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+            <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Primary Evidence Sections</span>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Section 3:</strong> Includes electronic/digital records under definition of documentary evidence.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Section 61 & 62:</strong> Rules of admissibility and authentication for digital records.
+            </p>
+          </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">CHAPTER II: PRIMARY & SECONDARY EVIDENCE (SECTIONS 57–63)</p>
-          <p>
-            <strong>Section 61 (Admissibility of Electronic Records):</strong> Electronic records stored in semiconductor memory, optical devices, or magnetic media are admissible without further proof of original paper production.
-          </p>
-          <p>
-            <strong>Section 62 (Special Provisions for Digital Evidence):</strong> Details certification procedures and automated integrity hashes for validating electronic contracts and server records.
-          </p>
         </div>
       );
     }
 
     if (titleLower.includes('civil procedure') || titleLower.includes('cpc')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Civil Procedure Code:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Act No. 5 of 1908. Codifies the comprehensive procedural rules governing the administration of civil litigation, suits, injunctions, appeals, and execution of decrees in Indian courts.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Highlights at a Glance (CPC 1908)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 5 of 1908</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enacted Date</span>
+                <span className="font-bold text-white">21 March 1908</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">158 Sec / 51 Orders</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Governing Body</span>
+                <span className="font-bold text-white">Legislative Dept</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Primary Civil Code:</strong> Establishes uniform procedural rules for civil litigation, property disputes, contracts, and injunctions across all Indian Courts.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Res Sub-Judice (Sec 10):</strong> Prevents parallel trial of identical civil suits pending between the same parties.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Res Judicata (Sec 11):</strong> Bars re-litigation of issues already finally decided by a competent civil court.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Temporary Injunctions (Order XXXIX):</strong> Protects suit property against waste, alienation, or damage during litigation.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. EXECUTIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Scope
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Code of Civil Procedure, 1908 (CPC) is the foundational adjective law regulating civil court procedures in India. It governs how civil suits are instituted, how pleadings are framed, interim injunctions granted, and decrees executed.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">PART I: SUITS IN GENERAL (SECTIONS 9–35B)</p>
-          <p>
-            <strong>Section 9 (Jurisdiction of Civil Courts):</strong> The Courts shall have jurisdiction to try all suits of a civil nature excepting suits of which their cognizance is either expressly or impliedly barred.
-          </p>
-          <p>
-            <strong>Section 10 (Res Sub-Judice):</strong> No Court shall proceed with the trial of any suit in which the matter in issue is also directly and substantially in issue in a previously instituted suit between the same parties.
-          </p>
-          <p>
-            <strong>Section 11 (Res Judicata):</strong> No Court shall try any suit or issue in which the matter directly and substantially in issue has been directly and substantially in issue in a former suit between the same parties and decided by a competent court.
-          </p>
+          {/* II. CHAPTER & ORDER BREAKDOWN */}
+          <div className="space-y-3">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Scale size={16} /> II. Key Sections & Orders Breakdown
+            </h3>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">ORDERS & PLEADINGS (ORDERS I TO XXXIX)</p>
-          <p>
-            <strong>Order VI (Pleadings Generally):</strong> Requires concise statement of material facts without pleading evidence. Order VII rules the requirements of a Plaint; Order VIII governs Written Statements.
-          </p>
-          <p>
-            <strong>Order XXXIX (Temporary Injunctions):</strong> Rules 1 & 2 govern grant of temporary injunctions and interlocutory stay orders to prevent waste, damage, or alienation of suit property during pendency.
-          </p>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+              <div>
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Substantive Sections (Part I)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 9 (Civil Jurisdiction):</strong> Civil courts have jurisdiction to try all civil suits unless expressly barred.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 10 & 11 (Res Sub-Judice & Res Judicata):</strong> Prevents suit multiplication and re-litigation.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Section 26 (Institution of Suits):</strong> Every suit shall be instituted by the presentation of a plaint.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Procedural Orders (Rules of Pleading)</span>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Order VI (Pleadings Generally):</strong> Plead facts, not law or evidence.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Order VII Rule 11 (Plaint Rejection):</strong> Rejection of plaint for no cause of action.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Order VIII Rule 1 (Written Statement):</strong> Mandatory 30 to 90 days timeline for defendant reply.
+                </p>
+                <p className="mt-1 text-slate-600 dark:text-slate-300">
+                  <strong>Order XXXIX Rules 1 & 2 (Injunctions):</strong> Temporary injunctions for property preservation.
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       );
     }
 
     if (titleLower.includes('constitution')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Constitutional Framework:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Enacted 26 November 1949 (came into force 26 January 1950). The Supreme Law of India establishing a Sovereign Socialist Secular Democratic Republic, Fundamental Rights, and Judicial Supremacy.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Constitutional Highlights
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Supreme Law</span>
+                <span className="font-bold text-white">Republic of India</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enacted Date</span>
+                <span className="font-bold text-white">26 Nov 1949</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">25 Parts / 448 Arts</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Schedules</span>
+                <span className="font-bold text-white">12 Schedules</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Fundamental Rights (Part III):</strong> Guarantees Equality (Art 14), Freedom of Speech (Art 19), Life & Liberty (Art 21).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Writ Remedies (Art 32 & 226):</strong> Enforces constitutional writs (Habeas Corpus, Mandamus, Quo Warranto, Certiorari).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Special Leave Petition (Art 136):</strong> Extraordinary discretionary appellate jurisdiction of the Supreme Court of India.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. EXECUTIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Preamble
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Constitution of India is the supreme lex loci of the nation. It establishes India as a Sovereign Socialist Secular Democratic Republic, establishing democratic governance and judicial review.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">PART III: FUNDAMENTAL RIGHTS (ARTICLES 12–35)</p>
-          <p>
-            <strong>Article 14 (Right to Equality):</strong> The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.
-          </p>
-          <p>
-            <strong>Article 19 (Protection of Certain Freedoms):</strong> Guarantees freedom of speech and expression, peaceful assembly, association, movement, residence, and trade or profession.
-          </p>
-          <p>
-            <strong>Article 21 (Protection of Life & Personal Liberty):</strong> No person shall be deprived of his life or personal liberty except according to procedure established by law.
-          </p>
-          <p>
-            <strong>Article 32 (Constitutional Remedies):</strong> Guarantees the right to move the Supreme Court by appropriate proceedings for the enforcement of Fundamental Rights by Writs (Habeas Corpus, Mandamus, Prohibition, Quo Warranto, Certiorari).
-          </p>
+          {/* II. PARTS & ARTICLES */}
+          <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+            <span className="font-sans font-bold text-slate-900 dark:text-white uppercase block text-[11px] text-emerald-600 dark:text-emerald-400">Core Articles</span>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Article 14, 19, 21:</strong> Golden Triangle of Fundamental Rights.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Article 32 & 226:</strong> Constitutional remedies and High Court writ jurisdiction.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Article 141:</strong> Supreme Court precedent binding on all courts in India.
+            </p>
+          </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">PART V & VI: JUDICIARY & HIGH COURTS (ARTICLES 136 & 226)</p>
-          <p>
-            <strong>Article 136 (Special Leave to Appeal):</strong> Supreme Court may, in its discretion, grant special leave to appeal from any judgment, decree, or order in any cause or matter passed by any court or tribunal in India.
-          </p>
-          <p>
-            <strong>Article 226 (Writs Power of High Courts):</strong> Empowers High Courts to issue directions, orders or writs for enforcement of fundamental rights and for any other legal purpose.
-          </p>
         </div>
       );
     }
 
     if (titleLower.includes('right to information') || titleLower.includes('rti')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Transparency Provisions:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Act No. 22 of 2005. Sets out the practical regime of right to information for citizens to secure access to information under the control of public authorities, promoting transparency and accountability.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Transparency Highlights (RTI 2005)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 22 of 2005</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Response Limit</span>
+                <span className="font-bold text-white">30 Days (48h Life)</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Max Penalty</span>
+                <span className="font-bold text-white">₹25,000 on PIO</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Governing Dept</span>
+                <span className="font-bold text-white">DoPT, Govt of India</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Citizen Empowerment:</strong> All citizens have statutory right to request official records and files from public authorities.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Strict Response Timelines (Sec 7):</strong> PIO must supply info within 30 days or face daily penalties under Section 20.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Two-Tier Appeals (Sec 19):</strong> First Appeal to Department Head; Second Appeal to Information Commission.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. LEGISLATIVE OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Scope
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Right to Information Act, 2005 sets out a practical regime for citizens to access public authority records, ensuring administrative transparency.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">RIGHT TO INFORMATION & OBLIGATIONS (SECTIONS 3–7)</p>
-          <p>
-            <strong>Section 3 (Right to Information):</strong> Subject to the provisions of this Act, all citizens shall have the right to information.
-          </p>
-          <p>
-            <strong>Section 6 (Request for Obtaining Information):</strong> A person who desires to obtain any information shall make a request in writing or through electronic means to the Central or State Public Information Officer (PIO).
-          </p>
-          <p>
-            <strong>Section 7 (Disposal of Request):</strong> The PIO shall provide information within 30 days of receiving the request (or 48 hours if concerning the life or liberty of a person).
-          </p>
+          {/* II. SECTIONS */}
+          <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Section 6:</strong> Application for information. <strong>Section 8:</strong> Exemptions from disclosure. <strong>Section 20:</strong> Daily penalties on defaulting PIOs.
+            </p>
+          </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">EXEMPTIONS & APPEALS (SECTIONS 8 & 19)</p>
-          <p>
-            <strong>Section 8 (Exemption from Disclosure):</strong> Lists information exempt from disclosure including national security, contempt of court, cabinet papers, trade secrets, and personal privacy.
-          </p>
-          <p>
-            <strong>Section 19 (Appeals):</strong> First Appeal to Officer senior in rank to PIO; Second Appeal to Central or State Information Commission within 90 days.
-          </p>
         </div>
       );
     }
 
     if (titleLower.includes('consumer protection')) {
       return (
-        <div className="space-y-4 font-serif">
-          <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-3.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-xs font-sans mb-4">
-            <p className="font-bold text-emerald-900 dark:text-emerald-300">Act Summary & Consumer Rights Framework:</p>
-            <p className="text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Act No. 35 of 2019. Overhauled consumer protection law in India by establishing CCPA, product liability standards, e-commerce dispute redressal, and mediation rules.
+        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+          
+          {/* PROMINENT KEY TAKEAWAYS & HIGHLIGHTS BANNER AT TOP */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+                Key Takeaways & Highlights (Consumer Protection Act 2019)
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 35 of 2019</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">District Limits</span>
+                <span className="font-bold text-white">Up to ₹50 Lakhs</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">State Limits</span>
+                <span className="font-bold text-white">₹50L to ₹2 Crores</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">National Limits</span>
+                <span className="font-bold text-white">Above ₹2 Crores</span>
+              </div>
+            </div>
+
+            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>CCPA Regulator (Sec 10):</strong> Executive body created to recall unsafe products and penalize misleading advertisements.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Product Liability (Sec 83):</strong> Holds manufacturers and sellers strictly liable for product defects or service deficiencies.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>E-Commerce Protection:</strong> Enables consumers to file online complaints from where they reside.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* I. OVERVIEW */}
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Scope
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              The Consumer Protection Act, 2019 replaced the 1986 law to protect consumers against unfair contract terms, e-commerce frauds, and deficient services.
             </p>
           </div>
 
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">CONSUMER COMMISSIONS & JURISDICTION (SECTIONS 28–58)</p>
-          <p>
-            <strong>District Commission (Section 34):</strong> Jurisdiction to entertain complaints where consideration value does not exceed ₹50 Lakhs.
-          </p>
-          <p>
-            <strong>State Commission (Section 47):</strong> Jurisdiction for claims exceeding ₹50 Lakhs but up to ₹2 Crores.
-          </p>
-          <p>
-            <strong>National Commission (Section 58):</strong> Jurisdiction for claims exceeding ₹2 Crores and appellate authority over State Commission orders.
-          </p>
-
-          <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">PRODUCT LIABILITY & E-COMMERCE (SECTIONS 82–94)</p>
-          <p>
-            <strong>Section 83 (Product Liability Action):</strong> Action for product liability against product manufacturers, service providers, or sellers for harm caused by defective products or deficient services.
-          </p>
         </div>
       );
     }
 
-    // Generic fallback for custom uploaded acts or judgements
+    // Generic Fallback for newly uploaded custom Bare Acts / Judgements with Prominent Key Takeaways Banner
     return (
-      <div className="space-y-4 font-serif">
-        <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-sans mb-4">
-          <p className="font-bold text-slate-900 dark:text-slate-200">Statutory / Judicial Document Overview:</p>
-          <p className="text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-            {doc.description || `Official statutory publication / case verdict document uploaded for ${doc.title}.`}
+      <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
+        
+        {/* PROMINENT KEY TAKEAWAYS BANNER */}
+        <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+            <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
+              Key Takeaways & Highlights ({doc.title})
+            </h4>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Category</span>
+              <span className="font-bold text-white">{doc.category || doc.court || 'Statute'}</span>
+            </div>
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Year</span>
+              <span className="font-bold text-white">{doc.year || '2026'}</span>
+            </div>
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Uploaded By</span>
+              <span className="font-bold text-white">{doc.uploadedBy || 'Admin'}</span>
+            </div>
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Status</span>
+              <span className="font-bold text-white">Active Statute</span>
+            </div>
+          </div>
+
+          <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <span><strong>Official Legal Document:</strong> Published for public legal awareness and professional litigation research.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <span><strong>Summary:</strong> {doc.description || `Statutory enactment and provisions for ${doc.title}.`}</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* I. STATUTORY OVERVIEW */}
+        <div className="space-y-2">
+          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+            <BookMarked size={16} /> I. Statutory Provisions & Analysis
+          </h3>
+          <p className="text-xs leading-relaxed text-justify">
+            1. <strong>Title & Category:</strong> {doc.title} ({doc.category || doc.court || 'Statute'}).
+          </p>
+          <p className="text-xs leading-relaxed text-justify">
+            2. <strong>Enactment / Official Record:</strong> Published under official authority of {doc.uploadedBy || 'Ministry of Law & Justice'}.
+          </p>
+          <p className="text-xs leading-relaxed text-justify">
+            3. <strong>Full PDF Access:</strong> Click the <strong>"Download PDF Copy"</strong> button below to view or download the complete certified gazette copy.
           </p>
         </div>
 
-        <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400">I. STATUTORY PROVISIONS & SUMMARY</p>
-        <p>
-          1. <strong>Title & Scope:</strong> {doc.title}. Categorized under <em>{doc.category || doc.court || 'Statute'}</em>.
-        </p>
-        <p>
-          2. <strong>Enactment / Forum Details:</strong> Published under official authority ({doc.uploadedBy || 'Ministry of Law & Justice'}). Presiding Forum / Enactment Year: {doc.year || '2026'}.
-        </p>
-
-        <p className="font-bold text-xs uppercase font-sans text-indigo-700 dark:text-indigo-400 pt-3">II. STATUTORY TEXT & ANALYSIS</p>
-        <p>
-          3. The statutory provisions and terms contained in <strong>{doc.title}</strong> apply to all relevant judicial proceedings, public registries, and administrative authorities across the designated territory.
-        </p>
-        <p>
-          4. For complete full-text gazette schedules, original court seal certifications, and annexures, click the <strong>"Download PDF Copy"</strong> button below.
-        </p>
       </div>
     );
   };
@@ -1109,7 +1533,7 @@ export const Documents: React.FC = () => {
                   <div className="flex justify-between items-center mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850">
                     <button
                       onClick={() => setReadingDoc(law)}
-                      className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1 cursor-pointer font-semibold"
                     >
                       Read bare text <ExternalLink size={12} />
                     </button>
@@ -1219,7 +1643,7 @@ export const Documents: React.FC = () => {
                   )}
                 </div>
 
-                {/* Dynamic Authentic Act-Specific Statutory Content */}
+                {/* Dynamic Authentic Act-Specific Statutory Content with Prominent Key Takeaways Banner */}
                 {getActSpecificContent(readingDoc)}
 
                 <div className="mt-12 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-sans text-slate-400">
