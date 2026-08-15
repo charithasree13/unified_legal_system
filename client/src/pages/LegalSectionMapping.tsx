@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, Search, ShieldCheck, Scale, ArrowRight, CheckCircle2, 
-  HelpCircle, RefreshCw, Filter, Sparkles, FileText, ChevronRight, Check,
-  Info, Layers, Award
+  HelpCircle, RefreshCw, Filter, Sparkles, FileText, Check,
+  Layers, AlertCircle, BookMarked, ListChecks
 } from 'lucide-react';
 
 interface SectionMapping {
@@ -13,6 +13,8 @@ interface SectionMapping {
   newAct: string;
   newSection: string;
   newTitle: string;
+  newSectionContent?: string;
+  keyChanges?: string[];
   mappingType: 'DIRECT_REPLACEMENT' | 'MULTIPLE_REPLACEMENT' | 'PARTIAL_REPLACEMENT' | 'REORGANIZED' | 'NO_DIRECT_EQUIVALENT';
   mappingStatus: 'VERIFIED' | 'NEEDS_REVIEW';
   sourceReference: string;
@@ -58,7 +60,6 @@ export const LegalSectionMapping: React.FC = () => {
       const data = await response.json();
       if (data.success && data.data) {
         setMappings(data.data);
-        // Default select IPC 354 if available, or first mapping item
         const defaultItem = data.data.find((m: SectionMapping) => 
           m.legacySection.includes('354') || m.legacySection.includes('302')
         ) || data.data[0];
@@ -106,6 +107,7 @@ export const LegalSectionMapping: React.FC = () => {
         item.newTitle.toLowerCase().includes(q) ||
         item.legacyAct.toLowerCase().includes(q) ||
         item.newAct.toLowerCase().includes(q) ||
+        (item.newSectionContent && item.newSectionContent.toLowerCase().includes(q)) ||
         (item.factualNotes && item.factualNotes.toLowerCase().includes(q));
       if (!match) return false;
     }
@@ -155,20 +157,20 @@ export const LegalSectionMapping: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       
-      {/* Top Professional Header Banner */}
+      {/* Header Banner */}
       <div className="bg-gradient-to-r from-primary via-slate-900 to-sky-950 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <span className="bg-sky-500/20 text-sky-300 p-2 rounded-xl backdrop-blur-sm border border-sky-400/30">
               <BookOpen size={24} />
             </span>
-            <span className="text-xs uppercase font-bold tracking-widest text-sky-200">Legal Code Transition & Statutory Mapping</span>
+            <span className="text-xs uppercase font-bold tracking-widest text-sky-200 font-sans">Legal Code Transition Engine</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Indian Legal Code Comparison System
           </h1>
           <p className="text-sm sm:text-base text-slate-200 mt-2 max-w-3xl leading-relaxed">
-            Instant statutory cross-reference tool mapping legacy Indian penal, procedural, and evidence statutes (IPC, CrPC, IEA) to the new criminal statutes (BNS, BNSS, BSA). Built with official statutory accuracy.
+            Statutory cross-reference tool mapping legacy Indian criminal statutes (IPC, CrPC, IEA) to the new criminal codes (BNS, BNSS, BSA). Select any section to view full text, scope, and key legal changes.
           </p>
         </div>
       </div>
@@ -223,7 +225,7 @@ export const LegalSectionMapping: React.FC = () => {
         {/* Quick Dropdown Selector & Search Box */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
           
-          {/* Clean Dropdown Selector */}
+          {/* Dropdown Selector */}
           <div>
             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
               <Sparkles size={14} className="text-amber-500" /> Select Legacy Section to Compare
@@ -241,7 +243,7 @@ export const LegalSectionMapping: React.FC = () => {
             </select>
           </div>
 
-          {/* Real-time Section Search Input */}
+          {/* Search Input */}
           <div>
             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
               <Search size={14} className="text-primary dark:text-sky-400" /> Search Section Number or Offence
@@ -262,7 +264,7 @@ export const LegalSectionMapping: React.FC = () => {
                     if (match) setSelectedSectionId(match._id);
                   }
                 }}
-                placeholder="Type section number (e.g. 354, 302, 420, 154, 65B) or keyword..."
+                placeholder="Search section number (e.g. 354, 302, 420, 154, 65B)..."
                 className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-sky-400 transition"
               />
             </div>
@@ -294,7 +296,7 @@ export const LegalSectionMapping: React.FC = () => {
 
       </div>
 
-      {/* Selected Provision Detailed Comparison Card */}
+      {/* Selected Provision Detailed Comparison Card & New Section Content */}
       {selectedMapping && (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border-2 border-sky-300 dark:border-sky-800/80 shadow-xl space-y-6 animate-in fade-in zoom-in-95">
           
@@ -359,10 +361,39 @@ export const LegalSectionMapping: React.FC = () => {
 
           </div>
 
-          {/* Statutory Transition Details & Key Changes */}
-          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
-              <FileText size={15} className="text-primary dark:text-sky-400" /> Statutory Transition & Key Provisions
+          {/* Full Text & Statutory Content of the New Section */}
+          {selectedMapping.newSectionContent && (
+            <div className="p-5 rounded-2xl bg-sky-50/50 dark:bg-slate-800/90 border border-sky-200 dark:border-sky-900/60 space-y-2">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-800 dark:text-sky-300 flex items-center gap-2">
+                <BookMarked size={16} className="text-sky-600 dark:text-sky-400" /> Statutory Provision & Text of New Section ({selectedMapping.newSection})
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-normal bg-white dark:bg-slate-900 p-4 rounded-xl border border-sky-100 dark:border-slate-800 shadow-inner italic">
+                "{selectedMapping.newSectionContent}"
+              </p>
+            </div>
+          )}
+
+          {/* Key Changes & Legal Implications */}
+          {selectedMapping.keyChanges && selectedMapping.keyChanges.length > 0 && (
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <ListChecks size={16} className="text-primary dark:text-sky-400" /> Key Changes & Statutory Implications
+              </h4>
+              <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                {selectedMapping.keyChanges.map((change, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <span className="h-2 w-2 rounded-full bg-primary dark:bg-sky-400 mt-2 flex-shrink-0" />
+                    <span className="font-medium leading-relaxed">{change}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Factual Transition Details & Source Link */}
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+              <FileText size={14} className="text-primary dark:text-sky-400" /> Factual Transition Notes
             </h4>
             <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               {selectedMapping.factualNotes || 'Substantive provisions updated in statutory transition.'}
@@ -387,7 +418,7 @@ export const LegalSectionMapping: React.FC = () => {
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
             <Layers size={16} className="text-primary dark:text-sky-400" /> Built-In Statutory Cross-Reference Directory ({filteredMappings.length})
           </h3>
-          <span className="text-xs text-slate-400">Click any row to load comparison</span>
+          <span className="text-xs text-slate-400">Click any card to load comparison & full text</span>
         </div>
 
         {loading ? (

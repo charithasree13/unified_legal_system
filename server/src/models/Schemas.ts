@@ -458,6 +458,8 @@ const LegalSectionMappingSchema = new mongoose.Schema({
   newAct: { type: String, required: true }, // e.g. BNS, BNSS, BSA
   newSection: { type: String, required: true }, // e.g. Section 103(1)
   newTitle: { type: String, required: true },
+  newSectionContent: { type: String }, // Statutory content / text of the new section
+  keyChanges: { type: [String], default: [] }, // Key changes and legal implications
   mappingType: { 
     type: String, 
     enum: ['DIRECT_REPLACEMENT', 'MULTIPLE_REPLACEMENT', 'PARTIAL_REPLACEMENT', 'REORGANIZED', 'NO_DIRECT_EQUIVALENT'], 
