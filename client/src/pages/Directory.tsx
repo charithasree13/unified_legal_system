@@ -454,6 +454,8 @@ export const Directory: React.FC = () => {
               <option>Intellectual Property</option>
               <option>Bank legal advisors</option>
               <option>Notary</option>
+              <option>AGP</option>
+              <option>APP</option>
             </select>
 
             <select
@@ -850,7 +852,7 @@ export const Directory: React.FC = () => {
                 <div>
                   <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Specialization(s) (Select Multiple)</label>
                   <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-                    {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary'].map((spec) => (
+                    {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary', 'AGP', 'APP'].map((spec) => (
                       <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
@@ -1084,7 +1086,7 @@ export const Directory: React.FC = () => {
                 <div>
                   <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Specialization(s) (Select Multiple)</label>
                   <div className="grid grid-cols-1 gap-1.5 p-2.5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-                    {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary'].map((spec) => (
+                    {['Civil Litigation', 'Criminal Defense', 'Corporate Law', 'Taxation Law', 'Intellectual Property', 'Bank legal advisors', 'Notary', 'AGP', 'APP'].map((spec) => (
                       <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors">
                         <input
                           type="checkbox"
