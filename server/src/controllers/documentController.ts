@@ -283,3 +283,53 @@ export const updateLaw = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ success: false, message: error.message || 'Error updating act/law.' });
   }
 };
+
+export const updateJudgement = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, court, state, judge, year, subject, keywords } = req.body;
+
+    const doc = await Judgement.findById(id);
+    if (!doc) {
+      return res.status(404).json({ success: false, message: 'Judgement not found.' });
+    }
+
+    const updateData: any = {};
+    if (title !== undefined) updateData.title = title;
+    if (court !== undefined) updateData.court = court;
+    if (state !== undefined) updateData.state = state;
+    if (judge !== undefined) updateData.judge = judge;
+    if (year !== undefined) updateData.year = Number(year);
+    if (subject !== undefined) updateData.subject = subject;
+    if (keywords !== undefined) {
+      updateData.keywords = typeof keywords === 'string' 
+        ? keywords.split(',').map((k: string) => k.trim()) 
+        : keywords;
+    }
+
+    if (req.file) {
+      updateData.pdfUrl = `/uploads/${req.file.filename}`;
+      updateData.fileName = req.file.originalname;
+    }
+
+    const updatedJudgement = await Judgement.findByIdAndUpdate(id, updateData, { new: true });
+
+    await AuditLog.create({
+      userId: req.user?.id || 'system',
+      userName: req.user?.name || 'Administrator',
+      role: req.user?.role || 'Admin',
+      action: 'JUDGEMENT_UPDATED',
+      ip: req.ip || '127.0.0.1',
+      details: `Updated Judgement: ${doc.title}`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Judgement updated successfully.',
+      judgement: updatedJudgement
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message || 'Error updating judgement.' });
+  }
+};
+

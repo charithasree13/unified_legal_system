@@ -88,6 +88,7 @@ app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.ve
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
 app.get('/api/documents/judgements', authenticateToken, docCtrl.getJudgements);
 app.delete('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
+app.put('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateJudgement);
 app.post('/api/documents/laws', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
 app.get('/api/documents/laws', authenticateToken, docCtrl.getLaws);
 app.put('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
