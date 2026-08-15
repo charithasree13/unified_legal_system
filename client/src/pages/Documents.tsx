@@ -1115,19 +1115,76 @@ export const Documents: React.FC = () => {
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
               <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Transparency Highlights (RTI 2005)
+                Key Takeaways & Transparency Highlights (RTI Act 2005)
               </h4>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 22 of 2005</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enacted Date</span>
+                <span className="font-bold text-white">15 June 2005</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
+                <span className="font-bold text-white">6 Chapters / 31 Sec</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Mandate</span>
+                <span className="font-bold text-white">Public Transparency</span>
+              </div>
             </div>
             <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>30-Day Mandatory Limit:</strong> PIO must supply info within 30 days or face daily penalties under Section 20.</span>
+                <span><strong>Mandatory 30-Day Info Supply (Sec 7(1)):</strong> PIO must supply requested information within 30 days, or 48 hours if concerning life/liberty.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Daily Penalties on Errant PIOs (Sec 20):</strong> Information Commissions can penalize PIOs ₹250 per day up to ₹25,000 for delayed or false info.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Section 8 Exemption Exceptions:</strong> Narrow exemptions for national security, cabinet papers, commercial confidence, and fiduciary trust.</span>
               </li>
             </ul>
           </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 22 of 2005. Empowers citizens to demand official records from public authorities.
-          </p>
+
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Executive Overview & Statutory Purpose
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              Enacted by Parliament as Act No. 22 of 2005. Establishes a practical regime for citizens to secure access to information under the control of public authorities, promoting transparency and accountability in the working of every public authority, containing corruption, and empowering Indian democracy.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Scale size={16} /> II. Section-by-Section Statutory Breakdown
+            </h3>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+              <p><strong>Section 2(j) - Right to Information Definition:</strong> Right to inspect works, documents, records, take notes, certified extracts, and certified samples of material held by any public authority.</p>
+              <p><strong>Section 4 - Mandatory Suo Motu Disclosure:</strong> Duty of every public authority to proactively publish organizational structure, functions, officers' powers, decision-making channels, and rules.</p>
+              <p><strong>Section 6 - Request Procedure:</strong> Citizens submit written or electronic application to CPIO/SPIO in English, Hindi, or regional official language with prescribed fee.</p>
+              <p><strong>Section 7 - Disposal Timelines & Deemed Refusal:</strong> PIO must supply info within 30 days (or 48 hours for life/liberty). Failure to respond within timeline is treated as deemed refusal.</p>
+              <p><strong>Section 8 - Statutory Exemptions:</strong> Exemption for information affecting sovereignty, security, strategic interests, contempt of court, trade secrets, fiduciary records, and personal privacy.</p>
+              <p><strong>Section 19 - Appeals Mechanism:</strong> First Appeal to senior officer within 30 days; Second Appeal to Central/State Information Commission (CIC/SIC) within 90 days.</p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Gavel size={16} /> III. Advocate Practice Pointers & Courtroom Strategies
+            </h3>
+            <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-900 text-xs text-amber-900 dark:text-amber-200 space-y-1.5">
+              <p>• <strong>Drafting Precision:</strong> Frame RTI queries strictly asking for existing documents or certified records, avoiding requests for legal opinions or hypothetical answers.</p>
+              <p>• <strong>Overriding Public Interest (Sec 8(2)):</strong> If PIO claims commercial secrecy or fiduciary exemption, argue Section 8(2) where public interest in disclosure outweighs the harm to protected interests.</p>
+              <p>• <strong>Writ Remedy (Art 226/32):</strong> Non-compliance with CIC/SIC orders or systemic PIO defiance can be challenged directly in High Court via Article 226 writ petitions.</p>
+            </div>
+          </div>
         </div>
       );
     }
@@ -1142,19 +1199,63 @@ export const Documents: React.FC = () => {
                 Key Takeaways & Highlights (Consumer Protection Act 2019)
               </h4>
             </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
+                <span className="font-bold text-white">Act No. 35 of 2019</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Regulatory Body</span>
+                <span className="font-bold text-white">CCPA Regulatory Authority</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Pecuniary Limits</span>
+                <span className="font-bold text-white">District (₹1 Cr) / State (₹10 Cr)</span>
+              </div>
+              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">New Feature</span>
+                <span className="font-bold text-white">Product Liability & E-Commerce</span>
+              </div>
+            </div>
             <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>CCPA Regulator & Product Liability:</strong> Holds sellers strictly liable for defective products.</span>
+                <span><strong>Central Consumer Protection Authority (CCPA):</strong> Executive regulator with recall powers for defective goods and misleading advertisements.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>Strict Product Liability Action:</strong> Manufacturers, service providers, and sellers held liable for harm caused by defective products.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span><strong>E-Filing & Jurisdiction Convenience:</strong> Complaints can be filed electronically in District Commission where complainant resides.</span>
               </li>
             </ul>
           </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 35 of 2019. Replaced 1986 law to protect consumers against unfair trade practices and e-commerce frauds.
-          </p>
+
+          <div className="space-y-2">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <BookMarked size={16} /> I. Statutory Framework & Scope
+            </h3>
+            <p className="text-xs leading-relaxed text-justify">
+              Act No. 35 of 2019 replaced the legacy 1986 Act. Establishes CCPA regulator, regulates e-commerce transactions, mandates Product Liability, and establishes three-tier Consumer Dispute Redressal Commissions (District, State, National).
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+              <Scale size={16} /> II. Key Sections & Redressal Mechanism
+            </h3>
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+              <p><strong>Section 2(7) - Consumer Definition:</strong> Any person buying goods or availing services offline or online; excludes commercial resellers.</p>
+              <p><strong>Section 10 to 27 - CCPA Powers:</strong> Power to investigate consumer rights violations, order product recalls, and penalize misleading endorsements.</p>
+              <p><strong>Section 82 to 87 - Product Liability:</strong> Strict liability compensation claims against product manufacturers and sellers for manufacturing defects, design flaws, or failure to give usage warnings.</p>
+            </div>
+          </div>
         </div>
       );
     }
+
     if (titleLower.includes('information technology') || titleLower.includes('it act')) {
       return (
         <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
@@ -1278,19 +1379,53 @@ export const Documents: React.FC = () => {
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
             <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-              Key Takeaways & Highlights ({doc.title})
+              Key Takeaways & Statutory Highlights ({doc.title})
             </h4>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3 text-[11px]">
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Classification</span>
+              <span className="font-bold text-white">{doc.category || 'Statutory Act'}</span>
+            </div>
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Authority</span>
+              <span className="font-bold text-white">{doc.uploadedBy || 'Ministry of Law & Justice'}</span>
+            </div>
+            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
+              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Status</span>
+              <span className="font-bold text-white">Active Statutory Code</span>
+            </div>
           </div>
           <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
             <li className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span><strong>Summary:</strong> {doc.description || `Statutory enactment and provisions for ${doc.title}.`}</span>
+              <span><strong>Statutory Purpose:</strong> {doc.description || `Enacted statutory framework and legal provisions governing ${doc.title}.`}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <span><strong>Binding Authority:</strong> Applies across Indian jurisdiction under legislative and judicial authority.</span>
             </li>
           </ul>
         </div>
-        <p className="text-xs leading-relaxed text-justify">
-          Published under official authority of {doc.uploadedBy || 'Ministry of Law & Justice'}. Click "Download PDF Copy" to view certified copy.
-        </p>
+
+        <div className="space-y-2">
+          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+            <BookMarked size={16} /> I. Legislative Scope & Overview
+          </h3>
+          <p className="text-xs leading-relaxed text-justify">
+            {doc.description || `${doc.title} consolidates legal principles, rights, duties, procedural mandates, and statutory standards established under Indian law.`}
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
+            <Gavel size={16} /> II. Advocate Practice Guidance
+          </h3>
+          <div className="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-1 text-slate-700 dark:text-slate-300">
+            <p>• Refer to original gazette notifications and certified statutory text for courtroom pleadings.</p>
+            <p>• Verify recent amendments, high court precedent interpretations, and statutory rules framed under this Act.</p>
+          </div>
+        </div>
       </div>
     );
   };
