@@ -21,6 +21,7 @@ import * as courtFeeCtrl from './controllers/courtFeeController';
 import * as mappingCtrl from './controllers/sectionMappingController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
+import { seedLawsDatabase } from './seed/lawsSeedData';
 import { AuditLog, User, Advocate, Judgement, Law, Project } from './models/Schemas';
 
 const app = express();
@@ -48,6 +49,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 connectDB().then(() => {
   seedCourtFeeDatabase();
   seedSectionMappingDatabase();
+  seedLawsDatabase();
 });
 
 // Setup WebSocket Sockets
