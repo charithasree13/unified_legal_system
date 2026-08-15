@@ -585,8 +585,18 @@ export const Documents: React.FC = () => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        if (res.ok && data.laws && data.laws.length > 0) {
-          setLaws(data.laws);
+        if (res.ok && data.laws) {
+          const existingTitles = new Set(data.laws.map((l: any) => l.title.toLowerCase().trim()));
+          const missingDefaults = DEFAULT_BARE_ACTS.filter(d => !existingTitles.has(d.title.toLowerCase().trim()));
+          let combined = [...data.laws, ...missingDefaults];
+          if (search) {
+            const s = search.toLowerCase();
+            combined = combined.filter(l => l.title.toLowerCase().includes(s) || l.description?.toLowerCase().includes(s));
+          }
+          if (lawCategory) {
+            combined = combined.filter(l => l.category.toLowerCase() === lawCategory.toLowerCase());
+          }
+          setLaws(combined);
         } else {
           let filtered = [...DEFAULT_BARE_ACTS];
           if (search) {
