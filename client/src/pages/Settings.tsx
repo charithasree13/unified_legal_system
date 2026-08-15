@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings as SettingsIcon, ShieldCheck } from 'lucide-react';
+import { Settings as SettingsIcon } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 export const Settings: React.FC = () => {
@@ -68,26 +68,6 @@ export const Settings: React.FC = () => {
               <option value="30">30 Minutes</option>
               <option value="60">1 Hour</option>
             </select>
-          </div>
-
-          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-850 pt-4">
-            <div>
-              <h5 className="font-bold text-slate-850 dark:text-slate-150">End-to-End Key Escrows</h5>
-              <p className="text-[10px] text-slate-400 mt-0.5">Enforces client-side encryption key negotiation tags.</p>
-            </div>
-            <span className="text-[9px] bg-emerald-500/10 text-emerald-500 font-bold px-2 py-0.5 rounded uppercase">
-              Locked AES-256
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-850 pt-4">
-            <div>
-              <h5 className="font-bold text-slate-850 dark:text-slate-150">System Security Verification</h5>
-              <p className="text-[10px] text-slate-400 mt-0.5">All internal stack parameters & environment specs are protected.</p>
-            </div>
-            <span className="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold px-2.5 py-1 rounded flex items-center gap-1">
-              <ShieldCheck size={12} className="text-emerald-500" /> Hardened
-            </span>
           </div>
         </div>
 
