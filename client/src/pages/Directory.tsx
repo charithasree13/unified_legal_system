@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { 
   Users, Search, Filter, Star, Phone, Mail, Award, Landmark, MapPin, 
   Share2, ArrowUpDown, ShieldCheck, Download, Plus, X, AwardIcon, Edit3, Trash2,
@@ -9,6 +10,7 @@ import QRCode from 'qrcode';
 
 export const Directory: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
+  const location = useLocation();
   const [advocates, setAdvocates] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   
@@ -183,13 +185,22 @@ export const Directory: React.FC = () => {
     setShowAddForm(true);
   };
 
+  // Sync URL search query if passed from global navbar (e.g. /directory?search=Prasad)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const querySearch = urlParams.get('search');
+    if (querySearch !== null && querySearch !== search) {
+      setSearch(querySearch);
+    }
+  }, [location.search]);
+
   // Fetch directory list & localStorage favorites
   useEffect(() => {
     fetchDirectory();
     // Load bookmark list
     const favs = localStorage.getItem('legal_favorites');
     if (favs) setFavorites(JSON.parse(favs));
-  }, [token, sortBy, stateFilter, courtFilter, practiceArea, minExp]);
+  }, [token, sortBy, stateFilter, courtFilter, practiceArea, minExp, search]);
 
   const fetchDirectory = async () => {
     try {
@@ -339,20 +350,30 @@ export const Directory: React.FC = () => {
       
       {/* Search and Filters Bar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
+        <form onSubmit={handleSearchSubmit} className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           
-          {/* Main Search Input */}
-          <div className="relative flex-1">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+          {/* Main Search Input for Advocates */}
+          <div className="relative flex-1 min-w-[280px] md:min-w-[340px]">
+            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
               <Search size={16} />
             </span>
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by Name, City, Enrollment No, Specialization, Court..."
-              className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:border-primary"
+              placeholder="Search advocate by name, city, enrollment no, specialization..."
+              className="w-full pl-10 pr-9 py-2.5 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all text-slate-850 dark:text-slate-100 placeholder:text-slate-400"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                title="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
 
           {/* Action Row */}

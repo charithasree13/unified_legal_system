@@ -62,15 +62,21 @@ export const getAdvocates = async (req: Request, res: Response) => {
 
     // Global Search matching multiple fields
     if (search) {
-      const searchRegex = { $regex: String(search), $options: 'i' };
-      query.$or = [
-        { name: searchRegex },
-        { city: searchRegex },
-        { enrollmentNumber: searchRegex },
-        { enrollmentDate: searchRegex }, // Match year inside dates
-        { specialization: searchRegex },
-        { court: searchRegex }
-      ];
+      const sanitized = String(search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (sanitized) {
+        const searchRegex = { $regex: sanitized, $options: 'i' };
+        query.$or = [
+          { name: searchRegex },
+          { email: searchRegex },
+          { phone: searchRegex },
+          { city: searchRegex },
+          { state: searchRegex },
+          { enrollmentNumber: searchRegex },
+          { enrollmentDate: searchRegex },
+          { specialization: searchRegex },
+          { court: searchRegex }
+        ];
+      }
     }
 
     // Individual Filters
