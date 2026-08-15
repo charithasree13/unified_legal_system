@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
   Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2,
-  Gavel, BookOpen, CloudUpload, Filter
+  Gavel, BookOpen, CloudUpload, Filter, Edit3
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
@@ -13,7 +13,7 @@ export const Documents: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // For normal users (non-Admin & non-Advocate), Judgements & Laws/Bare Acts are hidden
+  // For normal users (non-Admin & non-Advocate), Judgements & Laws/Bare Acts are completely hidden
   const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
   if (isNormalUser) {
     return <Navigate to="/dashboard" replace />;
@@ -59,6 +59,15 @@ export const Documents: React.FC = () => {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(false);
   const [uploadError, setUploadError] = useState('');
+
+  // Admin Edit Bare Act Modal State
+  const [editingLaw, setEditingLaw] = useState<any | null>(null);
+  const [editLawTitle, setEditLawTitle] = useState('');
+  const [editLawCategory, setEditLawCategory] = useState('Act');
+  const [editLawDescription, setEditLawDescription] = useState('');
+  const [editLawFile, setEditLawFile] = useState<File | null>(null);
+  const [editLawProgress, setEditLawProgress] = useState(false);
+  const [editLawError, setEditLawError] = useState('');
 
   // Keep tab in sync with URL changes
   useEffect(() => {
@@ -241,6 +250,59 @@ export const Documents: React.FC = () => {
       setUploadError('Network error uploading file.');
     } finally {
       setUploadProgress(false);
+    }
+  };
+
+  const openEditLawModal = (law: any) => {
+    setEditingLaw(law);
+    setEditLawTitle(law.title || '');
+    setEditLawCategory(law.category || 'Act');
+    setEditLawDescription(law.description || '');
+    setEditLawFile(null);
+    setEditLawError('');
+  };
+
+  const handleUpdateLawSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingLaw || !editLawTitle) {
+      setEditLawError('Title is required.');
+      return;
+    }
+
+    setEditLawProgress(true);
+    setEditLawError('');
+
+    const formData = new FormData();
+    formData.append('title', editLawTitle);
+    formData.append('category', editLawCategory);
+    formData.append('description', editLawDescription);
+    if (editLawFile) {
+      formData.append('file', editLawFile);
+    }
+
+    try {
+      const res = await fetch(`/api/documents/laws/${editingLaw._id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setEditLawError(data.message || 'Failed to update Bare Act.');
+      } else {
+        addNotification(
+          'Bare Act Updated', 
+          `"${editLawTitle}" details updated successfully.`, 
+          'success'
+        );
+        setEditingLaw(null);
+        fetchDocuments();
+      }
+    } catch (err) {
+      setEditLawError('Network error updating Bare Act file.');
+    } finally {
+      setEditLawProgress(false);
     }
   };
 
@@ -670,13 +732,22 @@ export const Documents: React.FC = () => {
                     
                     <div className="flex items-center gap-2">
                       {user?.role === 'Admin' && (
-                        <button
-                          onClick={() => handleDeleteLaw(law._id)}
-                          className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-slate-200 dark:border-slate-800 text-red-500 hover:text-red-700 transition-all cursor-pointer"
-                          title="Delete Act/Law"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        <>
+                          <button
+                            onClick={() => openEditLawModal(law)}
+                            className="p-1.5 hover:bg-sky-50 dark:hover:bg-sky-950/30 rounded border border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 hover:text-sky-700 transition-all cursor-pointer"
+                            title="Edit Bare Act / Law"
+                          >
+                            <Edit3 size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLaw(law._id)}
+                            className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-slate-200 dark:border-slate-800 text-red-500 hover:text-red-700 transition-all cursor-pointer"
+                            title="Delete Act/Law"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </>
                       )}
                       <a
                         href={law.pdfUrl}
@@ -1027,6 +1098,96 @@ export const Documents: React.FC = () => {
                 >
                   <CloudUpload size={14} />
                   {uploadProgress ? 'Publishing PDF...' : `Publish ${uploadType === 'judgement' ? 'Judgement' : 'Statute'}`}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN EDIT BARE ACT MODAL */}
+      {editingLaw && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
+            <div className="h-14 bg-emerald-900 flex justify-between items-center px-6 text-white">
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                <Edit3 size={18} /> Edit Bare Act / Statute Details
+              </h3>
+              <button
+                onClick={() => setEditingLaw(null)}
+                className="p-1 hover:bg-white/10 rounded cursor-pointer text-white"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateLawSubmit} className="p-6 space-y-3.5 max-h-[75vh] overflow-y-auto">
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Act Title</label>
+                <input
+                  type="text"
+                  value={editLawTitle}
+                  onChange={(e) => setEditLawTitle(e.target.value)}
+                  required
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  placeholder="e.g. The Bharatiya Nyaya Sanhita, 2023"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Statutory Category</label>
+                <select
+                  value={editLawCategory}
+                  onChange={(e) => setEditLawCategory(e.target.value)}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                >
+                  <option>Act</option>
+                  <option>Rule</option>
+                  <option>Regulation</option>
+                  <option>Constitution Article</option>
+                  <option>Notification</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Summary / Description</label>
+                <textarea
+                  value={editLawDescription}
+                  onChange={(e) => setEditLawDescription(e.target.value)}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-24"
+                  placeholder="Brief description of the statutory act or Gazette notification..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Replace PDF File (Optional)</label>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setEditLawFile(e.target.files ? e.target.files[0] : null)}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                />
+                {editingLaw.fileName && (
+                  <p className="text-[10px] text-slate-400 mt-1">Current file: {editingLaw.fileName}</p>
+                )}
+              </div>
+
+              {editLawError && <p className="text-[11px] text-red-500 font-semibold mt-1">{editLawError}</p>}
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditingLaw(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLawProgress}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer"
+                >
+                  {editLawProgress ? 'Saving Changes...' : 'Save Changes'}
                 </button>
               </div>
             </form>

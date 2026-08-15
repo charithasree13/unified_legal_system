@@ -242,3 +242,44 @@ export const deleteLaw = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ success: false, message: error.message || 'Error deleting act/law.' });
   }
 };
+
+export const updateLaw = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, category, description } = req.body;
+
+    const doc = await Law.findById(id);
+    if (!doc) {
+      return res.status(404).json({ success: false, message: 'Act/Law profile not found.' });
+    }
+
+    const updateData: any = {};
+    if (title !== undefined) updateData.title = title;
+    if (category !== undefined) updateData.category = category;
+    if (description !== undefined) updateData.description = description;
+
+    if (req.file) {
+      updateData.pdfUrl = `/uploads/${req.file.filename}`;
+      updateData.fileName = req.file.originalname;
+    }
+
+    const updatedLaw = await Law.findByIdAndUpdate(id, updateData, { new: true });
+
+    await AuditLog.create({
+      userId: req.user?.id || 'system',
+      userName: req.user?.name || 'Administrator',
+      role: req.user?.role || 'Admin',
+      action: 'LAW_UPDATED',
+      ip: req.ip || '127.0.0.1',
+      details: `Updated Act/Law: ${doc.title}`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Act/Law updated successfully.',
+      law: updatedLaw
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message || 'Error updating act/law.' });
+  }
+};

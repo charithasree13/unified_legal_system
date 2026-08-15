@@ -88,6 +88,7 @@ app.get('/api/documents/judgements', authenticateToken, docCtrl.getJudgements);
 app.delete('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
 app.post('/api/documents/laws', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
 app.get('/api/documents/laws', authenticateToken, docCtrl.getLaws);
+app.put('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
 app.delete('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.deleteLaw);
 
 // CASE PROJECTS & COLLABORATION
