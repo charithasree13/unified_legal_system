@@ -1,21 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
-  Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2
+  Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2,
+  Gavel, BookOpen, CloudUpload, Filter
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 
 export const Documents: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // For normal users (non-Admin & non-Advocate), Judgements & Laws/Bare Acts are hidden
   const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
   if (isNormalUser) {
     return <Navigate to="/dashboard" replace />;
   }
-  const [tab, setTab] = useState<'judgement' | 'law'>('judgement');
+
+  // Detect active tab from current URL path
+  const getTabFromPath = () => {
+    if (location.pathname.includes('/laws')) return 'law';
+    return 'judgement';
+  };
+
+  const [tab, setTab] = useState<'judgement' | 'law'>(getTabFromPath());
   const [search, setSearch] = useState('');
   
   // Repos data lists
@@ -34,6 +44,35 @@ export const Documents: React.FC = () => {
   // Reader Modal States
   const [readingDoc, setReadingDoc] = useState<any | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
+
+  // Admin Upload Modal States
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadType, setUploadType] = useState<'judgement' | 'law'>('judgement');
+  const [uploadTitle, setUploadTitle] = useState('');
+  const [uploadCourt, setUploadCourt] = useState('Supreme Court of India');
+  const [uploadState, setUploadState] = useState('');
+  const [uploadJudge, setUploadJudge] = useState('');
+  const [uploadYear, setUploadYear] = useState(new Date().getFullYear());
+  const [uploadSubject, setUploadSubject] = useState('');
+  const [uploadKeywords, setUploadKeywords] = useState('');
+  const [uploadCategory, setUploadCategory] = useState('Act');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  // Keep tab in sync with URL changes
+  useEffect(() => {
+    const currentTabFromPath = getTabFromPath();
+    if (currentTabFromPath !== tab) {
+      setTab(currentTabFromPath);
+    }
+  }, [location.pathname]);
+
+  const handleTabChange = (newTab: 'judgement' | 'law') => {
+    setTab(newTab);
+    setSearch('');
+    navigate(newTab === 'judgement' ? '/judgements' : '/laws', { replace: true });
+  };
 
   useEffect(() => {
     fetchDocuments();
@@ -144,38 +183,190 @@ export const Documents: React.FC = () => {
     }
   };
 
+  const handleUploadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadFile || !uploadTitle) {
+      setUploadError('Title and PDF document file are required.');
+      return;
+    }
+
+    setUploadProgress(true);
+    setUploadError('');
+
+    const formData = new FormData();
+    formData.append('file', uploadFile);
+    formData.append('title', uploadTitle);
+
+    let endpoint = '';
+    if (uploadType === 'judgement') {
+      endpoint = '/api/documents/judgements';
+      formData.append('court', uploadCourt);
+      if (uploadState) formData.append('state', uploadState);
+      formData.append('judge', uploadJudge);
+      formData.append('year', String(uploadYear));
+      formData.append('subject', uploadSubject);
+      formData.append('keywords', uploadKeywords);
+    } else {
+      endpoint = '/api/documents/laws';
+      formData.append('category', uploadCategory);
+      formData.append('description', uploadSubject);
+    }
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setUploadError(data.message || 'Failed to upload document.');
+      } else {
+        addNotification(
+          'Document Published', 
+          `${uploadType === 'judgement' ? 'Judgement' : 'Bare Act / Law'} uploaded successfully.`, 
+          'success'
+        );
+        setShowUploadModal(false);
+        setUploadTitle('');
+        setUploadState('');
+        setUploadJudge('');
+        setUploadSubject('');
+        setUploadKeywords('');
+        setUploadFile(null);
+        fetchDocuments();
+      }
+    } catch (err) {
+      setUploadError('Network error uploading file.');
+    } finally {
+      setUploadProgress(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       
-      {/* Top Filter and Search Form */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+      {/* Top Tab Selector Switcher */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-sm">
+        <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl w-full sm:w-auto">
+          <button
+            onClick={() => handleTabChange('judgement')}
+            className={`flex-1 sm:flex-none px-5 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+              tab === 'judgement' 
+                ? 'bg-indigo-600 text-white shadow-md' 
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Gavel size={15} />
+            Judgements Repository
+          </button>
           
-          {/* Tab togglers */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => { setTab('judgement'); setSearch(''); }}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                tab === 'judgement' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <Scale size={14} /> Judgements Repository
-            </button>
-            <button
-              onClick={() => { setTab('law'); setSearch(''); }}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                tab === 'law' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <FileText size={14} /> Bare Acts & Statutes
-            </button>
-          </div>
-
-          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider hidden md:block">
-            Secure Legal Library
-          </h2>
+          <button
+            onClick={() => handleTabChange('law')}
+            className={`flex-1 sm:flex-none px-5 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+              tab === 'law' 
+                ? 'bg-emerald-600 text-white shadow-md' 
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <BookOpen size={15} />
+            Bare Acts & Statutes
+          </button>
         </div>
 
+        <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wider uppercase hidden md:inline-block">
+          {tab === 'judgement' ? 'Case Precedents & Rulings' : 'Legislative Code & Statutory Acts'}
+        </span>
+      </div>
+
+      {/* DISTINCT SECTION HERO LANDING BANNERS */}
+      {tab === 'judgement' ? (
+        /* Judgements Hero Banner */
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/20 rounded-2xl p-6 text-white shadow-xl animate-fade-in">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Gavel size={12} className="text-indigo-400" />
+                  Case Rulings & Precedents
+                </span>
+                <span className="bg-white/10 text-white/70 text-[10px] font-medium px-2 py-0.5 rounded-full">
+                  {judgements.length} Decisions Catalogued
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-extrabold font-sans tracking-tight text-white">
+                Judgements & Precedents Repository
+              </h1>
+              <p className="text-xs md:text-sm text-indigo-100/80 mt-1.5 max-w-2xl leading-relaxed">
+                Search, inspect, and analyze landmark court verdicts, bench opinions, and case precedents from the Supreme Court of India, High Courts & Subordinate Tribunals.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 mt-4 text-[11px]">
+                {['Supreme Court', 'High Courts', 'Civil / Magistrate Courts', 'Tribunals & DRT'].map((bench, idx) => (
+                  <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-indigo-200/90 font-medium flex items-center gap-1">
+                    <Landmark size={11} className="text-indigo-400" /> {bench}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {user?.role === 'Admin' && (
+              <button
+                onClick={() => { setUploadType('judgement'); setShowUploadModal(true); }}
+                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2 cursor-pointer flex-shrink-0 border border-indigo-400/30"
+              >
+                <CloudUpload size={16} /> + Upload Judgement
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        /* Laws & Acts Hero Banner */
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 rounded-2xl p-6 text-white shadow-xl animate-fade-in">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <BookOpen size={12} className="text-emerald-400" />
+                  Statutory Library & Bare Code
+                </span>
+                <span className="bg-white/10 text-white/70 text-[10px] font-medium px-2 py-0.5 rounded-full">
+                  {laws.length} Statutes Indexed
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-extrabold font-sans tracking-tight text-white">
+                Bare Acts & Statutory Code
+              </h1>
+              <p className="text-xs md:text-sm text-emerald-100/80 mt-1.5 max-w-2xl leading-relaxed">
+                Access official Central & State Statutory Acts, Constitutional Articles, Legislative Rules, Amendments, Gazette Regulations & Government Notifications.
+              </p>
+
+              <div className="flex flex-wrap gap-2 mt-4 text-[11px]">
+                {['Bare Acts', 'Constitutional Articles', 'Statutory Rules', 'Gazette Notifications', 'Regulations'].map((cat, idx) => (
+                  <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-emerald-200/90 font-medium flex items-center gap-1">
+                    <FileText size={11} className="text-emerald-400" /> {cat}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {user?.role === 'Admin' && (
+              <button
+                onClick={() => { setUploadType('law'); setShowUploadModal(true); }}
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg hover:shadow-emerald-500/25 flex items-center gap-2 cursor-pointer flex-shrink-0 border border-emerald-400/30"
+              >
+                <CloudUpload size={16} /> + Upload Bare Act
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Filter and Search Form */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
         <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
           
           {/* Global query input */}
@@ -189,8 +380,8 @@ export const Documents: React.FC = () => {
               onChange={(e) => setSearch(e.target.value)}
               placeholder={
                 tab === 'judgement' 
-                  ? "Search judgements by Title, Subject, Judge..." 
-                  : "Search Bare Acts, Constitutional Articles, Rules..."
+                  ? "Search judgements by Title, Subject, Judge name..." 
+                  : "Search Bare Acts, Constitutional Articles, Rules & Regulations..."
               }
               className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:border-primary"
             />
@@ -285,7 +476,7 @@ export const Documents: React.FC = () => {
                 onChange={(e) => setLawCategory(e.target.value)}
                 className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
               >
-                <option value="">Category (All)</option>
+                <option value="">Category (All Statutory)</option>
                 <option>Act</option>
                 <option>Rule</option>
                 <option>Regulation</option>
@@ -296,9 +487,12 @@ export const Documents: React.FC = () => {
 
             <button
               type="submit"
-              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer"
+              className={`px-4 py-2 ${
+                tab === 'judgement' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700'
+              } text-white rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer flex items-center gap-1.5`}
             >
-              Search Library
+              <Filter size={13} />
+              Filter Results
             </button>
           </div>
 
@@ -308,17 +502,25 @@ export const Documents: React.FC = () => {
       {/* Library Grid */}
       {loading ? (
         <div className="py-12 flex justify-center">
-          <LegalTriviaLoader loadingText="Fetching Legal Database Records & Bare Acts..." />
+          <LegalTriviaLoader loadingText={tab === 'judgement' ? "Fetching Judicial Verdicts & Bench Rulings..." : "Fetching Bare Acts & Statutory Codes..."} />
         </div>
       ) : tab === 'judgement' ? (
         // Judgements Grid List
         judgements.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 max-w-lg mx-auto">
-            <Scale size={48} className="mx-auto text-slate-350 mb-3 animate-pulse-slow" />
-            <h4 className="font-bold text-sm">Judgement Database Empty</h4>
+            <Gavel size={48} className="mx-auto text-indigo-400/60 mb-3 animate-pulse-slow" />
+            <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">Judgements Database Empty</h4>
             <p className="text-xs text-slate-400 mt-1">
-              Admin roles upload litigation outcomes here. Verify database queries if active records exist.
+              Admin roles upload litigation outcomes and court judgements here. Check back or upload a new record.
             </p>
+            {user?.role === 'Admin' && (
+              <button
+                onClick={() => { setUploadType('judgement'); setShowUploadModal(true); }}
+                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <CloudUpload size={14} /> Upload First Judgement
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
@@ -327,17 +529,17 @@ export const Documents: React.FC = () => {
               return (
                 <div 
                   key={jud._id} 
-                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 hover:border-slate-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 hover:border-indigo-400/50 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex justify-between items-start gap-4">
-                      <span className="text-[9px] bg-primary/10 text-primary dark:bg-sky-400/20 dark:text-sky-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                        Judgement
+                      <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/20 dark:text-indigo-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1">
+                        <Gavel size={10} /> Judgement
                       </span>
                       <button 
                         onClick={() => handleToggleBookmark(jud._id, jud.title)}
                         className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors ${
-                          isBookmarked ? 'text-primary dark:text-sky-400' : 'text-slate-300'
+                          isBookmarked ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-300'
                         }`}
                       >
                         {isBookmarked ? <BookmarkCheck size={18} className="text-emerald-500" /> : <Bookmark size={18} />}
@@ -349,8 +551,8 @@ export const Documents: React.FC = () => {
                     </h3>
                     
                     <div className="mt-3.5 space-y-1.5 text-xs text-slate-400">
-                      <p className="flex items-center gap-1.5 font-semibold text-slate-500">
-                        <Landmark size={13} /> {jud.court}{jud.state ? ` - ${jud.state}` : ''}
+                      <p className="flex items-center gap-1.5 font-semibold text-slate-600 dark:text-slate-300">
+                        <Landmark size={13} className="text-indigo-500" /> {jud.court}{jud.state ? ` - ${jud.state}` : ''}
                       </p>
                       <p className="flex items-center gap-1.5">
                         <Calendar size={13} /> Decision Year: {jud.year}
@@ -364,7 +566,7 @@ export const Documents: React.FC = () => {
                     {jud.keywords && jud.keywords.length > 0 && (
                       <div className="flex gap-1.5 flex-wrap mt-4">
                         {jud.keywords.map((k: string, idx: number) => (
-                          <span key={idx} className="text-[9px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 font-semibold flex items-center gap-0.5">
+                          <span key={idx} className="text-[9px] bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/40 px-2 py-0.5 rounded font-semibold flex items-center gap-0.5">
                             <Tag size={8} /> {k}
                           </span>
                         ))}
@@ -375,7 +577,7 @@ export const Documents: React.FC = () => {
                   <div className="flex justify-between items-center mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850">
                     <button
                       onClick={() => setReadingDoc(jud)}
-                      className="text-xs text-primary dark:text-sky-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       Open Case Reader <ExternalLink size={12} />
                     </button>
@@ -409,11 +611,19 @@ export const Documents: React.FC = () => {
         // Laws / Acts Grid List
         laws.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 max-w-lg mx-auto">
-            <FileText size={48} className="mx-auto text-slate-350 mb-3 animate-pulse-slow" />
-            <h4 className="font-bold text-sm">Statutory Library Empty</h4>
+            <BookOpen size={48} className="mx-auto text-emerald-400/60 mb-3 animate-pulse-slow" />
+            <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">Statutory Library Empty</h4>
             <p className="text-xs text-slate-400 mt-1">
-              Admin roles upload Bare Acts, Articles, and Regulations. Check filter classifications.
+              Admin roles upload Bare Acts, Articles, and Regulations here. Check back or upload a new statute.
             </p>
+            {user?.role === 'Admin' && (
+              <button
+                onClick={() => { setUploadType('law'); setShowUploadModal(true); }}
+                className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <CloudUpload size={14} /> Upload First Bare Act
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
@@ -422,17 +632,17 @@ export const Documents: React.FC = () => {
               return (
                 <div 
                   key={law._id} 
-                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between"
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-emerald-400/50 transition-all flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex justify-between items-start gap-4">
-                      <span className="text-[9px] bg-secondary/15 text-[#1e293b] dark:text-sky-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                        {law.category}
+                      <span className="text-[9px] bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/20 dark:text-emerald-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1">
+                        <BookOpen size={10} /> {law.category}
                       </span>
                       <button 
                         onClick={() => handleToggleBookmark(law._id, law.title)}
                         className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors ${
-                          isBookmarked ? 'text-primary dark:text-sky-400' : 'text-slate-300'
+                          isBookmarked ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-300'
                         }`}
                       >
                         {isBookmarked ? <BookmarkCheck size={18} className="text-emerald-500" /> : <Bookmark size={18} />}
@@ -444,7 +654,7 @@ export const Documents: React.FC = () => {
                     </h3>
                     
                     {law.description && (
-                      <p className="text-[11px] text-slate-400 mt-2 text-justify line-clamp-3">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 text-justify line-clamp-3 leading-relaxed">
                         {law.description}
                       </p>
                     )}
@@ -453,7 +663,7 @@ export const Documents: React.FC = () => {
                   <div className="flex justify-between items-center mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850">
                     <button
                       onClick={() => setReadingDoc(law)}
-                      className="text-xs text-primary dark:text-sky-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       Read bare text <ExternalLink size={12} />
                     </button>
@@ -485,15 +695,15 @@ export const Documents: React.FC = () => {
         )
       )}
 
-      {/* Case Reader/Bare-act Document PDF Simulator Viewer Modal */}
+      {/* Case Reader / Bare-act Document Viewer Modal */}
       {readingDoc && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] overflow-hidden flex flex-col justify-between animate-slide-up">
             
             {/* Top Toolbar */}
-            <div className="h-14 bg-primary dark:bg-slate-850 text-white flex items-center justify-between px-6">
+            <div className={`h-14 ${readingDoc.court ? 'bg-indigo-900' : 'bg-emerald-900'} text-white flex items-center justify-between px-6`}>
               <h3 className="font-bold text-xs truncate max-w-lg flex items-center gap-2">
-                <FileText size={16} />
+                {readingDoc.court ? <Gavel size={16} /> : <BookOpen size={16} />}
                 {readingDoc.title}
               </h3>
               
@@ -545,7 +755,7 @@ export const Documents: React.FC = () => {
                     {readingDoc.title}
                   </h2>
                   <p className="text-[10px] text-slate-400 mt-2 font-sans font-semibold">
-                    {readingDoc.court || readingDoc.category} | DECIDED ON: {readingDoc.year || '2026'}
+                    {readingDoc.court || readingDoc.category} | DECIDED / ENACTED: {readingDoc.year || '2026'}
                   </p>
                   {readingDoc.judge && (
                     <p className="text-[10px] text-slate-400 font-sans mt-0.5">
@@ -572,9 +782,9 @@ export const Documents: React.FC = () => {
                     4. The statutory guidelines define the timelines for land evaluation and court fee assessments. As confirmed by the judicial stamp office, the fee deposited matches the suit value calculation as certified under state-specific schedules.
                   </p>
                   
-                  <p className="font-bold text-xs uppercase font-sans pt-4">III. FINAL JUDICIAL ORDER</p>
+                  <p className="font-bold text-xs uppercase font-sans pt-4">III. FINAL ORDER & ENACTMENT</p>
                   <p>
-                    5. Accordingly, the petition is allowed. The order of the conversion tribunal is upheld, and the respondents are directed to execute the registry files within a period of six weeks from today. Parties shall bear their own litigation costs. Ordered accordingly.
+                    5. Accordingly, the statutory provisions herein shall be strictly enforced across relevant municipal and judicial jurisdictions. All subordinate officers are directed to adhere to these statutory rules. Ordered accordingly.
                   </p>
                 </div>
 
@@ -591,12 +801,235 @@ export const Documents: React.FC = () => {
               <a
                 href={readingDoc.pdfUrl}
                 download
-                className="px-4 py-1.5 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
+                className={`px-4 py-1.5 ${readingDoc.court ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-sm`}
               >
                 <Download size={12} /> Download PDF Copy
               </a>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN DOCUMENT UPLOAD MODAL */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
+            <div className={`h-14 ${uploadType === 'judgement' ? 'bg-indigo-900' : 'bg-emerald-900'} flex justify-between items-center px-6 text-white`}>
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                {uploadType === 'judgement' ? <Gavel size={18} /> : <BookOpen size={18} />}
+                Upload {uploadType === 'judgement' ? 'Judgement Verdict PDF' : 'Bare Act / Statute PDF'}
+              </h3>
+              <button
+                onClick={() => setShowUploadModal(false)}
+                className="p-1 hover:bg-white/10 rounded cursor-pointer text-white"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUploadSubmit} className="p-6 space-y-3.5 max-h-[75vh] overflow-y-auto">
+              {/* Type Switcher */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setUploadType('judgement')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
+                    uploadType === 'judgement' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  Judgement PDF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUploadType('law')}
+                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
+                    uploadType === 'law' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  Bare Act / Statute PDF
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Document Title</label>
+                <input
+                  type="text"
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  required
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  placeholder={uploadType === 'judgement' ? "e.g. State of Karnataka vs. Ramesh Rao" : "e.g. Code of Civil Procedure, 1908"}
+                />
+              </div>
+
+              {uploadType === 'judgement' ? (
+                <>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Court Type</label>
+                      <select
+                        value={uploadCourt}
+                        onChange={(e) => setUploadCourt(e.target.value)}
+                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                      >
+                        <option>Supreme Court of India</option>
+                        <option>High Court</option>
+                        <option>Senior civil judges court</option>
+                        <option>Junior civil Judges court</option>
+                        <option>Judicial magistrate of 1st class</option>
+                        <option>Consumers forum</option>
+                        <option>DRT</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">State / UT</label>
+                      <select
+                        value={uploadState}
+                        onChange={(e) => setUploadState(e.target.value)}
+                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                      >
+                        <option value="">National / Central</option>
+                        <optgroup label="States">
+                          <option>Andhra Pradesh</option>
+                          <option>Arunachal Pradesh</option>
+                          <option>Assam</option>
+                          <option>Bihar</option>
+                          <option>Chhattisgarh</option>
+                          <option>Goa</option>
+                          <option>Gujarat</option>
+                          <option>Haryana</option>
+                          <option>Himachal Pradesh</option>
+                          <option>Jharkhand</option>
+                          <option>Karnataka</option>
+                          <option>Kerala</option>
+                          <option>Madhya Pradesh</option>
+                          <option>Maharashtra</option>
+                          <option>Manipur</option>
+                          <option>Meghalaya</option>
+                          <option>Mizoram</option>
+                          <option>Nagaland</option>
+                          <option>Odisha</option>
+                          <option>Punjab</option>
+                          <option>Rajasthan</option>
+                          <option>Sikkim</option>
+                          <option>Tamil Nadu</option>
+                          <option>Telangana</option>
+                          <option>Tripura</option>
+                          <option>Uttarakhand</option>
+                          <option>Uttar Pradesh</option>
+                          <option>West Bengal</option>
+                        </optgroup>
+                        <optgroup label="Union Territories">
+                          <option>Andaman and Nicobar Islands</option>
+                          <option>Chandigarh</option>
+                          <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                          <option>Delhi</option>
+                          <option>Jammu and Kashmir</option>
+                          <option>Ladakh</option>
+                          <option>Lakshadweep</option>
+                          <option>Puducherry</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Year</label>
+                      <input
+                        type="number"
+                        value={uploadYear}
+                        onChange={(e) => setUploadYear(Number(e.target.value))}
+                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Judge(s)</label>
+                      <input
+                        type="text"
+                        value={uploadJudge}
+                        onChange={(e) => setUploadJudge(e.target.value)}
+                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                        placeholder="e.g. Justice D.Y. Chandrachud"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Subject Area</label>
+                      <input
+                        type="text"
+                        value={uploadSubject}
+                        onChange={(e) => setUploadSubject(e.target.value)}
+                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                        placeholder="e.g. Constitutional Law"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Keywords (comma sep)</label>
+                    <input
+                      type="text"
+                      value={uploadKeywords}
+                      onChange={(e) => setUploadKeywords(e.target.value)}
+                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                      placeholder="writ petition, fundamental rights"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Category</label>
+                    <select
+                      value={uploadCategory}
+                      onChange={(e) => setUploadCategory(e.target.value)}
+                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    >
+                      <option>Act</option>
+                      <option>Rule</option>
+                      <option>Regulation</option>
+                      <option>Constitution Article</option>
+                      <option>Notification</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Summary / Description</label>
+                    <textarea
+                      value={uploadSubject}
+                      onChange={(e) => setUploadSubject(e.target.value)}
+                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-20"
+                      placeholder="Brief description of the Bare Act or statutory notification..."
+                    />
+                  </div>
+                </>
+              )}
+
+              <div>
+                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Choose PDF Document File</label>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setUploadFile(e.target.files ? e.target.files[0] : null)}
+                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                />
+              </div>
+
+              {uploadError && <p className="text-[11px] text-red-500 font-semibold mt-1">{uploadError}</p>}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={uploadProgress}
+                  className={`w-full py-2.5 ${
+                    uploadType === 'judgement' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-emerald-600 hover:bg-emerald-500'
+                  } text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer flex items-center justify-center gap-1.5`}
+                >
+                  <CloudUpload size={14} />
+                  {uploadProgress ? 'Publishing PDF...' : `Publish ${uploadType === 'judgement' ? 'Judgement' : 'Statute'}`}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
