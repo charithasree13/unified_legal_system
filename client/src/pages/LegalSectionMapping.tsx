@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  BookOpen, Search, Filter, ShieldCheck, AlertTriangle, ExternalLink, 
-  Plus, Edit3, Trash2, Scale, ArrowRight, CheckCircle2, HelpCircle, RefreshCw
+  BookOpen, Search, ShieldCheck, Scale, ArrowRight, CheckCircle2, 
+  HelpCircle, RefreshCw, Filter, Sparkles, FileText, ChevronDown, Check
 } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
 
 interface SectionMapping {
   _id: string;
@@ -17,54 +16,43 @@ interface SectionMapping {
   mappingStatus: 'VERIFIED' | 'NEEDS_REVIEW';
   sourceReference: string;
   factualNotes?: string;
-  createdBy?: string;
-  createdAt?: string;
 }
 
 export const LegalSectionMapping: React.FC = () => {
-  const { token, user, addNotification } = useAuthStore();
-
   const [mappings, setMappings] = useState<SectionMapping[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Filters & Search
+  // Selected legacy section state
+  const [selectedSectionId, setSelectedSectionId] = useState<string>('');
+
+  // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [actFilter, setActFilter] = useState('ALL');
   const [typeFilter, setTypeFilter] = useState('ALL');
-  const [statusFilter, setStatusFilter] = useState('ALL');
 
-  // Modal State
-  const [showModal, setShowModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<SectionMapping | null>(null);
-  const [formData, setFormData] = useState({
-    legacyAct: 'Indian Penal Code, 1860 (IPC)',
-    legacySection: '',
-    legacyTitle: '',
-    newAct: 'Bharatiya Nyaya Sanhita, 2023 (BNS)',
-    newSection: '',
-    newTitle: '',
-    mappingType: 'DIRECT_REPLACEMENT' as SectionMapping['mappingType'],
-    mappingStatus: 'VERIFIED' as SectionMapping['mappingStatus'],
-    sourceReference: 'https://www.centurylawfirm.in/blog/legal-code-comparison-tool/',
-    factualNotes: ''
-  });
-  const [formErr, setFormErr] = useState('');
-
-  // Fetch section mappings
+  // Fetch built-in mappings
   const fetchMappings = async () => {
     setLoading(true);
     setError('');
     try {
       const response = await fetch('/api/section-mappings');
       const data = await response.json();
-      if (data.success) {
-        setMappings(data.data || []);
+      if (data.success && data.data) {
+        setMappings(data.data);
+        // Default select IPC 354 if available, or first mapping item
+        const defaultItem = data.data.find((m: SectionMapping) => 
+          m.legacySection.includes('354') || m.legacySection.includes('302')
+        ) || data.data[0];
+
+        if (defaultItem) {
+          setSelectedSectionId(defaultItem._id);
+        }
       } else {
-        setError(data.message || 'Failed to load section mappings.');
+        setError(data.message || 'Failed to load statutory section mappings.');
       }
     } catch (err) {
-      setError('Network error fetching section mappings.');
+      setError('Network error loading built-in statutory mappings.');
     } finally {
       setLoading(false);
     }
@@ -74,31 +62,29 @@ export const LegalSectionMapping: React.FC = () => {
     fetchMappings();
   }, []);
 
-  // Filtered Mappings
+  // Filtered list based on search and filters
   const filteredMappings = mappings.filter((item) => {
-    // Act Filter
     if (actFilter !== 'ALL') {
       const matchesLegacy = item.legacyAct.toLowerCase().includes(actFilter.toLowerCase());
       const matchesNew = item.newAct.toLowerCase().includes(actFilter.toLowerCase());
       if (!matchesLegacy && !matchesNew) return false;
     }
 
-    // Type Filter
     if (typeFilter !== 'ALL' && item.mappingType !== typeFilter) {
       return false;
     }
 
-    // Status Filter
-    if (statusFilter !== 'ALL' && item.mappingStatus !== statusFilter) {
-      return false;
-    }
-
-    // Search Query
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
+      const cleanQ = q.replace(/^(section|sec\.?)\s*/i, '');
+      const legacySecClean = item.legacySection.toLowerCase().replace(/^(section|sec\.?)\s*/i, '');
+      const newSecClean = item.newSection.toLowerCase().replace(/^(section|sec\.?)\s*/i, '');
+
       const match = 
         item.legacySection.toLowerCase().includes(q) ||
         item.newSection.toLowerCase().includes(q) ||
+        legacySecClean.includes(cleanQ) ||
+        newSecClean.includes(cleanQ) ||
         item.legacyTitle.toLowerCase().includes(q) ||
         item.newTitle.toLowerCase().includes(q) ||
         item.legacyAct.toLowerCase().includes(q) ||
@@ -110,110 +96,10 @@ export const LegalSectionMapping: React.FC = () => {
     return true;
   });
 
-  // Open Modal for Creating/Editing
-  const openModal = (item?: SectionMapping) => {
-    setFormErr('');
-    if (item) {
-      setEditingItem(item);
-      setFormData({
-        legacyAct: item.legacyAct,
-        legacySection: item.legacySection,
-        legacyTitle: item.legacyTitle,
-        newAct: item.newAct,
-        newSection: item.newSection,
-        newTitle: item.newTitle,
-        mappingType: item.mappingType,
-        mappingStatus: item.mappingStatus,
-        sourceReference: item.sourceReference,
-        factualNotes: item.factualNotes || ''
-      });
-    } else {
-      setEditingItem(null);
-      setFormData({
-        legacyAct: 'Indian Penal Code, 1860 (IPC)',
-        legacySection: '',
-        legacyTitle: '',
-        newAct: 'Bharatiya Nyaya Sanhita, 2023 (BNS)',
-        newSection: '',
-        newTitle: '',
-        mappingType: 'DIRECT_REPLACEMENT',
-        mappingStatus: 'VERIFIED',
-        sourceReference: 'https://www.centurylawfirm.in/blog/legal-code-comparison-tool/',
-        factualNotes: ''
-      });
-    }
-    setShowModal(true);
-  };
+  // Currently selected item for focus card
+  const selectedMapping = mappings.find(m => m._id === selectedSectionId) || filteredMappings[0] || mappings[0];
 
-  // Submit Mapping Form
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormErr('');
-
-    if (!formData.legacySection.trim() || !formData.newSection.trim() || !formData.legacyTitle.trim() || !formData.newTitle.trim()) {
-      setFormErr('Please fill in all section numbers and provision titles.');
-      return;
-    }
-    if (!formData.sourceReference.trim()) {
-      setFormErr('Source reference URL is required for legal accuracy verification.');
-      return;
-    }
-
-    try {
-      const url = editingItem ? `/api/section-mappings/${editingItem._id}` : '/api/section-mappings';
-      const method = editingItem ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const resData = await response.json();
-      if (resData.success) {
-        addNotification(
-          editingItem ? 'Mapping Updated' : 'Mapping Added',
-          `${formData.legacySection} -> ${formData.newSection} mapping saved successfully.`,
-          'success'
-        );
-        setShowModal(false);
-        fetchMappings();
-      } else {
-        setFormErr(resData.message || 'Error saving section mapping.');
-      }
-    } catch (err) {
-      setFormErr('Failed to communicate with server.');
-    }
-  };
-
-  // Delete Mapping
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this section mapping?')) return;
-    try {
-      const response = await fetch(`/api/section-mappings/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        addNotification(
-          'Mapping Deleted',
-          'Section mapping record was removed.',
-          'warning'
-        );
-        fetchMappings();
-      }
-    } catch (err) {
-      alert('Failed to delete section mapping.');
-    }
-  };
-
-  // Render Badge for Mapping Type
+  // Helper for rendering classification badges
   const renderMappingTypeBadge = (type: SectionMapping['mappingType']) => {
     switch (type) {
       case 'DIRECT_REPLACEMENT':
@@ -252,57 +138,78 @@ export const LegalSectionMapping: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-primary to-sky-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      {/* Top Banner Header */}
+      <div className="bg-gradient-to-r from-primary via-slate-900 to-sky-950 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
-            <span className="bg-secondary/20 text-secondary p-2 rounded-xl backdrop-blur-sm border border-secondary/30">
+            <span className="bg-sky-500/20 text-sky-300 p-2 rounded-xl backdrop-blur-sm border border-sky-400/30">
               <BookOpen size={24} />
             </span>
-            <span className="text-xs uppercase font-bold tracking-widest text-sky-200">Legal Code Transition Engine</span>
+            <span className="text-xs uppercase font-bold tracking-widest text-sky-200">Built-in Legal Transition Engine</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Statutory Legal Section Mapping System
           </h1>
           <p className="text-sm sm:text-base text-slate-200 mt-2 max-w-3xl leading-relaxed">
-            Factual cross-reference mapping interface between legacy statutes (IPC, CrPC, IEA) and new criminal codes (BNS, BNSS, BSA). Designed for statutory accuracy and verified legal references.
+            Select any legacy Indian statute section (IPC, CrPC, IEA) to instantly view its corresponding new criminal code provision (BNS, BNSS, BSA) and factual statutory transition details.
           </p>
         </div>
       </div>
 
-      {/* Control Toolbar: Search & Filters */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      {/* Control Bar: Section Quick Selector & Search */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
           
-          {/* Search Box */}
-          <div className="relative flex-1">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by section (e.g. Section 302, Section 103), title, or keywords..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-sky-400 transition"
-            />
+          {/* Built-in Provision Quick Dropdown Selector */}
+          <div>
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-500" /> Select Legacy Statutory Provision (Built-in)
+            </label>
+            <select
+              value={selectedSectionId}
+              onChange={(e) => setSelectedSectionId(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-sky-400 transition"
+            >
+              {mappings.map((m) => (
+                <option key={m._id} value={m._id}>
+                  {m.legacyAct.split(' ')[0]} {m.legacySection}: {m.legacyTitle}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3">
-            {(user?.role === 'Admin' || user?.role === 'Advocate') && (
-              <button
-                onClick={() => openModal()}
-                className="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-sm font-semibold shadow-sm transition cursor-pointer"
-              >
-                <Plus size={16} /> Add Section Mapping
-              </button>
-            )}
+          {/* Search Box */}
+          <div>
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+              <Search size={14} className="text-primary dark:text-sky-400" /> Search Section Number or Keywords
+            </label>
+            <div className="relative">
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  // Auto select first match if found
+                  const q = e.target.value.toLowerCase().trim();
+                  if (q) {
+                    const match = mappings.find(m => 
+                      m.legacySection.toLowerCase().includes(q) || 
+                      m.newSection.toLowerCase().includes(q)
+                    );
+                    if (match) setSelectedSectionId(match._id);
+                  }
+                }}
+                placeholder="Search section number (e.g. 354, 302, 420, 154, 65B)..."
+                className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-sky-400 transition"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Filters Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-          
-          {/* Act Filter */}
+        {/* Filters Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <div>
             <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">
               Filter by Statute Pair
@@ -319,7 +226,6 @@ export const LegalSectionMapping: React.FC = () => {
             </select>
           </div>
 
-          {/* Mapping Type Filter */}
           <div>
             <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">
               Mapping Classification
@@ -337,337 +243,149 @@ export const LegalSectionMapping: React.FC = () => {
               <option value="NO_DIRECT_EQUIVALENT">No Direct Equivalent</option>
             </select>
           </div>
-
-          {/* Verification Status Filter */}
-          <div>
-            <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">
-              Verification Status
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="VERIFIED">Verified Mappings</option>
-              <option value="NEEDS_REVIEW">Needs Review / Unverified</option>
-            </select>
-          </div>
         </div>
       </div>
 
-      {/* Main Results Count */}
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
-        <span>Showing <strong className="text-slate-800 dark:text-slate-200">{filteredMappings.length}</strong> statutory section mappings</span>
-        {statusFilter === 'NEEDS_REVIEW' && (
-          <span className="text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
-            <AlertTriangle size={14} /> Unverified items displayed for review purposes only
-          </span>
+      {/* Selected Provision Detailed Highlight Card */}
+      {selectedMapping && (
+        <div className="bg-gradient-to-b from-sky-50/90 to-white dark:from-slate-900 dark:to-slate-950 rounded-2xl p-6 sm:p-8 border-2 border-sky-300 dark:border-sky-800 shadow-xl space-y-6 animate-in fade-in zoom-in-95">
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-sky-200/80 dark:border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Selected Legal Provision
+              </span>
+              {renderMappingTypeBadge(selectedMapping.mappingType)}
+            </div>
+            
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <ShieldCheck size={14} /> Authoritative Statutory Mapping
+            </span>
+          </div>
+
+          {/* Interactive Side-by-Side Comparison Box */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Legacy Section Details */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  Legacy Provision (Old Section)
+                </span>
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded">
+                  {selectedMapping.legacyAct}
+                </span>
+              </div>
+
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white pt-1">
+                {selectedMapping.legacySection}
+              </h2>
+              
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-snug">
+                {selectedMapping.legacyTitle}
+              </p>
+            </div>
+
+            {/* New Code Section Details */}
+            <div className="p-5 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-400 dark:border-sky-700 shadow-sm space-y-2 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-300">
+                  New Code Equivalent (New Section)
+                </span>
+                <span className="text-xs font-bold text-sky-800 dark:text-sky-200 bg-sky-200/80 dark:bg-sky-900 px-2.5 py-0.5 rounded">
+                  {selectedMapping.newAct}
+                </span>
+              </div>
+
+              <h2 className="text-2xl font-extrabold text-sky-950 dark:text-sky-100 pt-1 flex items-center gap-2">
+                {selectedMapping.newSection}
+              </h2>
+              
+              <p className="text-sm font-bold text-sky-900 dark:text-sky-200 leading-snug">
+                {selectedMapping.newTitle}
+              </p>
+            </div>
+
+          </div>
+
+          {/* Factual Notes & Statutory Transition Details */}
+          <div className="p-4 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-1.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <FileText size={14} className="text-primary dark:text-sky-400" /> Factual Transition Details
+            </h4>
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              {selectedMapping.factualNotes || 'Substantive provisions updated in statutory transition.'}
+            </p>
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 flex justify-between items-center">
+              <span>Source: External legal reference (Official Gazette of India)</span>
+              <span className="font-semibold text-slate-600 dark:text-slate-300">Statutory Reference</span>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* Full Built-In Statutory Mappings List */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+            <BookOpen size={16} className="text-primary dark:text-sky-400" /> Complete Built-In Statutory Directory ({filteredMappings.length})
+          </h3>
+          <span className="text-xs text-slate-400">Click any row to view full details</span>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-2" />
+            <p className="text-xs text-slate-500">Loading statutory section mappings...</p>
+          </div>
+        ) : error ? (
+          <div className="p-4 bg-red-50 text-red-600 rounded-xl text-xs">{error}</div>
+        ) : filteredMappings.length === 0 ? (
+          <div className="text-center py-12 text-xs text-slate-400">
+            No built-in statutory provisions match the current filter or search query.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {filteredMappings.map((m) => {
+              const isSelected = m._id === selectedMapping?._id;
+              return (
+                <div
+                  key={m._id}
+                  onClick={() => setSelectedSectionId(m._id)}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer text-left flex flex-col justify-between ${
+                    isSelected 
+                      ? 'border-primary bg-primary/5 dark:border-sky-400 dark:bg-sky-400/10 shadow-sm ring-1 ring-primary' 
+                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-1">
+                      <span>{m.legacyAct.split(' ')[0]}</span>
+                      {isSelected && <Check size={14} className="text-primary dark:text-sky-400" />}
+                    </div>
+
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-sm font-extrabold text-slate-900 dark:text-slate-100">{m.legacySection}</span>
+                      <ArrowRight size={12} className="text-slate-400" />
+                      <span className="text-sm font-extrabold text-sky-700 dark:text-sky-300">{m.newSection}</span>
+                    </div>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mt-1 font-medium">
+                      {m.legacyTitle}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
+                    <span>{m.newAct.split(' ')[0]} Code</span>
+                    <span className="text-emerald-600 dark:text-emerald-400">Verified</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
-
-      {/* Loading & Error States */}
-      {loading ? (
-        <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-3" />
-          <p className="text-sm text-slate-500">Loading statutory section mappings database...</p>
-        </div>
-      ) : error ? (
-        <div className="p-6 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-2xl text-red-700 dark:text-red-300 text-sm">
-          {error}
-        </div>
-      ) : filteredMappings.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-          <BookOpen className="mx-auto text-slate-300 dark:text-slate-600 mb-3" size={48} />
-          <h3 className="text-base font-semibold text-slate-700 dark:text-slate-200">No Mappings Found</h3>
-          <p className="text-xs text-slate-400 max-w-md mx-auto mt-1">
-            No legal provisions match your active search query or filter selection. Try resetting filters or searching for section numbers.
-          </p>
-        </div>
-      ) : (
-        /* Mappings List Cards */
-        <div className="grid grid-cols-1 gap-4">
-          {filteredMappings.map((item) => (
-            <div
-              key={item._id}
-              className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border transition-all duration-200 shadow-sm hover:shadow-md ${
-                item.mappingStatus === 'NEEDS_REVIEW' 
-                  ? 'border-amber-300 dark:border-amber-800/80 bg-amber-50/20 dark:bg-amber-950/10' 
-                  : 'border-slate-200 dark:border-slate-800'
-              }`}
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                
-                {/* Badges Bar */}
-                <div className="flex flex-wrap items-center gap-2">
-                  {renderMappingTypeBadge(item.mappingType)}
-
-                  {item.mappingStatus === 'VERIFIED' ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                      <ShieldCheck size={12} /> Verified Authoritative Mapping
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 dark:bg-amber-900/50 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
-                      <AlertTriangle size={12} /> Needs Review (Not Authoritative)
-                    </span>
-                  )}
-                </div>
-
-                {/* Actions for Admin / Advocate */}
-                {(user?.role === 'Admin' || user?.role === 'Advocate') && (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openModal(item)}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-                      title="Edit Mapping"
-                    >
-                      <Edit3 size={16} />
-                    </button>
-                    {user?.role === 'Admin' && (
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
-                        title="Delete Mapping"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Statutory Comparison Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-                
-                {/* Legacy Statute Provision Box */}
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1">
-                    Legacy Legal Provision
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">{item.legacySection}</h4>
-                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">({item.legacyAct})</span>
-                  </div>
-                  <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
-                    {item.legacyTitle}
-                  </p>
-                </div>
-
-                {/* New Code Provision Box */}
-                <div className="p-4 rounded-xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-800/50">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 block mb-1">
-                    New Code Equivalent
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <h4 className="text-base font-bold text-sky-950 dark:text-sky-100">{item.newSection}</h4>
-                    <span className="text-xs font-semibold text-sky-700 dark:text-sky-300">({item.newAct})</span>
-                  </div>
-                  <p className="text-xs text-sky-900 dark:text-sky-200 font-medium mt-1">
-                    {item.newTitle}
-                  </p>
-                </div>
-              </div>
-
-              {/* Factual Notes & Source Link Footer */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                {item.factualNotes ? (
-                  <p className="text-slate-600 dark:text-slate-400 italic flex-1">
-                    <strong className="not-italic text-slate-700 dark:text-slate-300">Factual Notes:</strong> {item.factualNotes}
-                  </p>
-                ) : <div />}
-
-                {/* Clickable Source Reference */}
-                <div className="flex-shrink-0">
-                  <a
-                    href={item.sourceReference}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-primary dark:text-sky-400 hover:underline font-medium bg-primary/5 dark:bg-sky-400/10 px-3 py-1 rounded-lg border border-primary/10 dark:border-sky-400/20"
-                  >
-                    <span>Source: External legal reference</span>
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Add / Edit Mapping Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95">
-            
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                {editingItem ? 'Edit Section Mapping' : 'Add New Legal Section Mapping'}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-              >
-                ✕
-              </button>
-            </div>
-
-            {formErr && (
-              <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 rounded-lg text-xs">
-                {formErr}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4 text-xs">
-              
-              {/* Legacy Section Details */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl space-y-3">
-                <h4 className="font-bold text-slate-700 dark:text-slate-300">Legacy Statute Information</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Legacy Act Title</label>
-                    <select
-                      value={formData.legacyAct}
-                      onChange={(e) => setFormData({ ...formData, legacyAct: e.target.value })}
-                      className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                    >
-                      <option value="Indian Penal Code, 1860 (IPC)">Indian Penal Code, 1860 (IPC)</option>
-                      <option value="Code of Criminal Procedure, 1973 (CrPC)">Code of Criminal Procedure, 1973 (CrPC)</option>
-                      <option value="Indian Evidence Act, 1872 (IEA)">Indian Evidence Act, 1872 (IEA)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Legacy Section Number</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Section 302"
-                      value={formData.legacySection}
-                      onChange={(e) => setFormData({ ...formData, legacySection: e.target.value })}
-                      className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Legacy Provision Title</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Punishment for murder"
-                    value={formData.legacyTitle}
-                    onChange={(e) => setFormData({ ...formData, legacyTitle: e.target.value })}
-                    className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                  />
-                </div>
-              </div>
-
-              {/* New Statute Details */}
-              <div className="p-3 bg-sky-50/60 dark:bg-sky-950/30 rounded-xl space-y-3">
-                <h4 className="font-bold text-sky-800 dark:text-sky-300">New Code Equivalent Information</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-semibold mb-1 text-sky-700 dark:text-sky-400">New Code Title</label>
-                    <select
-                      value={formData.newAct}
-                      onChange={(e) => setFormData({ ...formData, newAct: e.target.value })}
-                      className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                    >
-                      <option value="Bharatiya Nyaya Sanhita, 2023 (BNS)">Bharatiya Nyaya Sanhita, 2023 (BNS)</option>
-                      <option value="Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)">Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)</option>
-                      <option value="Bharatiya Sakshya Adhiniyam, 2023 (BSA)">Bharatiya Sakshya Adhiniyam, 2023 (BSA)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-semibold mb-1 text-sky-700 dark:text-sky-400">New Section Number</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Section 103(1)"
-                      value={formData.newSection}
-                      onChange={(e) => setFormData({ ...formData, newSection: e.target.value })}
-                      className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1 text-sky-700 dark:text-sky-400">New Provision Title</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Punishment for murder"
-                    value={formData.newTitle}
-                    onChange={(e) => setFormData({ ...formData, newTitle: e.target.value })}
-                    className="w-full p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                  />
-                </div>
-              </div>
-
-              {/* Classification & Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Mapping Classification Type</label>
-                  <select
-                    value={formData.mappingType}
-                    onChange={(e) => setFormData({ ...formData, mappingType: e.target.value as any })}
-                    className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                  >
-                    <option value="DIRECT_REPLACEMENT">DIRECT_REPLACEMENT</option>
-                    <option value="MULTIPLE_REPLACEMENT">MULTIPLE_REPLACEMENT</option>
-                    <option value="PARTIAL_REPLACEMENT">PARTIAL_REPLACEMENT</option>
-                    <option value="REORGANIZED">REORGANIZED</option>
-                    <option value="NO_DIRECT_EQUIVALENT">NO_DIRECT_EQUIVALENT</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Verification Status</label>
-                  <select
-                    value={formData.mappingStatus}
-                    onChange={(e) => setFormData({ ...formData, mappingStatus: e.target.value as any })}
-                    className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                  >
-                    <option value="VERIFIED">VERIFIED (Authoritative)</option>
-                    <option value="NEEDS_REVIEW">NEEDS_REVIEW (Unverified)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Source Reference & Notes */}
-              <div>
-                <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Source Reference URL (Required)</label>
-                <input
-                  type="text"
-                  placeholder="https://www.centurylawfirm.in/blog/legal-code-comparison-tool/"
-                  value={formData.sourceReference}
-                  onChange={(e) => setFormData({ ...formData, sourceReference: e.target.value })}
-                  className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1 text-slate-600 dark:text-slate-400">Factual Notes (Concise summary)</label>
-                <textarea
-                  rows={2}
-                  placeholder="Brief factual explanation of section changes without copying substantial copyrighted text..."
-                  value={formData.factualNotes}
-                  onChange={(e) => setFormData({ ...formData, factualNotes: e.target.value })}
-                  className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition shadow-sm"
-                >
-                  {editingItem ? 'Update Mapping' : 'Save Section Mapping'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
     </div>
   );

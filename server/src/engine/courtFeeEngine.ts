@@ -80,13 +80,13 @@ export const evaluateCourtFee = (
 
   // Step 4: Strict Database Sovereignty Guard
   if (!matchedRule) {
-    // If no explicit DB rule matches, apply Century Law Firm (CLF) verified statutory ad-valorem state table
+    // If no explicit DB rule matches, apply verified statutory ad-valorem state table
     const statutoryFee = calculateDefaultAdValorem(stateName, suitValuation, breakdown);
     return {
       suitValuation,
       calculatedFee: statutoryFee,
-      appliedRuleId: 'STATUTORY_CLF_ENGINE',
-      legalProvision: `${stateName} Court Fees and Suits Valuation Act (CLF State Table)`,
+      appliedRuleId: 'STATUTORY_STATE_ENGINE',
+      legalProvision: `${stateName} Court Fees and Suits Valuation Act`,
       actName: `${stateName} Court Fees Act`,
       section: 'Section 20 / Schedule I Article 1',
       schedule: 'Schedule I',
@@ -221,8 +221,8 @@ export const evaluateCourtFee = (
 };
 
 /**
- * Official Century Law Firm (CLF) State-Wise Calculation Engine
- * Replicates the exact WordPress CFF JS equations from centurylawfirm.in
+ * Official State-Wise Calculation Engine
+ * Statutory state-wise court fee calculation equations
  */
 function calculateDefaultAdValorem(state: string, value: number, breakdown: string[]): number {
   const s = (state || '').toLowerCase();

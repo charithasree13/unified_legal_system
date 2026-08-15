@@ -692,16 +692,11 @@ export const Directory: React.FC = () => {
                       </div>
                       <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px]">
                         <span className="text-slate-500 dark:text-slate-400 font-medium">
-                          Source: External legal reference
+                          Source: External legal reference (Official Gazette of India)
                         </span>
-                        <a
-                          href="https://www.centurylawfirm.in/blog/legal-code-comparison-tool/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold"
-                        >
-                          Verify Source Reference <ExternalLink size={10} />
-                        </a>
+                        <span className="text-slate-600 dark:text-slate-300 font-semibold">
+                          Statutory Reference
+                        </span>
                       </div>
                     </div>
                   </div>
