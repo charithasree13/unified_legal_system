@@ -361,32 +361,32 @@ export const LegalSectionMapping: React.FC = () => {
 
           </div>
 
-          {/* Full Text & Statutory Content of the New Section */}
+          {/* Full Text of New Section Block */}
           {selectedMapping.newSectionContent && (
-            <div className="p-5 rounded-2xl bg-sky-50/50 dark:bg-slate-800/90 border border-sky-200 dark:border-sky-900/60 space-y-2">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-800 dark:text-sky-300 flex items-center gap-2">
-                <BookMarked size={16} className="text-sky-600 dark:text-sky-400" /> Statutory Provision & Text of New Section ({selectedMapping.newSection})
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-normal bg-white dark:bg-slate-900 p-4 rounded-xl border border-sky-100 dark:border-slate-800 shadow-inner italic">
-                "{selectedMapping.newSectionContent}"
-              </p>
+            <div className="p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 space-y-3">
+              <h3 className="text-lg font-bold text-center text-slate-900 dark:text-white border-b border-slate-200/80 dark:border-slate-700 pb-2">
+                Full Text of New Section
+              </h3>
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-normal whitespace-pre-line shadow-inner">
+                {selectedMapping.newSectionContent}
+              </div>
             </div>
           )}
 
-          {/* Key Changes & Legal Implications */}
+          {/* Key Changes and Implications Block */}
           {selectedMapping.keyChanges && selectedMapping.keyChanges.length > 0 && (
-            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                <ListChecks size={16} className="text-primary dark:text-sky-400" /> Key Changes & Statutory Implications
-              </h4>
-              <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <div className="p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 space-y-4">
+              <h3 className="text-lg font-bold text-center text-slate-900 dark:text-white border-b border-slate-200/80 dark:border-slate-700 pb-2">
+                Key Changes and Implications
+              </h3>
+              <div className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                 {selectedMapping.keyChanges.map((change, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
+                  <div key={idx} className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-start gap-3">
                     <span className="h-2 w-2 rounded-full bg-primary dark:bg-sky-400 mt-2 flex-shrink-0" />
-                    <span className="font-medium leading-relaxed">{change}</span>
-                  </li>
+                    <p className="font-medium leading-relaxed">{change}</p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
 
