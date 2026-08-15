@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, Search, Filter, Star, Phone, Mail, Award, Landmark, MapPin, 
-  Share2, ArrowUpDown, ShieldCheck, Download, Plus, X, AwardIcon, Edit3, Trash2
+  Share2, ArrowUpDown, ShieldCheck, Download, Plus, X, AwardIcon, Edit3, Trash2,
+  BookOpen, ExternalLink
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import QRCode from 'qrcode';
@@ -671,6 +672,39 @@ export const Directory: React.FC = () => {
                       <p className="text-slate-500 dark:text-slate-400 text-justify">{selectedAdv.bio}</p>
                     </div>
                   )}
+
+                  {/* Legal Section Mapping Reference Tool */}
+                  <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
+                      <BookOpen size={12} className="text-primary dark:text-sky-400" /> Statutory Section Mapping Reference
+                    </span>
+                    <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                          Cross-Reference Tool (IPC ↔ BNS, CrPC ↔ BNSS, IEA ↔ BSA)
+                        </span>
+                        <a
+                          href="/section-mapping"
+                          className="text-[11px] font-bold text-primary dark:text-sky-400 hover:underline flex items-center gap-0.5"
+                        >
+                          Open Mapping Tool <ExternalLink size={10} />
+                        </a>
+                      </div>
+                      <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px]">
+                        <span className="text-slate-500 dark:text-slate-400 font-medium">
+                          Source: External legal reference
+                        </span>
+                        <a
+                          href="https://www.centurylawfirm.in/blog/legal-code-comparison-tool/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold"
+                        >
+                          Verify Source Reference <ExternalLink size={10} />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

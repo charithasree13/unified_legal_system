@@ -13,6 +13,7 @@ import { Collaboration } from './pages/Collaboration';
 import { Projects } from './pages/Projects';
 import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
+import { LegalSectionMapping } from './pages/LegalSectionMapping';
 
 // Protected Route Wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -67,6 +68,7 @@ export const App: React.FC = () => {
           <Route path="chat" element={<Chat />} />
           <Route path="collaboration" element={<Collaboration />} />
           <Route path="projects" element={<Projects />} />
+          <Route path="section-mapping" element={<LegalSectionMapping />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
         </Route>

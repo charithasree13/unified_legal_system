@@ -18,7 +18,9 @@ import * as advCtrl from './controllers/advocateController';
 import * as docCtrl from './controllers/documentController';
 import * as projCtrl from './controllers/projectController';
 import * as courtFeeCtrl from './controllers/courtFeeController';
+import * as mappingCtrl from './controllers/sectionMappingController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
+import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { AuditLog, User, Advocate, Judgement, Law, Project } from './models/Schemas';
 
 const app = express();
@@ -45,6 +47,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Connect database
 connectDB().then(() => {
   seedCourtFeeDatabase();
+  seedSectionMappingDatabase();
 });
 
 // Setup WebSocket Sockets
@@ -111,6 +114,13 @@ app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFe
 app.get('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFeeCtrl.getAdminRules);
 app.post('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFeeCtrl.createAdminRule);
 app.put('/api/admin/court-fee/rules/:id/toggle', authenticateToken, requireAdmin, courtFeeCtrl.toggleAdminRule);
+
+// LEGAL SECTION MAPPING API
+app.get('/api/section-mappings', mappingCtrl.getSectionMappings);
+app.get('/api/section-mappings/:id', mappingCtrl.getSectionMappingById);
+app.post('/api/section-mappings', authenticateToken, mappingCtrl.createSectionMapping);
+app.put('/api/section-mappings/:id', authenticateToken, mappingCtrl.updateSectionMapping);
+app.delete('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.deleteSectionMapping);
 
 // SYSTEM STATISTICS (Admin Only)
 app.get('/api/system/stats', authenticateToken, requireAdmin, async (req, res) => {

@@ -451,6 +451,28 @@ const RefreshTokenSchema = new mongoose.Schema({
   revoked: { type: Boolean, default: false }
 }, { timestamps: true });
 
+const LegalSectionMappingSchema = new mongoose.Schema({
+  legacyAct: { type: String, required: true }, // e.g. IPC, CrPC, IEA
+  legacySection: { type: String, required: true }, // e.g. Section 302
+  legacyTitle: { type: String, required: true },
+  newAct: { type: String, required: true }, // e.g. BNS, BNSS, BSA
+  newSection: { type: String, required: true }, // e.g. Section 103(1)
+  newTitle: { type: String, required: true },
+  mappingType: { 
+    type: String, 
+    enum: ['DIRECT_REPLACEMENT', 'MULTIPLE_REPLACEMENT', 'PARTIAL_REPLACEMENT', 'REORGANIZED', 'NO_DIRECT_EQUIVALENT'], 
+    required: true 
+  },
+  mappingStatus: { 
+    type: String, 
+    enum: ['VERIFIED', 'NEEDS_REVIEW'], 
+    default: 'VERIFIED' 
+  },
+  sourceReference: { type: String, required: true },
+  factualNotes: { type: String },
+  createdBy: { type: String, default: 'System Admin' }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED EXPORTS (Mongoose or Mock Database Fallback)
 // -------------------------------------------------------------
@@ -478,6 +500,7 @@ export let RuleVersion: any;
 export let CalculationHistory: any;
 export let OTPVerification: any;
 export let RefreshToken: any;
+export let LegalSectionMapping: any;
 
 if (!USE_MOCK_DB) {
   User = mongoose.model('User', UserSchema);
@@ -504,6 +527,7 @@ if (!USE_MOCK_DB) {
   CalculationHistory = mongoose.model('CalculationHistory', CalculationHistorySchema);
   OTPVerification = mongoose.model('OTPVerification', OTPVerificationSchema);
   RefreshToken = mongoose.model('RefreshToken', RefreshTokenSchema);
+  LegalSectionMapping = mongoose.model('LegalSectionMapping', LegalSectionMappingSchema);
 } else {
   User = new MockModel('User');
   Advocate = new MockModel('Advocate');
@@ -529,4 +553,5 @@ if (!USE_MOCK_DB) {
   CalculationHistory = new MockModel('CalculationHistory');
   OTPVerification = new MockModel('OTPVerification');
   RefreshToken = new MockModel('RefreshToken');
+  LegalSectionMapping = new MockModel('LegalSectionMapping');
 }
