@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Bell, Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { LegalTickerFooter } from './LegalTickerFooter';
+import { AdvocateOnboardingModal } from './AdvocateOnboardingModal';
 import { useAuthStore } from '../store/authStore';
 
 export const Layout: React.FC = () => {
@@ -186,6 +187,9 @@ export const Layout: React.FC = () => {
         {/* Continuous Scrolling Legal Principles Footer */}
         <LegalTickerFooter />
       </div>
+
+      {/* Advocate Onboarding Modal for mandatory directory indexing */}
+      <AdvocateOnboardingModal />
     </div>
   );
 };

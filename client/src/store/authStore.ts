@@ -9,6 +9,7 @@ export interface UserProfile {
   profilePhoto?: string;
   enrollmentNumber?: string;
   enrollmentYear?: string;
+  hasCompletedProfile?: boolean;
 }
 
 interface AuthState {

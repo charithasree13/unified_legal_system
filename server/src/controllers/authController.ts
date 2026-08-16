@@ -147,6 +147,19 @@ export const login = async (req: Request, res: Response) => {
       details: `Successful sign-in via password. RememberMe: ${rememberMe ? 'Yes' : 'No'}`
     });
 
+    let hasCompletedProfile = (user as any).hasCompletedProfile === true;
+    if (user.role === 'Advocate' && !hasCompletedProfile) {
+      const existingAdv = await Advocate.findOne({
+        $or: [
+          ...(user.email ? [{ email: user.email.toLowerCase() }] : []),
+          ...(user.phone ? [{ phone: user.phone }] : [])
+        ]
+      });
+      if (existingAdv && existingAdv.enrollmentNumber && existingAdv.specialization && existingAdv.court) {
+        hasCompletedProfile = true;
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Login successful.',
@@ -159,7 +172,8 @@ export const login = async (req: Request, res: Response) => {
         role: user.role,
         phone: user.phone,
         enrollmentNumber: (user as any).enrollmentNumber,
-        profilePhoto: user.profilePhoto
+        profilePhoto: user.profilePhoto,
+        hasCompletedProfile
       }
     });
   } catch (error) {
@@ -451,6 +465,19 @@ export const googleAuth = async (req: Request, res: Response) => {
       details: `Successful sign-in via Google (${user.role}).`
     });
 
+    let hasCompletedProfile = (user as any).hasCompletedProfile === true;
+    if (user.role === 'Advocate' && !hasCompletedProfile) {
+      const existingAdv = await Advocate.findOne({
+        $or: [
+          ...(user.email ? [{ email: user.email.toLowerCase() }] : []),
+          ...(user.phone ? [{ phone: user.phone }] : [])
+        ]
+      });
+      if (existingAdv && existingAdv.enrollmentNumber && existingAdv.specialization && existingAdv.court) {
+        hasCompletedProfile = true;
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Google login successful.',
@@ -463,7 +490,8 @@ export const googleAuth = async (req: Request, res: Response) => {
         role: user.role,
         phone: user.phone || '',
         enrollmentNumber: (user as any).enrollmentNumber || '',
-        profilePhoto: user.profilePhoto || picture
+        profilePhoto: user.profilePhoto || picture,
+        hasCompletedProfile
       }
     });
   } catch (error: any) {

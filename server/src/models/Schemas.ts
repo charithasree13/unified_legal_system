@@ -154,6 +154,7 @@ const UserSchema = new mongoose.Schema({
   enrollmentNumber: { type: String }, // Bar Council Enrollment Number (Advocates)
   enrollmentYear: { type: String }, // For admin advocates
   isVerified: { type: Boolean, default: false },
+  hasCompletedProfile: { type: Boolean, default: false },
   profilePhoto: { type: String },
   otp: { type: String },
   otpExpires: { type: Date }
