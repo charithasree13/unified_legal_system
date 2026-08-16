@@ -696,33 +696,35 @@ export const Directory: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Legal Section Mapping Reference Tool */}
-                  <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
-                      <BookOpen size={12} className="text-primary dark:text-sky-400" /> Statutory Section Mapping Reference
-                    </span>
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/80 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200">
-                          Cross-Reference Tool (IPC ↔ BNS, CrPC ↔ BNSS, IEA ↔ BSA)
-                        </span>
-                        <a
-                          href="/section-mapping"
-                          className="text-[11px] font-bold text-primary dark:text-sky-400 hover:underline flex items-center gap-0.5"
-                        >
-                          Open Mapping Tool <ExternalLink size={10} />
-                        </a>
-                      </div>
-                      <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px]">
-                        <span className="text-slate-500 dark:text-slate-400 font-medium">
-                          Source: External legal reference (Official Gazette of India)
-                        </span>
-                        <span className="text-slate-600 dark:text-slate-300 font-semibold">
-                          Statutory Reference
-                        </span>
+                  {/* Legal Section Mapping Reference Tool (Admin & Advocate Only) */}
+                  {(user?.role === 'Admin' || user?.role === 'Advocate') && (
+                    <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                      <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
+                        <BookOpen size={12} className="text-primary dark:text-sky-400" /> Statutory Section Mapping Reference
+                      </span>
+                      <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                            Cross-Reference Tool (IPC ↔ BNS, CrPC ↔ BNSS, IEA ↔ BSA)
+                          </span>
+                          <a
+                            href="/section-mapping"
+                            className="text-[11px] font-bold text-primary dark:text-sky-400 hover:underline flex items-center gap-0.5"
+                          >
+                            Open Mapping Tool <ExternalLink size={10} />
+                          </a>
+                        </div>
+                        <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[11px]">
+                          <span className="text-slate-500 dark:text-slate-400 font-medium">
+                            Source: External legal reference (Official Gazette of India)
+                          </span>
+                          <span className="text-slate-600 dark:text-slate-300 font-semibold">
+                            Statutory Reference
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>

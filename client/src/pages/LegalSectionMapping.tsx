@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { 
   BookOpen, Search, ShieldCheck, Scale, ArrowRight, CheckCircle2, 
   HelpCircle, RefreshCw, Filter, Sparkles, FileText, Check,
   Layers, AlertCircle, BookMarked, ListChecks
 } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 interface SectionMapping {
   _id: string;
@@ -22,6 +24,14 @@ interface SectionMapping {
 }
 
 export const LegalSectionMapping: React.FC = () => {
+  const { user, token } = useAuthStore();
+
+  // For normal users (non-Admin & non-Advocate), Legal Section Mapping is hidden and restricted
+  const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
+  if (isNormalUser) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const [mappings, setMappings] = useState<SectionMapping[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,7 +66,11 @@ export const LegalSectionMapping: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/section-mappings');
+      const response = await fetch('/api/section-mappings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data = await response.json();
       if (data.success && data.data) {
         setMappings(data.data);

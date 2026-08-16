@@ -38,6 +38,13 @@ export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: Nex
   next();
 };
 
+export const requireAdminOrAdvocate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (!req.user || (req.user.role !== 'Admin' && req.user.role !== 'Advocate')) {
+    return res.status(403).json({ success: false, message: 'Access denied. Legal section mappings are reserved for Administrators and Advocates.' });
+  }
+  next();
+};
+
 export const csrfProtection = (req: Request, res: Response, next: NextFunction) => {
   // Enterprise CSRF validation simulator. 
   // Reads custom headers x-csrf-token and validates.

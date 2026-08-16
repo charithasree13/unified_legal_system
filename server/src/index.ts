@@ -12,7 +12,7 @@ dotenv.config();
 
 import { connectDB } from './config/db';
 import { handleSockets } from './sockets/chat';
-import { authenticateToken, requireAdmin, csrfProtection, AuthenticatedRequest } from './middleware/auth';
+import { authenticateToken, requireAdmin, requireAdminOrAdvocate, csrfProtection, AuthenticatedRequest } from './middleware/auth';
 import * as authCtrl from './controllers/authController';
 import * as advCtrl from './controllers/advocateController';
 import * as docCtrl from './controllers/documentController';
@@ -120,8 +120,8 @@ app.post('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFee
 app.put('/api/admin/court-fee/rules/:id/toggle', authenticateToken, requireAdmin, courtFeeCtrl.toggleAdminRule);
 
 // LEGAL SECTION MAPPING API
-app.get('/api/section-mappings', mappingCtrl.getSectionMappings);
-app.get('/api/section-mappings/:id', mappingCtrl.getSectionMappingById);
+app.get('/api/section-mappings', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
+app.get('/api/section-mappings/:id', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappingById);
 app.post('/api/section-mappings', authenticateToken, mappingCtrl.createSectionMapping);
 app.put('/api/section-mappings/:id', authenticateToken, mappingCtrl.updateSectionMapping);
 app.delete('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.deleteSectionMapping);

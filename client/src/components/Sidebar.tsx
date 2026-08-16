@@ -33,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },
     { name: 'Doc Collaboration', path: '/collaboration', icon: FileText },
     { name: 'Case Projects', path: '/projects', icon: Scale },
-    { name: 'Legal Section Mapping', path: '/section-mapping', icon: BookOpen },
+    { name: 'Legal Section Mapping', path: '/section-mapping', icon: BookOpen, normalUserHide: true },
     { name: 'My Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
   ].filter(item => !(isNormalUser && item.normalUserHide));
