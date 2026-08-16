@@ -22,6 +22,7 @@ import * as mappingCtrl from './controllers/sectionMappingController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
+import { startHearingReminderScheduler } from './services/hearingReminderScheduler';
 import { AuditLog, User, Advocate, Judgement, Law, Project } from './models/Schemas';
 
 const app = express();
@@ -219,4 +220,5 @@ if (fs.existsSync(clientDistPath)) {
 // Start Server
 server.listen(PORT, () => {
   console.log(`🚀 Secure Legal System API Server listening on port ${PORT}`);
+  startHearingReminderScheduler();
 });

@@ -21,6 +21,8 @@ export const Projects: React.FC = () => {
   const [nextHearingDate, setNextHearingDate] = useState('');
   const [plaintiffName, setPlaintiffName] = useState('');
   const [defendantName, setDefendantName] = useState('');
+  const [plaintiffEmail, setPlaintiffEmail] = useState('');
+  const [defendantEmail, setDefendantEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [courtType, setCourtType] = useState('District Court');
   const [courtCity, setCourtCity] = useState('');
@@ -77,6 +79,8 @@ export const Projects: React.FC = () => {
           nextHearingDate,
           plaintiffName,
           defendantName,
+          plaintiffEmail,
+          defendantEmail,
           clientPhone,
           courtType,
           courtCity,
@@ -89,13 +93,15 @@ export const Projects: React.FC = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        addNotification('Project Created', `Case "${projectName}" initialized.`, 'success');
+        addNotification('Project Created', `Case "${projectName}" initialized. Registered parties will be notified via email.`, 'success');
         setShowAddProject(false);
         setProjectName('');
         setCaseNo('');
         setNextHearingDate('');
         setPlaintiffName('');
         setDefendantName('');
+        setPlaintiffEmail('');
+        setDefendantEmail('');
         setClientPhone('');
         setCourtType('District Court');
         setCourtCity('');
@@ -611,6 +617,36 @@ export const Projects: React.FC = () => {
                     placeholder="e.g. Ramesh Kumar"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Plaintiff Email (Optional)</label>
+                  <input
+                    type="email"
+                    value={plaintiffEmail}
+                    onChange={(e) => setPlaintiffEmail(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="suresh@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Defendant Email (Optional)</label>
+                  <input
+                    type="email"
+                    value={defendantEmail}
+                    onChange={(e) => setDefendantEmail(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    placeholder="ramesh@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/80 rounded-lg text-[11px] text-sky-800 dark:text-sky-300 flex items-start gap-2">
+                <Clock size={14} className="flex-shrink-0 mt-0.5 text-sky-600 dark:text-sky-400" />
+                <span>
+                  <strong>Registered User Email Alerts:</strong> Registered Plaintiff or Defendant users will automatically receive an immediate email notice of this case, plus an automated <strong>3-day pre-hearing reminder email</strong>.
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Project, AuditLog } from '../models/Schemas';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { dispatchCaseFilingNoticeEmail } from '../services/caseEmailService';
 
 // Get Projects
 export const getProjects = async (req: AuthenticatedRequest, res: Response) => {
@@ -56,7 +57,7 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
     if (req.user?.role === 'Client') {
       return res.status(403).json({ success: false, message: 'Access denied. Clients cannot create new case files.' });
     }
-    const { name, description, priority, deadline, teamMembers, caseNo, nextHearingDate, plaintiffName, defendantName, clientPhone, courtType, courtCity, caseType } = req.body;
+    const { name, description, priority, deadline, teamMembers, caseNo, nextHearingDate, plaintiffName, defendantName, plaintiffEmail, defendantEmail, clientPhone, courtType, courtCity, caseType } = req.body;
     if (!name) {
       return res.status(400).json({ success: false, message: 'Case Name is required.' });
     }
@@ -82,6 +83,8 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
       nextHearingDate: nextHearingDate || '',
       plaintiffName: plaintiffName || '',
       defendantName: defendantName || '',
+      plaintiffEmail: plaintiffEmail || '',
+      defendantEmail: defendantEmail || '',
       clientPhone: clientPhone || '',
       courtType: courtType || '',
       courtCity: courtCity || '',
@@ -91,6 +94,11 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
         action: 'Created the case project.',
         timestamp: new Date()
       }]
+    });
+
+    // Dispatch case creation notice email to registered Plaintiff/Defendant users asynchronously
+    dispatchCaseFilingNoticeEmail(newProject, req.user?.name || 'Advocate').catch((err) => {
+      console.error('Error dispatching case filing notice:', err);
     });
 
     await AuditLog.create({

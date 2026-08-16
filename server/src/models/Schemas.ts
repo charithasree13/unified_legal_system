@@ -258,6 +258,13 @@ const ProjectSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }
   }],
   currentDocContent: { type: String, default: '' },
+  plaintiffEmail: { type: String },
+  defendantEmail: { type: String },
+  hearingRemindersSent: [{
+    hearingDate: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    sentAt: { type: Date, default: Date.now }
+  }],
   activityTimeline: [{
     userName: { type: String },
     action: { type: String },
