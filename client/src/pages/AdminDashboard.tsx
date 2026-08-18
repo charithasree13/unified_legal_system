@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuthStore } from '../store/authStore';
+import { PortalOverview } from '../components/PortalOverview';
 
 export const AdminDashboard: React.FC = () => {
   const { token, addNotification } = useAuthStore();
@@ -299,7 +300,10 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      
+      {/* Project Main Theme Overview & Interactive Field Cards */}
+      <PortalOverview />
       
       {/* Overview Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
@@ -328,7 +332,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Core Quick Action: Document Publishing */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 h-fit">
+        <div id="admin-section-doc-management" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 h-fit">
           <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
             <CloudUpload size={18} className="text-primary dark:text-sky-400" />
             Upload Legal Document (PDF)
@@ -532,7 +536,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Verification Center */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 flex flex-col justify-between">
+        <div id="admin-section-verifications" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
               <ShieldCheck size={18} className="text-emerald-500" />
@@ -589,7 +593,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Real-time System Audit Logs */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 h-[480px] overflow-hidden flex flex-col justify-between">
+        <div id="admin-section-audit-logs" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 h-[480px] overflow-hidden flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
               <Activity size={18} className="text-amber-500" />
@@ -618,7 +622,7 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* COURT FEE RULES MANAGER */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div id="admin-section-fee-rules" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
         <div className="flex justify-between items-center">
           <div>
             <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">

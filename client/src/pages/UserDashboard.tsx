@@ -5,6 +5,7 @@ import {
   Landmark, BookOpen, Calculator, UserCheck, ShieldAlert
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { PortalOverview } from '../components/PortalOverview';
 
 export const UserDashboard: React.FC = () => {
   const { user, token } = useAuthStore();
@@ -59,7 +60,10 @@ export const UserDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      
+      {/* Main Project Overview Banner & Interactive Fields Cards Grid */}
+      <PortalOverview />
       
       {/* Welcome Card & Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
