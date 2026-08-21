@@ -17,14 +17,14 @@ export const LegalTickerFooter: React.FC = () => {
           display: flex;
           align-items: center;
           width: max-content;
-          animation: legalTickerScroll 380s linear infinite;
+          animation: legalTickerScroll 500s linear infinite;
           will-change: transform;
         }
         .legal-ticker-track:hover {
           animation-play-state: paused;
         }
       `}</style>
-      
+
       {/* Static Left Badge Header */}
       <div className="h-full px-3.5 bg-primary dark:bg-slate-800 text-white flex items-center gap-2 font-bold text-xs uppercase tracking-wider flex-shrink-0 z-30 shadow-md border-r border-blue-900 dark:border-slate-700">
         <Scale size={15} className="text-secondary animate-pulse" />
@@ -40,7 +40,7 @@ export const LegalTickerFooter: React.FC = () => {
 
         <div className="legal-ticker-track flex items-center gap-8 py-1 px-4 cursor-pointer">
           {tickerItems.map((item, idx) => (
-            <div 
+            <div
               key={`${item.id}-${idx}`}
               className="flex items-center gap-2.5 whitespace-nowrap text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors flex-shrink-0"
             >
