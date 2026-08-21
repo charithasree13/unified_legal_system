@@ -218,11 +218,11 @@ export const Login: React.FC = () => {
       </div>
 
       {/* RIGHT AUTH CARD PANEL */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 h-full overflow-y-auto">
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-800/80 p-8 glass animate-slide-up">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8 h-full overflow-hidden">
+        <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-800/80 p-6 sm:p-7 glass animate-slide-up">
 
           {/* Header */}
-          <div className="mb-6 flex justify-between items-center">
+          <div className="mb-4 flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                 {mode === 'login' && 'Sign In'}
@@ -240,14 +240,14 @@ export const Login: React.FC = () => {
 
           {/* Alerts */}
           {errorMsg && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-xs flex gap-2 items-start font-medium">
+            <div className="mb-3 p-2.5 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-xs flex gap-2 items-start font-medium">
               <ShieldAlert size={16} className="mt-0.5 flex-shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs flex gap-2 items-start font-medium animate-fade-in">
+            <div className="mb-3 p-2.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs flex gap-2 items-start font-medium animate-fade-in">
               <CheckCircle2 size={16} className="mt-0.5 flex-shrink-0" />
               <span>{successMsg}</span>
             </div>
@@ -255,7 +255,7 @@ export const Login: React.FC = () => {
 
           {/* 1. PASSWORD SIGN-IN FORM */}
           {mode === 'login' && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* Role Selection Tabs for Sign In */}
               <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
                 <button
@@ -291,7 +291,7 @@ export const Login: React.FC = () => {
               />
 
               {/* Divider */}
-              <div className="relative flex py-1 items-center">
+              <div className="relative flex py-0.5 items-center">
                 <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
                 <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
                   Or sign in with password
@@ -299,9 +299,9 @@ export const Login: React.FC = () => {
                 <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
               </div>
 
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <form onSubmit={handleLoginSubmit} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase">
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase">
                     Email Address or Mobile Number
                   </label>
                   <div className="relative">
@@ -313,14 +313,14 @@ export const Login: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all font-semibold"
+                      className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all font-semibold"
                       placeholder="email@court.org or 9876543210"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between items-center mb-1.5">
+                  <div className="flex justify-between items-center mb-1">
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
                       Security Password
                     </label>
@@ -341,7 +341,7 @@ export const Login: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
+                      className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-950 focus:outline-none focus:border-primary dark:focus:border-sky-400 transition-all"
                       placeholder="••••••••••••"
                     />
                   </div>
@@ -364,12 +364,12 @@ export const Login: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+                  className="w-full py-2.5 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
                 >
                   {loading ? 'Authenticating Credentials...' : 'Sign In'}
                 </button>
 
-                <div className="mt-6 text-center text-xs text-slate-500">
+                <div className="mt-4 text-center text-xs text-slate-500">
                   Don't have an account?{' '}
                   <button
                     type="button"
