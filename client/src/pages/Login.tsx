@@ -190,10 +190,10 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-100 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 transition-colors">
+    <div className="h-screen w-screen overflow-hidden flex bg-slate-100 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 transition-colors">
 
       {/* LEFT CANVAS PANEL */}
-      <div className="hidden lg:flex lg:w-1/2 bg-primary dark:bg-slate-900 justify-center items-center p-12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-primary dark:bg-slate-900 justify-center items-center p-12 relative overflow-hidden h-full">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(79,195,247,0.15),transparent_60%)]" />
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]" />
 
@@ -218,7 +218,7 @@ export const Login: React.FC = () => {
       </div>
 
       {/* RIGHT AUTH CARD PANEL */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 h-full overflow-y-auto">
         <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-800/80 p-8 glass animate-slide-up">
 
           {/* Header */}
