@@ -17,7 +17,7 @@ export const LegalTickerFooter: React.FC = () => {
           display: flex;
           align-items: center;
           width: max-content;
-          animation: legalTickerScroll 240s linear infinite;
+          animation: legalTickerScroll 600s linear infinite;
           will-change: transform;
         }
         .legal-ticker-track:hover {
