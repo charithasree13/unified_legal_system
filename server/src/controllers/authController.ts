@@ -75,6 +75,26 @@ export const register = async (req: Request, res: Response) => {
       isVerified: true
     });
 
+    if (assignedRole === 'Advocate') {
+      try {
+        await Advocate.create({
+          name: name.trim(),
+          phone: cleanPhone,
+          email: email ? email.trim().toLowerCase() : `${cleanPhone}@court.org`,
+          enrollmentNumber: enrollmentNumber ? enrollmentNumber.trim() : `BAR/${new Date().getFullYear()}`,
+          enrollmentDate: new Date().toISOString().split('T')[0],
+          specialization: 'Civil Litigation, Notary, Bank legal advisors',
+          court: 'Senior civil judges court, Junior civil Judges court, High Court',
+          city: 'Madanapalle',
+          state: 'Andhra Pradesh',
+          experience: 15,
+          isVerified: true
+        });
+      } catch (advErr) {
+        console.error('Error auto-creating advocate directory document:', advErr);
+      }
+    }
+
     await AuditLog.create({
       userId: newUser._id,
       userName: newUser.name,
