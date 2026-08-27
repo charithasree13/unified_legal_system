@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Advocate, User, AuditLog } from '../models/Schemas';
 import { AuthenticatedRequest } from '../middleware/auth';
 
-// Add Advocate (Admin Only)
+// Add Advocate (Admin or Advocate Authorized)
 export const addAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
@@ -11,44 +11,83 @@ export const addAdvocate = async (req: AuthenticatedRequest, res: Response) => {
       photo, bio, address, availability
     } = req.body;
 
-    if (!name || !phone || !email || !enrollmentNumber || !enrollmentDate || !specialization || !court || !city || !state || !experience) {
-      return res.status(400).json({ success: false, message: 'All primary advocate fields are required.' });
+    if (!name || !phone || !email || !enrollmentNumber || !enrollmentDate || !specialization || !court) {
+      return res.status(400).json({ success: false, message: 'Primary advocate details (name, phone, email, enrollment, specialization, court) are required.' });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPhone = String(phone).trim();
+    const cleanEnrollment = String(enrollmentNumber).trim();
+
+    // Check if advocate profile with same enrollment, email or phone already exists
+    let existing = await Advocate.findOne({
+      $or: [
+        { email: cleanEmail },
+        { phone: cleanPhone },
+        ...(cleanEnrollment ? [{ enrollmentNumber: cleanEnrollment }] : [])
+      ]
+    });
+
+    if (existing) {
+      existing = await Advocate.findByIdAndUpdate(existing._id, {
+        name: String(name).trim(),
+        phone: cleanPhone,
+        email: cleanEmail,
+        enrollmentNumber: cleanEnrollment,
+        enrollmentDate: String(enrollmentDate).trim(),
+        specialization: Array.isArray(specialization) ? specialization.join(', ') : String(specialization),
+        court: Array.isArray(court) ? court.join(', ') : String(court),
+        city: String(city || 'National Practice').trim(),
+        state: String(state || 'All India').trim(),
+        experience: Number(experience || 1),
+        photo: photo || existing.photo || '',
+        bio: bio ? String(bio).trim() : existing.bio || '',
+        address: address ? String(address).trim() : existing.address || '',
+        availability: availability || existing.availability || 'Available',
+        isVerified: true
+      }, { new: true });
+
+      return res.status(200).json({
+        success: true,
+        message: `Advocate profile updated successfully.`,
+        advocate: existing
+      });
     }
 
     const newAdvocate = await Advocate.create({
-      name,
-      phone,
-      email,
-      enrollmentNumber,
-      enrollmentDate,
-      specialization,
-      court,
-      city,
-      state,
-      experience: Number(experience),
+      name: String(name).trim(),
+      phone: cleanPhone,
+      email: cleanEmail,
+      enrollmentNumber: cleanEnrollment,
+      enrollmentDate: String(enrollmentDate).trim(),
+      specialization: Array.isArray(specialization) ? specialization.join(', ') : String(specialization),
+      court: Array.isArray(court) ? court.join(', ') : String(court),
+      city: String(city || 'National Practice').trim(),
+      state: String(state || 'All India').trim(),
+      experience: Number(experience || 1),
       photo: photo || '',
-      bio: bio || '',
-      address: address || '',
+      bio: bio ? String(bio).trim() : '',
+      address: address ? String(address).trim() : '',
       availability: availability || 'Available',
-      isVerified: false // Default to unverified until approved
+      isVerified: true // Admin-added/indexed profiles are verified automatically
     });
 
     await AuditLog.create({
       userId: req.user?.id || 'system',
       userName: req.user?.name || 'Administrator',
-      role: 'Admin',
+      role: req.user?.role || 'Admin',
       action: 'ADVOCATE_CREATED',
       ip: req.ip || '127.0.0.1',
-      details: `Created advocate profile: ${name} (Enrollment: ${enrollmentNumber})`
+      details: `Created advocate profile: ${name} (Enrollment: ${cleanEnrollment})`
     });
 
     return res.status(201).json({
       success: true,
-      message: 'Advocate profile added successfully. Awaiting validation.',
+      message: 'Advocate profile added and published successfully to the directory.',
       advocate: newAdvocate
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error('Error adding advocate:', error);
     return res.status(500).json({ success: false, message: 'Internal server error adding advocate.' });
   }
 };

@@ -300,6 +300,11 @@ export const Directory: React.FC = () => {
     e.preventDefault();
     setFormErr('');
 
+    if (!formData.name.trim() || !formData.enrollmentNumber.trim() || !formData.phone.trim() || !formData.email.trim()) {
+      setFormErr('Please fill out Advocate Name, Enrollment Number, Phone, and Email.');
+      return;
+    }
+
     if (selectedSpecs.length === 0) {
       setFormErr('Please select at least one Specialization.');
       return;
@@ -312,7 +317,10 @@ export const Directory: React.FC = () => {
     const payload = {
       ...formData,
       specialization: selectedSpecs.join(', '),
-      court: selectedCourts.join(', ')
+      court: selectedCourts.join(', '),
+      city: formData.city.trim() || 'National Practice',
+      state: formData.state.trim() || 'All India',
+      experience: Number(formData.experience || 1)
     };
 
     try {
@@ -324,12 +332,18 @@ export const Directory: React.FC = () => {
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
+
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        data = { message: `Server error (${res.status} ${res.statusText || 'Error'})` };
+      }
 
       if (!res.ok) {
         setFormErr(data.message || 'Failed to add advocate.');
       } else {
-        addNotification('Advocate Profile Added', 'A new advocate profile has been added.', 'success');
+        addNotification('Advocate Profile Published', 'Advocate profile has been added to the directory.', 'success');
         setShowAddForm(false);
         setFormData({
           name: '', phone: '', email: '', enrollmentNumber: '', enrollmentDate: '',
@@ -340,8 +354,9 @@ export const Directory: React.FC = () => {
         setSelectedCourts([]);
         fetchDirectory();
       }
-    } catch (err) {
-      setFormErr('Failed to establish server connection.');
+    } catch (err: any) {
+      console.error('Error adding advocate:', err);
+      setFormErr(err?.message || 'Network error connecting to backend server.');
     }
   };
 
