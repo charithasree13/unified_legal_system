@@ -2,28 +2,27 @@ import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 
-const USE_MOCK_DB = process.env.USE_MOCK_DB === 'true';
-
 // -------------------------------------------------------------
 // 1. MOCK DATA BASE ENGINE (JSON fallback)
 // -------------------------------------------------------------
 const DATA_DIR = path.join(__dirname, '../../data');
-if (USE_MOCK_DB && !fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
 
 class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string }> {
   private filePath: string;
 
   constructor(private name: string) {
+    if (!fs.existsSync(DATA_DIR)) {
+      try { fs.mkdirSync(DATA_DIR, { recursive: true }); } catch {}
+    }
     this.filePath = path.join(DATA_DIR, `${name.toLowerCase()}s.json`);
     if (!fs.existsSync(this.filePath)) {
-      fs.writeFileSync(this.filePath, JSON.stringify([], null, 2));
+      try { fs.writeFileSync(this.filePath, JSON.stringify([], null, 2)); } catch {}
     }
   }
 
   private read(): T[] {
     try {
+      if (!fs.existsSync(this.filePath)) return [];
       const content = fs.readFileSync(this.filePath, 'utf8');
       return JSON.parse(content);
     } catch {
@@ -32,47 +31,51 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
   }
 
   private write(data: T[]) {
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+    try {
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+      fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+    } catch (e) {}
   }
 
   async find(query: any = {}): Promise<T[]> {
     let items = this.read();
-    for (const key in query) {
-      if (query[key] !== undefined && query[key] !== null && query[key] !== '') {
-        const val = query[key];
-        items = items.filter((item: any) => {
-          const itemVal = item[key];
-          // Handle Regex search
-          if (typeof val === 'object' && val !== null) {
-            if (val.$regex) {
-              const regex = new RegExp(val.$regex, val.$options || 'i');
-              return regex.test(String(itemVal || ''));
-            }
-            if (val.$in) {
-              return Array.isArray(val.$in) && val.$in.includes(itemVal);
-            }
-            if (val.$or) {
-              // Basic $or matching
-              return val.$or.some((subQuery: any) => {
-                for (const subKey in subQuery) {
-                  const subVal = subQuery[subKey];
-                  if (subVal.$regex) {
-                    const regex = new RegExp(subVal.$regex, subVal.$options || 'i');
-                    if (regex.test(String(item[subKey] || ''))) return true;
-                  } else if (String(item[subKey]) === String(subVal)) {
-                    return true;
-                  }
-                }
-                return false;
-              });
-            }
-          }
-          // Default exact string match (case-insensitive for convenience)
-          return String(itemVal).toLowerCase() === String(val).toLowerCase();
+    if (!query || Object.keys(query).length === 0) return items;
+
+    return items.filter((item: any) => {
+      if (query.$or && Array.isArray(query.$or)) {
+        const matchesOr = query.$or.some((subQuery: any) => {
+          return Object.keys(subQuery).every((subKey) => {
+            const val = subQuery[subKey];
+            if (val === undefined) return true;
+            return String(item[subKey] || '').toLowerCase() === String(val || '').toLowerCase();
+          });
         });
+        if (!matchesOr) return false;
       }
-    }
-    return items;
+
+      for (const key in query) {
+        if (key === '$or') continue;
+        const val = query[key];
+        if (val === undefined || val === null || val === '') continue;
+
+        const itemVal = item[key];
+        if (typeof val === 'object' && val !== null) {
+          if (val.$regex) {
+            const regex = new RegExp(val.$regex, val.$options || 'i');
+            if (!regex.test(String(itemVal || ''))) return false;
+          } else if (val.$in) {
+            if (!Array.isArray(val.$in) || !val.$in.includes(itemVal)) return false;
+          }
+        } else {
+          if (String(itemVal || '').toLowerCase() !== String(val || '').toLowerCase()) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
   }
 
   async findOne(query: any = {}): Promise<T | null> {
@@ -103,7 +106,6 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
     const index = items.findIndex((item: any) => item._id === id);
     if (index === -1) return null;
     
-    // Support update operators if any ($push etc.)
     const currentItem = items[index] as any;
     let newFields = { ...update };
     
@@ -125,6 +127,12 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
     items[index] = updatedItem;
     this.write(items);
     return updatedItem;
+  }
+
+  async findOneAndUpdate(query: any, update: any, options: any = {}): Promise<T | null> {
+    const item = await this.findOne(query);
+    if (!item || !item._id) return null;
+    return this.findByIdAndUpdate(item._id, update, options);
   }
 
   async findByIdAndDelete(id: string): Promise<T | null> {
@@ -484,84 +492,48 @@ const LegalSectionMappingSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // -------------------------------------------------------------
-// 3. UNIFIED EXPORTS (Mongoose or Mock Database Fallback)
+// 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
-export let User: any;
-export let Advocate: any;
-export let Judgement: any;
-export let Law: any;
-export let Message: any;
-export let Project: any;
-export let Notification: any;
-export let AuditLog: any;
 
-export let State: any;
-export let District: any;
-export let CourtType: any;
-export let CaseType: any;
-export let ReliefType: any;
-export let CourtFeeAct: any;
-export let Schedule: any;
-export let Article: any;
-export let CourtFeeRule: any;
-export let CourtFeeSlab: any;
-export let LegalNotification: any;
-export let RuleVersion: any;
-export let CalculationHistory: any;
-export let OTPVerification: any;
-export let RefreshToken: any;
-export let LegalSectionMapping: any;
+function createDynamicModel(name: string, schema: mongoose.Schema) {
+  const mongooseModel = mongoose.models[name] || mongoose.model(name, schema);
+  const mockModel = new MockModel(name);
 
-if (!USE_MOCK_DB) {
-  User = mongoose.model('User', UserSchema);
-  Advocate = mongoose.model('Advocate', AdvocateSchema);
-  Judgement = mongoose.model('Judgement', JudgementSchema);
-  Law = mongoose.model('Law', LawSchema);
-  Message = mongoose.model('Message', MessageSchema);
-  Project = mongoose.model('Project', ProjectSchema);
-  Notification = mongoose.model('Notification', NotificationSchema);
-  AuditLog = mongoose.model('AuditLog', AuditLogSchema);
-
-  State = mongoose.model('State', StateSchema);
-  District = mongoose.model('District', DistrictSchema);
-  CourtType = mongoose.model('CourtType', CourtTypeSchema);
-  CaseType = mongoose.model('CaseType', CaseTypeSchema);
-  ReliefType = mongoose.model('ReliefType', ReliefTypeSchema);
-  CourtFeeAct = mongoose.model('CourtFeeAct', CourtFeeActSchema);
-  Schedule = mongoose.model('Schedule', ScheduleSchema);
-  Article = mongoose.model('Article', ArticleSchema);
-  CourtFeeRule = mongoose.model('CourtFeeRule', CourtFeeRuleSchema);
-  CourtFeeSlab = mongoose.model('CourtFeeSlab', CourtFeeSlabSchema);
-  LegalNotification = mongoose.model('LegalNotification', LegalNotificationSchema);
-  RuleVersion = mongoose.model('RuleVersion', RuleVersionSchema);
-  CalculationHistory = mongoose.model('CalculationHistory', CalculationHistorySchema);
-  OTPVerification = mongoose.model('OTPVerification', OTPVerificationSchema);
-  RefreshToken = mongoose.model('RefreshToken', RefreshTokenSchema);
-  LegalSectionMapping = mongoose.model('LegalSectionMapping', LegalSectionMappingSchema);
-} else {
-  User = new MockModel('User');
-  Advocate = new MockModel('Advocate');
-  Judgement = new MockModel('Judgement');
-  Law = new MockModel('Law');
-  Message = new MockModel('Message');
-  Project = new MockModel('Project');
-  Notification = new MockModel('Notification');
-  AuditLog = new MockModel('AuditLog');
-
-  State = new MockModel('State');
-  District = new MockModel('District');
-  CourtType = new MockModel('CourtType');
-  CaseType = new MockModel('CaseType');
-  ReliefType = new MockModel('ReliefType');
-  CourtFeeAct = new MockModel('CourtFeeAct');
-  Schedule = new MockModel('Schedule');
-  Article = new MockModel('Article');
-  CourtFeeRule = new MockModel('CourtFeeRule');
-  CourtFeeSlab = new MockModel('CourtFeeSlab');
-  LegalNotification = new MockModel('LegalNotification');
-  RuleVersion = new MockModel('RuleVersion');
-  CalculationHistory = new MockModel('CalculationHistory');
-  OTPVerification = new MockModel('OTPVerification');
-  RefreshToken = new MockModel('RefreshToken');
-  LegalSectionMapping = new MockModel('LegalSectionMapping');
+  return new Proxy({}, {
+    get(_target, prop: string) {
+      const isMongoConnected = mongoose.connection.readyState === 1 && process.env.USE_MOCK_DB !== 'true';
+      const activeModel = isMongoConnected ? mongooseModel : mockModel;
+      const targetVal = (activeModel as any)[prop];
+      if (typeof targetVal === 'function') {
+        return targetVal.bind(activeModel);
+      }
+      return targetVal;
+    }
+  });
 }
+
+export const User: any = createDynamicModel('User', UserSchema);
+export const Advocate: any = createDynamicModel('Advocate', AdvocateSchema);
+export const Judgement: any = createDynamicModel('Judgement', JudgementSchema);
+export const Law: any = createDynamicModel('Law', LawSchema);
+export const Message: any = createDynamicModel('Message', MessageSchema);
+export const Project: any = createDynamicModel('Project', ProjectSchema);
+export const Notification: any = createDynamicModel('Notification', NotificationSchema);
+export const AuditLog: any = createDynamicModel('AuditLog', AuditLogSchema);
+
+export const State: any = createDynamicModel('State', StateSchema);
+export const District: any = createDynamicModel('District', DistrictSchema);
+export const CourtType: any = createDynamicModel('CourtType', CourtTypeSchema);
+export const CaseType: any = createDynamicModel('CaseType', CaseTypeSchema);
+export const ReliefType: any = createDynamicModel('ReliefType', ReliefTypeSchema);
+export const CourtFeeAct: any = createDynamicModel('CourtFeeAct', CourtFeeActSchema);
+export const Schedule: any = createDynamicModel('Schedule', ScheduleSchema);
+export const Article: any = createDynamicModel('Article', ArticleSchema);
+export const CourtFeeRule: any = createDynamicModel('CourtFeeRule', CourtFeeRuleSchema);
+export const CourtFeeSlab: any = createDynamicModel('CourtFeeSlab', CourtFeeSlabSchema);
+export const LegalNotification: any = createDynamicModel('LegalNotification', LegalNotificationSchema);
+export const RuleVersion: any = createDynamicModel('RuleVersion', RuleVersionSchema);
+export const CalculationHistory: any = createDynamicModel('CalculationHistory', CalculationHistorySchema);
+export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVerificationSchema);
+export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
+export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);

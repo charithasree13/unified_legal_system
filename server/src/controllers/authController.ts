@@ -122,6 +122,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'Invalid credentials.' });
     }
 
+    if (!user.password) {
+      return res.status(400).json({
+        success: false,
+        message: 'This account was registered using Google Sign-In. Please click "Continue with Google" to sign in.'
+      });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: 'Invalid credentials.' });
@@ -176,7 +183,8 @@ export const login = async (req: Request, res: Response) => {
         hasCompletedProfile
       }
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('❌ Login error:', error);
     return res.status(500).json({ success: false, message: 'Internal server error during login.' });
   }
 };
