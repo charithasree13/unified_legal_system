@@ -7,9 +7,9 @@ export const connectDB = async () => {
     return;
   }
 
-  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/unified-legal-system';
+  const mongoUri = process.env.MONGO_URI || 'mongodb+srv://pcharithasree13_db_user:Cherry1113@start-up-crm-lite.njma2fj.mongodb.net/unified-legal-system?retryWrites=true&w=majority';
   try {
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
     console.log('⚡ Connected to MongoDB Database successfully.');
   } catch (error: any) {
     console.error(`❌ MongoDB connection error: ${error.message}`);

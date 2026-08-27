@@ -30,7 +30,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   const [loading, setLoading] = useState(false);
   const gisContainerRef = useRef<HTMLDivElement>(null);
 
-  const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? '' : 'https://unified-legal-system.onrender.com');
+  const API_BASE = import.meta.env.VITE_API_URL || '';
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '300143041269-oa6toeacsqdo25rg31n0g3hagbkiaird.apps.googleusercontent.com';
 
   const sendAuthPayload = async (payload: { credential?: string; googleUser?: any }) => {

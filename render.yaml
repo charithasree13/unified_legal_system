@@ -12,7 +12,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        sync: false
+        value: mongodb+srv://pcharithasree13_db_user:Cherry1113@start-up-crm-lite.njma2fj.mongodb.net/unified-legal-system?retryWrites=true&w=majority
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET

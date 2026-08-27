@@ -44,8 +44,8 @@ export const Login: React.FC = () => {
     setSuccessMsg('');
   };
 
-  // API Base URL (defaults to live Render backend)
-  const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? '' : 'https://unified-legal-system.onrender.com');
+  // API Base URL
+  const API_BASE = import.meta.env.VITE_API_URL || '';
 
   // -------------------------------------------------------------
   // API HANDLERS
