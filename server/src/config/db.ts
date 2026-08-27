@@ -7,7 +7,12 @@ export const connectDB = async () => {
     return;
   }
 
-  const mongoUri = process.env.MONGO_URI || 'mongodb+srv://pcharithasree13_db_user:Cherry1113@start-up-crm-lite.njma2fj.mongodb.net/unified-legal-system?retryWrites=true&w=majority';
+  const mongoUri = process.env.MONGO_URI;
+  if (!mongoUri) {
+    console.log('⚠️ MONGO_URI environment variable not set. Running in Mock JSON Database mode.');
+    process.env.USE_MOCK_DB = 'true';
+    return;
+  }
   try {
     await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
     console.log('⚡ Connected to MongoDB Database successfully.');
