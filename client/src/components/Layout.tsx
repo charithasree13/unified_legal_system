@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Bell, Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { LegalTickerFooter } from './LegalTickerFooter';
@@ -11,6 +11,9 @@ export const Layout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
   const { 
     user, 
@@ -59,28 +62,44 @@ export const Layout: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
-      {/* Sidebar */}
-      <Sidebar 
-        collapsed={collapsed} 
-        setCollapsed={setCollapsed} 
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
-      />
+      {/* Sidebar - Visible on internal module pages, Hidden on Dashboard */}
+      {!isDashboard && (
+        <Sidebar 
+          collapsed={collapsed} 
+          setCollapsed={setCollapsed} 
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
+      )}
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Main Content Area - Full Width on Dashboard */}
+      <div className="flex-1 flex flex-col overflow-hidden w-full">
         {/* Top Navbar */}
         <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-sm transition-colors duration-200">
           
-          {/* Left: Collapsible Toggle Menu & Global Search */}
+          {/* Left: Branding on Dashboard / Collapsible Menu Toggle on internal pages & Global Search */}
           <div className="flex items-center gap-4 flex-1">
-            <button 
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
-              title="Toggle Navigation Menu"
-            >
-              <Menu size={22} />
-            </button>
+            {isDashboard ? (
+              <div 
+                onClick={() => navigate('/dashboard')} 
+                className="flex items-center gap-3 cursor-pointer select-none"
+              >
+                <div className="bg-primary dark:bg-slate-800 p-2 rounded-lg text-white shadow-sm">
+                  <Scale size={20} className="stroke-[2.5]" />
+                </div>
+                <span className="font-bold text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase">
+                  UNIFIED LEGAL SYSTEM
+                </span>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+                title="Toggle Navigation Menu"
+              >
+                <Menu size={22} />
+              </button>
+            )}
 
             {/* Global Search Bar */}
             <form onSubmit={handleGlobalSearch} className="max-w-md w-full relative hidden sm:block">
