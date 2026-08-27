@@ -582,14 +582,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
-            <button
-              onClick={handleBackup}
-              className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200 dark:border-slate-700"
-            >
-              <Database size={14} /> Download Secure DB Backup
-            </button>
-          </div>
+
         </div>
 
         {/* Real-time System Audit Logs */}
