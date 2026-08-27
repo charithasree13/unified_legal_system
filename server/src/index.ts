@@ -81,19 +81,19 @@ app.post('/api/auth/reset-password', authCtrl.resetPassword);
 // ADVOCATE DIRECTORY
 app.post('/api/advocates/profile', authenticateToken, advCtrl.selfOnboardAdvocateProfile);
 app.post('/api/advocates', authenticateToken, requireAdminOrAdvocate, advCtrl.addAdvocate);
-app.get('/api/advocates', authenticateToken, advCtrl.getAdvocates);
-app.get('/api/advocates/:id', authenticateToken, advCtrl.getAdvocateById);
+app.get('/api/advocates', advCtrl.getAdvocates);
+app.get('/api/advocates/:id', advCtrl.getAdvocateById);
 app.put('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.updateAdvocate);
 app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.deleteAdvocate);
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 
 // DOCUMENTS / REPOSITORY
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
-app.get('/api/documents/judgements', authenticateToken, docCtrl.getJudgements);
+app.get('/api/documents/judgements', docCtrl.getJudgements);
 app.delete('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
 app.put('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateJudgement);
 app.post('/api/documents/laws', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
-app.get('/api/documents/laws', authenticateToken, docCtrl.getLaws);
+app.get('/api/documents/laws', docCtrl.getLaws);
 app.put('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
 app.delete('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.deleteLaw);
 
