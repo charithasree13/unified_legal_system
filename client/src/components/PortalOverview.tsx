@@ -396,50 +396,62 @@ export const PortalOverview: React.FC = () => {
   return (
     <div className="space-y-6">
       
-      {/* Main Theme Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-primary to-[#1E3A8A] text-white p-6 sm:p-12 shadow-2xl border border-white/15 animate-slide-up">
+      {/* Compact Luxury Legal-Tech Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#091122] via-[#0C182F] to-[#070E1C] text-white py-8 sm:py-10 md:py-12 px-4 sm:px-8 shadow-2xl border border-white/[0.08] animate-slide-up">
         
-        {/* Abstract Glow Effect Backgrounds */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Fine Architectural & Legal Line Background Overlay (Barely Visible, Ultra-Low Opacity) */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.035] overflow-hidden">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <defs>
+              <pattern id="archGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.75" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#archGrid)" />
+            <circle cx="50%" cy="50%" r="350" fill="none" stroke="currentColor" strokeWidth="1" />
+            <circle cx="50%" cy="50%" r="220" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          </svg>
+        </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+        {/* Faint Ambient Soft Depth Gradients */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-sky-600/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-slate-800/20 rounded-full blur-[90px] pointer-events-none" />
+
+        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-5">
           
-          {/* Tagline & Role Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/15 border border-secondary/30 backdrop-blur-md shadow-sm">
-            <Sparkles size={14} className="text-secondary animate-pulse" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-secondary">
+          {/* Top Branding Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.09] backdrop-blur-md shadow-sm">
+            <Sparkles size={13} className="text-sky-400 opacity-90" />
+            <span className="text-[11px] font-medium uppercase tracking-widest text-slate-300">
               UNIFIED LEGAL SYSTEM PLATFORM
             </span>
-            <span className="text-[10px] bg-secondary text-primary font-bold px-2.5 py-0.5 rounded-full uppercase ml-1 shadow-sm">
+            <span className="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 font-semibold px-2 py-0.5 rounded-full uppercase ml-1">
               {role} PORTAL
             </span>
           </div>
 
-          {/* Focal Quotation Card */}
-          <div className="relative w-full max-w-3xl my-2 p-8 sm:p-12 rounded-2xl bg-white/10 dark:bg-slate-950/40 border border-white/20 dark:border-white/15 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.25),0_0_50px_rgba(79,195,247,0.15)] flex flex-col items-center justify-center transition-all duration-500 hover:border-secondary/40">
+          {/* Compact Premium Quotation Panel */}
+          <div className="relative w-[90%] sm:w-[92%] md:w-[76%] max-w-[1050px] mx-auto py-7 px-6 sm:py-8 sm:px-10 md:py-9 md:px-12 rounded-2xl bg-[#0E1A30]/50 border border-white/[0.09] backdrop-blur-md shadow-[0_12px_32px_rgba(0,0,0,0.35)] flex flex-col items-center justify-center transition-all duration-300">
             
-            {/* Decorative Quote Icon Badge */}
-            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-slate-900 border border-secondary/50 flex items-center justify-center text-secondary shadow-lg">
-              <Quote size={20} className="stroke-[2.5]" />
-            </div>
-
-            {/* Giant Translucent Watermark Quotation Marks */}
-            <span className="absolute top-2 left-6 text-7xl sm:text-8xl font-serif text-white/10 select-none pointer-events-none font-bold leading-none">
+            {/* Delicate Watermark Quotation Marks in Corners */}
+            <span className="absolute top-3 left-5 text-3xl sm:text-4xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
               “
             </span>
-            <span className="absolute bottom-1 right-6 text-7xl sm:text-8xl font-serif text-white/10 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute bottom-3 right-5 text-3xl sm:text-4xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
               ”
             </span>
 
             {/* Quotation Main Focal Text */}
-            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-2xl sm:text-3xl md:text-4xl text-slate-50 font-medium leading-relaxed sm:leading-relaxed text-center tracking-wide px-2 sm:px-6 py-3">
-              “All of us do not have equal talent.... But, all of us have an <span className="text-secondary font-semibold not-italic drop-shadow-[0_0_12px_rgba(79,195,247,0.6)] border-b-2 border-secondary/60 pb-0.5">equal opportunity</span> to develop our talent”
+            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-2xl sm:text-3xl md:text-[38px] lg:text-[42px] text-slate-100 font-normal leading-[1.38] sm:leading-[1.42] text-center tracking-wide px-2 sm:px-4">
+              “All of us do not have equal talent....
+              <br className="hidden sm:inline" />
+              {' '}But, all of us have an <span className="text-[#38bdf8] font-medium not-italic border-b border-[#38bdf8]/40 pb-0.5">equal opportunity</span>
+              <br className="hidden sm:inline" />
+              {' '}to develop our talent”
             </blockquote>
 
-            {/* Subtle Aesthetic Accent Bar */}
-            <div className="w-20 h-1 rounded-full bg-gradient-to-r from-transparent via-secondary to-transparent mt-4 opacity-80" />
+            {/* Understated Minimal Accent Line */}
+            <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-slate-600/50 to-transparent mt-5 opacity-60" />
           </div>
 
         </div>
