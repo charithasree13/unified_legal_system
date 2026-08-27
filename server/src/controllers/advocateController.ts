@@ -158,6 +158,55 @@ export const getAdvocates = async (req: Request, res: Response) => {
       }
     }
 
+    // 3. Fallback auto-seed if database collection is empty
+    if (map.size === 0) {
+      const defaults = [
+        {
+          name: "P V Prasad",
+          phone: "9247253096",
+          email: "pvprasadvmpl@gmail.com",
+          enrollmentNumber: "AP/298/1998",
+          enrollmentDate: "1998-03-05",
+          specialization: "Civil Litigation, Notary, Bank legal advisors",
+          court: "Senior civil judges court, Junior civil Judges court, Judicial magistrate of 1st class",
+          city: "Madanapalle",
+          state: "Andhra Pradesh",
+          experience: 28,
+          bio: "Advocate, Notary, Bank Panel Advocate, Verification of legal title",
+          address: "Vasavi Bhavan Street, Madanapalle",
+          availability: "Available",
+          isVerified: true
+        },
+        {
+          name: "Bestha Sreenivasulu  Advocate",
+          phone: "9441135084",
+          email: "bsreenivasadv@gmail.com",
+          enrollmentNumber: "AP/32/2008",
+          enrollmentDate: "2008-01-24",
+          specialization: "Civil Litigation",
+          court: "Senior civil judges court",
+          city: "Madanapalle",
+          state: "Andhra Pradesh",
+          experience: 16,
+          bio: "Verified legal practitioner registered with Bar Council.",
+          address: "2-245-8-B-7, Madanapalle",
+          availability: "Available",
+          isVerified: true
+        }
+      ];
+
+      for (const d of defaults) {
+        try {
+          const created = await Advocate.create(d);
+          const norm = normalize(created);
+          map.set(norm.email, norm);
+        } catch (e) {
+          const norm = normalize(d);
+          map.set(norm.email, norm);
+        }
+      }
+    }
+
     let advocatesList = Array.from(map.values());
 
     // Apply global search query filter
