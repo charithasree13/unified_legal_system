@@ -19,6 +19,7 @@ import * as docCtrl from './controllers/documentController';
 import * as projCtrl from './controllers/projectController';
 import * as courtFeeCtrl from './controllers/courtFeeController';
 import * as mappingCtrl from './controllers/sectionMappingController';
+import * as reminderCtrl from './controllers/reminderController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -107,6 +108,13 @@ app.put('/api/projects/:id/tasks', authenticateToken, projCtrl.updateTaskStatus)
 app.post('/api/projects/:id/comments', authenticateToken, projCtrl.addComment);
 app.post('/api/projects/:id/draft', authenticateToken, projCtrl.saveDraft);
 app.post('/api/projects/:id/version', authenticateToken, projCtrl.createVersion);
+
+// HEARING REMINDERS & SMTP TESTING API
+app.post('/api/reminders/trigger', authenticateToken, requireAdminOrAdvocate, reminderCtrl.triggerReminders);
+app.post('/api/reminders/test', authenticateToken, requireAdminOrAdvocate, reminderCtrl.sendTestReminder);
+app.get('/api/reminders/health', authenticateToken, reminderCtrl.checkSmtpHealth);
+app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.getReminderLogs);
+
 
 // COURT FEE CALCULATOR MODULE API
 app.get('/api/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);

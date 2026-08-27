@@ -491,6 +491,19 @@ const LegalSectionMappingSchema = new mongoose.Schema({
   createdBy: { type: String, default: 'System Admin' }
 }, { timestamps: true });
 
+const HearingReminderSchema = new mongoose.Schema({
+  caseId: { type: String, required: true },
+  clientId: { type: String },
+  email: { type: String, required: true },
+  hearingDate: { type: String, required: true },
+  reminderType: { type: String, default: '3_DAY_REMINDER' },
+  status: { type: String, enum: ['SENT', 'FAILED'], default: 'SENT' },
+  sentAt: { type: Date, default: Date.now },
+  errorMessage: { type: String }
+}, { timestamps: true });
+
+HearingReminderSchema.index({ caseId: 1, hearingDate: 1, reminderType: 1, email: 1 }, { unique: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -520,6 +533,7 @@ export const Message: any = createDynamicModel('Message', MessageSchema);
 export const Project: any = createDynamicModel('Project', ProjectSchema);
 export const Notification: any = createDynamicModel('Notification', NotificationSchema);
 export const AuditLog: any = createDynamicModel('AuditLog', AuditLogSchema);
+export const HearingReminder: any = createDynamicModel('HearingReminder', HearingReminderSchema);
 
 export const State: any = createDynamicModel('State', StateSchema);
 export const District: any = createDynamicModel('District', DistrictSchema);
@@ -537,3 +551,4 @@ export const CalculationHistory: any = createDynamicModel('CalculationHistory', 
 export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVerificationSchema);
 export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
+

@@ -122,7 +122,12 @@ export const updateProject = async (req: AuthenticatedRequest, res: Response) =>
     if (req.user?.role === 'Client') {
       return res.status(403).json({ success: false, message: 'Access denied. Clients cannot edit case details.' });
     }
-    const { status, priority, progress, deadline } = req.body;
+    const { 
+      status, priority, progress, deadline, 
+      nextHearingDate, caseNo, name, plaintiffName, defendantName, 
+      plaintiffEmail, defendantEmail, clientPhone, courtType, courtCity, caseType 
+    } = req.body;
+
     const project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ success: false, message: 'Case not found.' });
 
@@ -145,28 +150,45 @@ export const updateProject = async (req: AuthenticatedRequest, res: Response) =>
       updates.deadline = deadline;
       actions.push(`adjusted deadline to ${deadline}`);
     }
+    if (nextHearingDate !== undefined && nextHearingDate !== project.nextHearingDate) {
+      updates.nextHearingDate = nextHearingDate;
+      actions.push(`updated hearing date to '${nextHearingDate}'`);
+    }
+    if (caseNo !== undefined) updates.caseNo = caseNo;
+    if (name !== undefined) updates.name = name;
+    if (plaintiffName !== undefined) updates.plaintiffName = plaintiffName;
+    if (defendantName !== undefined) updates.defendantName = defendantName;
+    if (plaintiffEmail !== undefined) updates.plaintiffEmail = plaintiffEmail;
+    if (defendantEmail !== undefined) updates.defendantEmail = defendantEmail;
+    if (clientPhone !== undefined) updates.clientPhone = clientPhone;
+    if (courtType !== undefined) updates.courtType = courtType;
+    if (courtCity !== undefined) updates.courtCity = courtCity;
+    if (caseType !== undefined) updates.caseType = caseType;
 
-    if (actions.length === 0) {
+    if (Object.keys(updates).length === 0) {
       return res.status(200).json({ success: true, project });
     }
 
-    // Append to activity timeline
+    // Append to activity timeline if actions recorded
     const timelineUpdates = actions.map(action => ({
       userName: req.user?.name || 'User',
       action,
       timestamp: new Date()
     }));
 
-    const updated = await Project.findByIdAndUpdate(req.params.id, {
-      ...updates,
-      $push: { activityTimeline: { $each: timelineUpdates } }
-    }, { new: true });
+    const updatePayload: any = { ...updates };
+    if (timelineUpdates.length > 0) {
+      updatePayload.$push = { activityTimeline: { $each: timelineUpdates } };
+    }
+
+    const updated = await Project.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
 
     return res.status(200).json({ success: true, project: updated });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Failed to update case.' });
   }
 };
+
 
 // Add Task inside Project
 export const addTask = async (req: AuthenticatedRequest, res: Response) => {

@@ -7,7 +7,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsnd --respawn --transpile-only src/index.ts",
-    "migrate": "tsnd --transpile-only src/scripts/migrate.ts"
+    "migrate": "tsnd --transpile-only src/scripts/migrate.ts",
+    "reminders:check": "ts-node --transpile-only src/scripts/runReminders.ts",
+    "reminders:test": "ts-node --transpile-only src/scripts/runReminders.ts --test"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
