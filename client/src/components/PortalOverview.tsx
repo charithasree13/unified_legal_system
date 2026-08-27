@@ -396,11 +396,11 @@ export const PortalOverview: React.FC = () => {
   return (
     <div className="space-y-6">
       
-      {/* Compact Luxury Legal-Tech Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#091122] via-[#0C182F] to-[#070E1C] text-white py-8 sm:py-10 md:py-12 px-4 sm:px-8 shadow-2xl border border-white/[0.08] animate-slide-up">
+      {/* Ultra-Compact Premium Legal-Tech Hero Banner */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-b from-[#091122] via-[#0C182F] to-[#070E1C] text-white py-4 sm:py-5 px-4 sm:px-6 shadow-md border border-white/[0.08] animate-slide-up">
         
-        {/* Fine Architectural & Legal Line Background Overlay (Barely Visible, Ultra-Low Opacity) */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.035] overflow-hidden">
+        {/* Fine Architectural Line Background Overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] overflow-hidden">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
             <defs>
               <pattern id="archGrid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -408,50 +408,37 @@ export const PortalOverview: React.FC = () => {
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#archGrid)" />
-            <circle cx="50%" cy="50%" r="350" fill="none" stroke="currentColor" strokeWidth="1" />
-            <circle cx="50%" cy="50%" r="220" fill="none" stroke="currentColor" strokeWidth="0.5" />
           </svg>
         </div>
 
-        {/* Faint Ambient Soft Depth Gradients */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-sky-600/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-slate-800/20 rounded-full blur-[90px] pointer-events-none" />
-
-        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-5">
+        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-3">
           
           {/* Top Branding Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.09] backdrop-blur-md shadow-sm">
-            <Sparkles size={13} className="text-sky-400 opacity-90" />
-            <span className="text-[11px] font-medium uppercase tracking-widest text-slate-300">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.09] backdrop-blur-md shadow-sm">
+            <Sparkles size={12} className="text-sky-400 opacity-90" />
+            <span className="text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-slate-300">
               UNIFIED LEGAL SYSTEM PLATFORM
             </span>
-            <span className="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 font-semibold px-2 py-0.5 rounded-full uppercase ml-1">
+            <span className="text-[9px] sm:text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 font-semibold px-2 py-0.5 rounded-full uppercase ml-1">
               {role} PORTAL
             </span>
           </div>
 
-          {/* Compact Premium Quotation Panel */}
-          <div className="relative w-[90%] sm:w-[92%] md:w-[76%] max-w-[1050px] mx-auto py-7 px-6 sm:py-8 sm:px-10 md:py-9 md:px-12 rounded-2xl bg-[#0E1A30]/50 border border-white/[0.09] backdrop-blur-md shadow-[0_12px_32px_rgba(0,0,0,0.35)] flex flex-col items-center justify-center transition-all duration-300">
+          {/* Low-Profile Sleek Quotation Panel */}
+          <div className="relative w-full max-w-[950px] mx-auto py-3.5 px-4 sm:py-4 sm:px-8 rounded-xl bg-[#0E1A30]/50 border border-white/[0.09] backdrop-blur-md shadow-sm flex flex-col items-center justify-center">
             
-            {/* Delicate Watermark Quotation Marks in Corners */}
-            <span className="absolute top-3 left-5 text-3xl sm:text-4xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
+            {/* Subtle Watermark Quotes */}
+            <span className="absolute top-2 left-3 text-2xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
               “
             </span>
-            <span className="absolute bottom-3 right-5 text-3xl sm:text-4xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute bottom-2 right-3 text-2xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
               ”
             </span>
 
-            {/* Quotation Main Focal Text */}
-            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-2xl sm:text-3xl md:text-[38px] lg:text-[42px] text-slate-100 font-normal leading-[1.38] sm:leading-[1.42] text-center tracking-wide px-2 sm:px-4">
-              “All of us do not have equal talent....
-              <br className="hidden sm:inline" />
-              {' '}But, all of us have an <span className="text-[#38bdf8] font-medium not-italic border-b border-[#38bdf8]/40 pb-0.5">equal opportunity</span>
-              <br className="hidden sm:inline" />
-              {' '}to develop our talent”
+            {/* Quotation Text (Flows horizontally in 2 compact lines on desktop) */}
+            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-base sm:text-lg md:text-xl lg:text-[22px] text-slate-100 font-normal leading-relaxed text-center tracking-wide px-2 sm:px-4">
+              “All of us do not have equal talent.... But, all of us have an <span className="text-[#38bdf8] font-medium not-italic border-b border-[#38bdf8]/40 pb-0.5">equal opportunity</span> to develop our talent”
             </blockquote>
-
-            {/* Understated Minimal Accent Line */}
-            <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-slate-600/50 to-transparent mt-5 opacity-60" />
           </div>
 
         </div>
