@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
-  Activity, ArrowRight, Sparkles, Shield, Compass
+  Activity, ArrowRight, Sparkles, Shield, Compass, Quote
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -397,49 +397,49 @@ export const PortalOverview: React.FC = () => {
     <div className="space-y-6">
       
       {/* Main Theme Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-primary to-[#1E3A8A] text-white p-6 sm:p-8 shadow-xl border border-white/10">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-primary to-[#1E3A8A] text-white p-6 sm:p-12 shadow-2xl border border-white/15 animate-slide-up">
         
         {/* Abstract Glow Effect Backgrounds */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-4xl space-y-4">
+        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
           
-          {/* Tagline Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 border border-secondary/40 backdrop-blur-md">
-            <Sparkles size={14} className="text-secondary" />
+          {/* Tagline & Role Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/15 border border-secondary/30 backdrop-blur-md shadow-sm">
+            <Sparkles size={14} className="text-secondary animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-wider text-secondary">
-              Unified Legal System Platform
+              UNIFIED LEGAL SYSTEM PLATFORM
             </span>
-            <span className="text-[10px] bg-secondary text-primary font-bold px-2 py-0.5 rounded-full uppercase ml-1">
-              {role} Portal
+            <span className="text-[10px] bg-secondary text-primary font-bold px-2.5 py-0.5 rounded-full uppercase ml-1 shadow-sm">
+              {role} PORTAL
             </span>
           </div>
 
-          {/* Main Theme Title */}
-          <h1 className="text-2xl sm:text-4xl font-extrabold font-sans tracking-tight leading-tight text-white">
-            Empowering Justice through Seamless Digital Legal Integration
-          </h1>
+          {/* Focal Quotation Card */}
+          <div className="relative w-full max-w-3xl my-2 p-8 sm:p-12 rounded-2xl bg-white/10 dark:bg-slate-950/40 border border-white/20 dark:border-white/15 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.25),0_0_50px_rgba(79,195,247,0.15)] flex flex-col items-center justify-center transition-all duration-500 hover:border-secondary/40">
+            
+            {/* Decorative Quote Icon Badge */}
+            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-slate-900 border border-secondary/50 flex items-center justify-center text-secondary shadow-lg">
+              <Quote size={20} className="stroke-[2.5]" />
+            </div>
 
-          {/* Project Theme Description */}
-          <p className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-3xl font-light">
-            Welcome to the <strong className="text-secondary font-semibold">Unified Legal System</strong> — a comprehensive digital legal platform uniting <span className="underline decoration-secondary/50 underline-offset-4">Clients</span>, <span className="underline decoration-secondary/50 underline-offset-4">Advocates</span>, and <span className="underline decoration-secondary/50 underline-offset-4">Judicial Administrators</span>. Explore verified practitioner directories, manage active court cases, research landmark judgements & Bare Acts, calculate state court fees, and collaborate on legal documents securely in one place.
-          </p>
+            {/* Giant Translucent Watermark Quotation Marks */}
+            <span className="absolute top-2 left-6 text-7xl sm:text-8xl font-serif text-white/10 select-none pointer-events-none font-bold leading-none">
+              “
+            </span>
+            <span className="absolute bottom-1 right-6 text-7xl sm:text-8xl font-serif text-white/10 select-none pointer-events-none font-bold leading-none">
+              ”
+            </span>
 
-          {/* Key Feature Badges */}
-          <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-white/90">
-            <span className="px-2.5 py-1 bg-white/10 rounded-md border border-white/10 flex items-center gap-1.5">
-              <Shield size={12} className="text-secondary" /> End-to-End Encryption
-            </span>
-            <span className="px-2.5 py-1 bg-white/10 rounded-md border border-white/10 flex items-center gap-1.5">
-              <ShieldCheck size={12} className="text-secondary" /> Verified Advocates
-            </span>
-            <span className="px-2.5 py-1 bg-white/10 rounded-md border border-white/10 flex items-center gap-1.5">
-              <Landmark size={12} className="text-secondary" /> State Court Fee Engines
-            </span>
-            <span className="px-2.5 py-1 bg-white/10 rounded-md border border-white/10 flex items-center gap-1.5">
-              <Gavel size={12} className="text-secondary" /> Judgements & Bare Acts
-            </span>
+            {/* Quotation Main Focal Text */}
+            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-2xl sm:text-3xl md:text-4xl text-slate-50 font-medium leading-relaxed sm:leading-relaxed text-center tracking-wide px-2 sm:px-6 py-3">
+              “All of us do not have equal talent.... But, all of us have an <span className="text-secondary font-semibold not-italic drop-shadow-[0_0_12px_rgba(79,195,247,0.6)] border-b-2 border-secondary/60 pb-0.5">equal opportunity</span> to develop our talent”
+            </blockquote>
+
+            {/* Subtle Aesthetic Accent Bar */}
+            <div className="w-20 h-1 rounded-full bg-gradient-to-r from-transparent via-secondary to-transparent mt-4 opacity-80" />
           </div>
 
         </div>
