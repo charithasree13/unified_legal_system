@@ -8,6 +8,21 @@ import {
 import { useAuthStore } from '../store/authStore';
 import QRCode from 'qrcode';
 
+// Helper function to dynamically calculate advocate experience based on enrollment date / year and current year
+export const calculateDynamicExperience = (adv: any): number => {
+  if (!adv) return 0;
+  const currentYear = new Date().getFullYear();
+  const dateOrNum = String(adv.enrollmentDate || adv.enrollmentNumber || '');
+  const match = dateOrNum.match(/\b(19\d\d|20\d\d)\b/);
+  if (match) {
+    const enrollYear = parseInt(match[1], 10);
+    if (enrollYear > 0 && enrollYear <= currentYear) {
+      return Math.max(0, currentYear - enrollYear);
+    }
+  }
+  return Number(adv.experience || 0);
+};
+
 export const Directory: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
   const location = useLocation();
@@ -74,7 +89,7 @@ export const Directory: React.FC = () => {
       court: adv.court || '',
       city: adv.city || '',
       state: adv.state || '',
-      experience: adv.experience !== undefined ? adv.experience : 1,
+      experience: calculateDynamicExperience(adv),
       bio: adv.bio || '',
       address: adv.address || '',
       isVerified: adv.isVerified === true
@@ -305,7 +320,7 @@ export const Directory: React.FC = () => {
         `EMAIL;TYPE=internet:${selectedAdv.email || ''}`,
         `ORG:${selectedAdv.specialization || ''}`,
         `ADR;TYPE=work:;;${selectedAdv.address || ''};${selectedAdv.city || ''};${selectedAdv.state || ''};;`,
-        `NOTE:Enrollment Number: ${selectedAdv.enrollmentNumber || ''} | Court: ${selectedAdv.court || ''} | Experience: ${selectedAdv.experience || 0} years`,
+        `NOTE:Enrollment Number: ${selectedAdv.enrollmentNumber || ''} | Court: ${selectedAdv.court || ''} | Experience: ${calculateDynamicExperience(selectedAdv)} years`,
         'END:VCARD'
       ].join('\n');
 
@@ -621,7 +636,7 @@ export const Directory: React.FC = () => {
                 {/* Footer details row */}
                 <div className="p-4 bg-slate-50 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-850 flex justify-between items-center text-xs">
                   <span className="text-[10px] bg-primary/10 text-primary dark:bg-sky-400/20 dark:text-sky-400 px-2 py-0.5 rounded font-semibold">
-                    {adv.experience} Years Exp
+                    {calculateDynamicExperience(adv)} Years Exp
                   </span>
                   
                   <div className="flex gap-1.5 items-center">
@@ -711,7 +726,7 @@ export const Directory: React.FC = () => {
                     </div>
                     <div>
                       <span className="block text-[10px] font-bold text-slate-400 uppercase">Experience</span>
-                      <span className="font-semibold">{selectedAdv.experience} Years of Practice</span>
+                      <span className="font-semibold">{calculateDynamicExperience(selectedAdv)} Years of Practice</span>
                     </div>
                   </div>
 

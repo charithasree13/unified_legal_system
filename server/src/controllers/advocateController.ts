@@ -118,6 +118,18 @@ export const getAdvocates = async (req: Request, res: Response) => {
       const enrollKey = String(obj.enrollmentNumber || '').trim();
       const idKey = String(obj._id || emailKey || phoneKey || enrollKey);
 
+      const enrollDateStr = String(obj.enrollmentDate || obj.enrollmentNumber || '');
+      const currentYear = new Date().getFullYear();
+      let calculatedExp = Number(obj.experience || 0);
+
+      const match = enrollDateStr.match(/\b(19\d\d|20\d\d)\b/);
+      if (match) {
+        const enrollYear = parseInt(match[1], 10);
+        if (enrollYear > 0 && enrollYear <= currentYear) {
+          calculatedExp = Math.max(0, currentYear - enrollYear);
+        }
+      }
+
       return {
         _id: obj._id ? String(obj._id) : idKey,
         name: obj.name || 'Practicing Advocate',
@@ -129,7 +141,7 @@ export const getAdvocates = async (req: Request, res: Response) => {
         court: obj.court || 'Senior civil judges court, Junior civil Judges court, High Court',
         city: obj.city || 'Madanapalle',
         state: obj.state || 'Andhra Pradesh',
-        experience: Number(obj.experience || 15),
+        experience: calculatedExp || Number(obj.experience || 15),
         photo: obj.profilePhoto || obj.photo || '',
         bio: obj.bio || 'Verified legal practitioner registered with Bar Council.',
         address: obj.address || 'Chamber / Court Complex',
