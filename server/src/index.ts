@@ -227,7 +227,11 @@ if (fs.existsSync(clientDistPath)) {
 }
 
 // Start Server
-server.listen(PORT, () => {
-  console.log(`🚀 Secure Legal System API Server listening on port ${PORT}`);
-  startHearingReminderScheduler();
-});
+if (!process.env.VERCEL) {
+  server.listen(PORT, () => {
+    console.log(`🚀 Secure Legal System API Server listening on port ${PORT}`);
+    startHearingReminderScheduler();
+  });
+}
+
+export default app;
