@@ -183,16 +183,32 @@ export const Layout: React.FC = () => {
               )}
             </div>
 
-            {/* Profile Avatar Quick View */}
+            {/* Profile Avatar Quick View & Sign Out Option */}
             {user && (
               <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800">
-                <div className="h-8 w-8 rounded-full bg-primary dark:bg-slate-700 text-white flex items-center justify-center font-bold text-sm">
-                  {user.name.charAt(0)}
-                </div>
-                <div className="hidden lg:block text-left">
-                  <p className="text-xs font-semibold leading-none">{user.name}</p>
-                  <span className="text-[10px] text-slate-400 capitalize">{user.role}</span>
-                </div>
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-left group"
+                  title="View Logged in Person Details"
+                >
+                  <div className="h-8 w-8 rounded-full bg-primary dark:bg-slate-700 text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">
+                    {user.name.charAt(0)}
+                  </div>
+                  <div className="hidden lg:block">
+                    <p className="text-xs font-semibold leading-none text-slate-900 dark:text-slate-100 group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">{user.name}</p>
+                    <span className="text-[10px] text-slate-400 capitalize">{user.role}</span>
+                  </div>
+                </button>
+
+                {/* Sign Out Option */}
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 border border-red-200 dark:border-red-500/20 rounded-lg transition-all cursor-pointer shadow-sm ml-1"
+                  title="Sign Out (View Logged-in User Details)"
+                >
+                  <LogOut size={14} />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
               </div>
             )}
           </div>

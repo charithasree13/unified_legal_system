@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { User, Phone, Mail, Award, Landmark, MapPin, CheckCircle, Shield } from 'lucide-react';
+import { User, Phone, Mail, Award, Landmark, MapPin, CheckCircle, Shield, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
 export const Profile: React.FC = () => {
-  const { user, updateUserProfile, addNotification } = useAuthStore();
+  const { user, updateUserProfile, addNotification, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [email, setEmail] = useState(user?.email || '');
@@ -32,9 +39,19 @@ export const Profile: React.FC = () => {
         <h3 className="font-bold text-sm flex items-center gap-2">
           <User size={16} /> My Professional Profile
         </h3>
-        <span className="text-[10px] bg-secondary/25 text-[#1e293b] dark:text-sky-400 px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">
-          {user?.role} Access
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] bg-secondary/25 text-[#1e293b] dark:text-sky-400 px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">
+            {user?.role} Access
+          </span>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 px-3 py-1 bg-red-500/20 hover:bg-red-500/40 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer border border-red-300/30 shadow-sm"
+            title="Complete Sign Out"
+          >
+            <LogOut size={13} />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
       <form onSubmit={handleUpdate} className="p-6 space-y-4 text-xs">
