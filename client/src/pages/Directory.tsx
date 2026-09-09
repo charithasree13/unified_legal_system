@@ -675,11 +675,11 @@ export const Directory: React.FC = () => {
 
       {/* Profile Details Modal */}
       {selectedAdv && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up relative">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden animate-slide-up relative">
             
             {/* Modal Header Banner */}
-            <div className="h-20 bg-primary dark:bg-slate-850 flex justify-between items-center px-6 text-white">
+            <div className="h-16 bg-primary dark:bg-slate-850 flex justify-between items-center px-6 text-white flex-shrink-0">
               <h3 className="font-bold text-base">Advocate Credentials Card</h3>
               <button 
                 onClick={() => setSelectedAdv(null)}
@@ -690,7 +690,7 @@ export const Directory: React.FC = () => {
             </div>
 
             {/* Profile Avatar Card */}
-            <div className="p-6 space-y-4">
+            <div className="p-5 sm:p-6 space-y-4 flex-1 overflow-y-auto scrollbar-thin">
               <div className="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div className="h-16 w-16 rounded-2xl bg-secondary text-primary font-bold text-3xl flex items-center justify-center shadow-inner">
                   {selectedAdv.name.charAt(0)}
@@ -808,7 +808,7 @@ export const Directory: React.FC = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="bg-slate-50 dark:bg-slate-950 p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center gap-2">
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center gap-2 flex-shrink-0">
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowQr(!showQr)}
