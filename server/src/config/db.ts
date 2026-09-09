@@ -15,7 +15,7 @@ export const connectDB = async () => {
   const mongoUri = process.env.MONGO_URI || DEFAULT_ATLAS_URI;
 
   try {
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 15000 });
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 });
     console.log('⚡ Connected to MongoDB Database successfully.');
   } catch (error: any) {
     console.error(`❌ MongoDB connection error: ${error.message}`);

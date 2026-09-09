@@ -228,12 +228,16 @@ export const Calculators: React.FC = () => {
     }
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/calculators/court-fee/calculate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: JSON.stringify({
           stateName: selectedState,
           district,
@@ -248,17 +252,24 @@ export const Calculators: React.FC = () => {
         })
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data: any = {};
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      }
 
       if (!res.ok) {
-        setCalcErr(data.message || 'Fee calculation failed.');
+        setCalcErr(data.message || `Fee calculation failed (HTTP ${res.status}).`);
+      } else if (!data.calculation) {
+        setCalcErr('Invalid response from court fee calculation service.');
       } else {
         setCalcResult(data.calculation);
         fetchHistory();
         addNotification('Court Fee Calculated', `Statutory fee computed: ₹${data.calculation.calculatedFee.toLocaleString('en-IN')}`, 'success');
       }
-    } catch (err) {
-      setCalcErr('Network failed calculating court fee.');
+    } catch (err: any) {
+      console.error('Court fee calculation error:', err);
+      setCalcErr('Failed to connect to court fee calculation server. Please ensure backend server is running.');
     } finally {
       setCalcLoading(false);
     }

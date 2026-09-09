@@ -12,7 +12,7 @@ dotenv.config();
 
 import { connectDB } from './config/db';
 import { handleSockets } from './sockets/chat';
-import { authenticateToken, requireAdmin, requireAdminOrAdvocate, csrfProtection, AuthenticatedRequest } from './middleware/auth';
+import { authenticateToken, optionalAuthToken, requireAdmin, requireAdminOrAdvocate, csrfProtection, AuthenticatedRequest } from './middleware/auth';
 import * as authCtrl from './controllers/authController';
 import * as advCtrl from './controllers/advocateController';
 import * as docCtrl from './controllers/documentController';
@@ -119,7 +119,7 @@ app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.get
 // COURT FEE CALCULATOR MODULE API
 app.get('/api/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
 app.get('/api/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
-app.post('/api/calculators/court-fee/calculate', courtFeeCtrl.calculateFee);
+app.post('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 app.get('/api/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
 app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, courtFeeCtrl.getCalculationPdf);
 app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFeeCtrl.getCalculationCsv);

@@ -140,6 +140,7 @@ export async function seedCourtFeeDatabase() {
       feeType: 'SlabBased',
       maxFee: 3000000,
       effectiveDate: '1956-05-01',
+      isActive: true,
       remarks: 'AP Court Fees Act 1956: Stepped Schedule I Article 1 Table (Rs 3,426 for Rs 1,00,000).'
     });
 
@@ -161,6 +162,7 @@ export async function seedCourtFeeDatabase() {
       feeType: 'SlabBased',
       maxFee: 3000000,
       effectiveDate: '1956-05-01',
+      isActive: true,
       remarks: 'Telangana Court Fees Act 1956: Stepped Schedule I Article 1 Table (Rs 1,026 for Rs 14,000).'
     });
 
@@ -181,6 +183,7 @@ export async function seedCourtFeeDatabase() {
       article: 'Article 1',
       feeType: 'SlabBased',
       effectiveDate: '2012-08-01',
+      isActive: true,
       remarks: 'Delhi Stepped Table: ₹3,320 for first ₹1 Lakh + ₹976 per ₹1 Lakh balance.'
     });
 
@@ -204,6 +207,7 @@ export async function seedCourtFeeDatabase() {
       feeType: 'SlabBased',
       maxFee: 300000,
       effectiveDate: '1959-07-01',
+      isActive: true,
       remarks: 'Bombay Court Fees Act: ₹200 per ₹10,000 up to ₹11L; ₹1,200 per ₹1L balance (Cap ₹3,00,000).'
     });
 

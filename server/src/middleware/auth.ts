@@ -31,6 +31,21 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
   }
 };
 
+export const optionalAuthToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      req.user = decoded;
+    } catch (error: any) {
+      // Ignored for optional auth
+    }
+  }
+  next();
+};
+
 export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user || req.user.role !== 'Admin') {
     return res.status(403).json({ success: false, message: 'Access denied. Administrator privileges required.' });

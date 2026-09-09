@@ -71,7 +71,7 @@ export const evaluateCourtFee = (
 
   // Step 3: Exact DB Rule Matching
   const matchedRule = rules.find((r) => {
-    if (!r.isActive) return false;
+    if (r.isActive === false) return false;
     const matchState = r.stateName.toLowerCase() === stateName.toLowerCase();
     const matchCase = r.caseTypeName.toLowerCase() === caseTypeName.toLowerCase();
     const matchRelief = r.reliefTypeName.toLowerCase() === reliefTypeName.toLowerCase();
