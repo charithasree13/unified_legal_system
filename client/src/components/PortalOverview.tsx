@@ -413,15 +413,27 @@ export const PortalOverview: React.FC = () => {
 
         <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-3">
           
-          {/* Top Branding Pill Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.09] backdrop-blur-md shadow-sm">
-            <Sparkles size={12} className="text-sky-400 opacity-90" />
-            <span className="text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-slate-300">
-              UNIFIED LEGAL SYSTEM PLATFORM
-            </span>
-            <span className="text-[9px] sm:text-[10px] bg-sky-500/20 text-sky-300 border border-sky-400/30 font-semibold px-2 py-0.5 rounded-full uppercase ml-1">
-              {role} PORTAL
-            </span>
+          {/* Official Logo & Portal Title Badge */}
+          <div className="flex items-center gap-3 bg-white/[0.04] p-2.5 px-4 rounded-2xl border border-white/10 backdrop-blur-md shadow-md">
+            <img 
+              src="/logo.jpg" 
+              alt="Elite Legal Desk Logo" 
+              className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full border-2 border-amber-400 shadow-lg bg-white" 
+            />
+            <div className="text-left">
+              <h1 className="text-base sm:text-lg font-extrabold font-sans text-white tracking-wider leading-none">
+                ELITE LEGAL DESK
+              </h1>
+              <p className="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-widest uppercase mt-0.5">
+                MADANAPALLE
+              </p>
+              <div className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                <Sparkles size={10} className="text-sky-400" />
+                <span className="text-[9px] font-bold uppercase tracking-wider">
+                  {role} PORTAL
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Low-Profile Sleek Quotation Panel */}

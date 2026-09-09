@@ -77,21 +77,28 @@ export const Layout: React.FC = () => {
         {/* Top Navbar */}
         <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-sm transition-colors duration-200">
           
-          {/* Left: Branding on Dashboard / Collapsible Menu Toggle on internal pages & Global Search */}
+          {/* Left: Branding & Global Search */}
           <div className="flex items-center gap-4 flex-1">
-            {isDashboard ? (
-              <div 
-                onClick={() => navigate('/dashboard')} 
-                className="flex items-center gap-3 cursor-pointer select-none"
-              >
-                <div className="bg-primary dark:bg-slate-800 p-2 rounded-lg text-white shadow-sm">
-                  <Scale size={20} className="stroke-[2.5]" />
-                </div>
-                <span className="font-bold text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase">
-                  UNIFIED LEGAL SYSTEM
+            <div 
+              onClick={() => navigate('/dashboard')} 
+              className="flex items-center gap-3 cursor-pointer select-none group"
+            >
+              <img 
+                src="/logo.jpg" 
+                alt="Elite Legal Desk Logo" 
+                className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform" 
+              />
+              <div className="flex flex-col">
+                <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">
+                  ELITE LEGAL DESK
+                </span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
+                  MADANAPALLE
                 </span>
               </div>
-            ) : (
+            </div>
+
+            {!isDashboard && (
               <button 
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"

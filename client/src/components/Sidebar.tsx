@@ -57,14 +57,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
         {/* Top Brand Logo & Mobile Close */}
         <div>
           <div className="p-4 flex items-center justify-between border-b border-white/10">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="bg-secondary p-2 rounded-lg text-primary flex-shrink-0">
-                <Scale size={20} className="stroke-[2.5]" />
-              </div>
+            <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <img 
+                src="/logo.jpg" 
+                alt="Elite Legal Desk Logo" 
+                className="h-9 w-9 object-contain rounded-full shadow-md border border-amber-400 bg-white flex-shrink-0" 
+              />
               {(!collapsed || mobileOpen) && (
-                <span className="font-semibold text-lg tracking-wider font-sans whitespace-nowrap">
-                  LEGAL SYSTEM
-                </span>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="font-extrabold text-sm tracking-wider font-sans whitespace-nowrap text-white leading-none">
+                    ELITE LEGAL DESK
+                  </span>
+                  <span className="text-[9px] text-amber-300 font-bold uppercase tracking-widest mt-0.5">
+                    MADANAPALLE
+                  </span>
+                </div>
               )}
             </div>
 

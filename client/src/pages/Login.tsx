@@ -197,17 +197,24 @@ export const Login: React.FC = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(79,195,247,0.15),transparent_60%)]" />
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]" />
 
-        <div className="relative text-center max-w-lg z-10 animate-slide-up">
-          <div className="bg-secondary/10 inline-flex p-4 rounded-3xl text-secondary mb-6 border border-secondary/20 shadow-lg">
-            <Scale size={48} className="stroke-[1.5] animate-pulse-slow" />
+        <div className="relative text-center max-w-lg z-10 animate-slide-up flex flex-col items-center">
+          <div className="mb-4">
+            <img 
+              src="/logo.jpg" 
+              alt="Elite Legal Desk Logo" 
+              className="h-28 w-28 object-contain rounded-full border-4 border-amber-400/90 shadow-2xl bg-white p-1" 
+            />
           </div>
-          <h1 className="text-4xl font-bold font-sans tracking-wide text-white mb-4">
-            Unified Legal Professional System
+          <h1 className="text-3xl sm:text-4xl font-extrabold font-sans tracking-wide text-white mb-1">
+            ELITE LEGAL DESK
           </h1>
-          <p className="text-white/70 text-sm leading-relaxed mb-8">
-            An enterprise workflow collaboration suite, built for practicing advocates, corporate counsels, and legal administrators.
+          <span className="text-sm font-bold text-amber-300 tracking-widest uppercase mb-4">
+            MADANAPALLE
+          </span>
+          <p className="text-white/80 text-xs leading-relaxed mb-6 max-w-md">
+            An enterprise legal workflow collaboration suite, built for practicing advocates, corporate counsels, and legal administrators.
           </p>
-          <div className="flex gap-4 justify-center text-xs text-secondary font-semibold uppercase tracking-wider">
+          <div className="flex gap-4 justify-center text-xs text-amber-300 font-semibold uppercase tracking-wider">
             <span>Encrypted Chat</span>
             <span>•</span>
             <span>Task Management</span>
@@ -235,7 +242,11 @@ export const Login: React.FC = () => {
                 {mode === 'forgot' && 'Provide account identifier and set a new password'}
               </p>
             </div>
-            <Scale className="text-primary dark:text-sky-400" size={32} />
+            <img 
+              src="/logo.jpg" 
+              alt="Elite Legal Desk Logo" 
+              className="h-12 w-12 object-contain rounded-full shadow-md border border-amber-500/40 bg-white flex-shrink-0" 
+            />
           </div>
 
           {/* Alerts */}
