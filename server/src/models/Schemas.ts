@@ -373,13 +373,17 @@ const CourtFeeRuleSchema = new mongoose.Schema({
   caseTypeName: { type: String, required: true },
   reliefTypeName: { type: String, required: true },
   
-  // Legal Citation References
+  // Legal Citation References & Source Metadata
   actName: { type: String, required: true },
   section: { type: String, default: 'General' },
   schedule: { type: String, default: 'Schedule I' },
   article: { type: String, default: 'Article 1' },
   notificationNo: { type: String, default: '' },
   notificationDate: { type: String, default: '' },
+  sourceName: { type: String, default: 'Official Gazette / State Court Fees Act' },
+  sourceType: { type: String, enum: ['statute', 'amendment', 'gazette', 'court_order', 'verified_legal_source'], default: 'statute' },
+  sourceReference: { type: String, default: 'Statutory Schedule I Table' },
+  lastVerified: { type: String, default: '2026-01-01' },
 
   // Rule Formula Configuration
   feeType: { type: String, enum: ['Fixed', 'AdValorem', 'SlabBased', 'Percentage', 'MarketValue', 'Custom'], default: 'AdValorem' },

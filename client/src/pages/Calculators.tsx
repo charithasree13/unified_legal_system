@@ -261,12 +261,16 @@ export const Calculators: React.FC = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const res = await fetch('/api/calculators/court-fee/calculate', {
+      const res = await fetch('/api/court-fee/calculate', {
         method: 'POST',
         headers,
         body: JSON.stringify({
+          state: selectedState,
+          district: district,
+          courtForum: selectedCourt,
+          suitValue: valSuit,
+          // Legacy fields for backward compatibility
           stateName: selectedState,
-          district,
           courtTypeName: selectedCourt,
           caseTypeName: selectedCaseType,
           reliefTypeName: selectedRelief,
@@ -285,13 +289,36 @@ export const Calculators: React.FC = () => {
       }
 
       if (!res.ok) {
-        setCalcErr(data.message || `Fee calculation failed (HTTP ${res.status}).`);
-      } else if (!data.calculation) {
-        setCalcErr('Invalid response from court fee calculation service.');
+        if (res.status === 400) {
+          setCalcErr(data.message || 'Please enter a valid suit value and litigation parameters.');
+        } else if (res.status === 404) {
+          setCalcErr(data.message || 'No applicable court fee rule was found for the selected jurisdiction.');
+        } else if (res.status === 405) {
+          setCalcErr('Calculator service method configuration is incorrect.');
+        } else if (res.status === 500) {
+          setCalcErr('Unable to calculate the court fee due to a server error.');
+        } else {
+          setCalcErr(data.message || `Fee calculation failed (HTTP ${res.status}).`);
+        }
+      } else if (!data.calculation && data.courtFee === undefined) {
+        setCalcErr('Invalid response structure received from court fee service.');
       } else {
-        setCalcResult(data.calculation);
+        const calculationData = data.calculation || {
+          suitValuation: data.suitValue,
+          calculatedFee: data.courtFee,
+          feeType: data.calculationType,
+          legalProvision: data.ruleReference,
+          ruleReference: data.ruleReference,
+          effectiveFrom: data.effectiveFrom,
+          sourceName: data.sourceName,
+          sourceType: data.sourceType,
+          sourceReference: data.sourceReference,
+          lastVerified: data.lastVerified,
+          breakdown: []
+        };
+        setCalcResult(calculationData);
         fetchHistory();
-        addNotification('Court Fee Calculated', `Statutory fee computed: ₹${data.calculation.calculatedFee.toLocaleString('en-IN')}`, 'success');
+        addNotification('Court Fee Calculated', `Statutory fee computed: ₹${calculationData.calculatedFee.toLocaleString('en-IN')}`, 'success');
       }
     } catch (err: any) {
       console.error('Court fee calculation error:', err);
@@ -631,6 +658,12 @@ export const Calculators: React.FC = () => {
                       ))}
                     </div>
                   )}
+
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-3 text-[10px] font-sans text-slate-500 space-y-1 bg-slate-100/50 dark:bg-slate-900/50 p-2.5 rounded-lg mt-2">
+                    <p className="font-bold text-slate-600 dark:text-slate-300 text-[10px]">Legal Source Reference:</p>
+                    <p className="text-slate-500 text-[10px]">Source: {calcResult.sourceName || 'State Court Fees Act'} ({calcResult.sourceType || 'statute'})</p>
+                    <p className="text-slate-400 italic text-[9.5px]">"Calculated using configured legal rules. Please verify the applicable fee with the relevant court/official legal source before filing."</p>
+                  </div>
                 </div>
               )}
             </div>

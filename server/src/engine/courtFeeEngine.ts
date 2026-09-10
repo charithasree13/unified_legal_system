@@ -1,11 +1,14 @@
 import { CourtFeeRule, CourtFeeSlab } from '../models/Schemas';
 
 export interface CourtFeeCalculationInput {
-  stateName: string;
+  state?: string;
+  stateName?: string;
   district?: string;
-  courtTypeName: string;
-  caseTypeName: string;
-  reliefTypeName: string;
+  courtForum?: string;
+  courtTypeName?: string;
+  caseTypeName?: string;
+  reliefTypeName?: string;
+  suitValue?: number;
   claimAmount?: number;
   marketValue?: number;
   agreementValue?: number;
@@ -18,10 +21,16 @@ export interface CourtFeeCalculationResult {
   calculatedFee: number;
   appliedRuleId?: string;
   legalProvision: string;
+  ruleReference: string;
   actName: string;
   section: string;
   schedule: string;
   article: string;
+  sourceName: string;
+  sourceType: string;
+  sourceReference: string;
+  effectiveFrom: string;
+  lastVerified: string;
   notificationNo?: string;
   effectiveDate?: string;
   lastUpdatedDate?: string;
@@ -51,9 +60,9 @@ export const evaluateCourtFee = (
   const breakdown: string[] = [];
 
   // Step 1: Input Normalization & Audit Logging
-  const stateName = (input.stateName || 'Andhra Pradesh').trim();
+  const stateName = (input.stateName || input.state || 'Andhra Pradesh').trim();
   const districtName = (input.district || '').trim();
-  const courtTypeName = (input.courtTypeName || 'District Court').trim();
+  const courtTypeName = (input.courtTypeName || input.courtForum || 'District Court').trim();
   const caseTypeName = (input.caseTypeName || 'Money Recovery Suit').trim();
   const reliefTypeName = (input.reliefTypeName || 'Money Claim Recovery').trim();
 
@@ -61,11 +70,14 @@ export const evaluateCourtFee = (
   breakdown.push(`Proceeding: ${caseTypeName} | Relief: ${reliefTypeName}`);
 
   // Step 2: Financial Valuation Resolution
-  let suitValuation = Number(input.claimAmount) || 0;
-  if (input.marketValue && input.marketValue > 0) suitValuation = Number(input.marketValue);
+  let suitValuation = Number(input.suitValue) || Number(input.claimAmount) || 0;
+  if (input.claimAmount && input.claimAmount > 0) suitValuation = Number(input.claimAmount);
+  else if (input.suitValue && input.suitValue > 0) suitValuation = Number(input.suitValue);
+  else if (input.marketValue && input.marketValue > 0) suitValuation = Number(input.marketValue);
   else if (input.agreementValue && input.agreementValue > 0) suitValuation = Number(input.agreementValue);
   else if (input.loanAmount && input.loanAmount > 0) suitValuation = Number(input.loanAmount);
   else if (input.compensationAmount && input.compensationAmount > 0) suitValuation = Number(input.compensationAmount);
+
 
   breakdown.push(`Claim Suit Valuation: ₹${suitValuation.toLocaleString('en-IN')}`);
 
@@ -87,10 +99,16 @@ export const evaluateCourtFee = (
       calculatedFee: statutoryFee,
       appliedRuleId: 'STATUTORY_STATE_ENGINE',
       legalProvision: `${stateName} Court Fees and Suits Valuation Act`,
+      ruleReference: `${stateName} Court Fees Act (Schedule I Article 1 Table)`,
       actName: `${stateName} Court Fees Act`,
       section: 'Section 20 / Schedule I Article 1',
       schedule: 'Schedule I',
       article: 'Article 1',
+      sourceName: `${stateName} Official Gazette & Court Fees Act`,
+      sourceType: 'statute',
+      sourceReference: 'Schedule I Ad-Valorem Stepped Table',
+      effectiveFrom: '1956-05-01',
+      lastVerified: new Date().toISOString().split('T')[0],
       effectiveDate: new Date().toISOString().split('T')[0],
       lastUpdatedDate: new Date().toISOString().split('T')[0],
       feeType: 'AdValorem',
@@ -107,10 +125,16 @@ export const evaluateCourtFee = (
         suitValuation,
         calculatedFee: 0,
         legalProvision: 'Rule Expired',
+        ruleReference: 'Rule Expired',
         actName: matchedRule.actName || '',
         section: matchedRule.section || '',
         schedule: matchedRule.schedule || '',
         article: matchedRule.article || '',
+        sourceName: matchedRule.sourceName || 'State Court Fees Act',
+        sourceType: matchedRule.sourceType || 'statute',
+        sourceReference: matchedRule.sourceReference || 'Statutory Rule',
+        effectiveFrom: matchedRule.effectiveDate || '1956-05-01',
+        lastVerified: matchedRule.lastVerified || '2026-01-01',
         feeType: matchedRule.feeType || 'AdValorem',
         breakdown,
         warning: 'Rule not available. Administrator must update the latest Court Fees Act.',
@@ -126,6 +150,7 @@ export const evaluateCourtFee = (
   const schedule = matchedRule.schedule || 'Schedule I';
   const article = matchedRule.article || 'Article 1';
   const legalProvision = `${actName}, ${section} (${schedule} ${article})`;
+  const ruleReference = matchedRule.remarks || legalProvision;
 
   let rawFee = 0;
   let ruleSlabs = slabs.filter((s) => String(s.ruleId) === String(matchedRule._id));
@@ -206,10 +231,16 @@ export const evaluateCourtFee = (
     calculatedFee: finalFee,
     appliedRuleId: matchedRule._id,
     legalProvision,
+    ruleReference,
     actName,
     section,
     schedule,
     article,
+    sourceName: matchedRule.sourceName || `${stateName} Official Gazette`,
+    sourceType: matchedRule.sourceType || 'statute',
+    sourceReference: matchedRule.sourceReference || legalProvision,
+    effectiveFrom: matchedRule.effectiveDate || '1956-05-01',
+    lastVerified: matchedRule.lastVerified || new Date().toISOString().split('T')[0],
     notificationNo: matchedRule.notificationNo,
     effectiveDate: matchedRule.effectiveDate || new Date().toISOString().split('T')[0],
     lastUpdatedDate: matchedRule.updatedAt ? new Date(matchedRule.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],

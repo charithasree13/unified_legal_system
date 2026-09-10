@@ -59,11 +59,14 @@ export const getDistricts = async (req: AuthenticatedRequest, res: Response) => 
 export const calculateFee = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
-      stateName,
+      state,
+      stateName: legacyStateName,
       district,
-      courtTypeName,
-      caseTypeName,
-      reliefTypeName,
+      courtForum,
+      courtTypeName: legacyCourtTypeName,
+      caseTypeName: legacyCaseTypeName,
+      reliefTypeName: legacyReliefTypeName,
+      suitValue,
       claimAmount = 0,
       marketValue = 0,
       agreementValue = 0,
@@ -71,16 +74,38 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
       compensationAmount = 0
     } = req.body;
 
+    const resolvedState = (state || legacyStateName || '').trim();
+    const resolvedDistrict = (district || '').trim();
+    const resolvedCourt = (courtForum || legacyCourtTypeName || 'District Court').trim();
+    const resolvedCase = (legacyCaseTypeName || 'Money Recovery Suit').trim();
+    const resolvedRelief = (legacyReliefTypeName || 'Money Claim Recovery').trim();
+    
+    const valSuit = suitValue !== undefined ? Number(suitValue) : Number(claimAmount);
+
     // 1. Strict Validation
-    if (!stateName || !courtTypeName || !caseTypeName || !reliefTypeName) {
+    if (!resolvedState) {
       return res.status(400).json({
         success: false,
-        message: 'State, Court Type, Case Type, and Relief Type are required fields.'
+        message: 'State or Union Territory is a required field.'
+      });
+    }
+
+    if (!resolvedCourt) {
+      return res.status(400).json({
+        success: false,
+        message: 'Court Forum is a required field.'
+      });
+    }
+
+    if (isNaN(valSuit) || valSuit <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valuation amount must be a positive number greater than zero.'
       });
     }
 
     // Negative amount validation
-    if (Number(claimAmount) < 0 || Number(marketValue) < 0 || Number(agreementValue) < 0 || Number(loanAmount) < 0 || Number(compensationAmount) < 0) {
+    if (valSuit < 0 || Number(marketValue) < 0 || Number(agreementValue) < 0 || Number(loanAmount) < 0 || Number(compensationAmount) < 0) {
       return res.status(400).json({
         success: false,
         message: 'Valuation amounts cannot be negative values.'
@@ -100,16 +125,16 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
     }
 
     const input: CourtFeeCalculationInput = {
-      stateName,
-      district,
-      courtTypeName,
-      caseTypeName,
-      reliefTypeName,
-      claimAmount: Number(claimAmount) || 0,
-      marketValue: Number(marketValue) || 0,
-      agreementValue: Number(agreementValue) || 0,
-      loanAmount: Number(loanAmount) || 0,
-      compensationAmount: Number(compensationAmount) || 0
+      stateName: resolvedState,
+      district: resolvedDistrict,
+      courtTypeName: resolvedCourt,
+      caseTypeName: resolvedCase,
+      reliefTypeName: resolvedRelief,
+      claimAmount: valSuit,
+      marketValue: Number(marketValue) > 0 ? Number(marketValue) : valSuit,
+      agreementValue: Number(agreementValue) > 0 ? Number(agreementValue) : valSuit,
+      loanAmount: Number(loanAmount) > 0 ? Number(loanAmount) : valSuit,
+      compensationAmount: Number(compensationAmount) > 0 ? Number(compensationAmount) : valSuit
     };
 
     const result = evaluateCourtFee(input, rules, slabs);
@@ -122,16 +147,16 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
           userId: req.user.id || 'anonymous',
           userName: req.user.name || 'User',
           userRole: req.user.role || 'User',
-          stateName,
-          district: district || '',
-          courtTypeName,
-          caseTypeName,
-          reliefTypeName,
-          claimAmount: Number(claimAmount) || 0,
-          marketValue: Number(marketValue) || 0,
-          agreementValue: Number(agreementValue) || 0,
-          loanAmount: Number(loanAmount) || 0,
-          compensationAmount: Number(compensationAmount) || 0,
+          stateName: resolvedState,
+          district: resolvedDistrict,
+          courtTypeName: resolvedCourt,
+          caseTypeName: resolvedCase,
+          reliefTypeName: resolvedRelief,
+          claimAmount: valSuit,
+          marketValue: Number(marketValue) || valSuit,
+          agreementValue: Number(agreementValue) || valSuit,
+          loanAmount: Number(loanAmount) || valSuit,
+          compensationAmount: Number(compensationAmount) || valSuit,
           suitValuation: result.suitValuation,
           calculatedFee: result.calculatedFee,
           appliedRuleId: result.appliedRuleId || '',
@@ -144,9 +169,22 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
       }
     }
 
-
     return res.status(200).json({
       success: true,
+      state: resolvedState,
+      district: resolvedDistrict,
+      courtForum: resolvedCourt,
+      suitValue: result.suitValuation,
+      courtFee: result.calculatedFee,
+      currency: 'INR',
+      calculationType: result.feeType,
+      ruleReference: result.ruleReference || result.legalProvision,
+      effectiveFrom: result.effectiveFrom || result.effectiveDate || '1956-05-01',
+      sourceName: result.sourceName,
+      sourceType: result.sourceType,
+      sourceReference: result.sourceReference,
+      lastVerified: result.lastVerified,
+      message: 'Court fee calculated successfully.',
       calculation: {
         ...result,
         historyId: historyRecord ? historyRecord._id : null
@@ -154,9 +192,10 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
     });
   } catch (error) {
     console.error('Error calculating court fee:', error);
-    return res.status(500).json({ success: false, message: 'Failed to calculate court fee.' });
+    return res.status(500).json({ success: false, message: 'Unable to calculate the court fee due to a server error.' });
   }
 };
+
 
 /**
  * Fetch Calculation History for authenticated user
