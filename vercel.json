@@ -5,15 +5,15 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api/$1"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api/uploads/$1"
     },
     {
       "source": "/socket.io/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api/socket.io/$1"
     },
     {
       "source": "/(.*)",
@@ -21,4 +21,5 @@
     }
   ]
 }
+
 

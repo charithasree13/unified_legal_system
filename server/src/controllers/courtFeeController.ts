@@ -87,11 +87,17 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
       });
     }
 
-    // Fetch active rules & slabs from DB
-    const [rules, slabs] = await Promise.all([
-      CourtFeeRule.find({ isActive: true }),
-      CourtFeeSlab.find()
-    ]);
+    // Fetch active rules & slabs from DB safely
+    let rules: any[] = [];
+    let slabs: any[] = [];
+    try {
+      [rules, slabs] = await Promise.all([
+        CourtFeeRule.find({ isActive: true }).lean(),
+        CourtFeeSlab.find().lean()
+      ]);
+    } catch (dbErr) {
+      console.warn('⚠️ Court Fee DB query warning (using statutory fallback engine):', dbErr);
+    }
 
     const input: CourtFeeCalculationInput = {
       stateName,
@@ -108,31 +114,36 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
 
     const result = evaluateCourtFee(input, rules, slabs);
 
-    // Save calculation into history
+    // Save calculation into history if authenticated
     let historyRecord: any = null;
     if (req.user) {
-      historyRecord = await CalculationHistory.create({
-        userId: req.user.id || 'anonymous',
-        userName: req.user.name || 'User',
-        userRole: req.user.role || 'User',
-        stateName,
-        district: district || '',
-        courtTypeName,
-        caseTypeName,
-        reliefTypeName,
-        claimAmount: Number(claimAmount) || 0,
-        marketValue: Number(marketValue) || 0,
-        agreementValue: Number(agreementValue) || 0,
-        loanAmount: Number(loanAmount) || 0,
-        compensationAmount: Number(compensationAmount) || 0,
-        suitValuation: result.suitValuation,
-        calculatedFee: result.calculatedFee,
-        appliedRuleId: result.appliedRuleId || '',
-        legalProvision: result.legalProvision,
-        breakdown: result.breakdown,
-        warning: result.warning || ''
-      });
+      try {
+        historyRecord = await CalculationHistory.create({
+          userId: req.user.id || 'anonymous',
+          userName: req.user.name || 'User',
+          userRole: req.user.role || 'User',
+          stateName,
+          district: district || '',
+          courtTypeName,
+          caseTypeName,
+          reliefTypeName,
+          claimAmount: Number(claimAmount) || 0,
+          marketValue: Number(marketValue) || 0,
+          agreementValue: Number(agreementValue) || 0,
+          loanAmount: Number(loanAmount) || 0,
+          compensationAmount: Number(compensationAmount) || 0,
+          suitValuation: result.suitValuation,
+          calculatedFee: result.calculatedFee,
+          appliedRuleId: result.appliedRuleId || '',
+          legalProvision: result.legalProvision,
+          breakdown: result.breakdown,
+          warning: result.warning || ''
+        });
+      } catch (histErr) {
+        console.warn('⚠️ Could not save calculation history record:', histErr);
+      }
     }
+
 
     return res.status(200).json({
       success: true,

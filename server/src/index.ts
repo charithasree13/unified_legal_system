@@ -44,6 +44,17 @@ app.use(helmet({
 app.use(cors());
 app.use(express.json());
 
+// Express Middleware: URL Path Normalization for Serverless Deployments
+app.use((req, res, next) => {
+  const rawUrl = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || req.originalUrl || req.url;
+  if (typeof rawUrl === 'string' && rawUrl.length > 0) {
+    if (!rawUrl.startsWith('/api') && !req.path.startsWith('/api')) {
+      req.url = '/api' + (rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl);
+    }
+  }
+  next();
+});
+
 // Serve uploads folder as static
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -118,11 +129,18 @@ app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.get
 
 // COURT FEE CALCULATOR MODULE API
 app.get('/api/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
+app.get('/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
 app.get('/api/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
+app.get('/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
 app.post('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.post('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 app.get('/api/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
+app.get('/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
 app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, courtFeeCtrl.getCalculationPdf);
 app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFeeCtrl.getCalculationCsv);
+
 
 // COURT FEE ADMIN MANAGEMENT API
 app.get('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFeeCtrl.getAdminRules);
