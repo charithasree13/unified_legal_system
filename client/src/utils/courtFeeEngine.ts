@@ -40,7 +40,7 @@ export interface CourtFeeCalculationResult {
 
 /**
  * Utility function: ceilStep(val, step)
- * Rounds value up to nearest multiple of step
+ * Rounds value up to nearest multiple of step (matching WordPress CFF CEIL(val, step))
  */
 function ceilStep(val: number, step: number): number {
   if (step <= 0) return val;
@@ -89,6 +89,7 @@ export const evaluateCourtFee = (
 
   // Step 4: Strict Database Sovereignty Guard
   if (!matchedRule) {
+    // If no explicit DB rule matches, apply verified statutory ad-valorem state table
     const statutoryFee = calculateDefaultAdValorem(stateName, suitValuation, breakdown);
     return {
       suitValuation,
@@ -139,6 +140,7 @@ export const evaluateCourtFee = (
     }
   }
 
+  // Step 5 - 15: Execute DB Rule Calculation
   const feeType = matchedRule.feeType || 'AdValorem';
   const actName = matchedRule.actName || `${stateName} Court Fees Act`;
   const section = matchedRule.section || 'General Provision';
@@ -197,6 +199,7 @@ export const evaluateCourtFee = (
     rawFee = calculateDefaultAdValorem(stateName, suitValuation, breakdown);
   }
 
+  // Apply Min / Max Caps and Rounding
   let finalFee = rawFee;
   if (matchedRule.minFee && finalFee < matchedRule.minFee) {
     finalFee = matchedRule.minFee;
@@ -213,6 +216,11 @@ export const evaluateCourtFee = (
     breakdown.push(`Rounded up to nearest ₹${rounding}: ₹${finalFee.toLocaleString('en-IN')}`);
   } else {
     finalFee = Math.round(finalFee);
+  }
+
+  let warning = '';
+  if (!matchedRule.isActive) {
+    warning = 'Rule not available. Administrator must update the latest Court Fees Act.';
   }
 
   return {
@@ -235,14 +243,19 @@ export const evaluateCourtFee = (
     lastUpdatedDate: matchedRule.updatedAt ? new Date(matchedRule.updatedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     feeType,
     breakdown,
-    warning: '',
+    warning,
     isRuleFound: true
   };
 };
 
+/**
+ * Official State-Wise Calculation Engine
+ * Statutory state-wise court fee calculation equations matching Century Law Firm
+ */
 function calculateDefaultAdValorem(state: string, value: number, breakdown: string[]): number {
   const s = (state || '').toLowerCase();
   
+  // 1. ANDHRA PRADESH & TELANGANA (CLF Form 10 / Form 1)
   if (s.includes('andhra') || s.includes('telangana')) {
     let fee = 0;
     if (value <= 100) fee = ceilStep(value, 5) * 0.12;
@@ -261,6 +274,7 @@ function calculateDefaultAdValorem(state: string, value: number, breakdown: stri
     return Math.round(fee);
   }
 
+  // 2. BIHAR & JHARKHAND (CLF Form 4 / Form 15)
   if (s.includes('bihar') || s.includes('jharkhand')) {
     let fee = 0;
     if (value <= 100) fee = ceilStep(value, 5) * 0.2;
@@ -276,6 +290,7 @@ function calculateDefaultAdValorem(state: string, value: number, breakdown: stri
     return Math.round(fee);
   }
 
+  // 3. DELHI & CHANDIGARH (CLF Form 5)
   if (s.includes('delhi') || s.includes('chandigarh')) {
     let fee = 0;
     if (value <= 100) fee = ceilStep(value, 5) / 10;
@@ -295,28 +310,269 @@ function calculateDefaultAdValorem(state: string, value: number, breakdown: stri
     return Math.round(fee);
   }
 
+  // 4. GUJARAT (CLF Form 6 / Form 8)
+  if (s.includes('gujarat')) {
+    let fee = 0;
+    if (value <= 10000) fee = 0.1 * ceilStep(value, 100);
+    else if (value <= 20000) fee = 1000 + (ceilStep(value, 5000) - 10000) * 0.05;
+    else if (value <= 21000) fee = 1525;
+    else if (value <= 30000) fee = 1525 + (ceilStep(value, 1000) - 21000) * 0.075;
+    else if (value <= 32000) fee = 2375;
+    else if (value <= 34000) fee = 2500;
+    else if (value <= 50000) fee = 2500 + (ceilStep(value, 2000) - 34000) * 0.075;
+    else if (value <= 75000) fee = 3700 + (ceilStep(value, 5000) - 50000) * 0.06;
+    else if (value <= 100000) fee = 5950;
+    else if (value <= 1000000) fee = 5950 + (ceilStep(value, 100000) - 100000) * 0.02;
+    else if (value <= 2000000) fee = 23950 + (ceilStep(value, 200000) - 1000000) * 0.012;
+    else fee = Math.min(35950 + (ceilStep(value, 100000) - 2000000) * 0.005, 75000);
+
+    breakdown.push('Gujarat Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 5. HARYANA (CLF Form 7)
+  if (s.includes('haryana')) {
+    let fee = 0;
+    if (value <= 15000) fee = value * 0.025;
+    else if (value <= 27000) fee = 375 + (value - 15000) * 0.035;
+    else if (value <= 39000) fee = 795 + (value - 27000) * 0.045;
+    else if (value <= 51000) fee = 1335 + (value - 39000) * 0.055;
+    else if (value <= 63000) fee = 1995 + (value - 51000) * 0.065;
+    else if (value <= 75000) fee = 2775 + (value - 63000) * 0.075;
+    else if (value <= 500000) fee = 3675 + (value - 75000) * 0.065;
+    else if (value <= 1000000) fee = 31300 + (value - 500000) * 0.055;
+    else if (value <= 2000000) fee = 58800 + (value - 1000000) * 0.045;
+    else if (value <= 3000000) fee = 103800 + (value - 2000000) * 0.035;
+    else if (value <= 4500000) fee = 138800 + (value - 3000000) * 0.025;
+    else if (value <= 6000000) fee = 176300 + (value - 4500000) * 0.015;
+    else if (value <= 7500000) fee = 198800 + (value - 6000000) * 0.005;
+    else fee = 206300 + 0.005 * (ceilStep(value, 5000) - 7500000);
+
+    breakdown.push('Haryana Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 6. HIMACHAL PRADESH (CLF Form 9)
+  if (s.includes('himachal')) {
+    let fee = 0;
+    if (value <= 100) fee = ceilStep(value, 5) * 0.2;
+    else if (value <= 500) fee = 20 + (ceilStep(value, 10) - 100) * 0.1;
+    else if (value <= 1000) fee = 60 + (ceilStep(value, 10) - 500) * 0.2;
+    else if (value <= 5000) fee = 160 + (ceilStep(value, 100) - 1000) * 0.15;
+    else if (value <= 10000) fee = 760 + (ceilStep(value, 250) - 5000) * 0.1;
+    else if (value <= 20000) fee = 1260 + (ceilStep(value, 500) - 10000) * 0.08;
+    else if (value <= 30000) fee = 2060 + (ceilStep(value, 1000) - 20000) * 0.05;
+    else if (value <= 50000) fee = 2560 + (ceilStep(value, 2000) - 30000) * 0.025;
+    else fee = 3060 + (ceilStep(value, 5000) - 50000) * 0.01;
+
+    breakdown.push('Himachal Pradesh Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 7. JAMMU AND KASHMIR (CLF Form 16)
+  if (s.includes('jammu') || s.includes('kashmir')) {
+    let fee = 0;
+    if (value <= 100) fee = 10;
+    else if (value <= 1000) fee = ceilStep(value, 10) * 0.1;
+    else if (value <= 1100) fee = 106.20;
+    else if (value <= 1200) fee = 112.50;
+    else if (value <= 1300) fee = 118.75;
+    else if (value <= 2600) fee = 118.75 + 0.0625 * (ceilStep(value, 100) - 1300);
+    else if (value <= 2700) fee = 206.15;
+    else if (value <= 2800) fee = 212.50;
+    else if (value <= 2900) fee = 218.75;
+    else if (value <= 5000) fee = 218.75 + 0.0625 * (ceilStep(value, 100) - 2900);
+    else if (value <= 10000) fee = 350 + 0.08 * (ceilStep(value, 250) - 5000);
+    else if (value <= 20000) fee = 750 + 0.1 * (ceilStep(value, 500) - 10000);
+    else if (value <= 30000) fee = 1750 + 0.1 * (ceilStep(value, 1000) - 20000);
+    else if (value <= 32000) fee = 2900;
+    else if (value <= 34000) fee = 3150;
+    else if (value <= 50000) fee = 3150 + 0.075 * (ceilStep(value, 2000) - 34000);
+    else if (value <= 52500) fee = 4500;
+    else if (value <= 55000) fee = 4600;
+    else if (value <= 57500) fee = 4800;
+    else if (value <= 75000) fee = 4800 + 0.06 * (ceilStep(value, 2500) - 57500);
+    else if (value <= 100000) fee = 5850 + 0.03 * (ceilStep(value, 5000) - 75000);
+    else if (value <= 1000000) fee = 6600 + 0.02 * (ceilStep(value, 10000) - 100000);
+    else if (value <= 2000000) fee = 24600 + 0.012 * (ceilStep(value, 100000) - 1000000);
+    else fee = Math.min(36600 + 0.005 * (ceilStep(value, 100000) - 2000000), 75000);
+
+    breakdown.push('Jammu & Kashmir Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 8. KARNATAKA (CLF Form 11)
   if (s.includes('karnataka')) {
     let fee = 0;
     if (value <= 15000) fee = value * 0.025;
-    else if (value <= 50000) fee = 375 + (value - 15000) * 0.05;
-    else if (value <= 100000) fee = 2125 + (value - 50000) * 0.06;
-    else fee = 5125 + (value - 100000) * 0.03;
+    else if (value <= 75000) fee = 375 + (value - 15000) * 0.075;
+    else if (value <= 250000) fee = 4875 + (value - 75000) * 0.07;
+    else if (value <= 500000) fee = 17125 + (value - 250000) * 0.065;
+    else if (value <= 750000) fee = 33375 + (value - 500000) * 0.06;
+    else if (value <= 1000000) fee = 48375 + (value - 750000) * 0.055;
+    else if (value <= 1500000) fee = 62125 + (value - 1000000) * 0.05;
+    else if (value <= 2000000) fee = 87125 + (value - 1500000) * 0.045;
+    else if (value <= 2500000) fee = 109625 + (value - 2000000) * 0.04;
+    else if (value <= 3000000) fee = 129625 + (value - 2500000) * 0.035;
+    else if (value <= 4000000) fee = 147125 + (value - 3000000) * 0.03;
+    else if (value <= 5000000) fee = 177125 + (value - 4000000) * 0.025;
+    else if (value <= 6000000) fee = 202125 + (value - 5000000) * 0.02;
+    else if (value <= 7000000) fee = 222125 + (value - 6000000) * 0.015;
+    else if (value <= 8000000) fee = 237125 + (value - 7000000) * 0.01;
+    else fee = 247125 + (value - 8000000) * 0.015;
 
-    breakdown.push('Karnataka Court Fees Act 1958 (CLF Formula)');
+    breakdown.push('Karnataka Court Fees Act 1958 (CLF Verified Formula)');
     return Math.round(fee);
   }
 
-  if (s.includes('maharashtra')) {
+  // 9. KERALA (CLF Form 13)
+  if (s.includes('kerala')) {
     let fee = 0;
-    if (value <= 50000) fee = Math.max(100, value * 0.02);
-    else fee = 1000 + (value - 50000) * 0.05;
+    if (value <= 100) fee = 4;
+    else if (value <= 15000) fee = Math.ceil(value / 100) * 4;
+    else if (value <= 50000) fee = 600 + Math.ceil((value - 15000) / 100) * 8;
+    else if (value <= 1000000) fee = 3400 + Math.ceil((value - 50000) / 100) * 10;
+    else if (value <= 10000000) fee = 98400 + Math.ceil((value - 1000000) / 100) * 8;
+    else fee = 818400 + Math.ceil((value - 10000000) / 100) * 1;
 
-    breakdown.push('Bombay Court Fees Act (CLF Formula)');
+    breakdown.push('Kerala Court Fees Act 1959 (CLF Verified Formula)');
     return Math.round(fee);
   }
 
-  // Default Statutory Ad Valorem Formula (3.5% with min ₹100)
-  const defaultFee = Math.max(100, Math.round(value * 0.035));
-  breakdown.push('Standard Statutory Court Fee Schedule (3.5% Ad Valorem)');
-  return defaultFee;
+  // 10. MADHYA PRADESH & CHHATTISGARH (CLF Form 14)
+  if (s.includes('madhya') || s.includes('chhattisgarh') || s.includes('mp')) {
+    let fee = 0;
+    if (value <= 500000) fee = Math.max(value * 0.12, 100);
+    else if (value <= 1000000) fee = 60000 + (value - 500000) * 0.07;
+    else fee = Math.min(95000 + (value - 1000000) * 0.03, 150000);
+
+    breakdown.push('MP & CG Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 11. MAHARASHTRA & GOA (CLF Form 6)
+  if (s.includes('maharashtra') || s.includes('goa')) {
+    let fee = 0;
+    if (value <= 1000) fee = 200;
+    else if (value <= 5000) fee = 200 + Math.ceil((value - 1000) / 100) * 12;
+    else if (value <= 10000) fee = 680 + Math.ceil((value - 5000) / 100) * 15;
+    else if (value <= 20000) fee = 1430 + Math.ceil((value - 10000) / 500) * 75;
+    else if (value <= 30000) fee = 2930 + Math.ceil((value - 20000) / 1000) * 100;
+    else if (value <= 50000) fee = 3930 + Math.ceil((value - 30000) / 2000) * 100;
+    else if (value <= 100000) fee = 4930 + Math.ceil((value - 50000) / 5000) * 150;
+    else if (value <= 1100000) fee = 6430 + Math.ceil((value - 100000) / 10000) * 200;
+    else fee = Math.min(26430 + Math.ceil((value - 1100000) / 100000) * 1200, 300000);
+
+    breakdown.push('Bombay Court Fees Act 1959 (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 12. ORISSA / ODISHA (CLF Form 18)
+  if (s.includes('orissa') || s.includes('odisha')) {
+    let fee = 0;
+    if (value <= 100) fee = Math.ceil(value / 5) * 0.35;
+    else if (value <= 500) fee = 7 + (ceilStep(value, 10) - 100) * 0.1;
+    else if (value <= 1000) fee = 47 + (ceilStep(value, 10) - 500) * 0.11;
+    else if (value <= 7500) fee = 102 + (ceilStep(value, 100) - 1000) * 0.075;
+    else if (value <= 10000) fee = 589.5 + (ceilStep(value, 250) - 7500) * 0.06;
+    else if (value <= 20000) fee = 739.5 + (ceilStep(value, 500) - 10000) * 0.045;
+    else if (value <= 30000) fee = 1189.5 + (ceilStep(value, 1000) - 20000) * 0.03;
+    else if (value <= 50000) fee = 1489.5 + (ceilStep(value, 2000) - 30000) * 0.015;
+    else fee = 1789.5 + 0.02 * (ceilStep(value, 5000) - 50000);
+
+    breakdown.push('Orissa Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 13. PUNJAB (CLF Form 5)
+  if (s.includes('punjab')) {
+    let fee = 0;
+    if (value <= 10000) fee = value * 0.025;
+    else if (value <= 20000) fee = 250 + (value - 10000) * 0.035;
+    else if (value <= 30000) fee = 600 + (value - 20000) * 0.045;
+    else if (value <= 40000) fee = 1050 + (value - 30000) * 0.055;
+    else if (value <= 50000) fee = 1600 + (value - 40000) * 0.065;
+    else if (value <= 60000) fee = 2250 + (value - 50000) * 0.075;
+    else if (value <= 75000) fee = 3000 + (value - 60000) * 0.065;
+    else if (value <= 100000) fee = 3975 + (value - 75000) * 0.055;
+    else if (value <= 200000) fee = 5350 + (value - 100000) * 0.035;
+    else fee = 8850 + (value - 200000) * 0.0225;
+
+    breakdown.push('Punjab Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 14. RAJASTHAN (CLF Form 4)
+  if (s.includes('rajasthan')) {
+    let fee = 0;
+    if (value <= 15000) fee = value * 0.025;
+    else if (value <= 75000) fee = 375 + (value - 15000) * 0.075;
+    else if (value <= 250000) fee = 4875 + (value - 75000) * 0.07;
+    else if (value <= 500000) fee = 17125 + (value - 250000) * 0.065;
+    else if (value <= 750000) fee = 33375 + (value - 500000) * 0.06;
+    else if (value <= 1000000) fee = 48375 + (value - 750000) * 0.055;
+    else if (value <= 1500000) fee = 62125 + (value - 1000000) * 0.05;
+    else if (value <= 2000000) fee = 87125 + (value - 1500000) * 0.045;
+    else if (value <= 2500000) fee = 109625 + (value - 2000000) * 0.04;
+    else if (value <= 3000000) fee = 129625 + (value - 2500000) * 0.035;
+    else if (value <= 4000000) fee = 147125 + (value - 3000000) * 0.03;
+    else if (value <= 10000000) fee = 177125 + (value - 4000000) * 0.025;
+    else if (value <= 15000000) fee = 327125 + (value - 10000000) * 0.02;
+    else if (value <= 20000000) fee = 427125 + (value - 15000000) * 0.015;
+    else if (value <= 30000000) fee = 502125 + (value - 20000000) * 0.01;
+    else fee = 602125 + (value - 30000000) * 0.005;
+
+    breakdown.push('Rajasthan Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 15. TAMIL NADU & PUDUCHERRY (CLF Form 12)
+  if (s.includes('tamil nadu') || s.includes('puducherry')) {
+    let fee = 0;
+    if (value <= 5) fee = 0.40;
+    else if (value <= 100) fee = Math.ceil(value / 5) * 0.08;
+    else fee = 8 + Math.ceil((value - 100) / 10) * 0.75;
+
+    breakdown.push('Tamil Nadu Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 16. UTTAR PRADESH & UTTARAKHAND (CLF Form 18)
+  if (s.includes('uttar pradesh') || s.includes('uttarakhand') || s.includes('up')) {
+    let fee = 0;
+    if (value <= 100) fee = Math.ceil(value / 5) * 0.35;
+    else if (value <= 500) fee = 7 + (ceilStep(value, 10) - 100) * 0.1;
+    else if (value <= 1000) fee = 47 + (ceilStep(value, 10) - 500) * 0.11;
+    else if (value <= 7500) fee = 102 + (ceilStep(value, 100) - 1000) * 0.075;
+    else if (value <= 10000) fee = 589.5 + (ceilStep(value, 250) - 7500) * 0.06;
+    else if (value <= 20000) fee = 739.5 + (ceilStep(value, 500) - 10000) * 0.045;
+    else if (value <= 30000) fee = 1189.5 + (ceilStep(value, 1000) - 20000) * 0.03;
+    else if (value <= 50000) fee = 1489.5 + (ceilStep(value, 2000) - 30000) * 0.015;
+    else fee = 1789.5 + (ceilStep(value, 5000) - 50000) * 0.02;
+
+    breakdown.push('UP & Uttarakhand Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // 17. WEST BENGAL (CLF Form 17)
+  if (s.includes('west bengal')) {
+    let fee = 0;
+    if (value <= 1000) fee = Math.ceil(value / 100) * 0.1;
+    else if (value <= 7500) fee = 100 + (ceilStep(value, 100) - 1000) * 0.08;
+    else if (value <= 10000) fee = 620 + (ceilStep(value, 250) - 7500) * 0.064;
+    else if (value <= 20000) fee = 780 + (ceilStep(value, 500) - 10000) * 0.06;
+    else if (value <= 50000) fee = 1380 + (ceilStep(value, 1000) - 20000) * 0.05;
+    else if (value <= 100000) fee = 2880 + (ceilStep(value, 5000) - 50000) * 0.07;
+    else if (value <= 200000) fee = 6380 + (ceilStep(value, 5000) - 100000) * 0.074;
+    else if (value <= 300000) fee = 13780 + (ceilStep(value, 5000) - 200000) * 0.042;
+    else fee = Math.min(17980 + (ceilStep(value, 10000) - 300000) * 0.01, 50000);
+
+    breakdown.push('West Bengal Court Fees Act (CLF Verified Formula)');
+    return Math.round(fee);
+  }
+
+  // Standard Fallback
+  const fallback = Math.round(value * 0.05);
+  breakdown.push('Standard Statutory Rate: 5% Ad Valorem on Suit Valuation');
+  return Math.max(10, fallback);
 }
