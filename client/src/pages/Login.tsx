@@ -214,16 +214,21 @@ export const Login: React.FC = () => {
           <p className="text-white/80 text-xs leading-relaxed mb-6 max-w-md">
             An enterprise legal workflow collaboration suite, built for practicing advocates, corporate counsels, and legal administrators.
           </p>
-          <div className="flex gap-4 justify-center text-xs text-amber-300 font-semibold uppercase tracking-wider">
+          <div className="flex gap-4 justify-center text-xs text-amber-300 font-semibold uppercase tracking-wider mb-6">
             <span>Task Management</span>
             <span>•</span>
             <span>Bare Acts & Laws</span>
+          </div>
+
+          <div className="pt-3 border-t border-amber-400/30 text-white text-xs sm:text-sm font-medium tracking-wide flex items-center justify-center gap-1.5 bg-slate-900/40 px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
+            <span className="text-amber-300 font-bold text-xs uppercase tracking-wider">Founder:</span>
+            <span className="font-semibold text-amber-100">Mr. P. V. Prasad, Advocate, Madanapalle</span>
           </div>
         </div>
       </div>
 
       {/* RIGHT AUTH CARD PANEL */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8 h-full overflow-hidden">
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-4 md:p-8 h-full overflow-y-auto">
         <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-800/80 p-6 sm:p-7 glass animate-slide-up">
 
           {/* Header */}
@@ -660,6 +665,12 @@ export const Login: React.FC = () => {
             </form>
           )}
 
+        </div>
+
+        {/* MOBILE-ONLY FOOTER ATTRIBUTION (Hidden on desktop to ensure Founder appears exactly once) */}
+        <div className="mt-4 text-center text-xs font-medium text-slate-600 dark:text-slate-400 lg:hidden">
+          <span className="text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider text-[11px] mr-1">Founder:</span>
+          <span className="font-semibold text-slate-800 dark:text-slate-200">Mr. P. V. Prasad, Advocate, Madanapalle</span>
         </div>
       </div>
     </div>
