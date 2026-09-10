@@ -1,14 +1,14 @@
 import app from '../server/src/index';
 
 export default function handler(req: any, res: any) {
-  // Normalize req.url to ensure /api routes match
-  const rawUrl = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || req.originalUrl || req.url;
-  if (typeof rawUrl === 'string' && rawUrl.length > 0) {
-    if (!rawUrl.startsWith('/api')) {
-      req.url = '/api' + (rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl);
+  let url = req.headers['x-forwarded-uri'] || req.headers['x-original-uri'] || req.originalUrl || req.url;
+  if (typeof url === 'string' && url.length > 0) {
+    if (!url.startsWith('/api')) {
+      req.url = '/api' + (url.startsWith('/') ? url : '/' + url);
     } else {
-      req.url = rawUrl;
+      req.url = url;
     }
   }
   return app(req, res);
 }
+
