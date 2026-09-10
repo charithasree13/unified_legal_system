@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Bell, Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-react';
+import { Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { LegalTickerFooter } from './LegalTickerFooter';
 import { AdvocateOnboardingModal } from './AdvocateOnboardingModal';
@@ -9,7 +9,6 @@ import { useAuthStore } from '../store/authStore';
 export const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showNotif, setShowNotif] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   const location = useLocation();
@@ -19,13 +18,10 @@ export const Layout: React.FC = () => {
     user, 
     darkMode, 
     setDarkMode, 
-    notifications, 
-    markNotificationsAsRead, 
     updateActivity 
   } = useAuthStore();
   
   const navigate = useNavigate();
-  const notifRef = useRef<HTMLDivElement>(null);
 
   // Monitor user activity for session timeout
   useEffect(() => {
@@ -37,19 +33,6 @@ export const Layout: React.FC = () => {
       window.removeEventListener('keypress', handleActivity);
     };
   }, [updateActivity]);
-
-  // Click outside notification panel listener
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setShowNotif(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleGlobalSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +106,7 @@ export const Layout: React.FC = () => {
             </form>
           </div>
 
-          {/* Right: Actions (Theme, Notification, Profile) */}
+          {/* Right: Actions (Theme & Profile) */}
           <div className="flex items-center gap-4">
             
             {/* Theme Toggle */}
@@ -134,61 +117,6 @@ export const Layout: React.FC = () => {
             >
               {darkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
             </button>
-
-            {/* Notifications panel trigger */}
-            <div className="relative" ref={notifRef}>
-              <button
-                onClick={() => {
-                  setShowNotif(!showNotif);
-                  if (!showNotif) markNotificationsAsRead();
-                }}
-                className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
-              >
-                <Bell size={20} />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full animate-ping" />
-                )}
-              </button>
-
-              {/* Notification Dropdown Menu */}
-              {showNotif && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden z-30 animate-slide-up">
-                  <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <h3 className="font-semibold text-sm">Notifications</h3>
-                    <span className="text-xs bg-primary/10 text-primary dark:bg-sky-400/20 dark:text-sky-400 px-2.5 py-0.5 rounded-full font-medium">
-                      {notifications.length} Total
-                    </span>
-                  </div>
-                  <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <div className="p-6 text-center text-sm text-slate-400">
-                        No notifications to display.
-                      </div>
-                    ) : (
-                      notifications.map((notif) => (
-                        <div key={notif.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                          <div className="flex gap-2.5">
-                            {notif.type === 'success' ? (
-                              <span className="h-2 w-2 mt-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                            ) : notif.type === 'warning' ? (
-                              <span className="h-2 w-2 mt-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-                            ) : (
-                              <span className="h-2 w-2 mt-1.5 rounded-full bg-primary flex-shrink-0" />
-                            )}
-                            <div>
-                              <h4 className="font-medium text-xs text-slate-900 dark:text-slate-100">{notif.title}</h4>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                                {notif.message}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Profile Avatar Quick View */}
             {user && (
