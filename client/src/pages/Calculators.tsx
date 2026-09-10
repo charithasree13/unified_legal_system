@@ -294,7 +294,7 @@ export const Calculators: React.FC = () => {
         } else if (res.status === 404) {
           setCalcErr(data.message || 'No applicable court fee rule was found for the selected jurisdiction.');
         } else if (res.status === 405) {
-          setCalcErr('Calculator service method configuration is incorrect.');
+          setCalcErr(data.message || 'Calculator service method configuration is incorrect (HTTP 405).');
         } else if (res.status === 500) {
           setCalcErr('Unable to calculate the court fee due to a server error.');
         } else {
