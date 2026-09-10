@@ -37,3 +37,6 @@ server/data/*.json
 *.sln
 *.sw?
 
+# Scratch temporary test files
+scratch/
+

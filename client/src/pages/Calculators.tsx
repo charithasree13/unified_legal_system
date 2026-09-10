@@ -119,12 +119,38 @@ export const Calculators: React.FC = () => {
     'Uttar Pradesh': ['Lucknow', 'Kanpur Nagar', 'Gautam Buddha Nagar (Noida)', 'Ghaziabad', 'Varanasi', 'Prayagraj', 'Agra']
   };
 
+  const CASE_RELIEF_MAP: { [key: string]: string[] } = {
+    'Money Recovery Suit': ['Money Claim Recovery'],
+    'Recovery of Loan': ['Bank Debt Recovery', 'Money Claim Recovery'],
+    'Possession Suit': ['Property Market Valuation Possession'],
+    'Partition Suit': ['Partition Share Market Value'],
+    'Specific Performance': ['Contract Agreement Consideration'],
+    'Declaration': ['Fixed Title Declaration', 'Declaration with Consequential Relief'],
+    'Declaration with Consequential Relief': ['Declaration with Consequential Relief', 'Fixed Title Declaration'],
+    'Permanent Injunction': ['Fixed Injunction Relief'],
+    'Mandatory Injunction': ['Fixed Injunction Relief'],
+    'Cancellation of Sale Deed': ['Cancellation Sale Deed Market Value'],
+    'Cancellation of Gift Deed': ['Cancellation Sale Deed Market Value'],
+    'Commercial Suit': ['Commercial Suit Ad Valorem'],
+    'Consumer Complaint': ['Consumer Compensation Claim'],
+    'Writ Petition': ['Writ Petition Fixed Fee']
+  };
+
   // Form Inputs
   const [selectedState, setSelectedState] = useState('Andhra Pradesh');
   const [district, setDistrict] = useState('Chittoor');
   const [selectedCourt, setSelectedCourt] = useState('District Court');
   const [selectedCaseType, setSelectedCaseType] = useState('Money Recovery Suit');
   const [selectedRelief, setSelectedRelief] = useState('Money Claim Recovery');
+
+  const handleCaseTypeChange = (ct: string) => {
+    setSelectedCaseType(ct);
+    const availableReliefs = CASE_RELIEF_MAP[ct];
+    if (availableReliefs && availableReliefs.length > 0) {
+      setSelectedRelief(availableReliefs[0]);
+    }
+  };
+
 
   // Valuation Amount Inputs
   const [suitValue, setSuitValue] = useState('100000');
@@ -421,12 +447,42 @@ export const Calculators: React.FC = () => {
                 </div>
               </div>
 
+              {/* Proceeding Case Type & Relief Type Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Proceeding / Case Type</label>
+                  <select
+                    value={selectedCaseType}
+                    onChange={(e) => handleCaseTypeChange(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                  >
+                    {(metadata.caseTypes.length > 0 ? metadata.caseTypes.map((ct: any) => ct.name) : ALL_CASE_TYPES).map((c: string) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Relief Requested</label>
+                  <select
+                    value={selectedRelief}
+                    onChange={(e) => setSelectedRelief(e.target.value)}
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                  >
+                    {(CASE_RELIEF_MAP[selectedCaseType] || ['Money Claim Recovery', 'Property Market Valuation Possession', 'Fixed Title Declaration', 'Fixed Injunction Relief']).map((r: string) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {/* Value of Suit (in Rupees) Input */}
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase">Value of Suit (in Rupees) *</label>
                 <input
                   type="number"
                   value={suitValue}
+
                   onChange={(e) => setSuitValue(e.target.value)}
                   min={0}
                   placeholder="Enter suit value in Rupees"
