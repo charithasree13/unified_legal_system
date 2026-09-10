@@ -44,13 +44,17 @@ app.use(helmet({
 app.use(cors());
 app.use(express.json());
 
-// Express Middleware: URL Path Normalization for Serverless Deployments
+// Express Middleware: URL Path Normalization & Court Fee Auto-Dispatcher
 app.use((req, res, next) => {
-  const rawUrl = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'] || req.originalUrl || req.url;
-  if (typeof rawUrl === 'string' && rawUrl.length > 0) {
-    if (!rawUrl.startsWith('/api') && !req.path.startsWith('/api')) {
-      req.url = '/api' + (rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl);
-    }
+  // 1. Intercept any POST request with Court Fee payload parameters regardless of URL path
+  if (req.method === 'POST' && req.body && (req.body.state || req.body.stateName || req.body.courtForum || req.body.suitValue !== undefined || req.body.claimAmount !== undefined)) {
+    return courtFeeCtrl.calculateFee(req as any, res);
+  }
+
+  // 2. Path normalization
+  const url = req.headers['x-forwarded-uri'] || req.headers['x-original-uri'] || req.originalUrl || req.url;
+  if (typeof url === 'string' && url.length > 0 && !url.startsWith('/api') && !req.path.startsWith('/api')) {
+    req.url = '/api' + (url.startsWith('/') ? url : '/' + url);
   }
   next();
 });
