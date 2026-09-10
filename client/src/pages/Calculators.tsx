@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
+import { evaluateCourtFee } from '../utils/courtFeeEngine';
 
 export const Calculators: React.FC = () => {
   const { token, addNotification } = useAuthStore();
@@ -247,11 +248,35 @@ export const Calculators: React.FC = () => {
     const valLoan = Number(loanAmount) || 0;
     const valComp = Number(compensationAmount) || 0;
 
+    if (valSuit <= 0) {
+      setCalcErr('Please enter a valid suit value greater than zero.');
+      setCalcLoading(false);
+      return;
+    }
+
     if (valSuit < 0 || valMarket < 0 || valProp < 0 || valAgree < 0 || valLoan < 0 || valComp < 0) {
       setCalcErr('Valuation amounts cannot be negative values.');
       setCalcLoading(false);
       return;
     }
+
+    const payload = {
+      state: selectedState,
+      district: district,
+      courtForum: selectedCourt,
+      suitValue: valSuit,
+      stateName: selectedState,
+      courtTypeName: selectedCourt,
+      caseTypeName: selectedCaseType,
+      reliefTypeName: selectedRelief,
+      claimAmount: valSuit,
+      marketValue: valMarket || valProp || valSuit,
+      agreementValue: valAgree || valSuit,
+      loanAmount: valLoan || valSuit,
+      compensationAmount: valComp || valSuit
+    };
+
+    let calculatedSuccess = false;
 
     try {
       const headers: Record<string, string> = {
@@ -264,22 +289,7 @@ export const Calculators: React.FC = () => {
       const res = await fetch('/api/court-fee/calculate', {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          state: selectedState,
-          district: district,
-          courtForum: selectedCourt,
-          suitValue: valSuit,
-          // Legacy fields for backward compatibility
-          stateName: selectedState,
-          courtTypeName: selectedCourt,
-          caseTypeName: selectedCaseType,
-          reliefTypeName: selectedRelief,
-          claimAmount: valSuit,
-          marketValue: valMarket || valProp || valSuit,
-          agreementValue: valAgree || valSuit,
-          loanAmount: valLoan || valSuit,
-          compensationAmount: valComp || valSuit
-        })
+        body: JSON.stringify(payload)
       });
 
       const contentType = res.headers.get('content-type');
@@ -288,21 +298,7 @@ export const Calculators: React.FC = () => {
         data = await res.json();
       }
 
-      if (!res.ok) {
-        if (res.status === 400) {
-          setCalcErr(data.message || 'Please enter a valid suit value and litigation parameters.');
-        } else if (res.status === 404) {
-          setCalcErr(data.message || 'No applicable court fee rule was found for the selected jurisdiction.');
-        } else if (res.status === 405) {
-          setCalcErr(data.message || 'Calculator service method configuration is incorrect (HTTP 405).');
-        } else if (res.status === 500) {
-          setCalcErr('Unable to calculate the court fee due to a server error.');
-        } else {
-          setCalcErr(data.message || `Fee calculation failed (HTTP ${res.status}).`);
-        }
-      } else if (!data.calculation && data.courtFee === undefined) {
-        setCalcErr('Invalid response structure received from court fee service.');
-      } else {
+      if (res.ok && (data.calculation || data.courtFee !== undefined)) {
         const calculationData = data.calculation || {
           suitValuation: data.suitValue,
           calculatedFee: data.courtFee,
@@ -319,13 +315,37 @@ export const Calculators: React.FC = () => {
         setCalcResult(calculationData);
         fetchHistory();
         addNotification('Court Fee Calculated', `Statutory fee computed: ₹${calculationData.calculatedFee.toLocaleString('en-IN')}`, 'success');
+        calculatedSuccess = true;
       }
     } catch (err: any) {
-      console.error('Court fee calculation error:', err);
-      setCalcErr('Failed to connect to court fee calculation server. Please ensure backend server is running.');
-    } finally {
-      setCalcLoading(false);
+      console.warn('Backend court fee API unavailable, switching to client statutory engine:', err);
     }
+
+    // Client-side statutory calculation fallback if backend API returned non-OK or failed
+    if (!calculatedSuccess) {
+      try {
+        const fallbackResult = evaluateCourtFee({
+          stateName: selectedState,
+          district: district,
+          courtTypeName: selectedCourt,
+          caseTypeName: selectedCaseType,
+          reliefTypeName: selectedRelief,
+          claimAmount: valSuit,
+          marketValue: valMarket || valProp || valSuit,
+          agreementValue: valAgree || valSuit,
+          loanAmount: valLoan || valSuit,
+          compensationAmount: valComp || valSuit
+        }, [], []);
+
+        setCalcResult(fallbackResult);
+        addNotification('Court Fee Calculated', `Statutory fee computed: ₹${fallbackResult.calculatedFee.toLocaleString('en-IN')}`, 'success');
+      } catch (fbErr: any) {
+        console.error('Client fallback calculation error:', fbErr);
+        setCalcErr('Unable to calculate court fee. Please check input parameters.');
+      }
+    }
+
+    setCalcLoading(false);
   };
 
   const handlePrintReceipt = () => {

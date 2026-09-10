@@ -58,6 +58,7 @@ export const getDistricts = async (req: AuthenticatedRequest, res: Response) => 
  */
 export const calculateFee = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    const payload = { ...(req.query || {}), ...(req.body || {}) };
     const {
       state,
       stateName: legacyStateName,
@@ -72,7 +73,7 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
       agreementValue = 0,
       loanAmount = 0,
       compensationAmount = 0
-    } = req.body;
+    } = payload as any;
 
     const resolvedState = (state || legacyStateName || '').trim();
     const resolvedDistrict = (district || '').trim();

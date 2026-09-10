@@ -132,8 +132,6 @@ app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.get
 
 
 // COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER
-app.post('/api/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.post('/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 app.get('/api/court-fee/districts', courtFeeCtrl.getDistricts);
 app.get('/court-fee/districts', courtFeeCtrl.getDistricts);
 app.get('/api/court-fee/metadata', courtFeeCtrl.getMetadata);
@@ -144,10 +142,15 @@ app.get('/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
 app.get('/api/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
 app.get('/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
 
-app.post('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.post('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.all('/api/calculators/court-fee/*', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.all('/calculators/court-fee/*', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.get('/api/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
+app.get('/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
+app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, courtFeeCtrl.getCalculationPdf);
+app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFeeCtrl.getCalculationCsv);
+
+app.all('/api/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
 app.post('/api', optionalAuthToken, (req, res, next) => {
@@ -162,13 +165,6 @@ app.post('/', optionalAuthToken, (req, res, next) => {
   }
   next();
 });
-
-app.get('/api/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
-app.get('/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
-
-
-app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, courtFeeCtrl.getCalculationPdf);
-app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFeeCtrl.getCalculationCsv);
 
 
 // COURT FEE ADMIN MANAGEMENT API
