@@ -8,9 +8,14 @@ export const getSectionMappings = async (req: Request, res: Response) => {
   try {
     const { search, legacyAct, newAct, mappingType, mappingStatus } = req.query;
 
-    let allMappings = await LegalSectionMapping.find();
+    let allMappings: any[] = [];
+    try {
+      allMappings = await LegalSectionMapping.find();
+    } catch (dbErr) {
+      console.warn('MongoDB query warning for section mappings, using built-in seed dataset fallback:', dbErr);
+    }
 
-    // Fallback to static seed array if DB returns empty
+    // Fallback to static seed array if DB returns empty or errors out
     if (!allMappings || allMappings.length === 0) {
       allMappings = seedSectionMappings.map((item, idx) => ({ ...item, _id: `builtin-${idx + 1}` }));
     }

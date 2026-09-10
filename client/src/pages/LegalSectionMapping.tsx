@@ -6,22 +6,7 @@ import {
   Layers, AlertCircle, BookMarked, ListChecks
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
-
-interface SectionMapping {
-  _id: string;
-  legacyAct: string;
-  legacySection: string;
-  legacyTitle: string;
-  newAct: string;
-  newSection: string;
-  newTitle: string;
-  newSectionContent?: string;
-  keyChanges?: string[];
-  mappingType: 'DIRECT_REPLACEMENT' | 'MULTIPLE_REPLACEMENT' | 'PARTIAL_REPLACEMENT' | 'REORGANIZED' | 'NO_DIRECT_EQUIVALENT';
-  mappingStatus: 'VERIFIED' | 'NEEDS_REVIEW';
-  sourceReference: string;
-  factualNotes?: string;
-}
+import { builtInSectionMappings, type SectionMapping } from '../data/builtInSectionMappings';
 
 export const LegalSectionMapping: React.FC = () => {
   const { user, token } = useAuthStore();
@@ -32,12 +17,12 @@ export const LegalSectionMapping: React.FC = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const [mappings, setMappings] = useState<SectionMapping[]>([]);
+  const [mappings, setMappings] = useState<SectionMapping[]>(builtInSectionMappings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   // Selected legacy section state
-  const [selectedSectionId, setSelectedSectionId] = useState<string>('');
+  const [selectedSectionId, setSelectedSectionId] = useState<string>('builtin-1');
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,7 +46,7 @@ export const LegalSectionMapping: React.FC = () => {
     return actName.split(' ')[0];
   };
 
-  // Fetch built-in mappings
+  // Fetch built-in mappings with robust static fallback
   const fetchMappings = async () => {
     setLoading(true);
     setError('');
@@ -72,7 +57,7 @@ export const LegalSectionMapping: React.FC = () => {
         }
       });
       const data = await response.json();
-      if (data.success && data.data) {
+      if (data.success && Array.isArray(data.data) && data.data.length > 0) {
         setMappings(data.data);
         const defaultItem = data.data.find((m: SectionMapping) => 
           m.legacySection.includes('354') || m.legacySection.includes('302')
@@ -82,10 +67,14 @@ export const LegalSectionMapping: React.FC = () => {
           setSelectedSectionId(defaultItem._id);
         }
       } else {
-        setError(data.message || 'Failed to load statutory section mappings.');
+        // Fallback to built-in dataset if API returned empty/error
+        setMappings(builtInSectionMappings);
+        setSelectedSectionId(builtInSectionMappings[0]._id);
       }
     } catch (err) {
-      setError('Network error loading built-in statutory mappings.');
+      // Fallback to built-in dataset on network error
+      setMappings(builtInSectionMappings);
+      setSelectedSectionId(builtInSectionMappings[0]._id);
     } finally {
       setLoading(false);
     }
