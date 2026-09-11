@@ -10,6 +10,7 @@ export interface UserProfile {
   enrollmentNumber?: string;
   enrollmentYear?: string;
   hasCompletedProfile?: boolean;
+  isVerified?: boolean;
 }
 
 interface AuthState {
