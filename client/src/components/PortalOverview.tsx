@@ -450,6 +450,9 @@ export const PortalOverview: React.FC = () => {
             {/* Quotation Text (Flows horizontally in 2 compact lines on desktop) */}
             <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-base sm:text-lg md:text-xl lg:text-[22px] text-slate-100 font-normal leading-relaxed text-center tracking-wide px-2 sm:px-4">
               “All of us do not have equal talent.... But, all of us have an <span className="text-[#38bdf8] font-medium not-italic border-b border-[#38bdf8]/40 pb-0.5">equal opportunity</span> to develop our talent”
+              <span className="font-sans not-italic text-xs sm:text-sm md:text-base text-amber-300/90 font-medium ml-2.5 inline-block">
+                ... Dr. A. P. J. Abdul Kalam
+              </span>
             </blockquote>
           </div>
 
