@@ -138,8 +138,6 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
     if (loading) return;
     if (onStart) onStart();
 
-    let popupHandled = false;
-
     // 1. Try Google OAuth 2.0 Token Client Popup
     if (window.google?.accounts?.oauth2) {
       try {
@@ -147,7 +145,6 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
           client_id: GOOGLE_CLIENT_ID,
           scope: 'email profile openid',
           callback: async (tokenRes: any) => {
-            popupHandled = true;
             if (tokenRes && tokenRes.access_token) {
               try {
                 const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -157,61 +154,31 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
                 sendAuthPayload({ googleUser });
                 return;
               } catch (err) {
-                console.warn('Google userinfo fetch failed:', err);
+                if (onError) onError('Failed to retrieve profile from Google.');
               }
+            } else {
+              if (onError) onError('Google sign-in was cancelled or returned no authorization.');
             }
-            sendAuthPayload({
-              googleUser: {
-                sub: 'google_user_pcharithasree13',
-                email: 'pcharithasree13@gmail.com',
-                name: 'P. Charithasree',
-                picture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-              }
-            });
+            setLoading(false);
           },
           error_callback: (err: any) => {
-            popupHandled = true;
             console.warn('OAuth2 error callback:', err);
-            sendAuthPayload({
-              googleUser: {
-                sub: 'google_user_pcharithasree13',
-                email: 'pcharithasree13@gmail.com',
-                name: 'P. Charithasree',
-                picture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-              }
-            });
+            if (onError) onError('Google Sign-In blocked (Error 400: origin_mismatch or browser popup policy). Please sign in using your credentials below or register an account.');
+            setLoading(false);
           }
         });
         client.requestAccessToken();
-
-        // Automatic fallback: If Google popup is blocked by origin_mismatch or closed, complete authentication cleanly after 1.5s
-        setTimeout(() => {
-          if (!popupHandled) {
-            sendAuthPayload({
-              googleUser: {
-                sub: 'google_user_pcharithasree13',
-                email: 'pcharithasree13@gmail.com',
-                name: 'P. Charithasree',
-                picture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-              }
-            });
-          }
-        }, 1500);
         return;
       } catch (err) {
         console.warn('OAuth2 token client trigger error:', err);
       }
     }
 
-    // 2. Direct fallback authentication if GIS script fails or is offline
-    sendAuthPayload({
-      googleUser: {
-        sub: 'google_user_pcharithasree13',
-        email: 'pcharithasree13@gmail.com',
-        name: 'P. Charithasree',
-        picture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-      }
-    });
+    // 2. Fallback notification if Google SDK is unavailable
+    if (onError) {
+      onError('Google Sign-In service is unavailable in this environment. Please sign in using your credentials below.');
+    }
+    setLoading(false);
   };
 
   return (

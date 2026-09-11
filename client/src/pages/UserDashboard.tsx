@@ -64,6 +64,19 @@ export const UserDashboard: React.FC = () => {
       
       {/* Main Project Overview Banner & Interactive Fields Cards Grid */}
       <PortalOverview />
+
+      {/* Pending Advocate Verification Notice */}
+      {user?.role === 'Advocate' && user?.isVerified === false && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-3 text-amber-600 dark:text-amber-400 text-xs font-semibold animate-slide-up">
+          <ShieldAlert size={20} className="flex-shrink-0 text-amber-500" />
+          <div>
+            <p className="font-bold text-sm">Bar Council Enrollment Verification Pending</p>
+            <p className="text-[11px] font-normal text-amber-700 dark:text-amber-300 mt-0.5">
+              Your Advocate enrollment credentials have been submitted and are undergoing review by the Legal Administrator. Full verified status and directory badges will be activated upon Admin approval.
+            </p>
+          </div>
+        </div>
+      )}
       
       {/* Welcome Card & Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

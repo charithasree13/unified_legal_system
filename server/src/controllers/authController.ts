@@ -88,7 +88,7 @@ export const register = async (req: Request, res: Response) => {
           city: 'Madanapalle',
           state: 'Andhra Pradesh',
           experience: 15,
-          isVerified: true
+          isVerified: false // Unverified initially - pending Legal Administrator verification
         });
       } catch (advErr) {
         console.error('Error auto-creating advocate directory document:', advErr);
@@ -101,12 +101,14 @@ export const register = async (req: Request, res: Response) => {
       role: newUser.role,
       action: 'USER_REGISTERED',
       ip: req.ip || '127.0.0.1',
-      details: `New ${assignedRole} account created successfully.`
+      details: `New ${assignedRole} account created successfully. ${assignedRole === 'Advocate' ? 'Advocate enrollment credentials pending Admin verification.' : ''}`
     });
 
     return res.status(201).json({
       success: true,
-      message: 'Registration successful! You can now sign in with your credentials.',
+      message: assignedRole === 'Advocate' 
+        ? 'Advocate registration successful! Your enrollment details have been submitted and are pending verification by the Legal Administrator.'
+        : 'Registration successful! You can now sign in with your credentials.',
       userId: newUser._id,
       email: newUser.email,
       phone: newUser.phone
@@ -175,15 +177,21 @@ export const login = async (req: Request, res: Response) => {
     });
 
     let hasCompletedProfile = (user as any).hasCompletedProfile === true;
-    if (user.role === 'Advocate' && !hasCompletedProfile) {
+    let isAdvocateVerified = true;
+    if (user.role === 'Advocate') {
       const existingAdv = await Advocate.findOne({
         $or: [
           ...(user.email ? [{ email: user.email.toLowerCase() }] : []),
           ...(user.phone ? [{ phone: user.phone }] : [])
         ]
       });
-      if (existingAdv && existingAdv.enrollmentNumber && existingAdv.specialization && existingAdv.court) {
-        hasCompletedProfile = true;
+      if (existingAdv) {
+        if (existingAdv.enrollmentNumber && existingAdv.specialization && existingAdv.court) {
+          hasCompletedProfile = true;
+        }
+        isAdvocateVerified = existingAdv.isVerified === true;
+      } else {
+        isAdvocateVerified = false;
       }
     }
 
@@ -200,7 +208,8 @@ export const login = async (req: Request, res: Response) => {
         phone: user.phone,
         enrollmentNumber: (user as any).enrollmentNumber,
         profilePhoto: user.profilePhoto,
-        hasCompletedProfile
+        hasCompletedProfile,
+        isVerified: user.role === 'Advocate' ? isAdvocateVerified : true
       }
     });
   } catch (error: any) {
