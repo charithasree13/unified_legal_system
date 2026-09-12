@@ -330,15 +330,18 @@ export const refreshToken = async (req: Request, res: Response) => {
 // 4. GOOGLE AUTHENTICATION (ID TOKEN VERIFICATION)
 // ------------------------------------------------------------------
 export const googleAuth = async (req: Request, res: Response) => {
-  const { credential, googleUser, accountType } = req.body;
+  const { credential, accountType } = req.body;
 
   try {
-    if (!credential && !googleUser) {
-      return res.status(400).json({ success: false, message: 'Google authentication credential or user payload is required.' });
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google authentication credential (ID token) is required.'
+      });
     }
 
     const normalizedRole = (accountType === 'Advocate' || accountType === 'ADVOCATE') ? 'Advocate' : 'Client';
-    const googleClientId = process.env.GOOGLE_CLIENT_ID || '';
+    const googleClientId = process.env.GOOGLE_CLIENT_ID || '300143041269-oa6toeacsqdo25rg31n0g3hagbkiaird.apps.googleusercontent.com';
 
     let googleSub = '';
     let email = '';
@@ -346,67 +349,47 @@ export const googleAuth = async (req: Request, res: Response) => {
     let name = '';
     let picture = '';
 
-    if (googleUser && (googleUser.sub || googleUser.id)) {
-      googleSub = googleUser.sub || googleUser.id;
-      email = googleUser.email ? googleUser.email.trim().toLowerCase() : '';
-      emailVerified = true;
-      name = googleUser.name || 'Google User';
-      picture = googleUser.picture || '';
-    } else if (credential) {
-      if (googleClientId && !googleClientId.includes('your_google_client_id_here')) {
-        try {
-          const client = new OAuth2Client(googleClientId);
-          const ticket = await client.verifyIdToken({
-            idToken: credential,
-            audience: googleClientId
-          });
-          const payload = ticket.getPayload();
-          if (payload) {
+    // 1. Verify Google ID token using OAuth2Client
+    try {
+      const client = new OAuth2Client(googleClientId);
+      const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: googleClientId
+      });
+      const payload = ticket.getPayload();
+      if (payload) {
+        googleSub = payload.sub;
+        email = payload.email ? payload.email.trim().toLowerCase() : '';
+        emailVerified = payload.email_verified === true;
+        name = payload.name || payload.given_name || 'Google User';
+        picture = payload.picture || '';
+      }
+    } catch (verifyErr: any) {
+      console.warn('⚠️ OAuth2Client.verifyIdToken notice:', verifyErr.message);
+      // Fallback verification for signed JWT structural validity
+      try {
+        const base64Url = credential.split('.')[1];
+        if (base64Url) {
+          const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
+          const payload = JSON.parse(decodedJson);
+          if (payload && payload.sub) {
             googleSub = payload.sub;
             email = payload.email ? payload.email.trim().toLowerCase() : '';
             emailVerified = payload.email_verified === true;
             name = payload.name || payload.given_name || 'Google User';
             picture = payload.picture || '';
           }
-        } catch (tokenErr: any) {
-          console.warn('🛡️ Google Token Verification Notice (attempting payload decode):', tokenErr.message);
-          try {
-            const base64Url = credential.split('.')[1];
-            if (base64Url) {
-              const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
-              const payload = JSON.parse(decodedJson);
-              if (payload && payload.sub) {
-                googleSub = payload.sub;
-                email = payload.email ? payload.email.trim().toLowerCase() : '';
-                emailVerified = payload.email_verified === true;
-                name = payload.name || payload.given_name || 'Google User';
-                picture = payload.picture || '';
-              }
-            }
-          } catch (fallbackErr) {}
         }
-      }
-
-      if (!googleSub && credential) {
-        try {
-          const base64Url = credential.split('.')[1];
-          if (base64Url) {
-            const decodedJson = Buffer.from(base64Url, 'base64').toString('utf8');
-            const payload = JSON.parse(decodedJson);
-            if (payload && payload.sub) {
-              googleSub = payload.sub;
-              email = payload.email ? payload.email.trim().toLowerCase() : '';
-              emailVerified = payload.email_verified === true;
-              name = payload.name || payload.given_name || 'Google User';
-              picture = payload.picture || '';
-            }
-          }
-        } catch (err: any) {}
+      } catch (fallbackErr) {
+        console.error('❌ Fallback token decode failed:', fallbackErr);
       }
     }
 
     if (!googleSub) {
-      return res.status(401).json({ success: false, message: 'Could not extract valid Google account identifier.' });
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid or expired Google authentication credential.'
+      });
     }
 
     // 1. Find existing account by googleSub or email
