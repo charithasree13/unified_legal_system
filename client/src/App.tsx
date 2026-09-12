@@ -14,6 +14,8 @@ import { Projects } from './pages/Projects';
 import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsAndConditions } from './pages/TermsAndConditions';
 
 // Protected Route Wrapper
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -48,6 +50,12 @@ export const App: React.FC = () => {
         {/* Auth Route */}
         <Route path="/login" element={<Login />} />
 
+        {/* Public Legal Documentation Routes (Unauthenticated & Authenticated Access) */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
+
         {/* Core Layout Routes */}
         <Route 
           path="/" 
@@ -79,4 +87,5 @@ export const App: React.FC = () => {
     </BrowserRouter>
   );
 };
+
 export default App;

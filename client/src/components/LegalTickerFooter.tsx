@@ -1,5 +1,6 @@
 import React from 'react';
-import { Scale, Lightbulb, Gavel, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Scale, Lightbulb, Gavel, BookOpen, Shield, FileText } from 'lucide-react';
 import { LEGAL_PRINCIPLES } from '../utils/legalPrinciples';
 
 export const LegalTickerFooter: React.FC = () => {
@@ -7,7 +8,7 @@ export const LegalTickerFooter: React.FC = () => {
   const tickerItems = [...LEGAL_PRINCIPLES, ...LEGAL_PRINCIPLES, ...LEGAL_PRINCIPLES];
 
   return (
-    <footer className="h-10 w-full bg-slate-900 text-slate-100 border-t border-amber-500/30 flex items-center overflow-hidden z-20 select-none shadow-xl relative flex-shrink-0 transition-colors duration-200">
+    <footer className="h-10 w-full bg-slate-900 text-slate-100 border-t border-amber-500/30 flex items-center justify-between overflow-hidden z-20 select-none shadow-xl relative flex-shrink-0 transition-colors duration-200">
       <style>{`
         @keyframes legalTickerScroll {
           0% { transform: translate3d(0, 0, 0); }
@@ -26,17 +27,16 @@ export const LegalTickerFooter: React.FC = () => {
       `}</style>
 
       {/* Static Left Badge Header */}
-      <div className="h-full px-4 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-amber-300 flex items-center gap-2 font-extrabold text-xs uppercase tracking-wider flex-shrink-0 z-30 shadow-lg border-r border-amber-500/30">
+      <div className="h-full px-3.5 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-amber-300 flex items-center gap-2 font-extrabold text-xs uppercase tracking-wider flex-shrink-0 z-30 shadow-lg border-r border-amber-500/30">
         <Scale size={15} className="text-amber-400 animate-pulse" />
-        <span className="hidden sm:inline">Legal Maxims & Principles</span>
-        <span className="sm:hidden">Legal Principles</span>
+        <span className="hidden sm:inline">Legal Principles</span>
       </div>
 
       {/* Marquee Ticker Track */}
       <div className="flex-1 overflow-hidden relative flex items-center h-full bg-slate-900/95">
         {/* Edge fade overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-slate-900 via-slate-900/90 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 via-slate-900/90 to-transparent z-10 pointer-events-none" />
 
         <div className="legal-ticker-track flex items-center gap-7 py-1 px-4 cursor-pointer">
           {tickerItems.map((item, idx) => (
@@ -79,6 +79,29 @@ export const LegalTickerFooter: React.FC = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Static Right Footer Links */}
+      <div className="h-full px-3.5 bg-slate-900 border-l border-amber-500/30 flex items-center gap-3 text-[11px] font-semibold text-slate-300 flex-shrink-0 z-30 shadow-lg">
+        <Link 
+          to="/privacy-policy" 
+          className="hover:text-amber-300 transition-colors flex items-center gap-1"
+          title="Privacy Policy"
+        >
+          <Shield size={12} className="text-sky-400" />
+          <span className="hidden md:inline">Privacy Policy</span>
+          <span className="md:hidden">Privacy</span>
+        </Link>
+        <span className="text-slate-600 font-bold">•</span>
+        <Link 
+          to="/terms" 
+          className="hover:text-amber-300 transition-colors flex items-center gap-1"
+          title="Terms & Conditions"
+        >
+          <FileText size={12} className="text-amber-400" />
+          <span className="hidden md:inline">Terms & Conditions</span>
+          <span className="md:hidden">Terms</span>
+        </Link>
       </div>
     </footer>
   );

@@ -28,6 +28,7 @@ export const Login: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [enrollmentNumber, setEnrollmentNumber] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -40,6 +41,7 @@ export const Login: React.FC = () => {
     setPassword('');
     setConfirmPassword('');
     setEnrollmentNumber('');
+    setAgreedToTerms(false);
     setErrorMsg('');
     setSuccessMsg('');
   };
@@ -565,10 +567,39 @@ export const Login: React.FC = () => {
                 </div>
               </div>
 
+              {/* Registration Terms Consent Checkbox */}
+              <div className="flex items-start gap-2 pt-1">
+                <input
+                  id="agree-terms"
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-800 text-primary focus:ring-primary cursor-pointer flex-shrink-0"
+                />
+                <label htmlFor="agree-terms" className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight select-none">
+                  I agree to the{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/terms')}
+                    className="text-primary dark:text-sky-400 font-semibold hover:underline cursor-pointer"
+                  >
+                    Terms & Conditions
+                  </button>{' '}
+                  and{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/privacy-policy')}
+                    className="text-primary dark:text-sky-400 font-semibold hover:underline cursor-pointer"
+                  >
+                    Privacy Policy
+                  </button>.
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full py-2.5 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-xs font-semibold transition-all mt-2 cursor-pointer shadow"
+                disabled={loading || !agreedToTerms}
+                className="w-full py-2.5 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-xs font-semibold transition-all mt-2 cursor-pointer shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating Account...' : 'Complete Registration'}
               </button>
@@ -665,9 +696,28 @@ export const Login: React.FC = () => {
             </form>
           )}
 
+          {/* Footer Legal Links */}
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-3 text-[11px] text-slate-400">
+            <button
+              type="button"
+              onClick={() => navigate('/privacy-policy')}
+              className="hover:text-primary dark:hover:text-sky-400 hover:underline cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => navigate('/terms')}
+              className="hover:text-primary dark:hover:text-sky-400 hover:underline cursor-pointer"
+            >
+              Terms & Conditions
+            </button>
+          </div>
+
         </div>
 
-        {/* MOBILE-ONLY FOOTER ATTRIBUTION (Hidden on desktop to ensure Founder appears exactly once) */}
+        {/* MOBILE-ONLY FOOTER ATTRIBUTION */}
         <div className="mt-4 text-center text-xs font-medium text-slate-600 dark:text-slate-400 lg:hidden">
           <span className="text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider text-[11px] mr-1">Founder:</span>
           <span className="font-semibold text-slate-800 dark:text-slate-200">Mr. P. V. Prasad, Advocate, Madanapalle</span>
