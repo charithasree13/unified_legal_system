@@ -285,7 +285,7 @@ export const getCalculationPdf = async (req: AuthenticatedRequest, res: Response
   <div class="header">
     <div>
       <div class="title">Official Court Fee Valuation Receipt</div>
-      <div class="subtitle">Unified Legal Platform Statutory Registry Engine</div>
+      <div class="subtitle">Elite Legal Desk Statutory Registry Engine</div>
     </div>
     <div>
       <span class="badge">Ref #${item._id}</span>

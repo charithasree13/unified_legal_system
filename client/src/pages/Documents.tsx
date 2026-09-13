@@ -2347,7 +2347,7 @@ export const Documents: React.FC = () => {
                 {readingDoc.court ? getJudgementSpecificContent(readingDoc) : getActSpecificContent(readingDoc)}
 
                 <div className="mt-12 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-sans text-slate-400">
-                  <span>Unified Legal Professional System Reader</span>
+                  <span>Elite Legal Desk Reader</span>
                   <span>Page 1 of 1</span>
                 </div>
               </div>

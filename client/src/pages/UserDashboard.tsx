@@ -95,7 +95,7 @@ export const UserDashboard: React.FC = () => {
             <p className="text-white/80 text-xs mt-2 max-w-md leading-relaxed">
               {user?.role === 'Client' 
                 ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate state court fees and land conversions.'
-                : 'Unified Legal System gives you secure end-to-end client communications, case management, land converters, and task calendars.'
+                : 'Elite Legal Desk gives you secure end-to-end client communications, case management, land converters, and task calendars.'
               }
             </p>
           </div>

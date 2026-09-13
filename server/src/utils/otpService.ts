@@ -56,13 +56,13 @@ export const dispatchOtpNotification = async (options: SendOtpOptions): Promise<
     try {
       const transporter = createTransporter();
       const mailOptions = {
-        from: process.env.SMTP_FROM || '"Unified Legal System" <no-reply@unifiedlegalsystem.org>',
+        from: process.env.SMTP_FROM || '"Elite Legal Desk" <elitelegaldeskmpl@gmail.com>',
         to: email.trim().toLowerCase(),
         subject: `[${otp}] Your Security OTP Verification Code`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
             <div style="background-color: #0F172A; padding: 18px; text-align: center; border-radius: 8px 8px 0 0;">
-              <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">⚖️ Unified Legal Professional System</h2>
+              <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">⚖️ Elite Legal Desk</h2>
             </div>
             <div style="padding: 28px; background-color: #ffffff;">
               <h3 style="color: #0f172a; margin-top: 0; font-size: 16px;">Security OTP Verification Code</h3>

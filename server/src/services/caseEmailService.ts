@@ -132,7 +132,7 @@ Your hearing is scheduled for 3 days from today.
 Please make the necessary arrangements and contact your advocate if you require any clarification.
 
 Regards,
-Unified Legal System`;
+Elite Legal Desk`;
 
     // Professional responsive HTML version
     const htmlBody = `<!DOCTYPE html>
@@ -150,7 +150,7 @@ Unified Legal System`;
           <!-- Header Banner -->
           <tr>
             <td style="background-color: #0f172a; padding: 24px 30px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">⚖️ UNIFIED LEGAL SYSTEM</h1>
+              <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">⚖️ ELITE LEGAL DESK</h1>
               <p style="color: #38bdf8; margin: 6px 0 0 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Hearing Date Reminder</p>
             </td>
           </tr>
@@ -203,7 +203,7 @@ Unified Legal System`;
               
               <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
                 <p style="margin: 0; font-size: 14px; color: #475569;">Regards,</p>
-                <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: 700; color: #0f172a;">Unified Legal System</p>
+                <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: 700; color: #0f172a;">Elite Legal Desk</p>
               </div>
             </td>
           </tr>
@@ -211,7 +211,7 @@ Unified Legal System`;
           <!-- Footer -->
           <tr>
             <td style="background-color: #f8fafc; padding: 16px 30px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0;">
-              This is an automated notification from Unified Legal System. Please do not reply directly to this email.
+              This is an automated notification from Elite Legal Desk. Please do not reply directly to this email.
             </td>
           </tr>
         </table>
@@ -223,7 +223,7 @@ Unified Legal System`;
 
     const transporter = createTransporter();
     const mailOptions = {
-      from: process.env.SMTP_FROM || '"Unified Legal System" <no-reply@unifiedlegalsystem.org>',
+      from: process.env.SMTP_FROM || '"Elite Legal Desk" <elitelegaldeskmpl@gmail.com>',
       to: clientEmail.trim().toLowerCase(),
       subject,
       text: textBody,
@@ -321,13 +321,13 @@ export const dispatchCaseFilingNoticeEmail = async (project: any, advocateName: 
   for (const party of registeredParties) {
     try {
       const mailOptions = {
-        from: process.env.SMTP_FROM || '"Unified Legal System" <no-reply@unifiedlegalsystem.org>',
+        from: process.env.SMTP_FROM || '"Elite Legal Desk" <elitelegaldeskmpl@gmail.com>',
         to: party.email.trim().toLowerCase(),
         subject: `⚖️ Legal Notice: Case Registered & Hearing Schedule [${project.caseNo || project.name}]`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #cbd5e1; border-radius: 12px; background-color: #ffffff;">
             <div style="background-color: #0f172a; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
-              <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">⚖️ UNIFIED LEGAL PROFESSIONAL SYSTEM</h2>
+              <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: bold;">⚖️ ELITE LEGAL DESK</h2>
               <p style="color: #38bdf8; margin: 4px 0 0 0; font-size: 13px; font-weight: 600;">Official Case Filing & Hearing Notification</p>
             </div>
             
@@ -379,12 +379,12 @@ export const dispatchCaseFilingNoticeEmail = async (project: any, advocateName: 
               </div>
 
               <p style="font-size: 13px; color: #475569; line-height: 1.6;">
-                You can log into your registered Unified Legal System portal account anytime to view updated case proceedings, timeline events, and shared documents.
+                You can log into your registered Elite Legal Desk portal account anytime to view updated case proceedings, timeline events, and shared documents.
               </p>
             </div>
 
             <div style="background-color: #f8fafc; padding: 14px; text-align: center; font-size: 11px; color: #64748b; border-radius: 0 0 8px 8px; border-top: 1px solid #e2e8f0;">
-              Enterprise Unified Legal System • Automated Hearing Alert Service
+              Enterprise Elite Legal Desk • Automated Hearing Alert Service
             </div>
           </div>
         `

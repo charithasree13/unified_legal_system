@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Scale, Plus, PlusCircle, CheckSquare, Calendar, KanbanSquare, 
   Clock, AlertTriangle, Play, CheckCircle2, UserPlus, FileText, ArrowRight,
-  Trash2
+  Trash2, Loader2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -16,6 +16,7 @@ export const Projects: React.FC = () => {
 
   // Form states
   const [showAddProject, setShowAddProject] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [caseNo, setCaseNo] = useState('');
   const [nextHearingDate, setNextHearingDate] = useState('');
@@ -52,7 +53,12 @@ export const Projects: React.FC = () => {
       if (res.ok && Array.isArray(data.projects)) {
         setProjects(data.projects);
         if (data.projects.length > 0) {
-          setActiveProj(data.projects[0]);
+          setActiveProj((prev: any) => {
+            if (prev && data.projects.some((p: any) => p._id === prev._id)) {
+              return data.projects.find((p: any) => p._id === prev._id);
+            }
+            return data.projects[0];
+          });
         }
       }
     } catch (err) {
@@ -62,9 +68,18 @@ export const Projects: React.FC = () => {
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectName) return;
+    if (!projectName.trim()) {
+      addNotification('Validation Error', 'Case Name is required.', 'error');
+      return;
+    }
 
-    const teamArray = projTeam ? projTeam.split(',').map(m => m.trim()) : [];
+    if (user?.role === 'Client') {
+      addNotification('Access Denied', 'Clients do not have permission to create new case files.', 'error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const teamArray = projTeam ? projTeam.split(',').map(m => m.trim()).filter(Boolean) : [];
 
     try {
       const res = await fetch('/api/projects', {
@@ -74,18 +89,18 @@ export const Projects: React.FC = () => {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          name: projectName,
-          caseNo,
+          name: projectName.trim(),
+          caseNo: caseNo.trim(),
           nextHearingDate,
-          plaintiffName,
-          defendantName,
-          plaintiffEmail,
-          defendantEmail,
-          clientPhone,
+          plaintiffName: plaintiffName.trim(),
+          defendantName: defendantName.trim(),
+          plaintiffEmail: plaintiffEmail.trim(),
+          defendantEmail: defendantEmail.trim(),
+          clientPhone: clientPhone.trim(),
           courtType,
-          courtCity,
+          courtCity: courtCity.trim(),
           caseType,
-          description: projDesc,
+          description: projDesc.trim(),
           priority: projPriority,
           deadline: projDeadline,
           teamMembers: teamArray
@@ -93,8 +108,12 @@ export const Projects: React.FC = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        addNotification('Project Created', `Case "${projectName}" initialized. Registered parties will be notified via email.`, 'success');
+        addNotification('Project Created', `Case "${projectName.trim()}" initialized. Registered parties will be notified via email.`, 'success');
         setShowAddProject(false);
+        const newProj = data.project;
+        if (newProj) {
+          setActiveProj(newProj);
+        }
         setProjectName('');
         setCaseNo('');
         setNextHearingDate('');
@@ -110,10 +129,15 @@ export const Projects: React.FC = () => {
         setProjDeadline('');
         setProjTeam('');
         
-        fetchProjects();
+        await fetchProjects();
+      } else {
+        addNotification('Creation Error', data.message || 'Failed to create case file.', 'error');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      addNotification('Network Error', 'Unable to reach backend server.', 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -542,9 +566,17 @@ export const Projects: React.FC = () => {
           <p className="text-xs text-slate-400 mt-1">
             {user?.role === 'Client' 
               ? `No active legal cases are linked to your phone number (${user?.phone || 'N/A'}). When your advocate adds a case associated with your phone number, it will automatically appear here.`
-              : 'Click the "+" icon above to initialize a case file, assign advocates, and setup checklists.'
+              : 'Initialize your first case file to manage litigation tasks, hearing schedules, and team collaboration.'
             }
           </p>
+          {user?.role !== 'Client' && (
+            <button
+              onClick={() => setShowAddProject(true)}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-lg transition-all shadow-md cursor-pointer"
+            >
+              <Plus size={15} /> Initialize First Case File
+            </button>
+          )}
         </div>
       )}
 
@@ -571,12 +603,11 @@ export const Projects: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Case No.</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Case No. (Optional)</label>
                   <input
                     type="text"
                     value={caseNo}
                     onChange={(e) => setCaseNo(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                     placeholder="e.g. OS 123/2026"
                   />
@@ -596,23 +627,21 @@ export const Projects: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Plaintiff Name</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Plaintiff Name (Optional)</label>
                   <input
                     type="text"
                     value={plaintiffName}
                     onChange={(e) => setPlaintiffName(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                     placeholder="e.g. Suresh Kumar"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Defendant Name</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Defendant Name (Optional)</label>
                   <input
                     type="text"
                     value={defendantName}
                     onChange={(e) => setDefendantName(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                     placeholder="e.g. Ramesh Kumar"
                   />
@@ -651,23 +680,21 @@ export const Projects: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Phone Number of Client</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Phone Number of Client (Optional)</label>
                   <input
                     type="tel"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                     placeholder="e.g. 9876543210"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Next Hearing Date</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Next Hearing Date (Optional)</label>
                   <input
                     type="date"
                     value={nextHearingDate}
                     onChange={(e) => setNextHearingDate(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                   />
                 </div>
@@ -692,12 +719,11 @@ export const Projects: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">City of the Court</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">City of the Court (Optional)</label>
                   <input
                     type="text"
                     value={courtCity}
                     onChange={(e) => setCourtCity(e.target.value)}
-                    required
                     className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                     placeholder="e.g. Bengaluru"
                   />
@@ -753,15 +779,24 @@ export const Projects: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddProject(false)}
-                  className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950 rounded-lg text-xs font-semibold text-slate-500 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-950 rounded-lg text-xs font-semibold text-slate-500 cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold cursor-pointer"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Create Case File
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin" size={14} />
+                      Initializing...
+                    </>
+                  ) : (
+                    'Create Case File'
+                  )}
                 </button>
               </div>
             </form>
