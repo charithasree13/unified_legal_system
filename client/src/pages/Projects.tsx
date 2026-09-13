@@ -68,10 +68,6 @@ export const Projects: React.FC = () => {
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectName.trim()) {
-      addNotification('Validation Error', 'Case Name is required.', 'error');
-      return;
-    }
 
     if (user?.role === 'Client') {
       addNotification('Access Denied', 'Clients do not have permission to create new case files.', 'error');
@@ -79,6 +75,12 @@ export const Projects: React.FC = () => {
     }
 
     setIsSubmitting(true);
+    const effectiveName = projectName.trim() || 
+      (plaintiffName.trim() && defendantName.trim() ? `${plaintiffName.trim()} v. ${defendantName.trim()}` : '') ||
+      (caseNo.trim() ? `Case ${caseNo.trim()}` : '') ||
+      (projDesc.trim() ? (projDesc.trim().length > 35 ? projDesc.trim().substring(0, 32) + '...' : projDesc.trim()) : '') ||
+      'Litigation Case File';
+
     const teamArray = projTeam ? projTeam.split(',').map(m => m.trim()).filter(Boolean) : [];
 
     try {
@@ -89,7 +91,7 @@ export const Projects: React.FC = () => {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          name: projectName.trim(),
+          name: effectiveName,
           caseNo: caseNo.trim(),
           nextHearingDate,
           plaintiffName: plaintiffName.trim(),
@@ -108,7 +110,7 @@ export const Projects: React.FC = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        addNotification('Project Created', `Case "${projectName.trim()}" initialized. Registered parties will be notified via email.`, 'success');
+        addNotification('Project Created', `Case "${effectiveName}" initialized and saved successfully.`, 'success');
         setShowAddProject(false);
         const newProj = data.project;
         if (newProj) {
@@ -590,12 +592,11 @@ export const Projects: React.FC = () => {
             
             <form onSubmit={handleCreateProject} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto scrollbar-thin">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase">Case Name</label>
+                <label className="block text-xs font-semibold text-slate-500 uppercase">Case Name (Optional)</label>
                 <input
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  required
                   className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
                   placeholder="e.g. Civil Dispute / Bengaluru Site"
                 />

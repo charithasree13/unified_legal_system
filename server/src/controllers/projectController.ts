@@ -58,8 +58,19 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
       return res.status(403).json({ success: false, message: 'Access denied. Clients cannot create new case files.' });
     }
     const { name, description, priority, deadline, teamMembers, caseNo, nextHearingDate, plaintiffName, defendantName, plaintiffEmail, defendantEmail, clientPhone, courtType, courtCity, caseType } = req.body;
-    if (!name) {
-      return res.status(400).json({ success: false, message: 'Case Name is required.' });
+    
+    // Auto-generate derived case title fallback if name is not explicitly passed
+    let caseTitle = (name || '').trim();
+    if (!caseTitle) {
+      if (plaintiffName && defendantName) {
+        caseTitle = `${plaintiffName} v. ${defendantName}`;
+      } else if (caseNo) {
+        caseTitle = `Case ${caseNo}`;
+      } else if (description) {
+        caseTitle = description.length > 35 ? description.substring(0, 32) + '...' : description;
+      } else {
+        caseTitle = `Litigation File (${new Date().toLocaleDateString()})`;
+      }
     }
 
     const team = Array.isArray(teamMembers) ? teamMembers : [];
@@ -68,7 +79,7 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
     }
 
     const newProject = await Project.create({
-      name,
+      name: caseTitle,
       description: description || '',
       priority: priority || 'Medium',
       status: 'Planning',
@@ -101,18 +112,23 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
       console.error('Error dispatching case filing notice:', err);
     });
 
-    await AuditLog.create({
-      userId: req.user?.id || 'system',
-      userName: req.user?.name || 'System User',
-      role: req.user?.role || 'User',
-      action: 'PROJECT_CREATED',
-      ip: req.ip || '127.0.0.1',
-      details: `Created Case: ${name} (Case No: ${caseNo || 'N/A'})`
-    });
+    try {
+      await AuditLog.create({
+        userId: req.user?.id || 'system',
+        userName: req.user?.name || 'System User',
+        role: req.user?.role || 'User',
+        action: 'PROJECT_CREATED',
+        ip: req.ip || '127.0.0.1',
+        details: `Created Case: ${caseTitle} (Case No: ${caseNo || 'N/A'})`
+      });
+    } catch (auditErr) {
+      console.error('AuditLog creation non-fatal error:', auditErr);
+    }
 
     return res.status(201).json({ success: true, project: newProject });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: 'Failed to create case project.' });
+  } catch (error: any) {
+    console.error('Error creating case project:', error);
+    return res.status(500).json({ success: false, message: error.message || 'Failed to create case project.' });
   }
 };
 
