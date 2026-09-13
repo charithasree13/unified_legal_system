@@ -54,16 +54,18 @@ export const getProjectById = async (req: AuthenticatedRequest, res: Response) =
 // Create Project
 export const createProject = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (req.user?.role === 'Client') {
-      return res.status(403).json({ success: false, message: 'Access denied. Clients cannot create new case files.' });
-    }
     const { name, description, priority, deadline, teamMembers, caseNo, nextHearingDate, plaintiffName, defendantName, plaintiffEmail, defendantEmail, clientPhone, courtType, courtCity, caseType } = req.body;
     
+    const isClientRole = req.user?.role === 'Client';
+    const effectiveClientPhone = clientPhone || (isClientRole ? req.user?.phone || '' : '');
+    const effectivePlaintiffName = plaintiffName || (isClientRole ? req.user?.name || '' : '');
+    const effectivePlaintiffEmail = plaintiffEmail || (isClientRole ? req.user?.email || '' : '');
+
     // Auto-generate derived case title fallback if name is not explicitly passed
     let caseTitle = (name || '').trim();
     if (!caseTitle) {
-      if (plaintiffName && defendantName) {
-        caseTitle = `${plaintiffName} v. ${defendantName}`;
+      if (effectivePlaintiffName && defendantName) {
+        caseTitle = `${effectivePlaintiffName} v. ${defendantName}`;
       } else if (caseNo) {
         caseTitle = `Case ${caseNo}`;
       } else if (description) {
@@ -92,17 +94,17 @@ export const createProject = async (req: AuthenticatedRequest, res: Response) =>
       currentDocContent: '',
       caseNo: caseNo || '',
       nextHearingDate: nextHearingDate || '',
-      plaintiffName: plaintiffName || '',
+      plaintiffName: effectivePlaintiffName,
       defendantName: defendantName || '',
-      plaintiffEmail: plaintiffEmail || '',
+      plaintiffEmail: effectivePlaintiffEmail,
       defendantEmail: defendantEmail || '',
-      clientPhone: clientPhone || '',
+      clientPhone: effectiveClientPhone,
       courtType: courtType || '',
       courtCity: courtCity || '',
       caseType: caseType || 'Civil',
       activityTimeline: [{
         userName: req.user?.name || 'System',
-        action: 'Created the case project.',
+        action: `Created the case project${isClientRole ? ' (Client Initialized)' : ''}.`,
         timestamp: new Date()
       }]
     });

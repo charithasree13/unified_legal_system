@@ -69,11 +69,6 @@ export const Projects: React.FC = () => {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (user?.role === 'Client') {
-      addNotification('Access Denied', 'Clients do not have permission to create new case files.', 'error');
-      return;
-    }
-
     setIsSubmitting(true);
     const effectiveName = projectName.trim() || 
       (plaintiffName.trim() && defendantName.trim() ? `${plaintiffName.trim()} v. ${defendantName.trim()}` : '') ||
@@ -268,15 +263,13 @@ export const Projects: React.FC = () => {
             </button>
           ))}
           
-          {user?.role !== 'Client' && (
-            <button
-              onClick={() => setShowAddProject(true)}
-              className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 rounded-lg transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
-              title="Create New Case Project"
-            >
-              <Plus size={14} />
-            </button>
-          )}
+          <button
+            onClick={() => setShowAddProject(true)}
+            className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 rounded-lg transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+            title="Create New Case Project"
+          >
+            <Plus size={14} />
+          </button>
         </div>
 
         {/* View Mode controls */}
