@@ -14,11 +14,19 @@ export interface SendOtpOptions {
  */
 const createTransporter = () => {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = Number(process.env.SMTP_PORT) || 587;
+  const port = Number(process.env.SMTP_PORT) || 465;
   const user = process.env.SMTP_USER || '';
   const pass = process.env.SMTP_PASS || '';
 
   if (user && pass) {
+    if (host === 'smtp.gmail.com' || host.includes('gmail')) {
+      return nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: { user, pass }
+      });
+    }
     return nodemailer.createTransport({
       host,
       port,
