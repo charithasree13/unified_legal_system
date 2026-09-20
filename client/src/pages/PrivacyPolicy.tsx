@@ -9,26 +9,21 @@ export const PrivacyPolicy: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const formattedLastUpdated = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-200">
-      
+
       {/* Header Bar */}
       <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-          <div 
-            onClick={() => navigate('/')} 
+          <div
+            onClick={() => navigate('/')}
             className="flex items-center gap-3 cursor-pointer select-none group"
           >
-            <img 
-              src="/logo.jpg" 
-              alt="Elite Legal Desk Logo" 
-              className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform" 
+            <img
+              src="/logo.jpg"
+              alt="Elite Legal Desk Logo"
+              className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform"
             />
             <div>
               <h1 className="font-extrabold text-sm sm:text-base tracking-wider text-slate-900 dark:text-white uppercase leading-none group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">
@@ -52,7 +47,7 @@ export const PrivacyPolicy: React.FC = () => {
       {/* Main Document Body */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-800 p-6 sm:p-10">
-          
+
           {/* Document Header */}
           <div className="border-b border-slate-200 dark:border-slate-800 pb-6 mb-8">
             <div className="flex items-center gap-2.5 text-xs font-bold text-primary dark:text-sky-400 uppercase tracking-wider mb-2">
@@ -62,8 +57,6 @@ export const PrivacyPolicy: React.FC = () => {
               Privacy Policy
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-              <span><strong>Last Updated:</strong> {formattedLastUpdated}</span>
-              <span>•</span>
               <span><strong>Platform:</strong> Elite Legal Desk</span>
             </div>
           </div>
@@ -125,7 +118,7 @@ export const PrivacyPolicy: React.FC = () => {
               <p className="mb-3">
                 Depending on how the platform is used, Elite Legal Desk may collect information such as:
               </p>
-              
+
               <div className="space-y-3 pl-2">
                 <div className="p-3.5 bg-slate-50/70 dark:bg-slate-950/60 rounded-xl border border-slate-200/60 dark:border-slate-800">
                   <h3 className="font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
@@ -418,7 +411,7 @@ export const PrivacyPolicy: React.FC = () => {
           {/* Footer Navigation within Document */}
           <div className="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
             <div className="flex gap-4">
-              <button 
+              <button
                 onClick={() => navigate('/terms')}
                 className="text-primary dark:text-sky-400 hover:underline font-semibold"
               >
