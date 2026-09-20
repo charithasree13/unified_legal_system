@@ -8,6 +8,7 @@
     "start": "node dist/index.js",
     "dev": "tsnd --respawn --transpile-only src/index.ts",
     "migrate": "tsnd --transpile-only src/scripts/migrate.ts",
+    "seed:admin": "tsnd --transpile-only src/scripts/seedAdmin.ts",
     "reminders:check": "ts-node --transpile-only src/scripts/runReminders.ts",
     "reminders:test": "ts-node --transpile-only src/scripts/runReminders.ts --test",
     "smtp:test": "ts-node --transpile-only src/scripts/testSmtp.ts"
