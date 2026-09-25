@@ -5,7 +5,7 @@ export const FounderSection: React.FC = () => {
   return (
     <section id="founder" className="w-full bg-white dark:bg-slate-900 border-t border-b border-slate-200/80 dark:border-slate-800 py-12 px-4 sm:px-6 lg:px-8 my-8 shadow-sm">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 text-xs font-bold uppercase tracking-wider mb-3">
@@ -22,20 +22,20 @@ export const FounderSection: React.FC = () => {
 
         {/* Founder Detail Card */}
         <div className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
-          
+
           {/* Subtle Accent Stripe */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-amber-500 to-primary" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
+
             {/* Founder Profile Badge & Photo Column */}
             <div className="lg:col-span-4 flex flex-col items-center text-center border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 pb-6 lg:pb-0 lg:pr-8">
-              
+
               <div className="relative mb-4">
                 <div className="h-32 w-32 sm:h-36 sm:w-36 rounded-full bg-white dark:bg-slate-900 border-4 border-amber-400 shadow-xl p-1.5 flex items-center justify-center overflow-hidden">
-                  <img 
-                    src="/logo.jpg" 
-                    alt="Mr. P. V. Prasad, Advocate" 
+                  <img
+                    src="/logo.jpg"
+                    alt="Mr. P. V. Prasad, Advocate"
                     className="h-full w-full object-cover rounded-full"
                   />
                 </div>
@@ -76,14 +76,14 @@ export const FounderSection: React.FC = () => {
 
             {/* Founder Biography & Practice Areas Column */}
             <div className="lg:col-span-8 space-y-5">
-              
+
               <div className="space-y-2">
                 <h4 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <Award size={18} className="text-amber-500" />
                   Legal Background & Professional Overview
                 </h4>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed Notary Public based in Madanapalle, Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998, he brings over 28 years of rigorous trial litigation, land title investigation, banking legal consultancy, and notary statutory services to the community.
+                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed Notary Public based in Madanapalle, Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
                   Envisioning an integrated digital portal for local advocates, litigants, and legal researchers, Mr. Prasad founded <strong>Elite Legal Desk</strong> to streamline court fee calculations, legal section cross-mapping, case file collaboration, and verified advocate discovery.
@@ -92,7 +92,7 @@ export const FounderSection: React.FC = () => {
 
               {/* Core Practice Areas & Courts */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                
+
                 <div className="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
                   <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white mb-2">
                     <Landmark size={16} className="text-primary dark:text-sky-400" />
