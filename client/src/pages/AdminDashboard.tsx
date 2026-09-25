@@ -6,6 +6,8 @@ import {
 import confetti from 'canvas-confetti';
 import { useAuthStore } from '../store/authStore';
 import { PortalOverview } from '../components/PortalOverview';
+import { FounderSection } from '../components/FounderSection';
+import { FooterSection } from '../components/FooterSection';
 
 export const AdminDashboard: React.FC = () => {
   const { token, addNotification } = useAuthStore();
@@ -843,6 +845,10 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Founder Details & Footer Section (Displayed both before and after login) */}
+      <FounderSection />
+      <FooterSection />
 
     </div>
   );

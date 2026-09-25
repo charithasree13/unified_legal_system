@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { Layout } from './components/Layout';
 import { Login } from './pages/Login';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { UserDashboard } from './pages/UserDashboard';
+import { PublicDashboard } from './pages/PublicDashboard';
 import { Directory } from './pages/Directory';
 import { Calculators } from './pages/Calculators';
 import { Documents } from './pages/Documents';
@@ -16,16 +17,41 @@ import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
+import { AuthModal } from './components/AuthModal';
 
-// Protected Route Wrapper
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Protected Feature Wrapper (Intercepts unauthenticated visitors attempting protected actions)
+const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string }> = ({ 
+  children, 
+  featureName = 'this protected feature' 
+}) => {
   const { token } = useAuthStore();
-  return token ? <>{children}</> : <Navigate to="/login" replace />;
+  const [authModalOpen, setAuthModalOpen] = useState(true);
+
+  if (!token) {
+    return (
+      <div className="relative min-h-screen">
+        <PublicDashboard />
+        <AuthModal 
+          isOpen={authModalOpen} 
+          onClose={() => setAuthModalOpen(false)}
+          initialMode="login"
+          actionPrompt={`Please sign in or create an account to access ${featureName}.`}
+        />
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 };
 
-// Route Switcher based on Role (Admin vs User Dashboard)
+// Route Switcher based on Authentication & Role
 const DashboardSwitcher: React.FC = () => {
-  const { user } = useAuthStore();
+  const { token, user } = useAuthStore();
+  
+  if (!token) {
+    return <PublicDashboard />;
+  }
+
   if (user?.role === 'Admin') {
     return <AdminDashboard />;
   }
@@ -47,38 +73,72 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth Route */}
+        {/* Direct Auth Route */}
         <Route path="/login" element={<Login />} />
 
-        {/* Public Legal Documentation Routes (Unauthenticated & Authenticated Access) */}
+        {/* Public Legal Documentation Routes */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
 
         {/* Core Layout Routes */}
-        <Route 
-          path="/" 
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          {/* Default entry */}
+        <Route path="/" element={<Layout />}>
+          
+          {/* Default entry point */}
           <Route index element={<Navigate to="/dashboard" replace />} />
           
+          {/* Main Dashboard Route (Public before login, Role-based after login) */}
           <Route path="dashboard" element={<DashboardSwitcher />} />
+
+          {/* Publicly Accessible Information & Utility Modules */}
           <Route path="directory" element={<Directory />} />
           <Route path="calculators" element={<Calculators />} />
           <Route path="judgements" element={<Documents />} />
           <Route path="laws" element={<Documents />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="collaboration" element={<Collaboration />} />
-          <Route path="projects" element={<Projects />} />
           <Route path="section-mapping" element={<LegalSectionMapping />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
+
+          {/* Protected Workspace Modules (Require Sign In) */}
+          <Route 
+            path="chat" 
+            element={
+              <ProtectedRoute featureName="Secure Chat Messenger">
+                <Chat />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="collaboration" 
+            element={
+              <ProtectedRoute featureName="Doc Collaboration Workspace">
+                <Collaboration />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="projects" 
+            element={
+              <ProtectedRoute featureName="Case & Project Management">
+                <Projects />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="profile" 
+            element={
+              <ProtectedRoute featureName="User Profile & Account">
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="settings" 
+            element={
+              <ProtectedRoute featureName="Platform Settings">
+                <Settings />
+              </ProtectedRoute>
+            } 
+          />
         </Route>
 
         {/* Fallback */}

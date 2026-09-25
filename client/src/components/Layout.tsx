@@ -4,17 +4,24 @@ import { Search, Sun, Moon, LogOut, Menu, Scale, ShieldAlert } from 'lucide-reac
 import { Sidebar } from './Sidebar';
 import { LegalTickerFooter } from './LegalTickerFooter';
 import { AdvocateOnboardingModal } from './AdvocateOnboardingModal';
+import { PublicHeader } from './PublicHeader';
+import { FooterSection } from './FooterSection';
+import { AuthModal } from './AuthModal';
 import { useAuthStore } from '../store/authStore';
 
 export const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
+  const [authPromptMsg, setAuthPromptMsg] = useState('Please sign in or create an account to continue.');
 
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
   const { 
+    token,
     user, 
     darkMode, 
     setDarkMode, 
@@ -37,12 +44,51 @@ export const Layout: React.FC = () => {
   const handleGlobalSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // Global search redirect with search query parameter
       navigate(`/directory?search=${encodeURIComponent(searchTerm)}`);
       setSearchTerm('');
     }
   };
 
+  const handleOpenAuthModal = (mode: 'login' | 'signup' = 'login', prompt?: string) => {
+    setAuthModalMode(mode);
+    if (prompt) setAuthPromptMsg(prompt);
+    else setAuthPromptMsg('Please sign in or create an account to continue.');
+    setAuthModalOpen(true);
+  };
+
+  // If user is NOT logged in:
+  if (!token) {
+    // For dashboard path, PublicDashboard component renders its own header and footer
+    if (isDashboard) {
+      return (
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+          <Outlet />
+        </div>
+      );
+    }
+
+    // For public sub-routes like /directory, /calculators, /laws, /judgements, /section-mapping:
+    return (
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
+        <PublicHeader onOpenAuthModal={handleOpenAuthModal} />
+        
+        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+          <Outlet />
+        </main>
+
+        <FooterSection />
+
+        <AuthModal 
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          initialMode={authModalMode}
+          actionPrompt={authPromptMsg}
+        />
+      </div>
+    );
+  }
+
+  // If user IS logged in (authenticated experience):
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
       {/* Sidebar - Visible on internal module pages, Hidden on Dashboard */}
@@ -58,7 +104,7 @@ export const Layout: React.FC = () => {
       {/* Main Content Area - Full Width on Dashboard */}
       <div className="flex-1 flex flex-col overflow-hidden w-full">
         {/* Top Navbar */}
-        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-sm transition-colors duration-200">
+        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-xs transition-colors duration-200">
           
           {/* Left: Branding & Global Search */}
           <div className="flex items-center gap-4 flex-1">
@@ -112,7 +158,7 @@ export const Layout: React.FC = () => {
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Toggle Dark Mode"
             >
               {darkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
@@ -124,9 +170,9 @@ export const Layout: React.FC = () => {
                 <button
                   onClick={() => navigate('/profile')}
                   className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-left group"
-                  title="View Logged in Person Details"
+                  title="View Profile Details"
                 >
-                  <div className="h-8 w-8 rounded-full bg-primary dark:bg-slate-700 text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">
+                  <div className="h-8 w-8 rounded-full bg-primary dark:bg-slate-700 text-white flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
                     {user.name.charAt(0)}
                   </div>
                   <div className="hidden lg:block">
