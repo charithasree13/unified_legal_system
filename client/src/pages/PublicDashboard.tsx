@@ -75,7 +75,7 @@ export const PublicDashboard: React.FC = () => {
     {
       id: 'court-fee-calc',
       title: 'Court Fee Calculator',
-      category: 'Public Access Tool',
+      category: 'Public Access',
       isProtected: false,
       icon: Calculator,
       description: 'Compute state-specific court fees, ad-valorem suit valuation, probate fees, and statutory relief mapping.',
@@ -86,7 +86,7 @@ export const PublicDashboard: React.FC = () => {
     {
       id: 'land-calc',
       title: 'Land Area Converter',
-      category: 'Public Access Tool',
+      category: 'Public Access',
       isProtected: false,
       icon: Landmark,
       description: 'Convert regional land measurements: Square Feet, Acres, Guntas, Ankanams, Cents, Hectares, and Bighas.',
@@ -97,110 +97,110 @@ export const PublicDashboard: React.FC = () => {
     {
       id: 'directory',
       title: 'Advocate Directory',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Users,
       description: 'Search & connect with verified advocates across Madanapalle, Andhra Pradesh, High Courts, and District Courts.',
-      actionText: 'Search Advocates (Sign In Required)',
+      actionText: 'Search Advocates',
       path: '/directory',
       iconBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
     },
     {
       id: 'services',
       title: 'Legal Services & Notary',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Building2,
       description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
-      actionText: 'Explore Legal Services (Sign In Required)',
+      actionText: 'Explore Legal Services',
       path: '/directory',
       iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
     },
     {
       id: 'laws',
       title: 'Bare Acts & Laws Repository',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: BookOpen,
       description: 'Access comprehensive Central & State Bare Acts, statutory sections, legislative amendments, and legal rules.',
-      actionText: 'Browse Bare Acts (Sign In Required)',
+      actionText: 'Browse Bare Acts',
       path: '/laws',
       iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
     },
     {
       id: 'judgements',
       title: 'Judgments Repository',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Gavel,
       description: 'Browse Supreme Court of India and High Court landmark judgements, precedent rulings, and case law transcripts.',
-      actionText: 'Search Judgments (Sign In Required)',
+      actionText: 'Search Judgments',
       path: '/judgements',
       iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
     },
     {
       id: 'section-mapping',
       title: 'Legal Section Mapping',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Compass,
       description: 'Interactive mapping between traditional criminal codes (IPC, CrPC, Evidence Act) and new Bharatiya Nyaya Sanhita (BNS, BNSS, BSA).',
-      actionText: 'View Section Map (Sign In Required)',
+      actionText: 'View Section Map',
       path: '/section-mapping',
       iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800'
     },
     {
       id: 'projects',
       title: 'Case & Project Tracking',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Scale,
       description: 'Litigation file management, client case assignments, next hearing dates, task progress, and lawyer notes.',
-      actionText: 'Manage Cases (Sign In Required)',
+      actionText: 'Manage Cases',
       path: '/projects',
       iconBg: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800'
     },
     {
       id: 'collaboration',
       title: 'Doc Collaboration & Drafting',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: FileText,
       description: 'Collaborative legal notice drafting, contract review, versioning, annotation, and shared document vaults.',
-      actionText: 'Draft Docs (Sign In Required)',
+      actionText: 'Draft Docs',
       path: '/collaboration',
       iconBg: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
     },
     {
       id: 'chat',
       title: 'Secure Client-Advocate Chat',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: MessageSquare,
       description: 'Direct real-time encrypted communication between clients and assigned legal advocates with document sharing.',
-      actionText: 'Start Chat (Sign In Required)',
+      actionText: 'Start Chat',
       path: '/chat',
       iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
     },
     {
       id: 'notifications',
       title: 'Hearing Alerts & Reminders',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: Calendar,
       description: 'Automated hearing date notifications, task deadline reminders, and court schedule updates for active matters.',
-      actionText: 'View Reminders (Sign In Required)',
+      actionText: 'View Reminders',
       path: '/projects',
       iconBg: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800'
     },
     {
       id: 'verification',
       title: 'Bar Credential Verification',
-      category: 'Sign In Required',
+      category: 'Protected (Sign In)',
       isProtected: true,
       icon: ShieldCheck,
       description: 'Platform verification system for Bar Council enrollment numbers, advocate credentials, and administrator approvals.',
-      actionText: 'Admin Console (Sign In Required)',
+      actionText: 'Admin Console',
       path: '/dashboard',
       iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
     }
@@ -209,7 +209,7 @@ export const PublicDashboard: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors">
       
-      {/* Top Professional Legal Header Navigation */}
+      {/* Top Professional Legal Header Navigation (Single location for Sign In / Sign Up) */}
       <PublicHeader onOpenAuthModal={openAuthModal} />
 
       {/* Main Content Body */}
@@ -248,17 +248,18 @@ export const PublicDashboard: React.FC = () => {
               <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-emerald-400">
                 <Calculator size={14} /> Public Court Fee Calculator
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
-                <Lock size={14} /> Protected Advocate Directory (Sign In)
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
+                <ShieldCheck size={14} className="text-amber-400" /> Verified Advocate Directory
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
-                <Lock size={14} /> Protected Bare Acts & Judgments (Sign In)
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
+                <BookOpen size={14} className="text-sky-400" /> Bare Acts & Judgments Library
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
-                <Lock size={14} /> Protected Case Tracking (Sign In)
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
+                <Scale size={14} className="text-indigo-400" /> Case & Litigation Tracking
               </span>
             </div>
 
+            {/* Clean Hero Call to Action Buttons (Single header Sign In / Sign Up location) */}
             <div className="pt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
               <Link
                 to="/calculators"
@@ -269,31 +270,13 @@ export const PublicDashboard: React.FC = () => {
                 <ArrowRight size={16} />
               </Link>
 
-              <button
-                onClick={() => openAuthModal('login', 'Sign in or create an account to search the Advocate Directory.')}
-                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-2 cursor-pointer"
+              <a
+                href="#modules"
+                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-2"
               >
-                <Lock size={16} className="text-amber-400" />
-                <span>Find an Advocate (Sign In Required)</span>
-              </button>
-
-              {!token && (
-                <>
-                  <button
-                    onClick={() => openAuthModal('login', 'Sign in to access protected case files, secure messaging, and client tools.')}
-                    className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm rounded-xl border border-white/20 transition-all cursor-pointer"
-                  >
-                    Sign In
-                  </button>
-
-                  <button
-                    onClick={() => openAuthModal('signup', 'Register as an Advocate or Client to unlock full legal features.')}
-                    className="px-5 py-3 bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all cursor-pointer"
-                  >
-                    Create Account
-                  </button>
-                </>
-              )}
+                <span>Explore All Legal Modules</span>
+                <ArrowRight size={16} />
+              </a>
             </div>
 
           </div>
@@ -310,7 +293,7 @@ export const PublicDashboard: React.FC = () => {
               Everything You Need for Your Legal Journey
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-              Except the public Court Fee Calculator, all platform modules are protected. Please sign in or create an account to access directory listings, legal sections, laws, judgments, and case tools.
+              The Court Fee Calculator is publicly available. Click any module to access it — protected features will display a prompt to sign in and activate your session.
             </p>
           </div>
 
@@ -337,7 +320,7 @@ export const PublicDashboard: React.FC = () => {
                           ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' 
                           : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
                       }`}>
-                        {item.isProtected ? 'Protected (Sign In Required)' : 'Public Access'}
+                        {item.category}
                       </span>
                     </div>
 
