@@ -11,11 +11,11 @@ interface AuthModalProps {
   actionPrompt?: string;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  initialMode = 'login', 
-  actionPrompt = 'Please sign in or create an account to continue.' 
+export const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  initialMode = 'login',
+  actionPrompt = 'Please sign in or create an account to continue.'
 }) => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
@@ -194,7 +194,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-      <div 
+      <div
         className="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 overflow-hidden animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
@@ -209,10 +209,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Brand Header */}
         <div className="flex items-center gap-3 mb-4 pr-8">
-          <img 
-            src="/logo.jpg" 
-            alt="Elite Legal Desk Logo" 
-            className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white" 
+          <img
+            src="/logo.jpg"
+            alt="Elite Legal Desk Logo"
+            className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white"
           />
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
@@ -235,22 +235,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             type="button"
             onClick={() => { setMode('login'); clearForm(); }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              mode === 'login' 
-                ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
+            className={`py-2 text-xs font-bold rounded-lg transition-all ${mode === 'login'
+              ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
           >
             Sign In
           </button>
           <button
             type="button"
             onClick={() => { setMode('signup'); clearForm(); }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              mode === 'signup' 
-                ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
+            className={`py-2 text-xs font-bold rounded-lg transition-all ${mode === 'signup'
+              ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
           >
             Create Account
           </button>
@@ -274,28 +272,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* 1. SIGN IN FORM */}
         {mode === 'login' && (
           <form onSubmit={handleLoginSubmit} className="space-y-4">
-            
+
             {/* Role Selection */}
             <div className="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setAuthRole('Advocate')}
-                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${
-                  authRole === 'Advocate' 
-                    ? 'bg-primary text-white font-bold shadow-xs' 
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                }`}
+                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${authRole === 'Advocate'
+                  ? 'bg-primary text-white font-bold shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
               >
                 Advocate Sign In
               </button>
               <button
                 type="button"
                 onClick={() => setAuthRole('Client')}
-                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${
-                  authRole === 'Client' 
-                    ? 'bg-primary text-white font-bold shadow-xs' 
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                }`}
+                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${authRole === 'Client'
+                  ? 'bg-primary text-white font-bold shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
               >
                 User / Client Sign In
               </button>
@@ -362,28 +358,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* 2. CREATE ACCOUNT FORM */}
         {mode === 'signup' && (
           <form onSubmit={handleSignupSubmit} className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-            
+
             {/* Role Selection for Signup */}
             <div className="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setSignupRole('Advocate')}
-                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${
-                  signupRole === 'Advocate' 
-                    ? 'bg-amber-600 text-white font-bold shadow-xs' 
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                }`}
+                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${signupRole === 'Advocate'
+                  ? 'bg-amber-600 text-white font-bold shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
               >
                 Register as Advocate
               </button>
               <button
                 type="button"
                 onClick={() => setSignupRole('Client')}
-                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${
-                  signupRole === 'Client' 
-                    ? 'bg-amber-600 text-white font-bold shadow-xs' 
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                }`}
+                className={`py-1.5 text-[11px] font-semibold rounded-md transition-all ${signupRole === 'Client'
+                  ? 'bg-amber-600 text-white font-bold shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
               >
                 Register as User / Client
               </button>
@@ -399,7 +393,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Adv. Ramesh Kumar"
+                  placeholder="e.g. Ramesh Kumar"
                   className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
                 />
               </div>
