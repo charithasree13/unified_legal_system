@@ -13,7 +13,7 @@ import { AuthModal } from '../components/AuthModal';
 
 export const PublicDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { token, user } = useAuthStore();
+  const { token } = useAuthStore();
 
   // Auth modal state
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -50,7 +50,6 @@ export const PublicDashboard: React.FC = () => {
   const handleCalcSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const val = parseFloat(courtFeeAmount) || 0;
-    // Standard AP Court fee calculation estimation (7.5% approx for suit recovery)
     if (val <= 10000) {
       setCalcResult(Math.round(val * 0.05));
     } else if (val <= 100000) {
@@ -71,67 +70,12 @@ export const PublicDashboard: React.FC = () => {
     else setLandConvertedSqFt((val * 43560).toLocaleString());
   };
 
-  // Comprehensive Module Catalog (ALL project modules represented)
+  // Comprehensive Module Catalog (ONLY Court Fee Calculator & Land Converter are Public Access)
   const modulesList = [
-    {
-      id: 'directory',
-      title: 'Advocate Directory',
-      category: 'Public Access',
-      isProtected: false,
-      icon: Users,
-      description: 'Search & connect with verified advocates across Madanapalle, Andhra Pradesh, High Courts, and District Courts.',
-      actionText: 'Search Advocates',
-      path: '/directory',
-      iconBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
-    },
-    {
-      id: 'services',
-      title: 'Legal Services & Notary',
-      category: 'Public Information',
-      isProtected: false,
-      icon: Building2,
-      description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
-      actionText: 'Explore Legal Services',
-      path: '/directory',
-      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
-    },
-    {
-      id: 'laws',
-      title: 'Bare Acts & Laws Repository',
-      category: 'Public Legal Library',
-      isProtected: false,
-      icon: BookOpen,
-      description: 'Access comprehensive Central & State Bare Acts, statutory sections, legislative amendments, and legal rules.',
-      actionText: 'Browse Bare Acts',
-      path: '/laws',
-      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
-    },
-    {
-      id: 'judgements',
-      title: 'Judgments Repository',
-      category: 'Public Precedents',
-      isProtected: false,
-      icon: Gavel,
-      description: 'Browse Supreme Court of India and High Court landmark judgements, precedent rulings, and case law transcripts.',
-      actionText: 'Search Judgments',
-      path: '/judgements',
-      iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
-    },
-    {
-      id: 'section-mapping',
-      title: 'Legal Section Mapping',
-      category: 'Statutory Mapping',
-      isProtected: false,
-      icon: Compass,
-      description: 'Interactive mapping between traditional criminal codes (IPC, CrPC, Evidence Act) and new Bharatiya Nyaya Sanhita (BNS, BNSS, BSA).',
-      actionText: 'View Section Map',
-      path: '/section-mapping',
-      iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800'
-    },
     {
       id: 'court-fee-calc',
       title: 'Court Fee Calculator',
-      category: 'Public Valuation Tool',
+      category: 'Public Access Tool',
       isProtected: false,
       icon: Calculator,
       description: 'Compute state-specific court fees, ad-valorem suit valuation, probate fees, and statutory relief mapping.',
@@ -142,7 +86,7 @@ export const PublicDashboard: React.FC = () => {
     {
       id: 'land-calc',
       title: 'Land Area Converter',
-      category: 'Public Measurement Tool',
+      category: 'Public Access Tool',
       isProtected: false,
       icon: Landmark,
       description: 'Convert regional land measurements: Square Feet, Acres, Guntas, Ankanams, Cents, Hectares, and Bighas.',
@@ -151,57 +95,112 @@ export const PublicDashboard: React.FC = () => {
       iconBg: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800'
     },
     {
+      id: 'directory',
+      title: 'Advocate Directory',
+      category: 'Sign In Required',
+      isProtected: true,
+      icon: Users,
+      description: 'Search & connect with verified advocates across Madanapalle, Andhra Pradesh, High Courts, and District Courts.',
+      actionText: 'Search Advocates (Sign In Required)',
+      path: '/directory',
+      iconBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+    },
+    {
+      id: 'services',
+      title: 'Legal Services & Notary',
+      category: 'Sign In Required',
+      isProtected: true,
+      icon: Building2,
+      description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
+      actionText: 'Explore Legal Services (Sign In Required)',
+      path: '/directory',
+      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+    },
+    {
+      id: 'laws',
+      title: 'Bare Acts & Laws Repository',
+      category: 'Sign In Required',
+      isProtected: true,
+      icon: BookOpen,
+      description: 'Access comprehensive Central & State Bare Acts, statutory sections, legislative amendments, and legal rules.',
+      actionText: 'Browse Bare Acts (Sign In Required)',
+      path: '/laws',
+      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+    },
+    {
+      id: 'judgements',
+      title: 'Judgments Repository',
+      category: 'Sign In Required',
+      isProtected: true,
+      icon: Gavel,
+      description: 'Browse Supreme Court of India and High Court landmark judgements, precedent rulings, and case law transcripts.',
+      actionText: 'Search Judgments (Sign In Required)',
+      path: '/judgements',
+      iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
+    },
+    {
+      id: 'section-mapping',
+      title: 'Legal Section Mapping',
+      category: 'Sign In Required',
+      isProtected: true,
+      icon: Compass,
+      description: 'Interactive mapping between traditional criminal codes (IPC, CrPC, Evidence Act) and new Bharatiya Nyaya Sanhita (BNS, BNSS, BSA).',
+      actionText: 'View Section Map (Sign In Required)',
+      path: '/section-mapping',
+      iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800'
+    },
+    {
       id: 'projects',
       title: 'Case & Project Tracking',
-      category: 'Authenticated Workspace',
+      category: 'Sign In Required',
       isProtected: true,
       icon: Scale,
       description: 'Litigation file management, client case assignments, next hearing dates, task progress, and lawyer notes.',
-      actionText: 'Manage Cases (Login Required)',
+      actionText: 'Manage Cases (Sign In Required)',
       path: '/projects',
       iconBg: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800'
     },
     {
       id: 'collaboration',
       title: 'Doc Collaboration & Drafting',
-      category: 'Authenticated Workspace',
+      category: 'Sign In Required',
       isProtected: true,
       icon: FileText,
       description: 'Collaborative legal notice drafting, contract review, versioning, annotation, and shared document vaults.',
-      actionText: 'Draft Docs (Login Required)',
+      actionText: 'Draft Docs (Sign In Required)',
       path: '/collaboration',
       iconBg: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
     },
     {
       id: 'chat',
       title: 'Secure Client-Advocate Chat',
-      category: 'Encrypted Messenger',
+      category: 'Sign In Required',
       isProtected: true,
       icon: MessageSquare,
       description: 'Direct real-time encrypted communication between clients and assigned legal advocates with document sharing.',
-      actionText: 'Start Chat (Login Required)',
+      actionText: 'Start Chat (Sign In Required)',
       path: '/chat',
       iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
     },
     {
       id: 'notifications',
       title: 'Hearing Alerts & Reminders',
-      category: 'Litigation Calendar',
+      category: 'Sign In Required',
       isProtected: true,
       icon: Calendar,
       description: 'Automated hearing date notifications, task deadline reminders, and court schedule updates for active matters.',
-      actionText: 'View Reminders (Login Required)',
+      actionText: 'View Reminders (Sign In Required)',
       path: '/projects',
       iconBg: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800'
     },
     {
       id: 'verification',
       title: 'Bar Credential Verification',
-      category: 'Admin & Verification',
+      category: 'Sign In Required',
       isProtected: true,
       icon: ShieldCheck,
       description: 'Platform verification system for Bar Council enrollment numbers, advocate credentials, and administrator approvals.',
-      actionText: 'Admin Console (Login Required)',
+      actionText: 'Admin Console (Sign In Required)',
       path: '/dashboard',
       iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
     }
@@ -219,7 +218,6 @@ export const PublicDashboard: React.FC = () => {
         {/* HERO SECTION */}
         <section className="relative bg-gradient-to-b from-slate-900 via-[#0B172E] to-slate-900 text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800 overflow-hidden">
           
-          {/* Subtle Grid Background Overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
             <svg className="w-full h-full" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -233,55 +231,51 @@ export const PublicDashboard: React.FC = () => {
 
           <div className="max-w-7xl mx-auto relative z-10 text-center space-y-6">
             
-            {/* Top Pill Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 backdrop-blur-md shadow-xs">
               <Scale size={14} className="text-amber-400" />
               <span>Digital Legal Technology & Case Collaboration Suite</span>
             </div>
 
-            {/* Main Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-white max-w-4xl mx-auto leading-tight">
               Elite Legal Desk
             </h1>
 
-            {/* Subheading Tagline */}
             <p className="text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">
               A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, court fee calculators, and litigation tools in one integrated portal.
             </p>
 
-            {/* Key Platform Badges */}
             <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-300 font-medium pt-2">
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700">
-                <ShieldCheck size={14} className="text-emerald-400" /> Verified Advocate Directory
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-emerald-400">
+                <Calculator size={14} /> Public Court Fee Calculator
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700">
-                <BookOpen size={14} className="text-amber-400" /> Central & State Bare Acts
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
+                <Lock size={14} /> Protected Advocate Directory (Sign In)
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700">
-                <Calculator size={14} className="text-sky-400" /> Court Fee & Land Calculators
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
+                <Lock size={14} /> Protected Bare Acts & Judgments (Sign In)
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700">
-                <Scale size={14} className="text-indigo-400" /> Case Management Tools
+              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-amber-300">
+                <Lock size={14} /> Protected Case Tracking (Sign In)
               </span>
             </div>
 
-            {/* Call to Action Buttons */}
             <div className="pt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-              <a
-                href="#modules"
+              <Link
+                to="/calculators"
                 className="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2"
               >
-                <span>Explore Legal Services</span>
+                <Calculator size={16} />
+                <span>Use Public Court Fee Calculator</span>
                 <ArrowRight size={16} />
-              </a>
-
-              <Link
-                to="/directory"
-                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-2"
-              >
-                <Search size={16} />
-                <span>Find an Advocate</span>
               </Link>
+
+              <button
+                onClick={() => openAuthModal('login', 'Sign in or create an account to search the Advocate Directory.')}
+                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Lock size={16} className="text-amber-400" />
+                <span>Find an Advocate (Sign In Required)</span>
+              </button>
 
               {!token && (
                 <>
@@ -310,13 +304,13 @@ export const PublicDashboard: React.FC = () => {
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:text-sky-400 border border-primary/20 text-xs font-bold uppercase tracking-wider">
-              <span>Platform Modules & Services</span>
+              <span>Platform Modules & Access Policy</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Everything You Need for Your Legal Journey
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-              Explore all integrated tools and resources available on Elite Legal Desk. Public utilities can be accessed directly, while protected workspace features are accessible upon signing in.
+              Except the public Court Fee Calculator, all platform modules are protected. Please sign in or create an account to access directory listings, legal sections, laws, judgments, and case tools.
             </p>
           </div>
 
@@ -329,7 +323,6 @@ export const PublicDashboard: React.FC = () => {
                   key={item.id}
                   className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden"
                 >
-                  {/* Subtle top border accent */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-800 group-hover:bg-primary transition-colors" />
 
                   <div className="space-y-4">
@@ -344,7 +337,7 @@ export const PublicDashboard: React.FC = () => {
                           ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' 
                           : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
                       }`}>
-                        {item.isProtected ? 'Protected (Sign In)' : 'Public Access'}
+                        {item.isProtected ? 'Protected (Sign In Required)' : 'Public Access'}
                       </span>
                     </div>
 
@@ -387,34 +380,34 @@ export const PublicDashboard: React.FC = () => {
 
         </section>
 
-        {/* PUBLIC CALCULATORS PREVIEW SPOTLIGHT SECTION */}
+        {/* PUBLIC COURT FEE CALCULATOR SPOTLIGHT SECTION */}
         <section className="bg-slate-100 dark:bg-slate-900/60 border-t border-b border-slate-200 dark:border-slate-800 py-14 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto space-y-8">
             
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold uppercase tracking-wider">
                 <Calculator size={14} />
-                <span>Try Public Calculators Right Now</span>
+                <span>Publicly Accessible Legal Utility</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                Court Fee & Regional Land Measurement Calculators
+                Public Court Fee & Land Measurement Calculator
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
-                Visitors can estimate court fees for suit valuations and convert regional land areas instantly without signing in.
+                The Court Fee Calculator is publicly available to all visitors without requiring sign-in.
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
-              {/* 1. Quick Court Fee Preview */}
+              {/* 1. Court Fee Calculator */}
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                     <Scale size={18} className="text-primary dark:text-sky-400" />
-                    State Court Fee Valuation Tool
+                    State Court Fee Valuation Tool (Public)
                   </h3>
-                  <span className="text-[10px] bg-sky-500/10 text-sky-600 dark:text-sky-400 px-2 py-0.5 rounded font-semibold uppercase">
-                    Ad-Valorem Rules
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-semibold uppercase">
+                    Public Access
                   </span>
                 </div>
 
@@ -450,21 +443,21 @@ export const PublicDashboard: React.FC = () => {
                       to="/calculators"
                       className="py-2 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1"
                     >
-                      Full Engine <ArrowRight size={12} />
+                      Full Calculator <ArrowRight size={12} />
                     </Link>
                   </div>
                 </form>
               </div>
 
-              {/* 2. Quick Land Converter Preview */}
+              {/* 2. Land Area Converter */}
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                     <Landmark size={18} className="text-amber-500" />
-                    Regional Land Area Unit Converter
+                    Regional Land Area Converter (Public)
                   </h3>
-                  <span className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-semibold uppercase">
-                    Madanapalle Units
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-semibold uppercase">
+                    Public Access
                   </span>
                 </div>
 
@@ -546,7 +539,6 @@ export const PublicDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* 1. Client Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 flex items-center justify-center font-bold">
@@ -573,7 +565,6 @@ export const PublicDashboard: React.FC = () => {
               </button>
             </div>
 
-            {/* 2. Advocate Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center justify-center font-bold">
@@ -600,7 +591,6 @@ export const PublicDashboard: React.FC = () => {
               </button>
             </div>
 
-            {/* 3. Admin Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center font-bold">
@@ -631,12 +621,12 @@ export const PublicDashboard: React.FC = () => {
 
         </section>
 
-        {/* FOUNDER DETAILS SECTION (Rendered prominently near bottom) */}
+        {/* FOUNDER DETAILS SECTION */}
         <FounderSection />
 
       </main>
 
-      {/* FOOTER SECTION (Rendered consistently at bottom) */}
+      {/* FOOTER SECTION */}
       <FooterSection />
 
       {/* AUTHENTICATION PROMPT MODAL */}

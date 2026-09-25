@@ -91,14 +91,42 @@ export const App: React.FC = () => {
           {/* Main Dashboard Route (Public before login, Role-based after login) */}
           <Route path="dashboard" element={<DashboardSwitcher />} />
 
-          {/* Publicly Accessible Information & Utility Modules */}
-          <Route path="directory" element={<Directory />} />
+          {/* Publicly Accessible Module: ONLY Court Fee Calculator */}
           <Route path="calculators" element={<Calculators />} />
-          <Route path="judgements" element={<Documents />} />
-          <Route path="laws" element={<Documents />} />
-          <Route path="section-mapping" element={<LegalSectionMapping />} />
 
-          {/* Protected Workspace Modules (Require Sign In) */}
+          {/* Protected Modules (Require Sign In) */}
+          <Route 
+            path="directory" 
+            element={
+              <ProtectedRoute featureName="Advocate Directory">
+                <Directory />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="judgements" 
+            element={
+              <ProtectedRoute featureName="Judgments Repository">
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="laws" 
+            element={
+              <ProtectedRoute featureName="Bare Acts & Laws Repository">
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="section-mapping" 
+            element={
+              <ProtectedRoute featureName="Legal Section Mapping">
+                <LegalSectionMapping />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="chat" 
             element={
