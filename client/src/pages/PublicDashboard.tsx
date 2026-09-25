@@ -18,6 +18,7 @@ export const PublicDashboard: React.FC = () => {
   // Auth modal state
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
+  const [authModalRole, setAuthModalRole] = useState<'Advocate' | 'Client' | 'Admin'>('Advocate');
   const [authActionPrompt, setAuthActionPrompt] = useState('Please sign in or create an account to continue.');
 
   // Quick Calculator state preview on public dashboard
@@ -29,8 +30,9 @@ export const PublicDashboard: React.FC = () => {
   const [landUnitFrom, setLandUnitFrom] = useState('Acres');
   const [landConvertedSqFt, setLandConvertedSqFt] = useState('43560');
 
-  const openAuthModal = (mode: 'login' | 'signup' = 'login', prompt?: string) => {
+  const openAuthModal = (mode: 'login' | 'signup' = 'login', prompt?: string, role: 'Advocate' | 'Client' | 'Admin' = 'Advocate') => {
     setAuthModalMode(mode);
+    setAuthModalRole(role);
     if (prompt) setAuthActionPrompt(prompt);
     else setAuthActionPrompt('Please sign in or create an account to continue.');
     setAuthModalOpen(true);
@@ -541,7 +543,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Sign in as a Client to view your case files.')}
+                onClick={() => openAuthModal('login', 'Sign in as a Client to view your case files.', 'Client')}
                 className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
               >
                 Client Portal Sign In
@@ -567,7 +569,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Sign in as an Advocate to access practice management.')}
+                onClick={() => openAuthModal('login', 'Sign in as an Advocate to access practice management.', 'Advocate')}
                 className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Advocate Portal Sign In
@@ -593,7 +595,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Administrator sign in required to access management controls.')}
+                onClick={() => openAuthModal('login', 'Administrator sign in required to access management controls.', 'Admin')}
                 className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
               >
                 Administrator Sign In
@@ -617,6 +619,7 @@ export const PublicDashboard: React.FC = () => {
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         initialMode={authModalMode}
+        initialRole={authModalRole}
         actionPrompt={authActionPrompt}
       />
 
