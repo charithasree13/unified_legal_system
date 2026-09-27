@@ -85,7 +85,7 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
 
   async findById(id: string): Promise<T | null> {
     const items = this.read();
-    return items.find((item: any) => item._id === id) || null;
+    return items.find((item: any) => String(item._id) === String(id)) || null;
   }
 
   async create(data: Partial<T>): Promise<T> {
@@ -103,7 +103,7 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
 
   async findByIdAndUpdate(id: string, update: any, options: any = {}): Promise<T | null> {
     const items = this.read();
-    const index = items.findIndex((item: any) => item._id === id);
+    const index = items.findIndex((item: any) => String(item._id) === String(id));
     if (index === -1) return null;
     
     const currentItem = items[index] as any;
@@ -137,7 +137,7 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
 
   async findByIdAndDelete(id: string): Promise<T | null> {
     const items = this.read();
-    const index = items.findIndex((item: any) => item._id === id);
+    const index = items.findIndex((item: any) => String(item._id) === String(id));
     if (index === -1) return null;
     const deleted = items[index];
     items.splice(index, 1);

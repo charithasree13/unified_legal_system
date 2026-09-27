@@ -104,16 +104,20 @@ export const DailyLegalTipsSection: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSuccessMsg(data.message || (editingId ? 'Legal tip updated successfully.' : 'Legal tip saved successfully.'));
+        setSuccessMsg(data.message || (editingId ? 'Legal tip updated successfully.' : 'Legal tip added successfully.'));
         setTipText('');
         setEditingId(null);
         setInputDate(new Date().toISOString().split('T')[0]);
         await fetchLegalTips();
       } else {
         if (res.status === 401) {
-          setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
+          setErrorMsg('Your session has expired. Please sign in again.');
         } else if (res.status === 403) {
-          setErrorMsg(data.message || 'Daily Legal Tips/Updates are available only to enrolled advocates.');
+          setErrorMsg(data.message || 'Only administrators can publish Daily Legal Tips/Updates.');
+        } else if (res.status === 409) {
+          setErrorMsg(data.message || 'A legal tip already exists for this date. Please update the existing tip instead.');
+        } else if (res.status === 500) {
+          setErrorMsg('Unable to save the legal tip right now. Please try again later.');
         } else {
           setErrorMsg(data.message || 'Failed to save legal tip. Please try again.');
         }

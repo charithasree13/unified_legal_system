@@ -295,5 +295,25 @@
     "_id": "vrystt3z",
     "createdAt": "2026-09-12T05:09:30.076Z",
     "updatedAt": "2026-09-12T05:09:30.076Z"
+  },
+  {
+    "userId": "admin123",
+    "userName": "Admin",
+    "userRole": "Admin",
+    "action": "UPDATE_LEGAL_TIP",
+    "details": "Updated daily legal tip for date 2026-09-27",
+    "_id": "ctaf1oxc",
+    "createdAt": "2026-09-27T07:35:19.427Z",
+    "updatedAt": "2026-09-27T07:35:19.427Z"
+  },
+  {
+    "userId": "admin123",
+    "userName": "System Admin",
+    "role": "Admin",
+    "action": "UPDATE_LEGAL_TIP",
+    "details": "Updated daily legal tip for date 2026-09-27",
+    "_id": "4qqvc5ko",
+    "createdAt": "2026-09-27T07:37:55.290Z",
+    "updatedAt": "2026-09-27T07:37:55.290Z"
   }
 ]
