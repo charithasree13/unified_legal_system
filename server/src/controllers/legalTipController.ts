@@ -73,7 +73,7 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
 };
 
 // ------------------------------------------------------------------
-// 2. CREATE DAILY LEGAL TIP (Admin ONLY)
+// 2. CREATE / SAVE DAILY LEGAL TIP (Admin ONLY)
 // ------------------------------------------------------------------
 export const createLegalTip = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -100,12 +100,31 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
     // Check whether a tip already exists for the selected date
     const existingTips = await DailyLegalTip.find({ date: formattedDate });
     if (existingTips && existingTips.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'A legal tip already exists for this date. Please update the existing tip instead.'
+      // Update existing tip record for this date
+      const existingId = existingTips[0]._id;
+      const updatedTip = await DailyLegalTip.findByIdAndUpdate(existingId, {
+        tipText: cleanedText,
+        createdBy: req.user.name || 'Admin'
+      });
+
+      try {
+        await AuditLog.create({
+          userId: req.user.id,
+          userName: req.user.name,
+          userRole: req.user.role,
+          action: 'UPDATE_LEGAL_TIP',
+          details: `Updated daily legal tip for date ${formattedDate}`
+        });
+      } catch (e) {}
+
+      return res.status(200).json({
+        success: true,
+        message: 'Legal tip saved successfully.',
+        tip: updatedTip
       });
     }
 
+    // Otherwise create a new tip record for this date
     const newTip = await DailyLegalTip.create({
       date: formattedDate,
       tipText: cleanedText,

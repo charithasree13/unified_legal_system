@@ -93,7 +93,7 @@ export const DailyLegalTipsSection: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSuccessMsg(editingId ? 'Legal tip updated successfully.' : 'Legal tip added successfully.');
+        setSuccessMsg(data.message || (editingId ? 'Legal tip updated successfully.' : 'Legal tip saved successfully.'));
         setTipText('');
         setEditingId(null);
         setInputDate(new Date().toISOString().split('T')[0]);
