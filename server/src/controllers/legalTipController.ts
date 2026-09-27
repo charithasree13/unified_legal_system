@@ -52,7 +52,13 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
       });
     }
 
-    const tips = await DailyLegalTip.find();
+    let tips = await DailyLegalTip.find();
+
+    // Auto-seed initial legal tips if database has zero tips
+    if (!tips || tips.length === 0) {
+      await seedInitialLegalTips();
+      tips = await DailyLegalTip.find();
+    }
 
     // Sort tips chronologically with latest tip first
     const sortedTips = (tips || []).sort((a: any, b: any) => {

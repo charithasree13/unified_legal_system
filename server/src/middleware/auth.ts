@@ -47,15 +47,17 @@ export const optionalAuthToken = (req: AuthenticatedRequest, res: Response, next
 };
 
 export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  if (!req.user || req.user.role !== 'Admin') {
+  const roleLower = (req.user?.role || '').toLowerCase();
+  if (!req.user || roleLower !== 'admin') {
     return res.status(403).json({ success: false, message: 'Access denied. Administrator privileges required.' });
   }
   next();
 };
 
 export const requireAdminOrAdvocate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  if (!req.user || (req.user.role !== 'Admin' && req.user.role !== 'Advocate')) {
-    return res.status(403).json({ success: false, message: 'Access denied. Legal section mappings are reserved for Administrators and Advocates.' });
+  const roleLower = (req.user?.role || '').toLowerCase();
+  if (!req.user || (roleLower !== 'admin' && roleLower !== 'advocate')) {
+    return res.status(403).json({ success: false, message: 'Access denied. Reserved for Administrators and Enrolled Advocates.' });
   }
   next();
 };

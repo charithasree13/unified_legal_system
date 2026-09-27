@@ -45,13 +45,15 @@ export const DailyLegalTipsSection: React.FC = () => {
         }
       });
       const data = await res.json();
-      if (res.ok && data.success) {
-        setTips(data.tips || []);
+      if (res.ok && (data.success || Array.isArray(data.tips) || Array.isArray(data))) {
+        setTips(Array.isArray(data.tips) ? data.tips : (Array.isArray(data) ? data : []));
       } else {
         if (res.status === 401) {
           setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
         } else if (res.status === 403) {
           setErrorMsg(data.message || 'Daily Legal Tips/Updates are available only to enrolled advocates.');
+        } else if (res.status === 404) {
+          setErrorMsg('Daily Legal Tips service endpoint not found. Please try again later.');
         } else if (res.status === 500) {
           setErrorMsg('Unable to load Daily Legal Tips/Updates. Please try again later.');
         } else {
