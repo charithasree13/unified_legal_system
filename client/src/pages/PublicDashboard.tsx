@@ -218,13 +218,13 @@ export const PublicDashboard: React.FC = () => {
       <main className="flex-1">
 
         {/* HERO SECTION */}
-        <section className="relative bg-gradient-to-b from-slate-900 via-[#0B172E] to-slate-900 text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800 overflow-hidden">
+        <section className="relative bg-gradient-to-br from-slate-200 via-sky-100/90 to-indigo-100/80 dark:from-slate-800 dark:via-[#1e293b] dark:to-indigo-950 text-slate-900 dark:text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-300 dark:border-slate-800 overflow-hidden transition-colors">
 
-          <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.06] dark:opacity-[0.04]">
             <svg className="w-full h-full" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <pattern id="heroPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#heroPattern)" />
@@ -246,37 +246,37 @@ export const PublicDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 backdrop-blur-md shadow-xs">
-                <Scale size={14} className="text-amber-400" />
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-800 dark:text-amber-300 backdrop-blur-md shadow-xs">
+                <Scale size={14} className="text-amber-600 dark:text-amber-400" />
                 <span>Digital Legal Technology & Case Collaboration Suite</span>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-white max-w-4xl mx-auto leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-tight">
                 Elite Legal Desk
               </h1>
-              <p className="text-xs sm:text-sm text-amber-400 font-bold uppercase tracking-widest">
+              <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest">
                 Madanapalle, Andhra Pradesh
               </p>
             </div>
 
-            <p className="text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">
+            <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-medium">
               A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, court fee calculators, and litigation tools in one integrated portal.
             </p>
 
-            <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-300 font-medium pt-2">
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-emerald-400">
+            <div className="flex flex-wrap justify-center items-center gap-3 text-xs font-medium pt-2">
+              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-emerald-700 dark:text-emerald-400 shadow-xs">
                 <Calculator size={14} />  Court Fee Calculator
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
-                <ShieldCheck size={14} className="text-amber-400" /> Verified Advocate Directory
+              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
+                <ShieldCheck size={14} className="text-amber-600 dark:text-amber-400" /> Verified Advocate Directory
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
-                <BookOpen size={14} className="text-sky-400" /> Bare Acts & Judgments Library
+              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
+                <BookOpen size={14} className="text-sky-600 dark:text-sky-400" /> Bare Acts & Judgments Library
               </span>
-              <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
-                <Scale size={14} className="text-indigo-400" /> Case & Litigation Tracking
+              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
+                <Scale size={14} className="text-indigo-600 dark:text-indigo-400" /> Case & Litigation Tracking
               </span>
             </div>
 
@@ -287,13 +287,13 @@ export const PublicDashboard: React.FC = () => {
                 className="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2"
               >
                 <Calculator size={16} />
-                <span>Use Public Court Fee Calculator</span>
+                <span>Court Fee Calculator</span>
                 <ArrowRight size={16} />
               </Link>
 
               <a
                 href="#modules"
-                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-800 dark:border-slate-700 transition-all flex items-center gap-2 shadow-xs"
               >
                 <span>Explore All Legal Modules</span>
                 <ArrowRight size={16} />
@@ -314,7 +314,7 @@ export const PublicDashboard: React.FC = () => {
               Everything You Need for Your Legal Journey
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-              The Court Fee Calculator is publicly available. Click any module to access it — protected features will display a prompt to sign in and activate your session.
+              The Court Fee Calculator is publicly available. Click any module to access it — protected features needs sign in/sign up to activate your session.
             </p>
           </div>
 
