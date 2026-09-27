@@ -83,7 +83,7 @@ export const FounderSection: React.FC = () => {
                   Legal Background & Professional Overview
                 </h4>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed Notary Public by Govt. of India based in Madanapalle, Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998. He worked as a junior Advocate under the supervision of Mr. T. Janardhan Gupta, Advocate, Ex. Public Prosecutor, Madanapalle.
+                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed as Notary Public by Govt. of Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998. He is appointed as Panel Advocate for Nationalized banks. He worked as a junior Advocate under the supervision of Mr. T. Janardhan Gupta, Advocate, Ex. Public Prosecutor, Madanapalle.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
                   Envisioning an integrated digital portal for advocates, litigants, and legal researchers, Mr. Prasad founded <strong>Elite Legal Desk</strong> to streamline court fee calculations, legal section cross-mapping, case file collaboration, and verified advocate discovery.

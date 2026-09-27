@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { 
-  Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
-  FileText, ShieldCheck, Landmark, Compass, Calendar, Search, 
+import {
+  Users, Scale, Calculator, Gavel, BookOpen, MessageSquare,
+  FileText, ShieldCheck, Landmark, Compass, Calendar, Search,
   ArrowRight, ShieldAlert, CheckCircle2, Lock, Sparkles, Building2, PhoneCall
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
@@ -120,7 +120,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'laws',
-      title: 'Bare Acts & Laws Repository',
+      title: 'Bare Acts & Laws',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: BookOpen,
@@ -131,7 +131,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'judgements',
-      title: 'Judgments Repository',
+      title: 'Judgments',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: Gavel,
@@ -142,7 +142,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'section-mapping',
-      title: 'Legal Section Mapping',
+      title: 'Old Act to New Act Converter (IPC -> BNS, CrPC -> BNSS, Evidence Act to BSA)',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: Compass,
@@ -153,7 +153,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'projects',
-      title: 'Case & Project Tracking',
+      title: 'Case Tracking',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: Scale,
@@ -197,7 +197,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'verification',
-      title: 'Bar Credential Verification',
+      title: 'Advocate Credential Verification',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: ShieldCheck,
@@ -210,7 +210,7 @@ export const PublicDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors">
-      
+
       {/* Top Professional Legal Header Navigation (Single location for Sign In / Sign Up) */}
       <PublicHeader onOpenAuthModal={openAuthModal} />
 
@@ -219,7 +219,7 @@ export const PublicDashboard: React.FC = () => {
 
         {/* HERO SECTION */}
         <section className="relative bg-gradient-to-b from-slate-900 via-[#0B172E] to-slate-900 text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800 overflow-hidden">
-          
+
           <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
             <svg className="w-full h-full" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -232,7 +232,7 @@ export const PublicDashboard: React.FC = () => {
           </div>
 
           <div className="max-w-7xl mx-auto relative z-10 text-center space-y-6">
-            
+
             {/* Prominent Logo & Suite Badge */}
             <div className="flex flex-col items-center justify-center space-y-4">
               <div className="relative group">
@@ -267,7 +267,7 @@ export const PublicDashboard: React.FC = () => {
 
             <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-300 font-medium pt-2">
               <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-emerald-400">
-                <Calculator size={14} /> Public Court Fee Calculator
+                <Calculator size={14} />  Court Fee Calculator
               </span>
               <span className="flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700 text-slate-300">
                 <ShieldCheck size={14} className="text-amber-400" /> Verified Advocate Directory
@@ -305,7 +305,7 @@ export const PublicDashboard: React.FC = () => {
 
         {/* MODULE OVERVIEW SECTION ("Everything You Need for Your Legal Journey") */}
         <section id="modules" className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
-          
+
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:text-sky-400 border border-primary/20 text-xs font-bold uppercase tracking-wider">
               <span>Platform Modules & Access Policy</span>
@@ -323,24 +323,23 @@ export const PublicDashboard: React.FC = () => {
             {modulesList.map((item) => {
               const Icon = item.icon;
               return (
-                <div 
+                <div
                   key={item.id}
                   className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-800 group-hover:bg-primary transition-colors" />
 
                   <div className="space-y-4">
-                    
+
                     <div className="flex items-center justify-between">
                       <div className={`p-3 rounded-xl border ${item.iconBg}`}>
                         <Icon size={22} />
                       </div>
-                      
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                        item.isProtected 
-                          ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' 
-                          : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
-                      }`}>
+
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${item.isProtected
+                        ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'
+                        : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
+                        }`}>
                         {item.category}
                       </span>
                     </div>
@@ -365,11 +364,10 @@ export const PublicDashboard: React.FC = () => {
                           navigate(item.path);
                         }
                       }}
-                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                        item.isProtected
-                          ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
-                          : 'bg-primary hover:bg-primary-hover text-white shadow-xs'
-                      }`}
+                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${item.isProtected
+                        ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
+                        : 'bg-primary hover:bg-primary-hover text-white shadow-xs'
+                        }`}
                     >
                       {item.isProtected && <Lock size={14} className="text-amber-500" />}
                       <span>{item.actionText}</span>
@@ -387,14 +385,14 @@ export const PublicDashboard: React.FC = () => {
         {/* PUBLIC COURT FEE CALCULATOR SPOTLIGHT SECTION */}
         <section className="bg-slate-100 dark:bg-slate-900/60 border-t border-b border-slate-200 dark:border-slate-800 py-14 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto space-y-8">
-            
+
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold uppercase tracking-wider">
                 <Calculator size={14} />
                 <span>Publicly Accessible Legal Utility</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                Public Court Fee & Land Measurement Calculator
+                Court Fee & Land Measurement Calculator
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
                 The Court Fee Calculator is publicly available to all visitors without requiring sign-in.
@@ -402,7 +400,7 @@ export const PublicDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              
+
               {/* 1. Court Fee Calculator */}
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -528,7 +526,7 @@ export const PublicDashboard: React.FC = () => {
 
         {/* USER / ADVOCATE / ADMIN ROLE EXPLANATION SECTION */}
         <section id="roles" className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
-          
+
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 text-xs font-bold uppercase tracking-wider">
               <span>Role-Based Functionality</span>
@@ -542,7 +540,7 @@ export const PublicDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 flex items-center justify-center font-bold">
@@ -634,7 +632,7 @@ export const PublicDashboard: React.FC = () => {
       <FooterSection />
 
       {/* AUTHENTICATION PROMPT MODAL */}
-      <AuthModal 
+      <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         initialMode={authModalMode}
