@@ -532,7 +532,7 @@ export const PublicDashboard: React.FC = () => {
               <span>Role-Based Functionality</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Tailored Solutions for Every Legal Role
+              Sign in to access specialized tools and insights customized for your specific role
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
               Elite Legal Desk maintains strict security boundaries and role authorization to protect private litigation data.
