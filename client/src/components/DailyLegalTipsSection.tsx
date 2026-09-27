@@ -12,8 +12,9 @@ interface LegalTip {
 
 export const DailyLegalTipsSection: React.FC = () => {
   const { user, token } = useAuthStore();
-  const isAdmin = user?.role === 'Admin';
-  const isAdvocate = user?.role === 'Advocate';
+  const roleLower = (user?.role || '').toLowerCase();
+  const isAdmin = roleLower === 'admin';
+  const isAdvocate = roleLower === 'advocate';
 
   const [tips, setTips] = useState<LegalTip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,11 +48,19 @@ export const DailyLegalTipsSection: React.FC = () => {
       if (res.ok && data.success) {
         setTips(data.tips || []);
       } else {
-        setErrorMsg(data.message || 'Unable to load Daily Legal Tips/Updates. Please try again.');
+        if (res.status === 401) {
+          setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
+        } else if (res.status === 403) {
+          setErrorMsg(data.message || 'Daily Legal Tips/Updates are available only to enrolled advocates.');
+        } else if (res.status === 500) {
+          setErrorMsg('Unable to load Daily Legal Tips/Updates. Please try again later.');
+        } else {
+          setErrorMsg(data.message || 'Unable to load Daily Legal Tips/Updates. Please try again later.');
+        }
       }
     } catch (err: any) {
       console.error('Error fetching legal tips:', err);
-      setErrorMsg('Unable to load Daily Legal Tips/Updates. Please try again.');
+      setErrorMsg('Unable to load Daily Legal Tips/Updates. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -99,7 +108,13 @@ export const DailyLegalTipsSection: React.FC = () => {
         setInputDate(new Date().toISOString().split('T')[0]);
         await fetchLegalTips();
       } else {
-        setErrorMsg(data.message || 'Failed to save legal tip.');
+        if (res.status === 401) {
+          setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
+        } else if (res.status === 403) {
+          setErrorMsg(data.message || 'Daily Legal Tips/Updates are available only to enrolled advocates.');
+        } else {
+          setErrorMsg(data.message || 'Failed to save legal tip. Please try again.');
+        }
       }
     } catch (err: any) {
       console.error('Error saving legal tip:', err);
@@ -154,7 +169,8 @@ export const DailyLegalTipsSection: React.FC = () => {
   const formatDateDisplay = (dateStr: string) => {
     try {
       if (!dateStr) return '';
-      const parts = dateStr.split('T')[0].split('-');
+      const cleanStr = dateStr.split('T')[0];
+      const parts = cleanStr.split('-');
       if (parts.length === 3) {
         const year = parseInt(parts[0], 10);
         const monthIndex = parseInt(parts[1], 10) - 1;

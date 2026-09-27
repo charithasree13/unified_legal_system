@@ -7,12 +7,12 @@ import { AuthenticatedRequest } from '../middleware/auth';
 // ------------------------------------------------------------------
 export const seedInitialLegalTips = async () => {
   try {
-    const count = await DailyLegalTip.find();
-    if (!count || count.length === 0) {
+    const existing = await DailyLegalTip.find();
+    if (!existing || existing.length === 0) {
       const initialTips = [
         {
           date: '2026-09-27',
-          tipText: 'Ensure all case-related documents, statutory attestations, and client verification affidavits are thoroughly verified before submission in court.',
+          tipText: 'Injunction against trespasser not maintainable without establishing lawful possession and clear legal title.',
           createdBy: 'System Admin'
         },
         {
@@ -42,11 +42,13 @@ export const seedInitialLegalTips = async () => {
 // ------------------------------------------------------------------
 export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    // Strict backend role authorization check
-    if (!req.user || (req.user.role !== 'Admin' && req.user.role !== 'Advocate')) {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    
+    // Strict backend role authorization check (Case-insensitive)
+    if (!req.user || (roleLower !== 'admin' && roleLower !== 'advocate')) {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Daily Legal Tips & Updates are reserved exclusively for enrolled Advocates and Administrators.'
+        message: 'Daily Legal Tips/Updates are available only to enrolled advocates.'
       });
     }
 
@@ -67,7 +69,7 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
     console.error('Error fetching Daily Legal Tips:', error);
     return res.status(500).json({
       success: false,
-      message: 'Unable to load Daily Legal Tips/Updates. Please try again.'
+      message: 'Unable to load Daily Legal Tips/Updates. Please try again later.'
     });
   }
 };
@@ -77,7 +79,8 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
 // ------------------------------------------------------------------
 export const createLegalTip = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.user || req.user.role !== 'Admin') {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. Administrator privileges required to post legal tips.'
@@ -161,7 +164,8 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
 // ------------------------------------------------------------------
 export const updateLegalTip = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.user || req.user.role !== 'Admin') {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. Administrator privileges required.'
@@ -210,7 +214,8 @@ export const updateLegalTip = async (req: AuthenticatedRequest, res: Response) =
 // ------------------------------------------------------------------
 export const deleteLegalTip = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.user || req.user.role !== 'Admin') {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Access denied. Administrator privileges required.'
