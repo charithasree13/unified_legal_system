@@ -506,7 +506,13 @@ const HearingReminderSchema = new mongoose.Schema({
   errorMessage: { type: String }
 }, { timestamps: true });
 
-HearingReminderSchema.index({ caseId: 1, hearingDate: 1, reminderType: 1, email: 1 }, { unique: true });
+const DailyLegalTipSchema = new mongoose.Schema({
+  date: { type: String, required: true, trim: true }, // Normalized YYYY-MM-DD string
+  tipText: { type: String, required: true, trim: true },
+  createdBy: { type: String, default: 'System Admin' }
+}, { timestamps: true });
+
+DailyLegalTipSchema.index({ date: 1 }, { unique: true });
 
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
@@ -538,6 +544,7 @@ export const Project: any = createDynamicModel('Project', ProjectSchema);
 export const Notification: any = createDynamicModel('Notification', NotificationSchema);
 export const AuditLog: any = createDynamicModel('AuditLog', AuditLogSchema);
 export const HearingReminder: any = createDynamicModel('HearingReminder', HearingReminderSchema);
+export const DailyLegalTip: any = createDynamicModel('DailyLegalTip', DailyLegalTipSchema);
 
 export const State: any = createDynamicModel('State', StateSchema);
 export const District: any = createDynamicModel('District', DistrictSchema);

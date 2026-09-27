@@ -8,6 +8,7 @@ import { useAuthStore } from '../store/authStore';
 import { PortalOverview } from '../components/PortalOverview';
 import { FounderSection } from '../components/FounderSection';
 import { FooterSection } from '../components/FooterSection';
+import { DailyLegalTipsSection } from '../components/DailyLegalTipsSection';
 
 export const AdminDashboard: React.FC = () => {
   const { token, addNotification } = useAuthStore();
@@ -587,32 +588,9 @@ export const AdminDashboard: React.FC = () => {
 
         </div>
 
-        {/* Real-time System Audit Logs */}
-        <div id="admin-section-audit-logs" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 h-[480px] overflow-hidden flex flex-col justify-between">
-          <div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Activity size={18} className="text-amber-500" />
-              Real-time System Audit Trails
-            </h3>
-
-            <div className="divide-y divide-slate-100 dark:divide-slate-850 overflow-y-auto h-[380px] pr-1 space-y-1">
-              {auditLogs.length === 0 ? (
-                <div className="text-center py-12 text-xs text-slate-400">No logs collected yet.</div>
-              ) : (
-                auditLogs.map((log: any) => (
-                  <div key={log._id} className="py-2.5 text-[11px]">
-                    <div className="flex justify-between text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">
-                      <span>{log.userName} ({log.role})</span>
-                      <span>{new Date(log.createdAt).toLocaleTimeString()}</span>
-                    </div>
-                    <p className="font-semibold text-slate-850 dark:text-slate-200">{log.action}</p>
-                    <p className="text-slate-400 mt-0.5 text-[10px]">{log.details}</p>
-                    <p className="text-[9px] text-primary dark:text-sky-400 mt-0.5 font-mono">IP: {log.ip}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+        {/* Daily Legal Tips / Updates Module */}
+        <div id="admin-section-legal-tips">
+          <DailyLegalTipsSection />
         </div>
       </div>
 

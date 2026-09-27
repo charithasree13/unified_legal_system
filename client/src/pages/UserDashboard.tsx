@@ -8,6 +8,7 @@ import { useAuthStore } from '../store/authStore';
 import { PortalOverview } from '../components/PortalOverview';
 import { FounderSection } from '../components/FounderSection';
 import { FooterSection } from '../components/FooterSection';
+import { DailyLegalTipsSection } from '../components/DailyLegalTipsSection';
 
 export const UserDashboard: React.FC = () => {
   const { user, token } = useAuthStore();
@@ -264,6 +265,9 @@ export const UserDashboard: React.FC = () => {
 
         </div>
       </div>
+
+      {/* Daily Legal Tips / Updates (Advocates Only) */}
+      {user?.role === 'Advocate' && <DailyLegalTipsSection />}
 
       {/* Founder Details & Footer Section (Displayed both before and after login) */}
       <FounderSection />

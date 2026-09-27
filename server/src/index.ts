@@ -20,6 +20,7 @@ import * as projCtrl from './controllers/projectController';
 import * as courtFeeCtrl from './controllers/courtFeeController';
 import * as mappingCtrl from './controllers/sectionMappingController';
 import * as reminderCtrl from './controllers/reminderController';
+import * as legalTipCtrl from './controllers/legalTipController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -67,6 +68,7 @@ connectDB().then(() => {
   seedCourtFeeDatabase();
   seedSectionMappingDatabase();
   seedLawsDatabase();
+  legalTipCtrl.seedInitialLegalTips();
 });
 
 // Setup WebSocket Sockets
@@ -129,6 +131,12 @@ app.post('/api/reminders/trigger', authenticateToken, requireAdminOrAdvocate, re
 app.post('/api/reminders/test', authenticateToken, requireAdminOrAdvocate, reminderCtrl.sendTestReminder);
 app.get('/api/reminders/health', authenticateToken, reminderCtrl.checkSmtpHealth);
 app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.getReminderLogs);
+
+// DAILY LEGAL TIPS / UPDATES API (Enrolled Advocates & Admins)
+app.get('/api/legal-tips', authenticateToken, requireAdminOrAdvocate, legalTipCtrl.getLegalTips);
+app.post('/api/legal-tips', authenticateToken, requireAdmin, legalTipCtrl.createLegalTip);
+app.put('/api/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.updateLegalTip);
+app.delete('/api/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
 
 
 // COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER
