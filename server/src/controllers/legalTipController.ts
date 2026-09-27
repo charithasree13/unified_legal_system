@@ -7,30 +7,31 @@ import { AuthenticatedRequest } from '../middleware/auth';
 // ------------------------------------------------------------------
 export const seedInitialLegalTips = async () => {
   try {
-    const existing = await DailyLegalTip.find();
-    if (!existing || existing.length === 0) {
-      const initialTips = [
-        {
-          date: '2026-09-27',
-          tipText: 'Injunction against trespasser not maintainable without establishing lawful possession and clear legal title.',
-          createdBy: 'System Admin'
-        },
-        {
-          date: '2026-09-26',
-          tipText: 'Under Section 103(1) of Bharatiya Nyaya Sanhita (BNS), review Section 302 IPC cross-mappings and relevant High Court precedent transcripts for murder suit charges.',
-          createdBy: 'System Admin'
-        },
-        {
-          date: '2026-09-25',
-          tipText: 'Advocates executing notary statutory attestations must maintain serial numbers in their statutory register alongside Bar Council enrollment numbers.',
-          createdBy: 'System Admin'
-        }
-      ];
-
-      for (const tip of initialTips) {
-        await DailyLegalTip.create(tip);
+    const initialTips = [
+      {
+        date: '2026-09-27',
+        tipText: 'Injunction against trespasser not maintainable without establishing lawful possession and clear legal title.',
+        createdBy: 'System Admin'
+      },
+      {
+        date: '2026-09-26',
+        tipText: 'Under Section 103(1) of Bharatiya Nyaya Sanhita (BNS), review Section 302 IPC cross-mappings and relevant High Court precedent transcripts for murder suit charges.',
+        createdBy: 'System Admin'
+      },
+      {
+        date: '2026-09-25',
+        tipText: 'Advocates executing notary statutory attestations must maintain serial numbers in their statutory register alongside Bar Council enrollment numbers.',
+        createdBy: 'System Admin'
       }
-      console.log('✅ Daily Legal Tips initial seed completed successfully.');
+    ];
+
+    for (const tip of initialTips) {
+      try {
+        const existingForDate = await DailyLegalTip.find({ date: tip.date });
+        if (!existingForDate || existingForDate.length === 0) {
+          await DailyLegalTip.create(tip);
+        }
+      } catch (e) {}
     }
   } catch (err) {
     console.error('Error seeding initial Daily Legal Tips:', err);
@@ -53,15 +54,17 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
     }
 
     let tips = await DailyLegalTip.find();
+    let tipsArray = Array.isArray(tips) ? tips.map((t: any) => (t.toObject ? t.toObject() : t)) : [];
 
     // Auto-seed initial legal tips if database has zero tips
-    if (!tips || tips.length === 0) {
+    if (tipsArray.length === 0) {
       await seedInitialLegalTips();
-      tips = await DailyLegalTip.find();
+      const reQueried = await DailyLegalTip.find();
+      tipsArray = Array.isArray(reQueried) ? reQueried.map((t: any) => (t.toObject ? t.toObject() : t)) : [];
     }
 
     // Sort tips chronologically with latest tip first
-    const sortedTips = (tips || []).sort((a: any, b: any) => {
+    tipsArray.sort((a: any, b: any) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
       return dateB - dateA;
@@ -69,7 +72,7 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
 
     return res.status(200).json({
       success: true,
-      tips: sortedTips
+      tips: tipsArray
     });
   } catch (error: any) {
     console.error('Error fetching Daily Legal Tips:', error);
