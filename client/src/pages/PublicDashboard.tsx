@@ -233,14 +233,33 @@ export const PublicDashboard: React.FC = () => {
 
           <div className="max-w-7xl mx-auto relative z-10 text-center space-y-6">
             
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 backdrop-blur-md shadow-xs">
-              <Scale size={14} className="text-amber-400" />
-              <span>Digital Legal Technology & Case Collaboration Suite</span>
+            {/* Prominent Logo & Suite Badge */}
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="relative group">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 via-amber-400 to-sky-400 rounded-full blur-lg opacity-80 group-hover:opacity-100 transition duration-500" />
+                <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-white border-4 border-amber-400 p-1.5 shadow-2xl overflow-hidden flex items-center justify-center">
+                  <img
+                    src="/logo.jpg"
+                    alt="Elite Legal Desk Logo"
+                    className="h-full w-full object-contain rounded-full"
+                  />
+                </div>
+              </div>
+
+              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300 backdrop-blur-md shadow-xs">
+                <Scale size={14} className="text-amber-400" />
+                <span>Digital Legal Technology & Case Collaboration Suite</span>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-white max-w-4xl mx-auto leading-tight">
-              Elite Legal Desk
-            </h1>
+            <div className="space-y-1.5">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-white max-w-4xl mx-auto leading-tight">
+                Elite Legal Desk
+              </h1>
+              <p className="text-xs sm:text-sm text-amber-400 font-bold uppercase tracking-widest">
+                Madanapalle, Andhra Pradesh
+              </p>
+            </div>
 
             <p className="text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">
               A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, court fee calculators, and litigation tools in one integrated portal.
