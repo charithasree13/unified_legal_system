@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const DEFAULT_ATLAS_URI = Buffer.from(
-  'bW9uZ29kYitzcnY6Ly9wY2hhcml0aGFzcmVlMTNfZGJfdXNlcjpDaGVycnkxMTEzQHN0YXJ0LXVwLWNybS1saXRlLm5qbWEyZmptb25nb2RiLm5ldC91bmlmaWVkLWxlZ2FsLXN5c3RlbT9yZXRyeVdyaXRlcz10cnVlJnc9bWFqb3JpdHk=',
+  'bW9uZ29kYitzcnY6Ly9wYXJ1Y2h1cmljaGFyaXRoYXNyZWVfZGJfdXNlcjo2amROZldpU3g3NnJJZDlXQGVsaXRlLWxlZ2FsLWRlc2suZWF5bGdheS5tb25nb2RiLm5ldC91bmlmaWVkLWxlZ2FsLXN5c3RlbT9yZXRyeVdyaXRlcz10cnVlJnc9bWFqb3JpdHkmYXBwTmFtZT1lbGl0ZS1sZWdhbC1kZXNr',
   'base64'
 ).toString('utf-8');
 
