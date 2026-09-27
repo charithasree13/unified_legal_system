@@ -40,10 +40,11 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
   const navLinks = [
     { label: 'Home', path: '/dashboard' },
     { label: 'Advocates', path: '/directory' },
-    { label: 'Calculators', path: '/calculators' },
-    { label: 'Judgments', path: '/judgements' },
-    { label: 'Bare Acts & Laws', path: '/laws' },
+    { label: 'Legal Services', path: '#modules' },
     { label: 'Legal Sections', path: '/section-mapping' },
+    { label: 'Judgments', path: '/judgements' },
+    { label: 'Documents', path: '/laws' },
+    { label: 'Calculators', path: '/calculators' },
     { label: 'About Founder', path: '#founder' },
   ];
 

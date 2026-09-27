@@ -280,24 +280,49 @@ export const PublicDashboard: React.FC = () => {
               </span>
             </div>
 
-            {/* Clean Hero Call to Action Buttons (Single header Sign In / Sign Up location) */}
+            {/* Clean Hero Call to Action Buttons */}
             <div className="pt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+              <a
+                href="#modules"
+                className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <BookOpen size={16} />
+                <span>Explore Legal Services</span>
+              </a>
+
+              <button
+                onClick={() => handleProtectedAction('Advocate Directory', '/directory')}
+                className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Users size={16} />
+                <span>Find an Advocate</span>
+              </button>
+
               <Link
                 to="/calculators"
-                className="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition-all flex items-center gap-2"
+                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Calculator size={16} />
                 <span>Court Fee Calculator</span>
-                <ArrowRight size={16} />
               </Link>
 
-              <a
-                href="#modules"
-                className="px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-800 dark:border-slate-700 transition-all flex items-center gap-2 shadow-xs"
-              >
-                <span>Explore All Legal Modules</span>
-                <ArrowRight size={16} />
-              </a>
+              {!token && (
+                <>
+                  <button
+                    onClick={() => openAuthModal('login')}
+                    className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span>Sign In</span>
+                  </button>
+
+                  <button
+                    onClick={() => openAuthModal('signup')}
+                    className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Create Account</span>
+                  </button>
+                </>
+              )}
             </div>
 
           </div>
