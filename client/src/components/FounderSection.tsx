@@ -16,7 +16,7 @@ export const FounderSection: React.FC = () => {
             About the Founder
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
-            Elite Legal Desk was established under experienced legal leadership to bridge digital technology with practical courtroom practice and legal administration in Madanapalle.
+            Elite Legal Desk was established under experienced legal leadership to bridge digital technology with practical courtroom practice and legal administration.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export const FounderSection: React.FC = () => {
                   Legal Background & Professional Overview
                 </h4>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed as Notary Public by Govt. of Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998. He is appointed as Panel Advocate for Nationalized banks. He worked as a junior Advocate under the supervision of Mr. T. Janardhan Gupta, Advocate, Ex. Public Prosecutor, Madanapalle.
+                  Mr. P. V. Prasad is a distinguished practicing advocate enrolled in State Bar Council of Andhra Pradesh in the year 1998 and appointed as Notary Public by Govt. of Andhra Pradesh in the year 2011 and appointed as Bank Panel Advocate for Nationalized Banks. He worked as a junior Advocate under the supervision of Mr. T. Janardhan Gupta, Advocate, Ex. Public Prosecutor, Madanapalle.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
                   Envisioning an integrated digital portal for advocates, litigants, and legal researchers, Mr. Prasad founded <strong>Elite Legal Desk</strong> to streamline court fee calculations, legal section cross-mapping, case file collaboration, and verified advocate discovery.
