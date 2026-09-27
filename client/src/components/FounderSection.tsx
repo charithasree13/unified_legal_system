@@ -48,7 +48,7 @@ export const FounderSection: React.FC = () => {
                 Mr. P. V. Prasad
               </h3>
               <p className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mt-1">
-                Advocate & Notary Public
+                Advocate, Notary & Legal Advisor
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
                 Founder, Elite Legal Desk
@@ -83,10 +83,10 @@ export const FounderSection: React.FC = () => {
                   Legal Background & Professional Overview
                 </h4>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed Notary Public based in Madanapalle, Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998.
+                  Mr. P. V. Prasad is a distinguished practicing advocate and appointed Notary Public by Govt. of India based in Madanapalle, Andhra Pradesh. Enrolled with the Bar Council of Andhra Pradesh in 1998. He worked as a junior Advocate under the supervision of Mr. T. Janardhan Gupta, Advocate, Ex. Public Prosecutor, Madanapalle.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Envisioning an integrated digital portal for local advocates, litigants, and legal researchers, Mr. Prasad founded <strong>Elite Legal Desk</strong> to streamline court fee calculations, legal section cross-mapping, case file collaboration, and verified advocate discovery.
+                  Envisioning an integrated digital portal for advocates, litigants, and legal researchers, Mr. Prasad founded <strong>Elite Legal Desk</strong> to streamline court fee calculations, legal section cross-mapping, case file collaboration, and verified advocate discovery.
                 </p>
               </div>
 
@@ -121,18 +121,21 @@ export const FounderSection: React.FC = () => {
 
               {/* Contact Information Bar */}
               <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-4 text-xs font-medium text-slate-600 dark:text-slate-400">
-                <div className="flex items-center gap-1.5">
-                  <MapPin size={14} className="text-amber-500" />
-                  <span>Vasavi Bhavan Street, Madanapalle, Andhra Pradesh, India</span>
+                <div className="flex items-start gap-1.5">
+                  <MapPin size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                  <div className="flex flex-col space-y-0.5">
+                    <span>Vasavi Bhavan Street, Madanapalle, Andhra Pradesh, India</span>
+                    <span>Eswaramma Colony Extension, Chembakur Road, Madanapalle, Andhra Pradesh, India</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Mail size={14} className="text-sky-500" />
+                  <Mail size={14} className="text-sky-500 shrink-0" />
                   <a href="mailto:pvprasadvmpl@gmail.com" className="hover:text-primary dark:hover:text-sky-400 hover:underline">
                     pvprasadvmpl@gmail.com
                   </a>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Phone size={14} className="text-emerald-500" />
+                  <Phone size={14} className="text-emerald-500 shrink-0" />
                   <span>+91 9247253096</span>
                 </div>
               </div>
