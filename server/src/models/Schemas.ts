@@ -43,21 +43,9 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
     let items = this.read();
     if (!query || Object.keys(query).length === 0) return items;
 
-    return items.filter((item: any) => {
-      if (query.$or && Array.isArray(query.$or)) {
-        const matchesOr = query.$or.some((subQuery: any) => {
-          return Object.keys(subQuery).every((subKey) => {
-            const val = subQuery[subKey];
-            if (val === undefined) return true;
-            return String(item[subKey] || '').toLowerCase() === String(val || '').toLowerCase();
-          });
-        });
-        if (!matchesOr) return false;
-      }
-
-      for (const key in query) {
-        if (key === '$or') continue;
-        const val = query[key];
+    const matchesSingleQuery = (item: any, subQuery: any): boolean => {
+      for (const key in subQuery) {
+        const val = subQuery[key];
         if (val === undefined || val === null || val === '') continue;
 
         const itemVal = item[key];
@@ -67,12 +55,30 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
             if (!regex.test(String(itemVal || ''))) return false;
           } else if (val.$in) {
             if (!Array.isArray(val.$in) || !val.$in.includes(itemVal)) return false;
+          } else if (val.$ne !== undefined) {
+            if (itemVal === val.$ne) return false;
+          } else if (val.$exists !== undefined) {
+            const exists = itemVal !== undefined && itemVal !== null && itemVal !== '';
+            if (val.$exists !== exists) return false;
           }
         } else {
           if (String(itemVal || '').toLowerCase() !== String(val || '').toLowerCase()) {
             return false;
           }
         }
+      }
+      return true;
+    };
+
+    return items.filter((item: any) => {
+      if (query.$or && Array.isArray(query.$or)) {
+        const matchesOr = query.$or.some((subQuery: any) => matchesSingleQuery(item, subQuery));
+        if (!matchesOr) return false;
+      }
+
+      for (const key in query) {
+        if (key === '$or') continue;
+        if (!matchesSingleQuery(item, { [key]: query[key] })) return false;
       }
       return true;
     });
