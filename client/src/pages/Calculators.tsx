@@ -420,9 +420,6 @@ export const Calculators: React.FC = () => {
                   <Scale className="text-primary dark:text-sky-400" size={20} />
                   Enterprise Court Fee Rule Engine
                 </h3>
-                <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                  100% Database Driven
-                </span>
               </div>
               <p className="text-xs text-slate-400 mt-1">
                 Computes exact statutory court fees from configured database rules across all 28 States and 8 Union Territories.
