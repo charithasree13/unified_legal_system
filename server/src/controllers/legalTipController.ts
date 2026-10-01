@@ -115,8 +115,13 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
     const formattedDate = String(date).trim().split('T')[0];
     const cleanedText = String(tipText).trim();
 
-    // Check whether a tip already exists for the selected date
-    const existingTips = await DailyLegalTip.find({ date: formattedDate });
+    // Check whether a tip already exists for the selected date (exact or ISO prefix)
+    const existingTips = await DailyLegalTip.find({
+      $or: [
+        { date: formattedDate },
+        { date: { $regex: `^${formattedDate}` } }
+      ]
+    });
     const creatorName = req.user.name || req.user.email || 'Admin';
 
     if (existingTips && existingTips.length > 0) {
@@ -151,9 +156,18 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
     });
   } catch (error: any) {
     console.error('Error creating Daily Legal Tip:', error);
+    
+    // Check for duplicate key violation (Mongo E11000 error code)
+    if (error.code === 11000 || (error.message && error.message.includes('E11000')) || error.name === 'MongoServerError') {
+      return res.status(409).json({
+        success: false,
+        message: 'A legal tip already exists for this date.'
+      });
+    }
+
     return res.status(500).json({
       success: false,
-      message: 'Failed to save legal tip. Please try again.'
+      message: error.message || 'Failed to save legal tip. Please try again.'
     });
   }
 };
