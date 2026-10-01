@@ -158,6 +158,19 @@ export const PortalOverview: React.FC = () => {
           gradientBorder: 'hover:border-cyan-500/50'
         },
         {
+          id: 'hindu-succession',
+          title: 'Hindu Succession Calculator',
+          description: 'Determine statutory legal shares, coparcenary notional partitions, Class I/II intestate shares, and Section 15 female succession.',
+          tag: 'Personal Law Engine',
+          icon: Scale,
+          path: '/hindu-succession-calculator',
+          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
+          badgeText: 'text-amber-600 dark:text-amber-400',
+          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
+          iconColor: 'text-amber-600 dark:text-amber-400',
+          gradientBorder: 'hover:border-amber-500/50'
+        },
+        {
           id: 'chat',
           title: 'Secure Chat Hub',
           description: 'Inspect active messaging channels, system communications, and user support conversations.',
@@ -252,6 +265,19 @@ export const PortalOverview: React.FC = () => {
           iconBg: 'bg-teal-500/10 dark:bg-teal-500/20',
           iconColor: 'text-teal-600 dark:text-teal-400',
           gradientBorder: 'hover:border-teal-500/50'
+        },
+        {
+          id: 'hindu-succession',
+          title: 'Hindu Succession Calculator',
+          description: 'Determine statutory legal shares, coparcenary notional partitions, Class I/II intestate shares, and Section 15 female succession.',
+          tag: 'Personal Law Engine',
+          icon: Scale,
+          path: '/hindu-succession-calculator',
+          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
+          badgeText: 'text-amber-600 dark:text-amber-400',
+          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
+          iconColor: 'text-amber-600 dark:text-amber-400',
+          gradientBorder: 'hover:border-amber-500/50'
         },
         {
           id: 'chat',

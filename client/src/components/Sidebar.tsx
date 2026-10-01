@@ -27,7 +27,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Advocate Directory', path: '/directory', icon: Users },
-    { name: 'Calculators', path: '/calculators', icon: Calculator },
+    { name: 'Court Fee & Land Calculators', path: '/calculators', icon: Calculator },
+    { name: 'Hindu Succession Calculator', path: '/hindu-succession-calculator', icon: Scale, normalUserHide: true },
     { name: 'Judgements', path: '/judgements', icon: Gavel, normalUserHide: true },
     { name: 'Laws & Acts', path: '/laws', icon: BookOpen, normalUserHide: true },
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },

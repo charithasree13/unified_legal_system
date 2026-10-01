@@ -21,6 +21,7 @@ import * as courtFeeCtrl from './controllers/courtFeeController';
 import * as mappingCtrl from './controllers/sectionMappingController';
 import * as reminderCtrl from './controllers/reminderController';
 import * as legalTipCtrl from './controllers/legalTipController';
+import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -175,6 +176,12 @@ app.all('/api/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee
 app.all('/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 app.all('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
 app.all('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+
+// HINDU SUCCESSION CALCULATOR API (Protected: Enrolled Advocates & Admins only)
+app.post('/api/calculators/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
+app.post('/calculators/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
+app.post('/api/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
+app.post('/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
 app.post('/api', optionalAuthToken, (req, res, next) => {

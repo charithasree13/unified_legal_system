@@ -16,16 +16,18 @@ import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
 import { DailyLegalTipsPage } from './pages/DailyLegalTipsPage';
+import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
 
-// Protected Feature Wrapper (Intercepts unauthenticated visitors attempting protected actions)
-const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string }> = ({ 
+// Protected Feature Wrapper (Intercepts unauthenticated visitors & checks role authorization)
+const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string; allowedRoles?: string[] }> = ({ 
   children, 
-  featureName = 'this protected feature' 
+  featureName = 'this protected feature',
+  allowedRoles
 }) => {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const [authModalOpen, setAuthModalOpen] = useState(true);
 
   if (!token) {
@@ -40,6 +42,15 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string
         />
       </div>
     );
+  }
+
+  // Role Access Control Enforcement
+  if (allowedRoles && allowedRoles.length > 0) {
+    const roleLower = (user?.role || '').toLowerCase();
+    const isAllowed = allowedRoles.some(r => r.toLowerCase() === roleLower);
+    if (!isAllowed) {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return <>{children}</>;
@@ -94,6 +105,16 @@ export const App: React.FC = () => {
 
           {/* Publicly Accessible Module: ONLY Court Fee Calculator */}
           <Route path="calculators" element={<Calculators />} />
+
+          {/* Protected Hindu Succession Calculator Module (Admin & Advocate Only) */}
+          <Route 
+            path="hindu-succession-calculator" 
+            element={
+              <ProtectedRoute featureName="Hindu Succession Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <HinduSuccessionCalculator />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Protected Modules (Require Sign In) */}
           <Route 
