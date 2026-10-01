@@ -37,6 +37,8 @@ export const DailyLegalTipsPage: React.FC = () => {
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<boolean>(false);
 
+  const API_BASE = import.meta.env.VITE_API_URL || '';
+
   useEffect(() => {
     if (token && (isAdmin || isAdvocate)) {
       fetchLegalTips();
@@ -49,28 +51,30 @@ export const DailyLegalTipsPage: React.FC = () => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch('/api/legal-tips', {
+      const res = await fetch(`${API_BASE}/api/legal-tips`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       const data = await res.json();
-      if (res.ok && data.success) {
-        setTips(Array.isArray(data.tips) ? data.tips : []);
+      if (res.ok && (data.success || Array.isArray(data.tips) || Array.isArray(data))) {
+        const tipsList = Array.isArray(data.tips) ? data.tips : (Array.isArray(data) ? data : []);
+        setTips(tipsList);
+        setErrorMsg(null);
       } else {
         if (res.status === 401) {
           setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
         } else if (res.status === 403) {
           setErrorMsg(data.message || 'Daily Legal Tips/Updates are available only to enrolled advocates.');
         } else if (res.status === 404) {
-          setErrorMsg('Daily Legal Tips service endpoint not found. Please try again later.');
+          setErrorMsg('Daily Legal Tips service endpoint not found.');
         } else {
-          setErrorMsg(data.message || 'Unable to load Daily Legal Tips/Updates. Please try again later.');
+          setErrorMsg(data.message || 'Unable to load Daily Legal Tips/Updates.');
         }
       }
     } catch (err: any) {
       console.error('Error fetching legal tips:', err);
-      setErrorMsg('Unable to load Daily Legal Tips/Updates. Please try again later.');
+      setErrorMsg('Unable to load Daily Legal Tips/Updates. Please check server connection.');
     } finally {
       setLoading(false);
     }
@@ -94,7 +98,7 @@ export const DailyLegalTipsPage: React.FC = () => {
     setSubmitting(true);
 
     try {
-      const url = editingId ? `/api/legal-tips/${editingId}` : '/api/legal-tips';
+      const url = editingId ? `${API_BASE}/api/legal-tips/${editingId}` : `${API_BASE}/api/legal-tips`;
       const method = editingId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -167,7 +171,7 @@ export const DailyLegalTipsPage: React.FC = () => {
     setSuccessMsg(null);
 
     try {
-      const res = await fetch(`/api/legal-tips/${deleteTargetId}`, {
+      const res = await fetch(`${API_BASE}/api/legal-tips/${deleteTargetId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

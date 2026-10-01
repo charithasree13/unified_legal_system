@@ -134,9 +134,24 @@ app.get('/api/reminders/logs', authenticateToken, requireAdmin, reminderCtrl.get
 
 // DAILY LEGAL TIPS / UPDATES API (Enrolled Advocates & Admins)
 app.get('/api/legal-tips', authenticateToken, requireAdminOrAdvocate, legalTipCtrl.getLegalTips);
+app.get('/api/daily-legal-tips', authenticateToken, requireAdminOrAdvocate, legalTipCtrl.getLegalTips);
+app.get('/legal-tips', authenticateToken, requireAdminOrAdvocate, legalTipCtrl.getLegalTips);
+app.get('/daily-legal-tips', authenticateToken, requireAdminOrAdvocate, legalTipCtrl.getLegalTips);
+
 app.post('/api/legal-tips', authenticateToken, requireAdmin, legalTipCtrl.createLegalTip);
+app.post('/api/daily-legal-tips', authenticateToken, requireAdmin, legalTipCtrl.createLegalTip);
+app.post('/legal-tips', authenticateToken, requireAdmin, legalTipCtrl.createLegalTip);
+app.post('/daily-legal-tips', authenticateToken, requireAdmin, legalTipCtrl.createLegalTip);
+
 app.put('/api/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.updateLegalTip);
+app.put('/api/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.updateLegalTip);
+app.put('/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.updateLegalTip);
+app.put('/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.updateLegalTip);
+
 app.delete('/api/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
+app.delete('/api/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
+app.delete('/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
+app.delete('/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
 
 
 // COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER

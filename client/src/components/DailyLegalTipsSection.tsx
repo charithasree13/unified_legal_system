@@ -31,18 +31,22 @@ export const DailyLegalTipsSection: React.FC = () => {
     }
   }, [token, isAdmin, isAdvocate]);
 
+  const API_BASE = import.meta.env.VITE_API_URL || '';
+
   const fetchLegalTips = async () => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const res = await fetch('/api/legal-tips', {
+      const res = await fetch(`${API_BASE}/api/legal-tips`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       const data = await res.json();
-      if (res.ok && data.success) {
-        setTips(Array.isArray(data.tips) ? data.tips : []);
+      if (res.ok && (data.success || Array.isArray(data.tips) || Array.isArray(data))) {
+        const tipsList = Array.isArray(data.tips) ? data.tips : (Array.isArray(data) ? data : []);
+        setTips(tipsList);
+        setErrorMsg(null);
       } else {
         if (res.status === 401) {
           setErrorMsg('Please sign in to access Daily Legal Tips/Updates.');
