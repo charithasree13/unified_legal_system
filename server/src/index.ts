@@ -240,7 +240,7 @@ app.post('/api/system/backup', authenticateToken, requireAdmin, async (req: Auth
     const advocates = await Advocate.find();
     const judgements = await Judgement.find();
     const laws = await Law.find();
-    
+
     const backupPayload = {
       timestamp: new Date().toISOString(),
       data: { users, advocates, judgements, laws }

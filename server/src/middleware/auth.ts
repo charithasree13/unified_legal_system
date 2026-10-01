@@ -57,7 +57,7 @@ export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: Nex
 export const requireAdminOrAdvocate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const roleLower = (req.user?.role || '').toLowerCase();
   if (!req.user || (roleLower !== 'admin' && roleLower !== 'advocate')) {
-    return res.status(403).json({ success: false, message: 'Access denied. Reserved for Administrators and Enrolled Advocates.' });
+    return res.status(403).json({ success: false, message: 'Daily Legal Tips/Updates are available only to enrolled advocates.' });
   }
   next();
 };

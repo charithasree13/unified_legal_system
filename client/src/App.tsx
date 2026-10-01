@@ -15,6 +15,7 @@ import { Projects } from './pages/Projects';
 import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
+import { DailyLegalTipsPage } from './pages/DailyLegalTipsPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
@@ -126,6 +127,18 @@ export const App: React.FC = () => {
                 <LegalSectionMapping />
               </ProtectedRoute>
             } 
+          />
+          <Route 
+            path="daily-legal-tips" 
+            element={
+              <ProtectedRoute featureName="Daily Legal Tips / Updates">
+                <DailyLegalTipsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="daily-tips" 
+            element={<Navigate to="/daily-legal-tips" replace />} 
           />
           <Route 
             path="chat" 

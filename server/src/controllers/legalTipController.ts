@@ -2,24 +2,29 @@ import { Response } from 'express';
 import { DailyLegalTip, AuditLog } from '../models/Schemas';
 import { AuthenticatedRequest } from '../middleware/auth';
 
+let isInitialSeeded = false;
+
 // ------------------------------------------------------------------
 // Initial Seed Function for Daily Legal Tips
 // ------------------------------------------------------------------
 export const seedInitialLegalTips = async () => {
   try {
+    const existing = await DailyLegalTip.find();
+    if (existing && existing.length > 0) return;
+
     const initialTips = [
       {
-        date: '2026-09-27',
-        tipText: 'Injunction against trespasser not maintainable without establishing lawful possession and clear legal title.',
+        date: '2026-10-01',
+        tipText: 'Injunction against true owner is not maintainable without establishing lawful possession and clear legal title.',
         createdBy: 'System Admin'
       },
       {
-        date: '2026-09-26',
+        date: '2026-09-30',
         tipText: 'Under Section 103(1) of Bharatiya Nyaya Sanhita (BNS), review Section 302 IPC cross-mappings and relevant High Court precedent transcripts for murder suit charges.',
         createdBy: 'System Admin'
       },
       {
-        date: '2026-09-25',
+        date: '2026-09-29',
         tipText: 'Advocates executing notary statutory attestations must maintain serial numbers in their statutory register alongside Bar Council enrollment numbers.',
         createdBy: 'System Admin'
       }
@@ -31,7 +36,7 @@ export const seedInitialLegalTips = async () => {
         if (!existingForDate || existingForDate.length === 0) {
           await DailyLegalTip.create(tip);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
   } catch (err) {
     console.error('Error seeding initial Daily Legal Tips:', err);
@@ -44,7 +49,7 @@ export const seedInitialLegalTips = async () => {
 export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const roleLower = (req.user?.role || '').toLowerCase();
-    
+
     // Strict backend role authorization check (Case-insensitive)
     if (!req.user || (roleLower !== 'admin' && roleLower !== 'advocate')) {
       return res.status(403).json({
@@ -56,8 +61,9 @@ export const getLegalTips = async (req: AuthenticatedRequest, res: Response) => 
     let tips = await DailyLegalTip.find();
     let tipsArray = Array.isArray(tips) ? tips.map((t: any) => (t.toObject ? t.toObject() : t)) : [];
 
-    // Auto-seed initial legal tips if database has zero tips
-    if (tipsArray.length === 0) {
+    // Auto-seed initial legal tips if database has zero tips on initial startup
+    if (tipsArray.length === 0 && !isInitialSeeded) {
+      isInitialSeeded = true;
       await seedInitialLegalTips();
       const reQueried = await DailyLegalTip.find();
       tipsArray = Array.isArray(reQueried) ? reQueried.map((t: any) => (t.toObject ? t.toObject() : t)) : [];
@@ -92,7 +98,7 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
     if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Administrator privileges required to post legal tips.'
+        message: 'Only administrators can publish legal tips.'
       });
     }
 
@@ -114,27 +120,9 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
     const creatorName = req.user.name || req.user.email || 'Admin';
 
     if (existingTips && existingTips.length > 0) {
-      // Update existing tip record for this date
-      const existingId = existingTips[0]._id;
-      const updatedTip = await DailyLegalTip.findByIdAndUpdate(existingId, {
-        tipText: cleanedText,
-        createdBy: creatorName
-      }, { new: true });
-
-      try {
-        await AuditLog.create({
-          userId: req.user.id || 'system',
-          userName: creatorName,
-          role: req.user.role || 'Admin',
-          action: 'UPDATE_LEGAL_TIP',
-          details: `Updated daily legal tip for date ${formattedDate}`
-        });
-      } catch (e) {}
-
-      return res.status(200).json({
-        success: true,
-        message: 'Legal tip saved successfully.',
-        tip: updatedTip || { ...existingTips[0], tipText: cleanedText, createdBy: creatorName }
+      return res.status(409).json({
+        success: false,
+        message: 'A legal tip already exists for this date.'
       });
     }
 
@@ -154,7 +142,7 @@ export const createLegalTip = async (req: AuthenticatedRequest, res: Response) =
         action: 'CREATE_LEGAL_TIP',
         details: `Published daily legal tip for date ${formattedDate}`
       });
-    } catch (e) {}
+    } catch (e) { }
 
     return res.status(201).json({
       success: true,
@@ -179,7 +167,7 @@ export const updateLegalTip = async (req: AuthenticatedRequest, res: Response) =
     if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Administrator privileges required.'
+        message: 'Only administrators can edit legal tips.'
       });
     }
 
@@ -229,7 +217,7 @@ export const deleteLegalTip = async (req: AuthenticatedRequest, res: Response) =
     if (!req.user || roleLower !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Administrator privileges required.'
+        message: 'Only administrators can delete legal tips.'
       });
     }
 
