@@ -933,19 +933,6 @@ export const HinduSuccessionCalculator: React.FC = () => {
                   </table>
                 </div>
 
-                {/* Calculation Sequence Explanation */}
-                <div className="space-y-2 pt-2">
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                    <BookOpen size={14} className="text-amber-500" />
-                    <span>How Share Was Calculated</span>
-                  </h4>
-                  <ol className="list-decimal list-inside text-xs text-slate-600 dark:text-slate-300 space-y-1 bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl">
-                    {result.calculationSteps.map((step, idx) => (
-                      <li key={idx} className="leading-relaxed">{step}</li>
-                    ))}
-                  </ol>
-                </div>
-
                 {/* Applicable Statutory Provisions */}
                 {result.applicableProvisions.length > 0 && (
                   <div className="space-y-2 pt-2">
