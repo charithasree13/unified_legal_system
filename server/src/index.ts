@@ -97,6 +97,7 @@ app.post('/api/auth/reset-password', authCtrl.resetPassword);
 
 // ADVOCATE DIRECTORY
 app.post('/api/advocates/profile', authenticateToken, advCtrl.selfOnboardAdvocateProfile);
+app.post('/advocates/profile', authenticateToken, advCtrl.selfOnboardAdvocateProfile);
 app.post('/api/advocates', authenticateToken, requireAdminOrAdvocate, advCtrl.addAdvocate);
 app.get('/api/advocates', advCtrl.getAdvocates);
 app.get('/api/advocates/:id', advCtrl.getAdvocateById);

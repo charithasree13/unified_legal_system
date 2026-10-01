@@ -98,8 +98,10 @@ export const AdvocateOnboardingModal: React.FC = () => {
 
     setLoading(true);
 
+    const API_BASE = import.meta.env.VITE_API_URL || '';
+
     try {
-      const response = await fetch('/api/advocates/profile', {
+      const response = await fetch(`${API_BASE}/api/advocates/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

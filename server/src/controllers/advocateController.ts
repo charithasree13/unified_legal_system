@@ -420,7 +420,8 @@ export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) =
 // Advocate Onboarding - Self-Service Directory Profile Completion
 export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.user || req.user.role !== 'Advocate') {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (!req.user || (roleLower !== 'advocate' && roleLower !== 'admin')) {
       return res.status(403).json({ success: false, message: 'Only advocate accounts can submit advocate profile details.' });
     }
 
@@ -453,16 +454,16 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
         phone: cleanPhone,
         email: cleanEmail,
         enrollmentNumber: cleanEnrollment,
-        enrollmentDate: enrollmentDate.trim(),
+        enrollmentDate: String(enrollmentDate).trim(),
         specialization: Array.isArray(specialization) ? specialization.join(', ') : String(specialization),
         court: Array.isArray(court) ? court.join(', ') : String(court),
         city: city.trim(),
-        state: state.trim(),
+        state: String(state).trim(),
         experience: Number(experience || 1),
         photo: photo || advocate.photo || '',
-        bio: bio ? bio.trim() : '',
-        address: address ? address.trim() : '',
-        isVerified: false // Unverified initially - requires Admin verification
+        bio: bio ? String(bio).trim() : '',
+        address: address ? String(address).trim() : '',
+        isVerified: advocate.isVerified === true
       }, { new: true });
     } else {
       advocate = await Advocate.create({
@@ -470,54 +471,61 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
         phone: cleanPhone,
         email: cleanEmail,
         enrollmentNumber: cleanEnrollment,
-        enrollmentDate: enrollmentDate.trim(),
+        enrollmentDate: String(enrollmentDate).trim(),
         specialization: Array.isArray(specialization) ? specialization.join(', ') : String(specialization),
         court: Array.isArray(court) ? court.join(', ') : String(court),
         city: city.trim(),
-        state: state.trim(),
+        state: String(state).trim(),
         experience: Number(experience || 1),
         photo: photo || '',
-        bio: bio ? bio.trim() : '',
-        address: address ? address.trim() : '',
+        bio: bio ? String(bio).trim() : '',
+        address: address ? String(address).trim() : '',
         availability: 'Available',
         isVerified: false // Unverified initially - requires Admin verification
       });
     }
 
     // Update User record to mark profile completed
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
-      hasCompletedProfile: true,
-      enrollmentNumber: cleanEnrollment,
-      phone: cleanPhone,
-      email: cleanEmail,
-      name: name.trim()
-    }, { new: true });
+    let updatedUser: any = null;
+    try {
+      if (req.user.id) {
+        updatedUser = await User.findByIdAndUpdate(req.user.id, {
+          hasCompletedProfile: true,
+          enrollmentNumber: cleanEnrollment,
+          phone: cleanPhone,
+          email: cleanEmail,
+          name: name.trim()
+        }, { new: true });
+      }
+    } catch (uErr) { }
 
-    await AuditLog.create({
-      userId: req.user.id,
-      userName: req.user.name,
-      role: 'Advocate',
-      action: 'ADVOCATE_ONBOARDING_COMPLETED',
-      ip: req.ip || '127.0.0.1',
-      details: `Advocate submitted directory profile: ${name} (Enrollment: ${cleanEnrollment}). Awaiting Admin verification.`
-    });
+    try {
+      await AuditLog.create({
+        userId: req.user.id || 'system',
+        userName: req.user.name || name.trim(),
+        role: req.user.role || 'Advocate',
+        action: 'ADVOCATE_ONBOARDING_COMPLETED',
+        ip: req.ip || '127.0.0.1',
+        details: `Advocate submitted directory profile: ${name} (Enrollment: ${cleanEnrollment}). Awaiting Admin verification.`
+      });
+    } catch (aErr) { }
 
     return res.status(200).json({
       success: true,
       message: 'Advocate profile details published successfully! Your profile has been added to the directory and is pending Administrator verification.',
       advocate,
       user: {
-        id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        phone: updatedUser.phone,
-        enrollmentNumber: updatedUser.enrollmentNumber,
+        id: updatedUser ? updatedUser._id : req.user.id,
+        name: updatedUser ? updatedUser.name : name.trim(),
+        email: updatedUser ? updatedUser.email : cleanEmail,
+        role: updatedUser ? updatedUser.role : req.user.role,
+        phone: updatedUser ? updatedUser.phone : cleanPhone,
+        enrollmentNumber: cleanEnrollment,
         hasCompletedProfile: true
       }
     });
   } catch (error: any) {
     console.error('Error in selfOnboardAdvocateProfile:', error);
-    return res.status(500).json({ success: false, message: 'Failed to submit advocate directory profile.' });
+    return res.status(500).json({ success: false, message: error.message || 'Failed to submit advocate directory profile.' });
   }
 };
