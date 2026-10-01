@@ -3,8 +3,8 @@ import {
   Scale, Users, Calculator, AlertTriangle, FileText, RotateCcw, Info, CheckCircle2, ShieldAlert, DollarSign, Calendar, BookOpen, Layers
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
-import { 
-  calculateHinduSuccession, 
+import { calculateHinduSuccession } from '../utils/hinduSuccessionEngine';
+import type { 
   HinduSuccessionCaseInput, 
   HinduSuccessionCalculationResult,
   PreDeceasedSonBranch,
