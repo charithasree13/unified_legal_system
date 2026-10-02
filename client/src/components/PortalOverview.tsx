@@ -91,21 +91,6 @@ export const PortalOverview: React.FC = () => {
           gradientBorder: 'hover:border-blue-500/50'
         },
         {
-          id: 'admin-audit',
-          title: 'Platform Audit Logs',
-          description: 'Monitor real-time system activities, user authentication, data modifications, and security events.',
-          tag: 'Security & Audit',
-          icon: Activity,
-          path: '/dashboard',
-          isAdminInternal: true,
-          targetId: 'admin-section-audit-logs',
-          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
-          badgeText: 'text-purple-600 dark:text-purple-400',
-          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-          iconColor: 'text-purple-600 dark:text-purple-400',
-          gradientBorder: 'hover:border-purple-500/50'
-        },
-        {
           id: 'directory',
           title: 'Advocate Directory',
           description: 'Access the complete advocate directory database, manage verified badges and practitioner profiles.',

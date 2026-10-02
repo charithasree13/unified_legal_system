@@ -627,12 +627,12 @@ export const PublicDashboard: React.FC = () => {
                   Legal Administrators
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Administrators manage platform verification, review Bar Council enrollment credentials, maintain state court fee rule engines, upload laws/judgments, and audit security logs.
+                  Administrators manage platform verification, review Bar Council enrollment credentials, maintain state court fee rule engines, and upload landmark laws & judgements.
                 </p>
                 <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
                   <li className="flex items-center gap-1.5">• Advocate verification approvals</li>
                   <li className="flex items-center gap-1.5">• Court fee rule engine admin</li>
-                  <li className="flex items-center gap-1.5">• Audit logs & document indexing</li>
+                  <li className="flex items-center gap-1.5">• Bare Acts & document indexing</li>
                 </ul>
               </div>
 

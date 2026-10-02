@@ -26,7 +26,6 @@ export const AdminDashboard: React.FC = () => {
   const [pendingAdvocates, setPendingAdvocates] = useState<any[]>([]);
   const [selectedAdvocateForReview, setSelectedAdvocateForReview] = useState<any | null>(null);
   const [showPendingModal, setShowPendingModal] = useState(false);
-  const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   
   // Document uploads states
@@ -59,10 +58,9 @@ export const AdminDashboard: React.FC = () => {
   const [newRuleRate, setNewRuleRate] = useState('5.0');
   const [newRuleRemarks, setNewRuleRemarks] = useState('');
 
-  // Fetch initial dashboard stats & logs
+  // Fetch initial dashboard stats
   useEffect(() => {
     fetchStats();
-    fetchLogs();
     fetchPendingAdvocates();
     fetchAdminRules();
   }, [token]);
@@ -90,7 +88,6 @@ export const AdminDashboard: React.FC = () => {
       if (res.ok) {
         addNotification('Court Fee Rule Updated', 'Rule status successfully updated.', 'info');
         fetchAdminRules();
-        fetchLogs();
       }
     } catch (err) {
       console.error(err);
@@ -125,7 +122,6 @@ export const AdminDashboard: React.FC = () => {
         setShowAddRuleModal(false);
         setNewRuleRemarks('');
         fetchAdminRules();
-        fetchLogs();
       }
     } catch (err) {
       console.error(err);
@@ -143,18 +139,6 @@ export const AdminDashboard: React.FC = () => {
       console.error(err);
     } finally {
       setLoadingStats(false);
-    }
-  };
-
-  const fetchLogs = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/api/system/logs`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok) setAuditLogs(data.logs);
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -196,7 +180,6 @@ export const AdminDashboard: React.FC = () => {
         setSelectedAdvocateForReview(null);
         fetchStats();
         fetchPendingAdvocates();
-        fetchLogs();
       } else {
         addNotification('Action Failed', data.message || 'Verification status update failed.', 'warning');
       }
@@ -225,7 +208,6 @@ export const AdminDashboard: React.FC = () => {
         setSelectedAdvocateForReview(null);
         fetchStats();
         fetchPendingAdvocates();
-        fetchLogs();
       } else {
         addNotification('Rejection Failed', data.message || 'Failed to reject advocate.', 'warning');
       }
@@ -251,7 +233,6 @@ export const AdminDashboard: React.FC = () => {
         a.click();
         
         addNotification('Database Backup', 'System database backup file generated successfully.', 'success');
-        fetchLogs();
       }
     } catch (err) {
       console.error(err);
@@ -310,7 +291,6 @@ export const AdminDashboard: React.FC = () => {
         setDocFile(null);
         
         fetchStats();
-        fetchLogs();
         addNotification('Document Uploaded', `${docType === 'judgement' ? 'Judgement' : 'Law/Act'} successfully published.`, 'success');
       }
     } catch (err) {

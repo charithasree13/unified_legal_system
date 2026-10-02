@@ -66,5 +66,16 @@
     "_id": "ydnx24zt",
     "createdAt": "2026-10-02T11:15:39.829Z",
     "updatedAt": "2026-10-02T11:15:39.829Z"
+  },
+  {
+    "name": "Advocate B",
+    "email": "advocateB@court.org",
+    "phone": "9876599999",
+    "enrollmentNumber": "AP/888/2020",
+    "isVerified": true,
+    "verificationStatus": "APPROVED",
+    "_id": "jfk4yxdk",
+    "createdAt": "2026-10-02T11:25:57.517Z",
+    "updatedAt": "2026-10-02T11:25:57.517Z"
   }
 ]

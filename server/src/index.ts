@@ -291,18 +291,6 @@ app.get('/api/system/stats', authenticateToken, requireAdmin, async (req, res) =
   }
 });
 
-// AUDIT LOGS (Admin Only)
-app.get('/api/system/logs', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const logs = await AuditLog.find();
-    // Sort recently created logs first
-    logs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    return res.status(200).json({ success: true, logs: logs.slice(0, 50) }); // Limit to 50 logs
-  } catch (error) {
-    return res.status(500).json({ success: false, message: 'Failed to retrieve system audit logs.' });
-  }
-});
-
 // BACKUP DATABASE (Admin Only)
 app.post('/api/system/backup', authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
