@@ -11,6 +11,7 @@ export interface UserProfile {
   enrollmentYear?: string;
   hasCompletedProfile?: boolean;
   isVerified?: boolean;
+  verificationStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 interface AuthState {
