@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Scale, Search, Filter, Calendar, Clock, AlertTriangle, CheckCircle2, 
   XCircle, Printer, RotateCcw, Info, FileText, ChevronDown, ChevronUp, 
@@ -13,6 +13,30 @@ import type { LimitationCalculationInput, LimitationCalculationResult } from '..
 export const LimitationCalculatorPage: React.FC = () => {
   const { token, user } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'calculator' | 'directory' | 'chequeBounce' | 'consumer'>('calculator');
+  const pageTopRef = useRef<HTMLDivElement>(null);
+
+  // Automatically scroll to the top when the calculator page opens or switches tabs
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    const mainElem = document.querySelector('main');
+    if (mainElem) {
+      mainElem.scrollTop = 0;
+    }
+    if (pageTopRef.current) {
+      pageTopRef.current.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    const mainElem = document.querySelector('main');
+    if (mainElem) {
+      mainElem.scrollTop = 0;
+    }
+    if (pageTopRef.current) {
+      pageTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [activeTab]);
 
   // Search & Filter state for Directory & Calculator
   const [searchQuery, setSearchQuery] = useState('');
@@ -268,7 +292,7 @@ export const LimitationCalculatorPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12">
+    <div ref={pageTopRef} className="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12">
       
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-primary to-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl border border-white/10 relative overflow-hidden">
@@ -518,7 +542,7 @@ export const LimitationCalculatorPage: React.FC = () => {
                 <select
                   value={selectedArticleId}
                   onChange={(e) => setSelectedArticleId(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-primary shadow-sm"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-primary shadow-sm text-left truncate dir-ltr"
                 >
                   {filteredCalcArticles.map(art => (
                     <option key={art.id} value={art.id}>
