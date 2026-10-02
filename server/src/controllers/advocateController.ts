@@ -425,8 +425,8 @@ export const verifyAdvocate = async (req: AuthenticatedRequest, res: Response) =
     return res.status(200).json({
       success: true,
       message: isApproved 
-        ? `Advocate ${advocate.name} approved successfully and published to Advocate Directory.` 
-        : `Advocate ${advocate.name} application rejected.`,
+        ? 'Advocate verified successfully. The Advocate is now visible in the Advocate Directory.' 
+        : 'Advocate registration has been rejected.',
       advocate: updated
     });
   } catch (error) {

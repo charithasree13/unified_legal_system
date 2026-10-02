@@ -137,7 +137,7 @@ export const AdvocateOnboardingModal: React.FC = () => {
         });
         addNotification(
           'Registration Submitted',
-          'Your Advocate registration has been submitted successfully and is pending verification by the Admin.',
+          'Your Advocate registration has been submitted successfully and is pending Admin verification.',
           'info'
         );
       } else {
