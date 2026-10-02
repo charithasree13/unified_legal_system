@@ -109,18 +109,6 @@ export const FooterSection: React.FC = () => {
                 <MapPin size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
                 <span>Vasavi Bhavan Street, Madanapalle, Annamayya / Chittoor District, Andhra Pradesh - 517325</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Mail size={14} className="text-sky-400 flex-shrink-0" />
-                <a href="mailto:pvprasadvmpl@gmail.com" className="hover:text-white transition-colors break-all">
-                  pvprasadvmpl@gmail.com
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone size={14} className="text-emerald-400 flex-shrink-0" />
-                <a href="tel:+919247253096" className="hover:text-white transition-colors">
-                  +91 9247253096
-                </a>
-              </div>
             </div>
           </div>
 
