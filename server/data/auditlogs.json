@@ -689,5 +689,60 @@
     "_id": "hg1a7e1i",
     "createdAt": "2026-10-02T11:03:48.589Z",
     "updatedAt": "2026-10-02T11:03:48.589Z"
+  },
+  {
+    "userId": "bczy6ybp",
+    "userName": "Test Client User",
+    "role": "Client",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account registered via Google.",
+    "_id": "pfng7tn6",
+    "createdAt": "2026-10-02T11:15:39.782Z",
+    "updatedAt": "2026-10-02T11:15:39.782Z"
+  },
+  {
+    "userId": "vxbawehi",
+    "userName": "Advocate Pending Google",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account registered via Google.",
+    "_id": "4iz3c0de",
+    "createdAt": "2026-10-02T11:15:39.818Z",
+    "updatedAt": "2026-10-02T11:15:39.818Z"
+  },
+  {
+    "userId": "vxbawehi",
+    "userName": "Advocate Pending Google",
+    "role": "Advocate",
+    "action": "ADVOCATE_ONBOARDING_COMPLETED",
+    "ip": "127.0.0.1",
+    "details": "Advocate submitted directory profile: Advocate Pending Google (Enrollment: AP/999/2024). Awaiting Admin verification.",
+    "_id": "1ma2vnkf",
+    "createdAt": "2026-10-02T11:15:39.825Z",
+    "updatedAt": "2026-10-02T11:15:39.825Z"
+  },
+  {
+    "userId": "admin1",
+    "userName": "Admin",
+    "role": "Admin",
+    "action": "ADVOCATE_APPROVED",
+    "ip": "127.0.0.1",
+    "details": "Approved verification for advocate: Advocate Pending Google (Enrollment: AP/999/2024)",
+    "_id": "bo1bpqig",
+    "createdAt": "2026-10-02T11:15:39.836Z",
+    "updatedAt": "2026-10-02T11:15:39.836Z"
+  },
+  {
+    "userId": "admin1",
+    "userName": "Admin",
+    "role": "Admin",
+    "action": "ADVOCATE_DELETED",
+    "ip": "127.0.0.1",
+    "details": "Deleted advocate profile: Advocate Pending Google (Enrollment: AP/999/2024)",
+    "_id": "6q1hi7mp",
+    "createdAt": "2026-10-02T11:15:39.841Z",
+    "updatedAt": "2026-10-02T11:15:39.841Z"
   }
 ]

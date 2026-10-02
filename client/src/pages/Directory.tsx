@@ -7,6 +7,8 @@ import {
 import { useAuthStore } from '../store/authStore';
 import QRCode from 'qrcode';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 // Helper function to dynamically calculate advocate experience based on enrollment date / year and current year
 export const calculateDynamicExperience = (adv: any): number => {
   if (!adv) return 0;
@@ -123,7 +125,7 @@ export const Directory: React.FC = () => {
     };
 
     try {
-      const res = await fetch(`/api/advocates/${editingAdv._id}`, {
+      const res = await fetch(`${API_BASE}/api/advocates/${editingAdv._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +157,7 @@ export const Directory: React.FC = () => {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`/api/advocates/${adv._id}`, {
+      const res = await fetch(`${API_BASE}/api/advocates/${adv._id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -270,7 +272,7 @@ export const Directory: React.FC = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const res = await fetch(`/api/advocates?${queryParams.toString()}`, { headers });
+      const res = await fetch(`${API_BASE}/api/advocates?${queryParams.toString()}`, { headers });
       const data = await res.json();
 
       if (res.ok && Array.isArray(data.advocates) && data.advocates.length > 0) {
@@ -386,7 +388,7 @@ export const Directory: React.FC = () => {
     };
 
     try {
-      const res = await fetch('/api/advocates', {
+      const res = await fetch(`${API_BASE}/api/advocates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

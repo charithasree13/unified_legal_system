@@ -10,6 +10,8 @@ import { FounderSection } from '../components/FounderSection';
 import { FooterSection } from '../components/FooterSection';
 import { DailyLegalTipsSection } from '../components/DailyLegalTipsSection';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export const AdminDashboard: React.FC = () => {
   const { token, addNotification } = useAuthStore();
   const [stats, setStats] = useState({
@@ -67,7 +69,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchAdminRules = async () => {
     try {
-      const res = await fetch('/api/admin/court-fee/rules', {
+      const res = await fetch(`${API_BASE}/api/admin/court-fee/rules`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -81,7 +83,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleToggleRule = async (ruleId: string) => {
     try {
-      const res = await fetch(`/api/admin/court-fee/rules/${ruleId}/toggle`, {
+      const res = await fetch(`${API_BASE}/api/admin/court-fee/rules/${ruleId}/toggle`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -98,7 +100,7 @@ export const AdminDashboard: React.FC = () => {
   const handleCreateRule = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/court-fee/rules', {
+      const res = await fetch(`${API_BASE}/api/admin/court-fee/rules`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,7 +134,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/system/stats', {
+      const res = await fetch(`${API_BASE}/api/system/stats`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -146,7 +148,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch('/api/system/logs', {
+      const res = await fetch(`${API_BASE}/api/system/logs`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -158,7 +160,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchPendingAdvocates = async () => {
     try {
-      const res = await fetch('/api/advocates/pending', {
+      const res = await fetch(`${API_BASE}/api/advocates/pending`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -173,7 +175,7 @@ export const AdminDashboard: React.FC = () => {
   const handleVerify = async (advocateId: string, status: string | boolean) => {
     try {
       const isApproved = status === true || status === 'APPROVED';
-      const res = await fetch(`/api/advocates/${advocateId}/verify`, {
+      const res = await fetch(`${API_BASE}/api/advocates/${advocateId}/verify`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +211,7 @@ export const AdminDashboard: React.FC = () => {
     if (reason === null) return; // user cancelled
 
     try {
-      const res = await fetch(`/api/advocates/${advocateId}/verify`, {
+      const res = await fetch(`${API_BASE}/api/advocates/${advocateId}/verify`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -234,7 +236,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleBackup = async () => {
     try {
-      const res = await fetch('/api/system/backup', {
+      const res = await fetch(`${API_BASE}/api/system/backup`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -273,7 +275,7 @@ export const AdminDashboard: React.FC = () => {
 
     let endpoint = '';
     if (docType === 'judgement') {
-      endpoint = '/api/documents/judgements';
+      endpoint = `${API_BASE}/api/documents/judgements`;
       formData.append('court', docCourt);
       if (docState) {
         formData.append('state', docState);
@@ -283,7 +285,7 @@ export const AdminDashboard: React.FC = () => {
       formData.append('subject', docSubject);
       formData.append('keywords', docKeywords);
     } else {
-      endpoint = '/api/documents/laws';
+      endpoint = `${API_BASE}/api/documents/laws`;
       formData.append('category', docCategory);
       formData.append('description', docSubject);
     }
