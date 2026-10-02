@@ -89,7 +89,7 @@ export const FounderSection: React.FC = () => {
                 {/* Respectful Memorial & Mentorship Tribute for late Sri T. Janardhana Gupta */}
                 <div className="my-3.5 p-4 sm:p-5 bg-gradient-to-r from-amber-500/5 via-slate-100/90 to-sky-500/5 dark:from-amber-500/10 dark:via-slate-900/90 dark:to-sky-500/10 border border-amber-500/25 dark:border-amber-500/35 rounded-2xl shadow-sm">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
-                    
+
                     {/* Dedicated Portrait Area */}
                     <div className="shrink-0 flex flex-col items-center text-center">
                       <div className="relative group">
@@ -103,7 +103,7 @@ export const FounderSection: React.FC = () => {
                         </div>
                       </div>
                       <span className="mt-2 text-[9px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                        Senior Advocate & Mentor
+                        Senior Advocate
                       </span>
                     </div>
 
@@ -111,7 +111,7 @@ export const FounderSection: React.FC = () => {
                     <div className="space-y-1.5 text-center sm:text-left flex-1">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 dark:bg-amber-400/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase tracking-widest">
                         <Sparkles size={11} className="text-amber-600 dark:text-amber-400" />
-                        In Remembrance
+                        In Remembrance Of
                       </div>
 
                       <h5 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white font-sans tracking-tight">
@@ -123,7 +123,7 @@ export const FounderSection: React.FC = () => {
                       </p>
 
                       <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1 font-normal">
-                        Remembered with profound respect and gratitude as a distinguished legal professional and mentor. His guidance, legal experience, and courtroom wisdom formed an important part of the professional journey that helped shape the vision behind <strong>Elite Legal Desk</strong>.
+                        Remembered with profound respect and gratitude as a distinguished legal professional and mentor. His guidance, legal experience, and courtroom wisdom formed an important part of the professional journey.
                       </p>
                     </div>
 
