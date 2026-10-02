@@ -6,17 +6,17 @@ export const FooterSection: React.FC = () => {
   return (
     <footer className="w-full bg-slate-900 text-slate-300 text-xs border-t border-slate-800 pt-12 pb-8 px-4 sm:px-6 lg:px-8 mt-auto">
       <div className="max-w-7xl mx-auto space-y-10">
-        
+
         {/* Top Grid: Brand & Navigation */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8 border-b border-slate-800/80">
-          
+
           {/* Brand & Platform Info */}
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <img 
-                src="/logo.jpg" 
-                alt="Elite Legal Desk Logo" 
-                className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white p-0.5" 
+              <img
+                src="/logo.jpg"
+                alt="Elite Legal Desk Logo"
+                className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white p-0.5"
               />
               <div>
                 <span className="font-extrabold text-sm tracking-wider font-sans text-white uppercase leading-none block">
@@ -137,7 +137,7 @@ export const FooterSection: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            
+
             {/* Team Member 1 */}
             <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
               <div className="space-y-1.5">
@@ -149,7 +149,7 @@ export const FooterSection: React.FC = () => {
                     <span>Advocate</span>
                   </p>
                 </div>
-                
+
                 <div className="text-slate-300 text-xs leading-relaxed">
                   <span className="text-slate-400 font-medium">Specialization:</span>{' '}
                   <span>Title Verification, Property Laws, and All Types of Civil Matters</span>
@@ -187,7 +187,7 @@ export const FooterSection: React.FC = () => {
                     Advocate
                   </p>
                 </div>
-                
+
                 <div className="text-slate-300 text-xs leading-relaxed">
                   <span className="text-slate-400 font-medium">Specialization:</span>{' '}
                   <span>Criminal Cases</span>
@@ -221,7 +221,7 @@ export const FooterSection: React.FC = () => {
                     Advocate
                   </p>
                 </div>
-                
+
                 <div className="text-slate-300 text-xs leading-relaxed">
                   <span className="text-slate-400 font-medium">Specialization:</span>{' '}
                   <span>MVOP Cases</span>
@@ -255,7 +255,7 @@ export const FooterSection: React.FC = () => {
                     Advocate
                   </p>
                 </div>
-                
+
                 <div className="text-slate-300 text-xs leading-relaxed">
                   <span className="text-slate-400 font-medium">Specialization:</span>{' '}
                   <span>Deals with All Types of Cases</span>
