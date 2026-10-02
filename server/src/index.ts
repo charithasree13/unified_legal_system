@@ -82,6 +82,7 @@ connectDB().then(() => {
   seedCourtFeeDatabase();
   seedSectionMappingDatabase();
   seedLawsDatabase();
+  seedExpandedLegalLibrary();
   legalTipCtrl.seedInitialLegalTips();
 });
 
@@ -122,6 +123,7 @@ app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.delete
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 
 // DOCUMENTS / REPOSITORY (JUDGMENTS & BARE ACTS LEGAL LIBRARY)
+app.get('/api/documents/health', authenticateToken, requireAdminOrAdvocate, docCtrl.getLegalLibraryHealth);
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
 app.get('/api/documents/judgements', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgements);
 app.get('/api/documents/judgements/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgementById);

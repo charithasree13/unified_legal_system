@@ -421,7 +421,7 @@ export const deleteJudgement = async (req: AuthenticatedRequest, res: Response) 
 
 export const getLaws = async (req: Request, res: Response) => {
   try {
-    const { search, category, jurisdiction, actStatus, year, page = '1', limit = '10', sort = 'newest' } = req.query;
+    const { search, category, jurisdiction, actStatus, year, yearRange, letter, page = '1', limit = '10', sort = 'newest' } = req.query;
     
     let allRecords = await Law.find({});
 
@@ -450,6 +450,17 @@ export const getLaws = async (req: Request, res: Response) => {
       });
     }
 
+    // Alphabetical Letter Filter (A-Z)
+    if (letter) {
+      const l = String(letter).toUpperCase().trim();
+      if (l.length === 1 && l >= 'A' && l <= 'Z') {
+        allRecords = allRecords.filter((doc: any) => {
+          const rawTitle = (doc.title || doc.actName || doc.shortTitle || '').trim().replace(/^the\s+/i, '');
+          return rawTitle.toUpperCase().startsWith(l);
+        });
+      }
+    }
+
     if (category) {
       const catStr = String(category).toLowerCase();
       allRecords = allRecords.filter((doc: any) => doc.category?.toLowerCase() === catStr || doc.category?.toLowerCase().includes(catStr));
@@ -466,6 +477,21 @@ export const getLaws = async (req: Request, res: Response) => {
       if (!isNaN(yNum)) {
         allRecords = allRecords.filter((doc: any) => Number(doc.year) === yNum);
       }
+    }
+
+    // Year Range Browsing Filter
+    if (yearRange) {
+      const yrRangeStr = String(yearRange).toLowerCase().trim();
+      allRecords = allRecords.filter((doc: any) => {
+        const y = Number(doc.year || 0);
+        if (yrRangeStr === '2020-2026') return y >= 2020 && y <= 2026;
+        if (yrRangeStr === '2010-2019') return y >= 2010 && y <= 2019;
+        if (yrRangeStr === '2000-2009') return y >= 2000 && y <= 2009;
+        if (yrRangeStr === '1990-1999') return y >= 1990 && y <= 1999;
+        if (yrRangeStr === '1950-1989') return y >= 1950 && y <= 1989;
+        if (yrRangeStr === 'before-1950') return y < 1950 && y > 0;
+        return true;
+      });
     }
 
     // Sorting
@@ -705,3 +731,46 @@ export const deleteLaw = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ success: false, message: error.message || 'Error deleting Bare Act.' });
   }
 };
+
+export const getLegalLibraryHealth = async (req: Request, res: Response) => {
+  try {
+    const totalJudgments = (await Judgement.find({})).length;
+    const totalLaws = (await Law.find({})).length;
+
+    const judgments = await Judgement.find({});
+    const laws = await Law.find({});
+
+    const judgmentCategories: Record<string, number> = {};
+    judgments.forEach((j: any) => {
+      const cat = j.subject || 'Uncategorized';
+      judgmentCategories[cat] = (judgmentCategories[cat] || 0) + 1;
+    });
+
+    const lawCategories: Record<string, number> = {};
+    laws.forEach((l: any) => {
+      const cat = l.category || 'Uncategorized';
+      lawCategories[cat] = (lawCategories[cat] || 0) + 1;
+    });
+
+    return res.status(200).json({
+      success: true,
+      status: 'HEALTHY',
+      health: {
+        judgments: {
+          total: totalJudgments,
+          categories: judgmentCategories
+        },
+        laws: {
+          total: totalLaws,
+          categories: lawCategories
+        },
+        provenance: 'India Code / Supreme Court of India / eCourts Public Repositories',
+        rightsStatus: 'Official Public Statutory & Judicial Records',
+        lastVerified: new Date().toISOString()
+      }
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: 'Error retrieving legal library health.' });
+  }
+};
+

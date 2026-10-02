@@ -400,6 +400,8 @@ export const Documents: React.FC = () => {
   // Filter states
   const [courtFilter, setCourtFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
+  const [yearRangeFilter, setYearRangeFilter] = useState('');
+  const [letterFilter, setLetterFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [actStatusFilter, setActStatusFilter] = useState('');
   const [sortFilter, setSortFilter] = useState<'newest' | 'oldest' | 'title'>('newest');
@@ -468,6 +470,8 @@ export const Documents: React.FC = () => {
   const handleTabChange = (newTab: 'judgement' | 'law') => {
     setTab(newTab);
     setSearch('');
+    setLetterFilter('');
+    setYearRangeFilter('');
     setPage(1);
     navigate(newTab === 'judgement' ? '/judgements' : '/laws', { replace: true });
   };
@@ -476,7 +480,7 @@ export const Documents: React.FC = () => {
     fetchDocuments();
     const saved = localStorage.getItem('legal_bookmarked_docs');
     if (saved) setBookmarkedDocs(JSON.parse(saved));
-  }, [token, tab, search, courtFilter, yearFilter, categoryFilter, actStatusFilter, sortFilter, page]);
+  }, [token, tab, search, courtFilter, yearFilter, yearRangeFilter, letterFilter, categoryFilter, actStatusFilter, sortFilter, page]);
 
   const API_BASE = import.meta.env.VITE_API_URL || '';
 
@@ -487,6 +491,8 @@ export const Documents: React.FC = () => {
       if (search) queryParams.append('search', search);
       if (courtFilter) queryParams.append('court', courtFilter);
       if (yearFilter) queryParams.append('year', yearFilter);
+      if (letterFilter && tab === 'law') queryParams.append('letter', letterFilter);
+      if (yearRangeFilter && tab === 'law') queryParams.append('yearRange', yearRangeFilter);
       if (categoryFilter) queryParams.append(tab === 'judgement' ? 'subject' : 'category', categoryFilter);
       if (actStatusFilter && tab === 'law') queryParams.append('actStatus', actStatusFilter);
       queryParams.append('sort', sortFilter);
@@ -822,6 +828,59 @@ export const Documents: React.FC = () => {
               </select>
             </div>
           </div>
+
+          {/* ALPHABETICAL (A-Z) & YEAR RANGE BROWSING BAR FOR BARE ACTS */}
+          {tab === 'law' && (
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap text-xs">
+                <div className="flex items-center gap-1 font-bold text-slate-700 dark:text-slate-300">
+                  <span>Alphabetical Index:</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1">
+                  <button
+                    onClick={() => { setLetterFilter(''); setPage(1); }}
+                    className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                      letterFilter === '' 
+                        ? 'bg-amber-500 text-slate-950 font-bold' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((char) => (
+                    <button
+                      key={char}
+                      onClick={() => { setLetterFilter(char); setPage(1); }}
+                      className={`px-2 py-1 rounded text-xs font-semibold transition-colors ${
+                        letterFilter === char 
+                          ? 'bg-amber-500 text-slate-950 font-bold' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {char}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 text-xs">Era / Year Range:</span>
+                  <select
+                    value={yearRangeFilter}
+                    onChange={(e) => { setYearRangeFilter(e.target.value); setPage(1); }}
+                    className="py-1 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="">All Eras / Years</option>
+                    <option value="2020-2026">2020 – 2026 (New Era Codes)</option>
+                    <option value="2010-2019">2010 – 2019</option>
+                    <option value="2000-2009">2000 – 2009</option>
+                    <option value="1990-1999">1990 – 1999</option>
+                    <option value="1950-1989">1950 – 1989</option>
+                    <option value="before-1950">Pre-1950 (Historical Acts)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* API ERROR / FEEDBACK BANNER */}
