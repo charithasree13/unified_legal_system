@@ -228,6 +228,10 @@ const JudgementSchema = new mongoose.Schema({
   caseOutcome: { type: String, default: 'Decided' },
   sourceAuthority: { type: String, required: true, default: 'Supreme Court of India' },
   sourceUrl: { type: String, required: true },
+  officialSourceUrl: { type: String },
+  rightsStatus: { type: String, default: 'Public Judicial Record / Gazette' },
+  importSource: { type: String, default: 'eCourts / Supreme Court Ingestion' },
+  dataVersion: { type: String, default: '1.0.0' },
   legalStatus: { type: String, default: 'Public Judicial Record' },
   lastVerified: { type: String },
   canonicalKey: { type: String, unique: true, sparse: true },
@@ -255,13 +259,19 @@ const LawSchema = new mongoose.Schema({
   enactmentDate: { type: String },
   commencementDate: { type: String },
   ministry: { type: String },
+  department: { type: String },
   jurisdiction: { type: String, default: 'Central / All India' },
   actStatus: { type: String, enum: ['CURRENTLY_IN_FORCE', 'AMENDED', 'AMENDED_NOT_YET_COMMENCED', 'REPEALED'], default: 'CURRENTLY_IN_FORCE' },
   longTitle: { type: String },
   category: { type: String, required: true }, // Act, Rule, Regulation, Constitution, Article, Controlled Category
+  subCategory: { type: String },
   description: { type: String },
   sourceAuthority: { type: String, default: 'India Code / Legislative Department' },
   sourceUrl: { type: String },
+  officialSourceUrl: { type: String },
+  rightsStatus: { type: String, default: 'Public Statutory Record' },
+  importSource: { type: String, default: 'India Code Ingestion' },
+  dataVersion: { type: String, default: '1.0.0' },
   lastVerified: { type: String },
   canonicalKey: { type: String, unique: true, sparse: true },
   pdfUrl: { type: String, required: false },
@@ -601,6 +611,22 @@ const NoteSchema = new mongoose.Schema({
   content: { type: String, required: true, trim: true }
 }, { timestamps: true });
 
+const ImportLogSchema = new mongoose.Schema({
+  importId: { type: String, required: true, unique: true },
+  resourceType: { type: String, enum: ['ALL', 'JUDGMENT', 'BARE_ACT'], required: true },
+  source: { type: String, required: true },
+  startedAt: { type: Date, default: Date.now },
+  completedAt: { type: Date },
+  discovered: { type: Number, default: 0 },
+  imported: { type: Number, default: 0 },
+  updated: { type: Number, default: 0 },
+  skipped: { type: Number, default: 0 },
+  duplicates: { type: Number, default: 0 },
+  failed: { type: Number, default: 0 },
+  status: { type: String, enum: ['RUNNING', 'COMPLETED', 'PARTIAL', 'FAILED'], default: 'RUNNING' },
+  errorLog: { type: [String], default: [] }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -633,6 +659,7 @@ export const AuditLog: any = createDynamicModel('AuditLog', AuditLogSchema);
 export const HearingReminder: any = createDynamicModel('HearingReminder', HearingReminderSchema);
 export const DailyLegalTip: any = createDynamicModel('DailyLegalTip', DailyLegalTipSchema);
 export const Note: any = createDynamicModel('Note', NoteSchema);
+export const ImportLog: any = createDynamicModel('ImportLog', ImportLogSchema);
 
 export const State: any = createDynamicModel('State', StateSchema);
 export const District: any = createDynamicModel('District', DistrictSchema);

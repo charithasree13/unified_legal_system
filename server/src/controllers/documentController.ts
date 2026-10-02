@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { Judgement, Law, AuditLog } from '../models/Schemas';
+import { Judgement, Law, AuditLog, ImportLog } from '../models/Schemas';
+import { runLegalLibraryImporter } from '../scripts/importLegalLibrary';
 import { AuthenticatedRequest } from '../middleware/auth';
 
 // Setup file upload paths
@@ -734,11 +735,14 @@ export const deleteLaw = async (req: AuthenticatedRequest, res: Response) => {
 
 export const getLegalLibraryHealth = async (req: Request, res: Response) => {
   try {
-    const totalJudgments = (await Judgement.find({})).length;
-    const totalLaws = (await Law.find({})).length;
-
     const judgments = await Judgement.find({});
     const laws = await Law.find({});
+
+    const totalJudgments = judgments.length;
+    const totalLaws = laws.length;
+
+    const uniqueJudgmentKeys = new Set(judgments.map((j: any) => j.canonicalKey || j.title)).size;
+    const uniqueLawKeys = new Set(laws.map((l: any) => l.canonicalKey || l.title)).size;
 
     const judgmentCategories: Record<string, number> = {};
     judgments.forEach((j: any) => {
@@ -752,25 +756,61 @@ export const getLegalLibraryHealth = async (req: Request, res: Response) => {
       lawCategories[cat] = (lawCategories[cat] || 0) + 1;
     });
 
+    const latestImportLogs = await ImportLog.find({});
+    latestImportLogs.sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+    const lastImportBatch = latestImportLogs[0] || null;
+
     return res.status(200).json({
       success: true,
       status: 'HEALTHY',
       health: {
         judgments: {
           total: totalJudgments,
+          uniqueCount: uniqueJudgmentKeys,
+          duplicatesPrevented: Math.max(0, totalJudgments - uniqueJudgmentKeys),
           categories: judgmentCategories
         },
         laws: {
           total: totalLaws,
+          uniqueCount: uniqueLawKeys,
+          duplicatesPrevented: Math.max(0, totalLaws - uniqueLawKeys),
           categories: lawCategories
         },
-        provenance: 'India Code / Supreme Court of India / eCourts Public Repositories',
+        lastImportBatch,
+        provenance: 'India Code / Supreme Court of India / eCourts / Official Statutory Registries',
         rightsStatus: 'Official Public Statutory & Judicial Records',
         lastVerified: new Date().toISOString()
       }
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: 'Error retrieving legal library health.' });
+  }
+};
+
+export const triggerLegalLibraryImport = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    console.log('⚡ Admin triggered Legal Library Ingestion Pipeline...');
+    const result = await runLegalLibraryImporter();
+    
+    await AuditLog.create({
+      userId: req.user?.id || 'system',
+      userName: req.user?.name || 'Administrator',
+      role: req.user?.role || 'Admin',
+      action: 'LEGAL_LIBRARY_INGESTION_RUN',
+      ip: req.ip || '127.0.0.1',
+      details: `Executed Data Ingestion: Batch ${result.importId}. Judgments Total: ${result.judgments.totalInDb}, Bare Acts Total: ${result.laws.totalInDb}`
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Legal Research Library Ingestion Pipeline completed successfully.',
+      result
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error?.message || 'Error running Legal Library Ingestion Pipeline.'
+    });
   }
 };
 

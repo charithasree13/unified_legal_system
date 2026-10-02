@@ -124,17 +124,35 @@ app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.ve
 
 // DOCUMENTS / REPOSITORY (JUDGMENTS & BARE ACTS LEGAL LIBRARY)
 app.get('/api/documents/health', authenticateToken, requireAdminOrAdvocate, docCtrl.getLegalLibraryHealth);
+app.get('/api/legal/health', authenticateToken, requireAdminOrAdvocate, docCtrl.getLegalLibraryHealth);
+app.post('/api/documents/ingest', authenticateToken, requireAdmin, docCtrl.triggerLegalLibraryImport);
+app.post('/api/legal/ingest', authenticateToken, requireAdmin, docCtrl.triggerLegalLibraryImport);
+
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
 app.get('/api/documents/judgements', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgements);
 app.get('/api/documents/judgements/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgementById);
 app.delete('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
 app.put('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateJudgement);
 
+// Alias routes for /api/legal/judgments
+app.get('/api/legal/judgments', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgements);
+app.get('/api/legal/judgments/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgementById);
+app.post('/api/legal/judgments', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
+app.delete('/api/legal/judgments/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
+app.put('/api/legal/judgments/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateJudgement);
+
 app.post('/api/documents/laws', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
 app.get('/api/documents/laws', authenticateToken, requireAdminOrAdvocate, docCtrl.getLaws);
 app.get('/api/documents/laws/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getLawById);
 app.put('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
 app.delete('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.deleteLaw);
+
+// Alias routes for /api/legal/bare-acts
+app.get('/api/legal/bare-acts', authenticateToken, requireAdminOrAdvocate, docCtrl.getLaws);
+app.get('/api/legal/bare-acts/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getLawById);
+app.post('/api/legal/bare-acts', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
+app.put('/api/legal/bare-acts/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
+app.delete('/api/legal/bare-acts/:id', authenticateToken, requireAdmin, docCtrl.deleteLaw);
 
 // CASE PROJECTS & COLLABORATION
 app.get('/api/projects', authenticateToken, projCtrl.getProjects);
