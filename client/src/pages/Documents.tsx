@@ -1074,19 +1074,9 @@ export const Documents: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {readingDoc.sourceUrl && (
-                    <a
-                      href={readingDoc.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
-                    >
-                      <ExternalLink size={14} /> Open Official Source
-                    </a>
-                  )}
                   <button
                     onClick={() => setReadingDoc(null)}
-                    className="p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                    className="p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     <X size={20} />
                   </button>
