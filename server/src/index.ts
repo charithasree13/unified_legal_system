@@ -51,16 +51,25 @@ app.use(express.json());
 
 // Express Middleware: URL Path Normalization & Court Fee Auto-Dispatcher
 app.use((req, res, next) => {
-  // 1. Intercept any POST request with Court Fee payload parameters regardless of URL path
-  if (req.method === 'POST' && req.body && (req.body.state || req.body.stateName || req.body.courtForum || req.body.suitValue !== undefined || req.body.claimAmount !== undefined)) {
-    return courtFeeCtrl.calculateFee(req as any, res);
-  }
-
-  // 2. Path normalization
+  // 1. Path normalization
   const url = req.headers['x-forwarded-uri'] || req.headers['x-original-uri'] || req.originalUrl || req.url;
   if (typeof url === 'string' && url.length > 0 && !url.startsWith('/api') && !req.path.startsWith('/api')) {
     req.url = '/api' + (url.startsWith('/') ? url : '/' + url);
   }
+
+  // 2. Intercept only explicit Court Fee POST calculation requests, avoiding non-court-fee routes like Advocates or Auth
+  const currentPath = req.path || req.url || '';
+  const isExcludedPath = currentPath.includes('/advocates') || currentPath.includes('/auth') || currentPath.includes('/documents') || currentPath.includes('/projects') || currentPath.includes('/notes') || currentPath.includes('/legal-tips');
+  
+  if (!isExcludedPath && req.method === 'POST' && req.body) {
+    const isCourtFeeRoute = currentPath.includes('court-fee');
+    const hasCalculationPayload = (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined || req.body.calculatedFee !== undefined);
+    
+    if (isCourtFeeRoute || hasCalculationPayload) {
+      return courtFeeCtrl.calculateFee(req as any, res);
+    }
+  }
+
   next();
 });
 
@@ -223,13 +232,13 @@ app.post('/api/calculators/limitation/validate-dataset', authenticateToken, requ
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
 app.post('/api', optionalAuthToken, (req, res, next) => {
-  if (req.body && (req.body.state || req.body.stateName || req.body.courtForum || req.body.suitValue !== undefined || req.body.claimAmount !== undefined)) {
+  if (req.body && (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined)) {
     return courtFeeCtrl.calculateFee(req as any, res);
   }
   next();
 });
 app.post('/', optionalAuthToken, (req, res, next) => {
-  if (req.body && (req.body.state || req.body.stateName || req.body.courtForum || req.body.suitValue !== undefined || req.body.claimAmount !== undefined)) {
+  if (req.body && (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined)) {
     return courtFeeCtrl.calculateFee(req as any, res);
   }
   next();
