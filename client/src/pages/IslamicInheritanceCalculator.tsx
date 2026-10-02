@@ -949,22 +949,7 @@ export const IslamicInheritanceCalculator: React.FC = () => {
                 </div>
               )}
 
-              {/* Calculation Explanation Details */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                  <FileText size={16} className="text-emerald-600" />
-                  <span>C. Calculation Step-by-Step Explanation</span>
-                </h3>
 
-                <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
-                  {result.stepByStepExplanation.map((step, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
 
               {/* Quranic Primary Citations Panel */}
               <div className="p-4 bg-emerald-900/10 border border-emerald-500/30 rounded-xl space-y-2 text-xs">
