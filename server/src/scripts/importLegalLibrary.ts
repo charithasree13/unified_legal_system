@@ -82,7 +82,7 @@ export async function runLegalLibraryImporter() {
             canonicalKey,
             lastVerified: new Date().toISOString().split('T')[0]
           });
-          jDuplicates++;
+          lDuplicates++;
           lUpdated++;
         } else {
           await Law.create({

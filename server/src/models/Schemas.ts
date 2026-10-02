@@ -104,7 +104,7 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
     const items = this.read();
     const newItem = {
       ...data,
-      _id: Math.random().toString(36).substring(2, 10),
+      _id: (data as any)._id || Math.random().toString(36).substring(2, 10),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     } as unknown as T;
