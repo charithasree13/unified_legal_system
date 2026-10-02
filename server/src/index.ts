@@ -24,6 +24,7 @@ import * as legalTipCtrl from './controllers/legalTipController';
 import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
 import * as islamicInheritanceCtrl from './controllers/islamicInheritanceController';
 import * as limitationCtrl from './controllers/limitationController';
+import * as noteCtrl from './controllers/noteController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -156,6 +157,23 @@ app.delete('/api/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.
 app.delete('/api/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
 app.delete('/legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
 app.delete('/daily-legal-tips/:id', authenticateToken, requireAdmin, legalTipCtrl.deleteLegalTip);
+
+// MY PRIVATE NOTES API (Admin & Authorized Advocates ONLY)
+app.get('/api/notes', authenticateToken, requireAdminOrAdvocate, noteCtrl.getNotes);
+app.get('/notes', authenticateToken, requireAdminOrAdvocate, noteCtrl.getNotes);
+
+app.post('/api/notes', authenticateToken, requireAdminOrAdvocate, noteCtrl.createNote);
+app.post('/notes', authenticateToken, requireAdminOrAdvocate, noteCtrl.createNote);
+
+app.get('/api/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.getNoteById);
+app.get('/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.getNoteById);
+
+app.put('/api/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.updateNote);
+app.put('/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.updateNote);
+
+app.delete('/api/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.deleteNote);
+app.delete('/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.deleteNote);
+
 
 
 // COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER

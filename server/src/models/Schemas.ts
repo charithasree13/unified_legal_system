@@ -520,6 +520,12 @@ const DailyLegalTipSchema = new mongoose.Schema({
 
 DailyLegalTipSchema.index({ date: 1 }, { unique: true });
 
+const NoteSchema = new mongoose.Schema({
+  userId: { type: String, required: true, index: true },
+  title: { type: String, required: true, trim: true },
+  content: { type: String, required: true, trim: true }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -551,6 +557,7 @@ export const Notification: any = createDynamicModel('Notification', Notification
 export const AuditLog: any = createDynamicModel('AuditLog', AuditLogSchema);
 export const HearingReminder: any = createDynamicModel('HearingReminder', HearingReminderSchema);
 export const DailyLegalTip: any = createDynamicModel('DailyLegalTip', DailyLegalTipSchema);
+export const Note: any = createDynamicModel('Note', NoteSchema);
 
 export const State: any = createDynamicModel('State', StateSchema);
 export const District: any = createDynamicModel('District', DistrictSchema);
@@ -568,4 +575,5 @@ export const CalculationHistory: any = createDynamicModel('CalculationHistory', 
 export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVerificationSchema);
 export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
+
 

@@ -16,6 +16,7 @@ import { Profile } from './pages/Profile';
 import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
 import { DailyLegalTipsPage } from './pages/DailyLegalTipsPage';
+import { MyNotesPage } from './pages/MyNotesPage';
 import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
 import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculator';
 import { LimitationCalculatorPage } from './pages/LimitationCalculatorPage';
@@ -182,6 +183,18 @@ export const App: React.FC = () => {
           <Route 
             path="daily-tips" 
             element={<Navigate to="/daily-legal-tips" replace />} 
+          />
+          <Route 
+            path="my-notes" 
+            element={
+              <ProtectedRoute featureName="My Notes" allowedRoles={['Admin', 'Advocate']}>
+                <MyNotesPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="notes" 
+            element={<Navigate to="/my-notes" replace />} 
           />
           <Route 
             path="chat" 

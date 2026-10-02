@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
-  Activity, ArrowRight, Sparkles, Shield, Compass, Quote
+  Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -208,6 +208,19 @@ export const PortalOverview: React.FC = () => {
           iconBg: 'bg-rose-500/10 dark:bg-rose-500/20',
           iconColor: 'text-rose-600 dark:text-rose-400',
           gradientBorder: 'hover:border-rose-500/50'
+        },
+        {
+          id: 'my-notes',
+          title: 'My Notes',
+          description: 'Access your private legal notes, work-related reminders, and confidential case summaries.',
+          tag: 'Private Workspace',
+          icon: StickyNote,
+          path: '/my-notes',
+          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
+          badgeText: 'text-amber-600 dark:text-amber-400',
+          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
+          iconColor: 'text-amber-600 dark:text-amber-400',
+          gradientBorder: 'hover:border-amber-500/50'
         }
       ];
     }
@@ -369,6 +382,19 @@ export const PortalOverview: React.FC = () => {
           iconBg: 'bg-fuchsia-500/10 dark:bg-fuchsia-500/20',
           iconColor: 'text-fuchsia-600 dark:text-fuchsia-400',
           gradientBorder: 'hover:border-fuchsia-500/50'
+        },
+        {
+          id: 'my-notes',
+          title: 'My Notes',
+          description: 'Access your private legal notes, client meeting summaries, hearing points, and confidential work notes.',
+          tag: 'Private Workspace',
+          icon: StickyNote,
+          path: '/my-notes',
+          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
+          badgeText: 'text-amber-600 dark:text-amber-400',
+          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
+          iconColor: 'text-amber-600 dark:text-amber-400',
+          gradientBorder: 'hover:border-amber-500/50'
         }
       ];
     }

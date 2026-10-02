@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calculator, FileText, Gavel, 
-  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X
+  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -38,6 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Case Projects', path: '/projects', icon: Scale },
     { name: 'Legal Section Mapping', path: '/section-mapping', icon: BookOpen, normalUserHide: true },
     { name: 'Daily Legal Tips', path: '/daily-legal-tips', icon: BookOpen, normalUserHide: true },
+    { name: 'My Notes', path: '/my-notes', icon: StickyNote, normalUserHide: true },
     { name: 'My Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
   ].filter(item => !(isNormalUser && item.normalUserHide));
