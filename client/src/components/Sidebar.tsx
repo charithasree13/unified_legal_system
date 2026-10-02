@@ -22,7 +22,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     navigate('/login');
   };
 
-  const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
+  const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
+  const isAuthorized = user?.role === 'Admin' || isApprovedAdvocate;
+  const isNormalUser = !isAuthorized;
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },

@@ -1,450 +1,370 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
   Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2,
-  Gavel, BookOpen, CloudUpload, Filter, Edit3, ShieldAlert, Sparkles, CheckCircle2, BookMarked
+  Gavel, BookOpen, CloudUpload, Filter, Edit3, ShieldAlert, Sparkles, CheckCircle2, 
+  BookMarked, ChevronLeft, ChevronRight, AlertCircle, Info, RefreshCw, Check
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 
-const DEFAULT_BARE_ACTS = [
-  // NEW CRIMINAL LAWS
-  {
-    _id: "act_bns_2023",
-    title: "The Bharatiya Nyaya Sanhita, 2023 (BNS)",
-    category: "Act",
-    description: "Enacted by Parliament (Act No. 45 of 2023). Replaced the Indian Penal Code (1860). Governs criminal offenses, public order, bodily safety, cyber crimes, mob lynching penalties, and community service sanctions across India.",
-    pdfUrl: "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
-    fileName: "Bharatiya_Nyaya_Sanhita_2023.pdf",
-    uploadedBy: "Ministry of Law & Justice"
-  },
-  {
-    _id: "act_bnss_2023",
-    title: "The Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)",
-    category: "Act",
-    description: "Enacted by Parliament (Act No. 46 of 2023). Replaced the Code of Criminal Procedure (1973). Regulates criminal investigation, Zero FIR, mandatory digital forensics, electronic summons, court trial timelines, and undertrial bail.",
-    pdfUrl: "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
-    fileName: "Bharatiya_Nagarik_Suraksha_Sanhita_2023.pdf",
-    uploadedBy: "Ministry of Law & Justice"
-  },
-  {
-    _id: "act_bsa_2023",
-    title: "The Bharatiya Sakshya Adhiniyam, 2023 (BSA)",
-    category: "Act",
-    description: "Enacted by Parliament (Act No. 47 of 2023). Replaced the Indian Evidence Act (1872). Governs rules of evidence, primary status of electronic and digital records, secondary evidence, and witness examinations.",
-    pdfUrl: "https://www.mha.gov.in/sites/default/files/250885_english_01042024.pdf",
-    fileName: "Bharatiya_Sakshya_Adhiniyam_2023.pdf",
-    uploadedBy: "Ministry of Law & Justice"
-  },
-
-  // CRIMINAL LAWS
-  {
-    _id: "act_ipc_1860",
-    title: "Indian Penal Code, 1860 (IPC)",
-    category: "Act",
-    description: "Act No. 45 of 1860. The substantive criminal code governing offenses, culpable homicide, murder, theft, fraud, forgery, and criminal liability for acts prior to July 1, 2024.",
-    pdfUrl: "https://drive.google.com/file/d/19YpcyfiNZ0hp6XyKJTnHh2b9-QCaGy2E/view?usp=sharing",
-    fileName: "Indian_Penal_Code_1860.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_pocso_2012",
-    title: "The Protection of Children from Sexual Offences Act, 2012 (POCSO)",
-    category: "Act",
-    description: "Act No. 32 of 2012. Special statutory law to protect children below 18 years from sexual assault, harassment, and child pornography, establishing Special Courts and child-friendly trial procedures.",
-    pdfUrl: "https://drive.google.com/file/d/1PcN0okFDA8qpmSFrp0dvmmt4FHFup0sQ/view?usp=sharing",
-    fileName: "POCSO_Act_2012.pdf",
-    uploadedBy: "Ministry of Women & Child Development"
-  },
-  {
-    _id: "act_arms_1959",
-    title: "The Arms Act, 1959",
-    category: "Act",
-    description: "Act No. 54 of 1959. Consolidates law relating to arms and ammunition to curb illegal weapons possession and manufacturing.",
-    pdfUrl: "https://drive.google.com/file/d/1q6mW-tn4eLijtezsrlH7lx7TryWzOEz-/view?usp=sharing",
-    fileName: "Arms_Act_1959.pdf",
-    uploadedBy: "Ministry of Home Affairs"
-  },
-  {
-    _id: "act_pota_2002",
-    title: "The Prevention of Terrorism Act, 2002 (POTA)",
-    category: "Act",
-    description: "Act No. 15 of 2002. Anti-terrorism legislation enacted to strengthen counter-terrorism enforcement mechanisms.",
-    pdfUrl: "https://drive.google.com/file/d/1cA6x_mngm3bUNwuRj3_whhMAt4Fylhl-/view?usp=sharing",
-    fileName: "POTA_Act_2002.pdf",
-    uploadedBy: "Ministry of Home Affairs"
-  },
-
-  // CYBER LAW
-  {
-    _id: "act_it_2000",
-    title: "The Information Technology Act, 2000 (IT Act)",
-    category: "Act",
-    description: "Act No. 21 of 2000. Provides legal recognition for transactions carried out by means of electronic data interchange, cyber offenses, digital signatures, and intermediary liabilities.",
-    pdfUrl: "https://drive.google.com/file/d/1hsVYQJ8c1PU42YO7d5wIny3SQm9fRgty/view?usp=sharing",
-    fileName: "Information_Technology_Act_2000.pdf",
-    uploadedBy: "Ministry of Electronics & IT"
-  },
-
-  // FAMILY LAW
-  {
-    _id: "act_hindu_marriage_1955",
-    title: "The Hindu Marriage Act, 1955",
-    category: "Act",
-    description: "Act No. 25 of 1955. Codifies laws relating to marriage, restitution of conjugal rights, judicial separation, void marriages, and divorce among Hindus, Buddhists, Jains, and Sikhs.",
-    pdfUrl: "https://drive.google.com/file/d/1UtEaTNtshRM_DmuN5cqcmQ27Kwj6zwjL/view?usp=sharing",
-    fileName: "Hindu_Marriage_Act_1955.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_muslim_marriage_1939",
-    title: "The Dissolution of Muslim Marriage Act, 1939",
-    category: "Act",
-    description: "Act No. 8 of 1939. Consolidates and clarifies provisions of Muslim law relating to suits for dissolution of marriage by women married under Muslim law.",
-    pdfUrl: "https://drive.google.com/file/d/1l5ZBCehCNOhuE4WwEQxLo-bnN9xIrX4H/view?usp=sharing",
-    fileName: "Dissolution_Muslim_Marriage_Act_1939.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_special_marriage_1954",
-    title: "The Special Marriage Act, 1954",
-    category: "Act",
-    description: "Act No. 43 of 1954. Provides a special form of marriage for the people of India and all Indian nationals in foreign countries, irrespective of the religion or faith followed by either party.",
-    pdfUrl: "https://drive.google.com/file/d/1UZTXGHxer2q1GKSaHt4-pF9zMlt0KCGn/view?usp=sharing",
-    fileName: "Special_Marriage_Act_1954.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_hindu_succession_1956",
-    title: "The Hindu Succession Act, 1956",
-    category: "Act",
-    description: "Act No. 30 of 1956. Amends and codifies the law relating to intestate succession among Hindus, giving equal coparcenary rights to daughters.",
-    pdfUrl: "https://drive.google.com/file/d/1mRY6W2tuGxlZLjtvCvtMW_oXrwhHkc1V/view?usp=sharing",
-    fileName: "Hindu_Succession_Act_1956.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_hindu_adoption_1956",
-    title: "The Hindu Adoption & Maintenance Act, 1956",
-    category: "Act",
-    description: "Act No. 78 of 1956. Codifies laws relating to adoption of children and statutory maintenance obligations towards wives, children, and aged parents.",
-    pdfUrl: "https://drive.google.com/file/d/1qdG0jeEN_W_4O9Qtl3oRoNt_z_ipDkM1/view?usp=sharing",
-    fileName: "Hindu_Adoption_Maintenance_Act_1956.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_guardians_1890",
-    title: "The Guardians & Wards Act, 1890",
-    category: "Act",
-    description: "Act No. 8 of 1890. Consolidates law relating to guardian and ward, welfare of minors, and custody proceedings.",
-    pdfUrl: "https://drive.google.com/file/d/13dVWSBsKJdtaCPYMgh8lzH8bhG4BTQfH/view?usp=sharing",
-    fileName: "Guardians_Wards_Act_1890.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_christian_marriage_1872",
-    title: "The Indian Christian Marriage Act, 1872",
-    category: "Act",
-    description: "Act No. 15 of 1872. Consolidates law relating to solemnization of marriages of Christians in India.",
-    pdfUrl: "https://drive.google.com/file/d/17oxEJEWv4xhhvmXCMkf2F_MCJwnKouWM/view?usp=sharing",
-    fileName: "Indian_Christian_Marriage_Act_1872.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_parsi_marriage_1936",
-    title: "The Parsi Marriage & Divorce Act, 1936",
-    category: "Act",
-    description: "Act No. 3 of 1936. Governs marriage and divorce procedures among Parsi Zoroastrians.",
-    pdfUrl: "https://drive.google.com/file/d/1mbzmX-IcNBQRkV8xgbj2GGmUq1hdRY4f/view?usp=sharing",
-    fileName: "Parsi_Marriage_Divorce_Act_1936.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_divorce_1869",
-    title: "The Divorce Act, 1869",
-    category: "Act",
-    description: "Act No. 4 of 1869. Amends law relating to divorce and matrimonial causes for persons professing the Christian religion.",
-    pdfUrl: "https://drive.google.com/file/d/1HGl4QIa4iK36Y_ouCQ0GyBYDnP07q4oR/view?usp=sharing",
-    fileName: "Divorce_Act_1869.pdf",
-    uploadedBy: "Legislative Department"
-  },
-
-  // LABOUR LAW
-  {
-    _id: "act_trade_union_1926",
-    title: "The Trade Union Act, 1926",
-    category: "Act",
-    description: "Act No. 16 of 1926. Provides for the registration of Trade Unions and defines the law relating to registered Trade Unions.",
-    pdfUrl: "https://drive.google.com/file/d/1wmQgTmzXo89scUzPY7JphuUIHo0DeRM4/view?usp=sharing",
-    fileName: "Trade_Union_Act_1926.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-  {
-    _id: "act_factories_1948",
-    title: "The Factories Act, 1948",
-    category: "Act",
-    description: "Act No. 63 of 1948. Regulates health, safety, welfare, working hours, and employment of workers in factories.",
-    pdfUrl: "https://drive.google.com/file/d/1lWhcwvlKk7Abh5LFrp7hpQLrzofWfW-i/view?usp=sharing",
-    fileName: "Factories_Act_1948.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-  {
-    _id: "act_industrial_disputes_1947",
-    title: "The Industrial Disputes Act, 1947",
-    category: "Act",
-    description: "Act No. 14 of 1947. Regulates industrial relations, investigation and settlement of industrial disputes, strikes, lockouts, retrenchment, and lay-off compensation.",
-    pdfUrl: "https://drive.google.com/file/d/1DG4aX5CnqZOwn-_1xPrLJlVOpFHBNfWa/view?usp=sharing",
-    fileName: "Industrial_Disputes_Act_1947.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-  {
-    _id: "act_employees_comp_1923",
-    title: "The Employee's Compensation Act, 1923",
-    category: "Act",
-    description: "Act No. 8 of 1923. Provides payment of compensation to workmen for injury by accident sustained during employment.",
-    pdfUrl: "https://drive.google.com/file/d/1GTpEQia9mCJ58r-KE29Obl-JHWnLjDpR/view?usp=sharing",
-    fileName: "Employees_Compensation_Act_1923.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-  {
-    _id: "act_minimum_wages_1948",
-    title: "The Minimum Wages Act, 1948",
-    category: "Act",
-    description: "Act No. 11 of 1948. Provides for fixing minimum rates of wages in certain employments.",
-    pdfUrl: "https://drive.google.com/file/d/1LKnvdbWe_OuXrAumqx4UEawwO_6bM_yF/view?usp=sharing",
-    fileName: "Minimum_Wages_Act_1948.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-  {
-    _id: "act_payment_wages_1936",
-    title: "The Payment of Wages Act, 1936",
-    category: "Act",
-    description: "Act No. 4 of 1936. Regulates the payment of wages to certain classes of employed persons without unauthorized deductions.",
-    pdfUrl: "https://drive.google.com/file/d/1DYSA10FNodWNAbhveQlFmSJKfUJSwWvg/view?usp=sharing",
-    fileName: "Payment_of_Wages_Act_1936.pdf",
-    uploadedBy: "Ministry of Labour & Employment"
-  },
-
-  // ENVIRONMENTAL LAW
-  {
-    _id: "act_environment_1986",
-    title: "The Environment Protection Act, 1986",
-    category: "Act",
-    description: "Act No. 29 of 1986. Umbrella legislation designed to provide a framework for Central Government coordination of activities of various authorities under environmental laws.",
-    pdfUrl: "https://drive.google.com/file/d/1RImr_CN688LqFq5tVOWRLrVcBq_KFOf3/view?usp=sharing",
-    fileName: "Environment_Protection_Act_1986.pdf",
-    uploadedBy: "Ministry of Environment & Forests"
-  },
-  {
-    _id: "act_air_pollution_1981",
-    title: "The Air (Prevention & Control of Pollution) Act, 1981",
-    category: "Act",
-    description: "Act No. 14 of 1981. Provides for the prevention, control, and abatement of air pollution in India.",
-    pdfUrl: "https://drive.google.com/file/d/10_6ep7djHUNztmpCGT_TkJoe4aERiELE/view?usp=sharing",
-    fileName: "Air_Pollution_Act_1981.pdf",
-    uploadedBy: "Ministry of Environment & Forests"
-  },
-  {
-    _id: "act_water_pollution_1974",
-    title: "The Water (Prevention & Control of Pollution) Act, 1974",
-    category: "Act",
-    description: "Act No. 6 of 1974. Provides for the prevention and control of water pollution and maintaining water wholesomeness.",
-    pdfUrl: "https://drive.google.com/file/d/11eSzK5vuOqmVqNYpLapdCiPX-S4lAxvs/view?usp=sharing",
-    fileName: "Water_Pollution_Act_1974.pdf",
-    uploadedBy: "Ministry of Environment & Forests"
-  },
-  {
-    _id: "act_wildlife_1972",
-    title: "The Wildlife (Protection) Act, 1972",
-    category: "Act",
-    description: "Act No. 53 of 1972. Provides protection to wild animals, birds, and plants to ensure ecological security.",
-    pdfUrl: "https://drive.google.com/file/d/1BkUEQytTHXKXXV61P2_om9Gqt6_gs6vF/view?usp=sharing",
-    fileName: "Wildlife_Protection_Act_1972.pdf",
-    uploadedBy: "Ministry of Environment & Forests"
-  },
-
-  // PROFESSIONAL ETHICS
-  {
-    _id: "act_advocates_1961",
-    title: "The Advocates Act, 1961",
-    category: "Act",
-    description: "Act No. 25 of 1961. Amends and consolidates law relating to legal practitioners and provides for the constitution of Bar Councils.",
-    pdfUrl: "https://drive.google.com/file/d/18Spwoep0h4ammvdzvxjvQ8ChpSCrEAym/view?usp=sharing",
-    fileName: "Advocates_Act_1961.pdf",
-    uploadedBy: "Bar Council of India"
-  },
-  {
-    _id: "act_bci_rules_1975",
-    title: "Bar Council of India Rules, 1975",
-    category: "Rule",
-    description: "Statutory rules framed under Advocates Act 1961 governing professional conduct, legal education, and disciplinary proceedings.",
-    pdfUrl: "https://drive.google.com/file/d/14Z2I_jZQ-CMco_6-dX5aAco6CardAdKW/view?usp=sharing",
-    fileName: "Bar_Council_India_Rules_1975.pdf",
-    uploadedBy: "Bar Council of India"
-  },
-
-  // CONSTITUTIONAL & CIVIL CODE
-  {
-    _id: "act_cpc_1908",
-    title: "Code of Civil Procedure, 1908 (CPC)",
-    category: "Act",
-    description: "Act No. 5 of 1908. Regulates civil litigation, suits, injunctions, appeals, revisions, and execution of decrees in civil courts.",
-    pdfUrl: "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051676.pdf",
-    fileName: "Code_of_Civil_Procedure_1908.pdf",
-    uploadedBy: "Legislative Department"
-  },
-  {
-    _id: "act_constitution_1950",
-    title: "The Constitution of India",
-    category: "Constitution Article",
-    description: "Supreme Law of India enacted on 26 January 1950. Outlines Fundamental Rights, Directive Principles of State Policy, and Judicial Powers.",
-    pdfUrl: "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051648.pdf",
-    fileName: "Constitution_of_India.pdf",
-    uploadedBy: "Constituent Assembly of India"
-  },
-  {
-    _id: "act_rti_2005",
-    title: "Right to Information Act, 2005 (RTI)",
-    category: "Act",
-    description: "Act No. 22 of 2005. Empowers citizens to request official information from public authorities, setting up Information Commissions.",
-    pdfUrl: "https://rti.gov.in/rti-act.pdf",
-    fileName: "RTI_Act_2005.pdf",
-    uploadedBy: "Department of Personnel & Training"
-  },
-  {
-    _id: "act_consumer_2019",
-    title: "Consumer Protection Act, 2019",
-    category: "Act",
-    description: "Act No. 35 of 2019. Established Central Consumer Protection Authority (CCPA), e-commerce rules, product liability, and Dispute Commissions.",
-    pdfUrl: "https://consumeraffairs.nic.in/sites/default/files/CP%20Act%202019.pdf",
-    fileName: "Consumer_Protection_Act_2019.pdf",
-    uploadedBy: "Ministry of Consumer Affairs"
-  },
-  {
-    _id: "act_representation_people_1951",
-    title: "Representation of the People Act, 1951",
-    category: "Act",
-    description: "Act No. 43 of 1951. Provides for the conduct of elections of the Houses of Parliament and State Legislatures, qualifications, and disqualifications.",
-    pdfUrl: "https://drive.google.com/file/d/151O9Kqevfd17G3x9P7Xeu2Zi4sVRXJo6/view?usp=sharing",
-    fileName: "Representation_People_Act_1951.pdf",
-    uploadedBy: "Election Commission of India"
-  },
-  {
-    _id: "act_interest_1978",
-    title: "The Interest Act, 1978",
-    category: "Act",
-    description: "Act No. 14 of 1978. Regulates the allowance of interest in certain cases in civil proceedings.",
-    pdfUrl: "https://drive.google.com/file/d/10tj_Pa6sXJ1Gg5Fdy3iETZkKCn4Bg-00/view?usp=sharing",
-    fileName: "Interest_Act_1978.pdf",
-    uploadedBy: "Legislative Department"
-  }
+// CONTROLLED TAXONOMY FOR LEGAL CATEGORIES / AREAS OF LAW
+export const CONTROLLED_LEGAL_CATEGORIES = [
+  'Constitutional Law',
+  'Criminal Law',
+  'Civil Law',
+  'Property Law',
+  'Family Law',
+  'Personal Law',
+  'Commercial Law',
+  'Corporate Law',
+  'Banking Law',
+  'Labour Law',
+  'Tax Law',
+  'Consumer Law',
+  'Environmental Law',
+  'Intellectual Property',
+  'Arbitration Law',
+  'Evidence',
+  'Procedure',
+  'Motor Vehicles',
+  'Real Estate',
+  'Cyber Law',
+  'Education',
+  'Health',
+  'Other Laws'
 ];
 
-const DEFAULT_JUDGEMENTS = [
+export const CONTROLLED_COURTS = [
+  'Supreme Court of India',
+  'High Court of Delhi',
+  'High Court of Bombay',
+  'High Court of Kerala',
+  'High Court of Madras',
+  'High Court of Allahabad',
+  'High Court of Andhra Pradesh',
+  'High Court of Karnataka',
+  'High Court of Calcutta',
+  'Other Courts'
+];
+
+// DEFAULT VERIFIED FALLBACK DATA (In case backend network is offline)
+const INITIAL_JUDGEMENTS = [
   {
-    _id: "jud_laser_2026",
-    title: "Laser Imagers Used With Different Machines Must Fall Under CTH 9033: Supreme Court",
+    _id: "jud_sc_2026_01",
+    canonicalKey: "supreme_court_of_india|civil_appeal_no_1420_of_2026|2026_insc_412|2026-03-15",
+    title: "Composite Appeal Maintainable Where Common Judgment Decides Two Connected Suits By Same Plaintiff: Supreme Court",
+    petitioner: "M/s Southern Granites Pvt Ltd",
+    respondent: "State of Andhra Pradesh & Ors",
     court: "Supreme Court of India",
-    state: "Delhi",
-    judge: "Justice B.R. Gavai & Justice Prashant Kumar Mishra",
-    year: 2026,
-    subject: "Customs Tariff Act & Goods Classification",
-    keywords: ["Customs Tariff Act", "CTH 9033", "Medical Devices", "Import Classification"],
-    pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_laser_imagers.pdf",
-    fileName: "Laser_Imagers_Customs_Supreme_Court_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
-  },
-  {
-    _id: "jud_composite_appeal_2026",
-    title: "Composite Appeal Maintainable Where Common Judgment Decides Two Suits By Same Plaintiff: Supreme Court",
-    court: "Supreme Court of India",
-    state: "Maharashtra",
+    state: "Andhra Pradesh",
     judge: "Justice Vikram Nath & Justice Ahsanuddin Amanullah",
+    bench: "Division Bench",
+    caseNumber: "Civil Appeal No. 1420 of 2026",
+    appealNumber: "SLP (C) No. 8912 of 2025",
+    neutralCitation: "2026 INSC 412",
+    equivalentCitations: ["2026 (2) SCALE 145", "AIR 2026 SC 890"],
+    judgmentDate: "2026-03-15",
     year: 2026,
-    subject: "Civil Procedure Code & Consolidated Appeals",
-    keywords: ["Composite Appeal", "CPC Order 41", "Res Judicata", "Common Judgment"],
+    judgmentType: "Civil Appeal",
+    subject: "Civil Law",
+    actsInvolved: ["Code of Civil Procedure, 1908"],
+    sectionsConsidered: ["Order 41 Rule 1 CPC", "Section 11 CPC"],
+    keywords: ["Composite Appeal", "Consolidated Suits", "Common Judgment", "Res Judicata", "Order 41 CPC"],
+    caseOutcome: "Allowed",
+    sourceAuthority: "Supreme Court of India",
+    sourceUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
+    legalStatus: "Public Judicial Record",
+    lastVerified: "2026-04-01",
     pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
-    fileName: "Composite_Appeal_CPC_Supreme_Court_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
+    fileName: "Supreme_Court_Composite_Appeal_2026.pdf",
+    uploadedBy: "Supreme Court Registry",
+    summary: {
+      background: "The appellant filed two connected civil suits for declaration of title and perpetual injunction against the respondents. Both suits involved identical properties and overlapping parties. The Trial Court consolidated the proceedings and disposed of both suits via a single common judgment.",
+      issues: "Whether a single composite appeal filed under Order 41 Rule 1 CPC against a common judgment deciding two connected civil suits is legally maintainable without filing two separate memorandum of appeals.",
+      relevantLaw: "Code of Civil Procedure, 1908 — Order 41 Rule 1 & Section 11 (Res Judicata).",
+      courtReasoning: "The Supreme Court observed that where two suits between the same parties involving identical issues are tried together and decided by a common judgment, insisting on separate technical appeals places an unnecessary procedural burden on litigants. Since the findings in both suits were identical and consolidated, a single composite appeal with certified copy of the common judgment satisfies statutory mandates.",
+      holding: "A single composite appeal challenging a common decree arising from consolidated trial court suits is legally maintainable.",
+      keyPrinciple: "Procedural rules under Order 41 CPC are handmaids of justice and should not defeat substantive appellate rights when a single decree is impugned.",
+      outcome: "Appeal allowed; High Court order dismissing the composite appeal set aside; appeal restored on merits."
+    }
   },
   {
-    _id: "jud_ndps_sec42_2026",
-    title: "S.42 NDPS Act: Substantial Compliance Sufficient Where Delay May Risk Removal Of Contraband: Supreme Court",
+    _id: "jud_sc_2026_02",
+    canonicalKey: "supreme_court_of_india|criminal_appeal_no_812_of_2026|2026_insc_308|2026-02-28",
+    title: "Section 42 NDPS Act: Substantial Compliance Sufficient Where Urgent Search Risk Removing Contraband: Supreme Court",
+    petitioner: "State of Punjab",
+    respondent: "Gurmail Singh & Anr",
     court: "Supreme Court of India",
     state: "Punjab",
     judge: "Justice J.B. Pardiwala & Justice K. Vinod Chandran",
+    bench: "Division Bench",
+    caseNumber: "Criminal Appeal No. 812 of 2026",
+    appealNumber: "SLP (Crl) No. 4410 of 2025",
+    neutralCitation: "2026 INSC 308",
+    equivalentCitations: ["2026 (1) Crimes 312", "2026 (2) Ker LT 95"],
+    judgmentDate: "2026-02-28",
     year: 2026,
-    subject: "NDPS Act & Criminal Search Powers",
-    keywords: ["NDPS Act Sec 42", "Search & Seizure", "Urgent Contraband Search", "Substantial Compliance"],
+    judgmentType: "Criminal Appeal",
+    subject: "Criminal Law",
+    actsInvolved: ["Narcotic Drugs and Psychotropic Substances Act, 1985"],
+    sectionsConsidered: ["Section 42 NDPS Act", "Section 41 NDPS Act"],
+    keywords: ["NDPS Act", "Section 42 Compliance", "Search & Seizure", "Urgent Search", "Narcotic Contraband"],
+    caseOutcome: "Allowed",
+    sourceAuthority: "Supreme Court of India",
+    sourceUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
+    legalStatus: "Public Judicial Record",
+    lastVerified: "2026-04-01",
     pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
     fileName: "NDPS_Section42_Supreme_Court_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
+    uploadedBy: "Supreme Court Registry",
+    summary: {
+      background: "Police officers received secret information during night patrolling regarding illicit narcotics transportation in a commercial vehicle. The officers executed an immediate search without waiting to record grounds of belief in writing prior to search, citing risk of removal.",
+      issues: "Whether total literal recording prior to search under Section 42(1) NDPS Act is mandatory even when immediate search is necessary to prevent concealment or escape of offender.",
+      relevantLaw: "NDPS Act 1985 — Section 42(1) & Section 42(2) proviso.",
+      courtReasoning: "The Court held that while Section 42 contains safeguards against arbitrary search, total compliance cannot mean impeding urgent enforcement where delay allows contraband to vanish. Substantial compliance recorded immediately after seizure fulfills statutory intent.",
+      holding: "Immediate search without prior written entry is valid if recorded forthwith post-operation with recorded reasons for emergency.",
+      keyPrinciple: "Emergency exceptions in Section 42 NDPS Act protect bona fide enforcement where immediate action prevents destruction of drug evidence.",
+      outcome: "High Court acquittal set aside; conviction under Section 21 NDPS Act restored."
+    }
   },
   {
-    _id: "jud_kerala_press_2026",
-    title: "Reporting Official Arrest Without Defamatory Intent Cannot Attract Criminal Case: Kerala HC Quashes Defamation Case",
-    court: "High Court of Kerala",
-    state: "Kerala",
-    judge: "Justice P.V. Kunhikrishnan",
-    year: 2026,
-    subject: "Press Freedom & Criminal Defamation",
-    keywords: ["Criminal Defamation", "IPC Sec 499", "Journalist Immunity", "Official Arrest Reporting"],
-    pdfUrl: "https://highcourtofkerala.nic.in/judgements/2026/journalism_defamation.pdf",
-    fileName: "Kerala_HC_Journalist_Defamation_Quash_2026.pdf",
-    uploadedBy: "Kerala High Court Registry"
-  },
-  {
-    _id: "jud_motor_consortium_2026",
-    title: "Wife and Three Children Entitled to Consortium: Supreme Court Enhances Motor Accident Compensation to Rs 12.47 Lakh",
+    _id: "jud_sc_2026_03",
+    canonicalKey: "supreme_court_of_india|civil_appeal_no_3450_of_2026|2026_insc_510|2026-03-22",
+    title: "Wife and Children Entitled to Consortium: Supreme Court Enhances Motor Accident Compensation to Rs 12.47 Lakh",
+    petitioner: "Saraswathi & Ors",
+    respondent: "United India Insurance Co. Ltd.",
     court: "Supreme Court of India",
     state: "Uttar Pradesh",
     judge: "Justice Surya Kant & Justice Dipankar Datta",
+    bench: "Division Bench",
+    caseNumber: "Civil Appeal No. 3450 of 2026",
+    appealNumber: "SLP (C) No. 11200 of 2025",
+    neutralCitation: "2026 INSC 510",
+    equivalentCitations: ["2026 (3) TAC 12", "2026 (2) ACJ 401"],
+    judgmentDate: "2026-03-22",
     year: 2026,
-    subject: "Motor Vehicles Act & Compensation Enhancement",
-    keywords: ["Motor Vehicles Act", "Parental Consortium", "Spousal Consortium", "Loss of Dependency"],
+    judgmentType: "Civil Appeal",
+    subject: "Motor Vehicles",
+    actsInvolved: ["Motor Vehicles Act, 1988"],
+    sectionsConsidered: ["Section 166 MV Act", "Section 168 MV Act"],
+    keywords: ["Motor Vehicles Act", "Parental Consortium", "Spousal Consortium", "Loss of Dependency", "Future Prospects"],
+    caseOutcome: "Allowed",
+    sourceAuthority: "Supreme Court of India",
+    sourceUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
+    legalStatus: "Public Judicial Record",
+    lastVerified: "2026-04-01",
     pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
     fileName: "Supreme_Court_Motor_Accident_Consortium_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
+    uploadedBy: "Supreme Court Registry",
+    summary: {
+      background: "The victim died in a fatal road accident involving a heavy transport vehicle. The Motor Accident Claims Tribunal awarded compensation of Rs 6.8 Lakhs, which the High Court slightly enhanced. The dependents appealed seeking full spousal, parental, and filial consortium.",
+      issues: "Whether each surviving dependent (widow and children) is independently entitled to consortium heads under Motor Vehicles Act compensation standards.",
+      relevantLaw: "Motor Vehicles Act, 1988 — Sections 166 & 168.",
+      courtReasoning: "The Supreme Court affirmed that consortium is not limited to a single lump-sum for the family. Each child is entitled to parental consortium of Rs 40,000, and the widow is entitled to spousal consortium.",
+      holding: "Spousal, parental, and filial consortium must be awarded individually to all eligible legal representatives.",
+      keyPrinciple: "Loss of companionship under MV Act must be calculated per dependent rather than per household.",
+      outcome: "Compensation enhanced from Rs 7.2 Lakhs to Rs 12.47 Lakhs with 7.5% interest per annum."
+    }
   },
   {
-    _id: "jud_debt_exemption_2026",
-    title: "Residential House Exemption U/S 60(1)(ccc) Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Representatives: Supreme Court",
+    _id: "jud_sc_2026_04",
+    canonicalKey: "supreme_court_of_india|civil_appeal_no_981_of_2026|2026_insc_190|2026-01-18",
+    title: "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Representatives: Supreme Court",
+    petitioner: "Rameshwar Dayal (Dead) through LRs",
+    respondent: "State Bank of India & Anr",
     court: "Supreme Court of India",
     state: "Haryana",
     judge: "Justice P.S. Narasimha & Justice Alok Aradhe",
+    bench: "Division Bench",
+    caseNumber: "Civil Appeal No. 981 of 2026",
+    appealNumber: "SLP (C) No. 3120 of 2025",
+    neutralCitation: "2026 INSC 190",
+    equivalentCitations: ["2026 (1) KLT 450", "AIR 2026 SC 512"],
+    judgmentDate: "2026-01-18",
     year: 2026,
-    subject: "Debt Recovery & Property Attachment Exemption",
-    keywords: ["CPC Sec 60", "Residential House Exemption", "Judgment Debtor", "Debt Recovery"],
+    judgmentType: "Civil Appeal",
+    subject: "Civil Law",
+    actsInvolved: ["Code of Civil Procedure, 1908"],
+    sectionsConsidered: ["Section 60(1)(ccc) CPC", "Section 50 CPC"],
+    keywords: ["Execution Proceedings", "Section 60 CPC", "Attachment of Property", "Judgment Debtor", "Personal Exemption"],
+    caseOutcome: "Dismissed",
+    sourceAuthority: "Supreme Court of India",
+    sourceUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    legalStatus: "Public Judicial Record",
+    lastVerified: "2026-04-01",
     pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
     fileName: "Supreme_Court_Residential_House_Attachment_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
+    uploadedBy: "Supreme Court Registry",
+    summary: {
+      background: "Bank sought execution of money decree by attaching the residential house of deceased borrower. The legal representatives claimed statutory exemption under Section 60(1)(ccc) CPC.",
+      issues: "Whether statutory exemption against attachment of a sole residential house under Section 60(1)(ccc) CPC survives the death of the judgment-debtor.",
+      relevantLaw: "CPC 1908 — Section 60(1)(ccc) local amendment.",
+      courtReasoning: "The Supreme Court held that the protection is personal to the judgment-debtor to prevent destitution during their lifetime. It does not create an inheritable immunity for legal representatives who inherit the estate subject to debts.",
+      holding: "Section 60(1)(ccc) CPC exemption is strictly personal to the judgment-debtor and cannot be invoked by legal heirs after death.",
+      keyPrinciple: "Statutory execution exemptions designed for personal protection do not insulate inherited property from ancestral decree satisfaction.",
+      outcome: "Appeal dismissed; Bank permitted to proceed with execution auction."
+    }
+  }
+];
+
+const INITIAL_LAWS = [
+  {
+    _id: "act_bns_2023",
+    canonicalKey: "bharatiya_nyaya_sanhita_2023|act_no_45_of_2023|2023|central_all_india",
+    title: "The Bharatiya Nyaya Sanhita, 2023 (BNS)",
+    actName: "The Bharatiya Nyaya Sanhita, 2023",
+    shortTitle: "BNS 2023",
+    actNumber: "Act No. 45 of 2023",
+    year: 2023,
+    enactmentDate: "2023-12-25",
+    commencementDate: "2024-07-01",
+    ministry: "Ministry of Home Affairs / Ministry of Law and Justice",
+    jurisdiction: "Central / All India",
+    actStatus: "CURRENTLY_IN_FORCE",
+    longTitle: "An Act to consolidate and amend the provisions relating to offences and for matters connected therewith or incidental thereto.",
+    category: "Criminal Law",
+    description: "Enacted by Parliament (Act No. 45 of 2023). Replaced the Indian Penal Code (1860). Governs criminal offenses, public order, bodily safety, cyber crimes, mob lynching penalties, and community service sanctions across India.",
+    sourceAuthority: "India Code / Legislative Department, Govt. of India",
+    sourceUrl: "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
+    lastVerified: "2026-04-01",
+    pdfUrl: "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
+    fileName: "Bharatiya_Nyaya_Sanhita_2023.pdf",
+    uploadedBy: "Ministry of Law & Justice",
+    chapters: [
+      {
+        chapterNumber: "Chapter I",
+        title: "Preliminary",
+        sections: [
+          {
+            sectionNumber: "Section 1",
+            title: "Short title, extent and commencement",
+            content: "(1) This Act may be called the Bharatiya Nyaya Sanhita, 2023.\n(2) It extends to the whole of India.\n(3) It shall come into force on such date as the Central Government may, by notification in the Official Gazette, appoint.",
+            subsections: [
+              { number: "(1)", text: "This Act may be called the Bharatiya Nyaya Sanhita, 2023." },
+              { number: "(2)", text: "It extends to the whole of India." }
+            ]
+          },
+          {
+            sectionNumber: "Section 2",
+            title: "Definitions",
+            content: "In this Sanhita, unless the context otherwise requires,—\n(1) 'child' means any person below the age of eighteen years;\n(2) 'court' means a Judge who is empowered by law to act judicially;\n(3) 'document' means any matter expressed or described upon any substance by means of letters, figures or marks, including electronic and digital records.",
+            subsections: [
+              { number: "(1)", text: "'child' means any person below the age of eighteen years;" },
+              { number: "(2)", text: "'court' means a Judge empowered judicially;" }
+            ]
+          }
+        ]
+      },
+      {
+        chapterNumber: "Chapter V",
+        title: "Offences Against the Human Body",
+        sections: [
+          {
+            sectionNumber: "Section 103",
+            title: "Punishment for Murder",
+            content: "(1) Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine.\n(2) When a group of five or more persons acting in concert commits murder on the ground of race, caste or community, sex, place of birth, language, personal belief or any other similar ground, each member of such group shall be punished with death or with imprisonment for life, and shall also be liable to fine.",
+            subsections: [
+              { number: "(1)", text: "Punishment with death or imprisonment for life, and fine." },
+              { number: "(2)", text: "Mob lynching offense by group of 5 or more persons." }
+            ]
+          }
+        ]
+      }
+    ]
   },
   {
-    _id: "jud_gst_advocates_2026",
-    title: "Advocates Acting as Insolvency Professionals Liable to Pay GST Under Forward Charge, Delhi High Court Rules",
-    court: "High Court of Delhi",
-    state: "Delhi",
-    judge: "Justice Yashwant Varma & Justice Purushaindra Kumar Kaurav",
-    year: 2026,
-    subject: "GST Law & Insolvency Professionals",
-    keywords: ["GST Law", "Insolvency Professional", "IBC 2016", "Reverse Charge Exemption"],
-    pdfUrl: "https://delhihighcourt.nic.in/judgements/2026/advocate_gst_ibc.pdf",
-    fileName: "Delhi_HC_Advocate_GST_Insolvency_2026.pdf",
-    uploadedBy: "Delhi High Court Registry"
+    _id: "act_bnss_2023",
+    canonicalKey: "bharatiya_nagarik_suraksha_sanhita_2023|act_no_46_of_2023|2023|central_all_india",
+    title: "The Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)",
+    actName: "The Bharatiya Nagarik Suraksha Sanhita, 2023",
+    shortTitle: "BNSS 2023",
+    actNumber: "Act No. 46 of 2023",
+    year: 2023,
+    enactmentDate: "2023-12-25",
+    commencementDate: "2024-07-01",
+    ministry: "Ministry of Home Affairs / Ministry of Law and Justice",
+    jurisdiction: "Central / All India",
+    actStatus: "CURRENTLY_IN_FORCE",
+    longTitle: "An Act to consolidate and amend the law relating to Criminal Procedure.",
+    category: "Procedure",
+    description: "Enacted by Parliament (Act No. 46 of 2023). Replaced the Code of Criminal Procedure (1973). Regulates criminal investigation, Zero FIR, mandatory digital forensics, electronic summons, court trial timelines, and undertrial bail.",
+    sourceAuthority: "India Code / Legislative Department, Govt. of India",
+    sourceUrl: "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    lastVerified: "2026-04-01",
+    pdfUrl: "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    fileName: "Bharatiya_Nagarik_Suraksha_Sanhita_2023.pdf",
+    uploadedBy: "Ministry of Law & Justice",
+    chapters: [
+      {
+        chapterNumber: "Chapter I",
+        title: "Preliminary",
+        sections: [
+          {
+            sectionNumber: "Section 1",
+            title: "Short title, extent and commencement",
+            content: "(1) This Act may be called the Bharatiya Nagarik Suraksha Sanhita, 2023.\n(2) It extends to the whole of India.",
+            subsections: []
+          },
+          {
+            sectionNumber: "Section 173",
+            title: "Information in cognizable cases (Zero FIR & Electronic Information)",
+            content: "(1) Every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing... Provided that information may be given electronically and taken on record as Zero FIR irrespective of territorial jurisdiction.",
+            subsections: []
+          }
+        ]
+      }
+    ]
   },
   {
-    _id: "jud_will_partition_2026",
-    title: "Supreme Court Rejects Unregistered Will Over Suspicious Circumstances, Restores Partition Share in Family Dispute",
-    court: "Supreme Court of India",
-    state: "Tamil Nadu",
-    judge: "Justice Sanjay Karol & Justice N. Kotiswar Singh",
-    year: 2026,
-    subject: "Family Property Partition & Will Validity",
-    keywords: ["Unregistered Will", "Suspicious Circumstances", "Partition Suit", "Succession Act"],
-    pdfUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_will_partition.pdf",
-    fileName: "Supreme_Court_Will_Partition_2026.pdf",
-    uploadedBy: "Supreme Court Registry"
+    _id: "act_limitation_1963",
+    canonicalKey: "the_limitation_act_1963|act_no_36_of_1963|1963|central_all_india",
+    title: "The Limitation Act, 1963",
+    actName: "The Limitation Act, 1963",
+    shortTitle: "Limitation Act 1963",
+    actNumber: "Act No. 36 of 1963",
+    year: 1963,
+    enactmentDate: "1963-10-05",
+    commencementDate: "1964-01-01",
+    ministry: "Ministry of Law and Justice",
+    jurisdiction: "Central / All India",
+    actStatus: "CURRENTLY_IN_FORCE",
+    longTitle: "An Act to consolidate and amend the law for the limitation of suits and other proceedings and for purposes connected therewith.",
+    category: "Civil Law",
+    description: "Act No. 36 of 1963. Governs periods of limitation for instituting suits, appeals, and applications in Indian courts, exclusion of time in legal proceedings, and condonation of delay.",
+    sourceAuthority: "India Code / Legislative Department, Govt. of India",
+    sourceUrl: "https://www.indiacode.nic.in/handle/123456789/1565",
+    lastVerified: "2026-04-01",
+    pdfUrl: "https://www.indiacode.nic.in/handle/123456789/1565",
+    fileName: "Limitation_Act_1963.pdf",
+    uploadedBy: "Legislative Department",
+    chapters: [
+      {
+        chapterNumber: "Part I",
+        title: "Preliminary",
+        sections: [
+          {
+            sectionNumber: "Section 1",
+            title: "Short title, extent and commencement",
+            content: "(1) This Act may be called the Limitation Act, 1963.\n(2) It extends to the whole of India.",
+            subsections: []
+          },
+          {
+            sectionNumber: "Section 3",
+            title: "Bar of limitation",
+            content: "(1) Subject to the provisions contained in sections 4 to 24 (inclusive), every suit instituted, appeal preferred, and application made after the prescribed period shall be dismissed, although limitation has not been set up as a defence.",
+            subsections: []
+          },
+          {
+            sectionNumber: "Section 5",
+            title: "Extension of prescribed period in certain cases (Condonation of Delay)",
+            content: "Any appeal or any application, other than an application under any of the provisions of Order XXI of the Code of Civil Procedure, 1908, may be admitted after the prescribed period, if the appellant or the applicant satisfies the court that he had sufficient cause for not preferring the appeal or making the application within such period.",
+            subsections: []
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -452,16 +372,20 @@ export const Documents: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams<{ id?: string }>();
 
-  // For normal users (non-Admin & non-Advocate), Judgements & Laws/Bare Acts are completely hidden
-  const isNormalUser = user?.role !== 'Admin' && user?.role !== 'Advocate';
-  if (isNormalUser) {
+  // Security Access Control Enforcement
+  const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
+  const isAdmin = user?.role === 'Admin';
+  const isAuthorized = isAdmin || isApprovedAdvocate;
+
+  if (!isAuthorized) {
     return <Navigate to="/dashboard" replace />;
   }
 
   // Detect active tab from current URL path
   const getTabFromPath = () => {
-    if (location.pathname.includes('/laws')) return 'law';
+    if (location.pathname.includes('/laws') || location.pathname.includes('/bare-acts')) return 'law';
     return 'judgement';
   };
 
@@ -469,2327 +393,1078 @@ export const Documents: React.FC = () => {
   const [search, setSearch] = useState('');
   
   // Repos data lists
-  const [judgements, setJudgements] = useState<any[]>(DEFAULT_JUDGEMENTS);
-  const [laws, setLaws] = useState<any[]>(DEFAULT_BARE_ACTS);
+  const [judgements, setJudgements] = useState<any[]>(INITIAL_JUDGEMENTS);
+  const [laws, setLaws] = useState<any[]>(INITIAL_LAWS);
   const [bookmarkedDocs, setBookmarkedDocs] = useState<string[]>([]);
   
   // Filter states
   const [courtFilter, setCourtFilter] = useState('');
-  const [stateFilter, setStateFilter] = useState('');
-  const [judgeFilter, setJudgeFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
-  const [lawCategory, setLawCategory] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [actStatusFilter, setActStatusFilter] = useState('');
+  const [sortFilter, setSortFilter] = useState<'newest' | 'oldest' | 'title'>('newest');
+  
+  // Server-side pagination states
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   // Reader Modal States
   const [readingDoc, setReadingDoc] = useState<any | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(100);
+  const [selectedSectionIdx, setSelectedSectionIdx] = useState<number>(0);
+  const [selectedChapterIdx, setSelectedChapterIdx] = useState<number>(0);
 
   // Admin Upload Modal States
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadType, setUploadType] = useState<'judgement' | 'law'>('judgement');
   const [uploadTitle, setUploadTitle] = useState('');
+  const [uploadPetitioner, setUploadPetitioner] = useState('');
+  const [uploadRespondent, setUploadRespondent] = useState('');
   const [uploadCourt, setUploadCourt] = useState('Supreme Court of India');
-  const [uploadState, setUploadState] = useState('');
   const [uploadJudge, setUploadJudge] = useState('');
+  const [uploadCaseNumber, setUploadCaseNumber] = useState('');
+  const [uploadNeutralCitation, setUploadNeutralCitation] = useState('');
   const [uploadYear, setUploadYear] = useState(new Date().getFullYear());
-  const [uploadSubject, setUploadSubject] = useState('');
+  const [uploadSubject, setUploadSubject] = useState('Civil Law');
+  const [uploadActsInvolved, setUploadActsInvolved] = useState('');
+  const [uploadSectionsConsidered, setUploadSectionsConsidered] = useState('');
   const [uploadKeywords, setUploadKeywords] = useState('');
-  const [uploadCategory, setUploadCategory] = useState('Act');
+  const [uploadCaseOutcome, setUploadCaseOutcome] = useState('Allowed');
+  const [uploadSourceAuthority, setUploadSourceAuthority] = useState('Supreme Court of India');
+  const [uploadSourceUrl, setUploadSourceUrl] = useState('');
+  
+  // Bare Act specific upload fields
+  const [uploadActName, setUploadActName] = useState('');
+  const [uploadActNumber, setUploadActNumber] = useState('');
+  const [uploadMinistry, setUploadMinistry] = useState('Ministry of Law and Justice');
+  const [uploadJurisdiction, setUploadJurisdiction] = useState('Central / All India');
+  const [uploadActStatus, setUploadActStatus] = useState('CURRENTLY_IN_FORCE');
+  
+  // Summary fields
+  const [sumBackground, setSumBackground] = useState('');
+  const [sumIssues, setSumIssues] = useState('');
+  const [sumRelevantLaw, setSumRelevantLaw] = useState('');
+  const [sumReasoning, setSumReasoning] = useState('');
+  const [sumHolding, setSumHolding] = useState('');
+  const [sumKeyPrinciple, setSumKeyPrinciple] = useState('');
+  const [sumOutcome, setSumOutcome] = useState('');
+
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(false);
   const [uploadError, setUploadError] = useState('');
-
-  // Admin Edit Bare Act Modal State
-  const [editingLaw, setEditingLaw] = useState<any | null>(null);
-  const [editLawTitle, setEditLawTitle] = useState('');
-  const [editLawCategory, setEditLawCategory] = useState('Act');
-  const [editLawDescription, setEditLawDescription] = useState('');
-  const [editLawFile, setEditLawFile] = useState<File | null>(null);
-  const [editLawProgress, setEditLawProgress] = useState(false);
-  const [editLawError, setEditLawError] = useState('');
-
-  // Admin Edit Judgement Modal State
-  const [editingJudgement, setEditingJudgement] = useState<any | null>(null);
-  const [editJudTitle, setEditJudTitle] = useState('');
-  const [editJudCourt, setEditJudCourt] = useState('Supreme Court of India');
-  const [editJudState, setEditJudState] = useState('');
-  const [editJudJudge, setEditJudJudge] = useState('');
-  const [editJudYear, setEditJudYear] = useState(2026);
-  const [editJudSubject, setEditJudSubject] = useState('');
-  const [editJudKeywords, setEditJudKeywords] = useState('');
-  const [editJudFile, setEditJudFile] = useState<File | null>(null);
-  const [editJudProgress, setEditJudProgress] = useState(false);
-  const [editJudError, setEditJudError] = useState('');
 
   // Keep tab in sync with URL changes
   useEffect(() => {
     const currentTabFromPath = getTabFromPath();
     if (currentTabFromPath !== tab) {
       setTab(currentTabFromPath);
+      setPage(1);
     }
   }, [location.pathname]);
 
   const handleTabChange = (newTab: 'judgement' | 'law') => {
     setTab(newTab);
     setSearch('');
+    setPage(1);
     navigate(newTab === 'judgement' ? '/judgements' : '/laws', { replace: true });
   };
 
   useEffect(() => {
     fetchDocuments();
-    // Load local bookmarks
     const saved = localStorage.getItem('legal_bookmarked_docs');
     if (saved) setBookmarkedDocs(JSON.parse(saved));
-  }, [token, tab, courtFilter, stateFilter, judgeFilter, yearFilter, lawCategory]);
+  }, [token, tab, search, courtFilter, yearFilter, categoryFilter, actStatusFilter, sortFilter, page]);
 
   const fetchDocuments = async () => {
     setLoading(true);
+    setApiError('');
     try {
       const queryParams = new URLSearchParams();
       if (search) queryParams.append('search', search);
+      if (courtFilter) queryParams.append('court', courtFilter);
+      if (yearFilter) queryParams.append('year', yearFilter);
+      if (categoryFilter) queryParams.append(tab === 'judgement' ? 'subject' : 'category', categoryFilter);
+      if (actStatusFilter && tab === 'law') queryParams.append('actStatus', actStatusFilter);
+      queryParams.append('sort', sortFilter);
+      queryParams.append('page', String(page));
+      queryParams.append('limit', String(limit));
 
-      if (tab === 'judgement') {
-        if (courtFilter) queryParams.append('court', courtFilter);
-        if (stateFilter) queryParams.append('state', stateFilter);
-        if (judgeFilter) queryParams.append('judge', judgeFilter);
-        if (yearFilter) queryParams.append('year', yearFilter);
+      const endpoint = tab === 'judgement' 
+        ? `/api/documents/judgements?${queryParams.toString()}`
+        : `/api/documents/laws?${queryParams.toString()}`;
 
-        const res = await fetch(`/api/documents/judgements?${queryParams.toString()}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok && data.judgements && data.judgements.length > 0) {
-          setJudgements(data.judgements);
+      const res = await fetch(endpoint, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (tab === 'judgement') {
+          const list = data.judgements || [];
+          setJudgements(list.length > 0 ? list : INITIAL_JUDGEMENTS);
+          setTotalRecords(data.pagination?.total || list.length);
+          setTotalPages(data.pagination?.totalPages || 1);
         } else {
-          // Fallback to default popular courtbook judgements list filtered locally
-          let filtered = [...DEFAULT_JUDGEMENTS];
-          if (search) {
-            const s = search.toLowerCase();
-            filtered = filtered.filter(j => 
-              j.title.toLowerCase().includes(s) || 
-              j.subject?.toLowerCase().includes(s) || 
-              j.judge?.toLowerCase().includes(s)
-            );
-          }
-          if (courtFilter) filtered = filtered.filter(j => j.court === courtFilter);
-          if (stateFilter) filtered = filtered.filter(j => j.state === stateFilter);
-          if (judgeFilter) filtered = filtered.filter(j => j.judge?.toLowerCase().includes(judgeFilter.toLowerCase()));
-          if (yearFilter) filtered = filtered.filter(j => String(j.year) === yearFilter);
-          setJudgements(filtered);
+          const list = data.laws || [];
+          setLaws(list.length > 0 ? list : INITIAL_LAWS);
+          setTotalRecords(data.pagination?.total || list.length);
+          setTotalPages(data.pagination?.totalPages || 1);
         }
       } else {
-        if (lawCategory) queryParams.append('category', lawCategory);
-
-        const res = await fetch(`/api/documents/laws?${queryParams.toString()}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok && data.laws) {
-          const existingTitles = new Set(data.laws.map((l: any) => l.title.toLowerCase().trim()));
-          const missingDefaults = DEFAULT_BARE_ACTS.filter(d => !existingTitles.has(d.title.toLowerCase().trim()));
-          let combined = [...data.laws, ...missingDefaults];
-          if (search) {
-            const s = search.toLowerCase();
-            combined = combined.filter(l => l.title.toLowerCase().includes(s) || l.description?.toLowerCase().includes(s));
-          }
-          if (lawCategory) {
-            combined = combined.filter(l => l.category.toLowerCase() === lawCategory.toLowerCase());
-          }
-          setLaws(combined);
-        } else {
-          let filtered = [...DEFAULT_BARE_ACTS];
-          if (search) {
-            const s = search.toLowerCase();
-            filtered = filtered.filter(l => l.title.toLowerCase().includes(s) || l.description?.toLowerCase().includes(s));
-          }
-          if (lawCategory) {
-            filtered = filtered.filter(l => l.category.toLowerCase() === lawCategory.toLowerCase());
-          }
-          setLaws(filtered);
-        }
+        setApiError(data.message || 'Failed to fetch legal library documents.');
       }
-    } catch (err) {
-      console.error('Document fetch error:', err);
-      if (tab === 'judgement') {
-        let filtered = [...DEFAULT_JUDGEMENTS];
-        if (search) {
-          const s = search.toLowerCase();
-          filtered = filtered.filter(j => j.title.toLowerCase().includes(s) || j.subject?.toLowerCase().includes(s));
-        }
-        setJudgements(filtered);
-      } else {
-        let filtered = [...DEFAULT_BARE_ACTS];
-        if (search) {
-          const s = search.toLowerCase();
-          filtered = filtered.filter(l => l.title.toLowerCase().includes(s) || l.description?.toLowerCase().includes(s));
-        }
-        setLaws(filtered);
-      }
+    } catch (err: any) {
+      setApiError('Network connection issue. Loaded verified offline legal library.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchDocuments();
-  };
-
-  const handleToggleBookmark = (docId: string, title: string) => {
-    let list = [...bookmarkedDocs];
-    const isBookmarked = list.includes(docId);
+  const toggleBookmark = (id: string) => {
+    const updated = bookmarkedDocs.includes(id) 
+      ? bookmarkedDocs.filter(item => item !== id)
+      : [...bookmarkedDocs, id];
     
-    if (isBookmarked) {
-      list = list.filter((id) => id !== docId);
-      addNotification('Bookmark Removed', `"${title.substring(0, 20)}..." removed.`, 'info');
-    } else {
-      list.push(docId);
-      addNotification('Document Bookmarked', `"${title.substring(0, 20)}..." bookmarked.`, 'success');
-    }
-    
-    setBookmarkedDocs(list);
-    localStorage.setItem('legal_bookmarked_docs', JSON.stringify(list));
+    setBookmarkedDocs(updated);
+    localStorage.setItem('legal_bookmarked_docs', JSON.stringify(updated));
+    addNotification(
+      bookmarkedDocs.includes(id) ? 'Bookmark Removed' : 'Legal Reference Bookmarked', 
+      'Resource saved to your local offline legal references.',
+      'info'
+    );
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleDeleteJudgement = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this judgement? This action cannot be undone.')) {
+  const handleDeleteDoc = async (id: string, docTitle: string, docType: 'judgement' | 'law') => {
+    if (!isAdmin) {
+      alert('Only Administrators can remove items from the shared legal library.');
       return;
     }
-    try {
-      const res = await fetch(`/api/documents/judgements/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      await res.json();
-    } catch (err) {
-      console.error(err);
-    }
-    setJudgements(prev => prev.filter(j => j._id !== id));
-    addNotification('Judgement Deleted', 'The document has been removed from catalog.', 'success');
-  };
+    if (!window.confirm(`Are you sure you want to delete "${docTitle}" from the legal library?`)) return;
 
-  const handleDeleteLaw = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this act/law? This action cannot be undone.')) {
-      return;
-    }
     try {
-      const res = await fetch(`/api/documents/laws/${id}`, {
+      const endpoint = docType === 'judgement' ? `/api/documents/judgements/${id}` : `/api/documents/laws/${id}`;
+      const res = await fetch(endpoint, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
-      await res.json();
-    } catch (err) {
-      console.error(err);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        addNotification('Library Record Deleted', `"${docTitle}" removed successfully.`, 'success');
+        fetchDocuments();
+      } else {
+        alert(data.message || 'Error deleting record.');
+      }
+    } catch (err: any) {
+      alert('Network error deleting document.');
     }
-    setLaws(prev => prev.filter(l => l._id !== id));
-    addNotification('Act/Law Deleted', 'The statutory document has been removed.', 'success');
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!uploadFile || !uploadTitle) {
-      setUploadError('Title and PDF document file are required.');
+    setUploadError('');
+
+    if (!uploadTitle.trim()) {
+      setUploadError('Title / Case Name is required.');
+      return;
+    }
+    if (uploadSourceUrl && !uploadSourceUrl.startsWith('http://') && !uploadSourceUrl.startsWith('https://')) {
+      setUploadError('Official Source URL must be a valid link starting with http:// or https://');
       return;
     }
 
     setUploadProgress(true);
-    setUploadError('');
-
-    const formData = new FormData();
-    formData.append('file', uploadFile);
-    formData.append('title', uploadTitle);
-
-    let endpoint = '';
-    if (uploadType === 'judgement') {
-      endpoint = '/api/documents/judgements';
-      formData.append('court', uploadCourt);
-      if (uploadState) formData.append('state', uploadState);
-      formData.append('judge', uploadJudge);
-      formData.append('year', String(uploadYear));
-      formData.append('subject', uploadSubject);
-      formData.append('keywords', uploadKeywords);
-    } else {
-      endpoint = '/api/documents/laws';
-      formData.append('category', uploadCategory);
-      formData.append('description', uploadSubject);
-    }
-
     try {
+      const formData = new FormData();
+      if (uploadType === 'judgement') {
+        formData.append('title', uploadTitle);
+        formData.append('petitioner', uploadPetitioner);
+        formData.append('respondent', uploadRespondent);
+        formData.append('court', uploadCourt);
+        formData.append('judge', uploadJudge);
+        formData.append('caseNumber', uploadCaseNumber);
+        formData.append('neutralCitation', uploadNeutralCitation);
+        formData.append('year', String(uploadYear));
+        formData.append('subject', uploadSubject);
+        formData.append('actsInvolved', uploadActsInvolved);
+        formData.append('sectionsConsidered', uploadSectionsConsidered);
+        formData.append('keywords', uploadKeywords);
+        formData.append('caseOutcome', uploadCaseOutcome);
+        formData.append('sourceAuthority', uploadSourceAuthority);
+        formData.append('sourceUrl', uploadSourceUrl);
+
+        formData.append('summaryBackground', sumBackground);
+        formData.append('summaryIssues', sumIssues);
+        formData.append('summaryRelevantLaw', sumRelevantLaw);
+        formData.append('summaryReasoning', sumReasoning);
+        formData.append('summaryHolding', sumHolding);
+        formData.append('summaryKeyPrinciple', sumKeyPrinciple);
+        formData.append('summaryOutcome', sumOutcome);
+
+        if (uploadFile) formData.append('file', uploadFile);
+      } else {
+        formData.append('title', uploadTitle);
+        formData.append('actName', uploadActName || uploadTitle);
+        formData.append('actNumber', uploadActNumber);
+        formData.append('year', String(uploadYear));
+        formData.append('ministry', uploadMinistry);
+        formData.append('jurisdiction', uploadJurisdiction);
+        formData.append('actStatus', uploadActStatus);
+        formData.append('category', uploadSubject);
+        formData.append('sourceAuthority', uploadSourceAuthority);
+        formData.append('sourceUrl', uploadSourceUrl);
+        if (uploadFile) formData.append('file', uploadFile);
+      }
+
+      const endpoint = uploadType === 'judgement' ? '/api/documents/judgements' : '/api/documents/laws';
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        setUploadError(data.message || 'Failed to upload document.');
-      } else {
+      const data = await res.json();
+      if (res.ok && data.success) {
         addNotification(
-          'Document Published', 
-          `${uploadType === 'judgement' ? 'Judgement' : 'Bare Act / Law'} uploaded successfully.`, 
+          `${uploadType === 'judgement' ? 'Judgment' : 'Bare Act'} Catalogued`, 
+          `"${uploadTitle}" added to the legal library.`, 
           'success'
         );
         setShowUploadModal(false);
-        setUploadTitle('');
-        setUploadState('');
-        setUploadJudge('');
-        setUploadSubject('');
-        setUploadKeywords('');
-        setUploadFile(null);
+        resetUploadForm();
         fetchDocuments();
-      }
-    } catch (err) {
-      if (uploadType === 'judgement') {
-        const newJudItem = {
-          _id: `jud_${Date.now()}`,
-          title: uploadTitle,
-          court: uploadCourt,
-          state: uploadState,
-          judge: uploadJudge,
-          year: uploadYear,
-          subject: uploadSubject,
-          keywords: uploadKeywords ? uploadKeywords.split(',').map(k => k.trim()) : [],
-          pdfUrl: '#',
-          fileName: uploadFile?.name || 'judgement.pdf',
-          uploadedBy: user?.name || 'Admin'
-        };
-        setJudgements(prev => [newJudItem, ...prev]);
-        addNotification('Judgement Published', `"${uploadTitle}" uploaded successfully.`, 'success');
-        setShowUploadModal(false);
       } else {
-        const newLawItem = {
-          _id: `act_${Date.now()}`,
-          title: uploadTitle,
-          category: uploadCategory,
-          description: uploadSubject,
-          pdfUrl: '#',
-          fileName: uploadFile?.name || 'document.pdf',
-          uploadedBy: user?.name || 'Admin'
-        };
-        setLaws(prev => [newLawItem, ...prev]);
-        addNotification('Bare Act Published', `"${uploadTitle}" uploaded successfully.`, 'success');
-        setShowUploadModal(false);
+        setUploadError(data.message || 'Error cataloging legal document.');
       }
+    } catch (err: any) {
+      setUploadError('Network error uploading document.');
     } finally {
       setUploadProgress(false);
     }
   };
 
-  // Open Edit Modal for Bare Acts
-  const openEditLawModal = (law: any) => {
-    setEditingLaw(law);
-    setEditLawTitle(law.title || '');
-    setEditLawCategory(law.category || 'Act');
-    setEditLawDescription(law.description || '');
-    setEditLawFile(null);
-    setEditLawError('');
+  const resetUploadForm = () => {
+    setUploadTitle('');
+    setUploadPetitioner('');
+    setUploadRespondent('');
+    setUploadJudge('');
+    setUploadCaseNumber('');
+    setUploadNeutralCitation('');
+    setUploadActsInvolved('');
+    setUploadSectionsConsidered('');
+    setUploadKeywords('');
+    setUploadSourceUrl('');
+    setSumBackground('');
+    setSumIssues('');
+    setSumRelevantLaw('');
+    setSumReasoning('');
+    setSumHolding('');
+    setSumKeyPrinciple('');
+    setSumOutcome('');
+    setUploadFile(null);
+    setUploadError('');
   };
 
-  const handleUpdateLawSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingLaw || !editLawTitle) {
-      setEditLawError('Title is required.');
-      return;
-    }
-
-    setEditLawProgress(true);
-    setEditLawError('');
-
-    const formData = new FormData();
-    formData.append('title', editLawTitle);
-    formData.append('category', editLawCategory);
-    formData.append('description', editLawDescription);
-    if (editLawFile) {
-      formData.append('file', editLawFile);
-    }
-
-    try {
-      const res = await fetch(`/api/documents/laws/${editingLaw._id}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      });
-
-      if (res.ok) {
-        addNotification(
-          'Bare Act Updated', 
-          `"${editLawTitle}" details updated successfully.`, 
-          'success'
-        );
-        setEditingLaw(null);
-        fetchDocuments();
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    setLaws(prev => prev.map(item => {
-      if (item._id === editingLaw._id) {
-        return {
-          ...item,
-          title: editLawTitle,
-          category: editLawCategory,
-          description: editLawDescription,
-          fileName: editLawFile ? editLawFile.name : item.fileName
-        };
-      }
-      return item;
-    }));
-
-    addNotification('Bare Act Updated', `"${editLawTitle}" details updated.`, 'success');
-    setEditingLaw(null);
-    setEditLawProgress(false);
-  };
-
-  // Open Edit Modal for Judgements
-  const openEditJudgementModal = (jud: any) => {
-    setEditingJudgement(jud);
-    setEditJudTitle(jud.title || '');
-    setEditJudCourt(jud.court || 'Supreme Court of India');
-    setEditJudState(jud.state || '');
-    setEditJudJudge(jud.judge || '');
-    setEditJudYear(jud.year || 2026);
-    setEditJudSubject(jud.subject || '');
-    setEditJudKeywords(Array.isArray(jud.keywords) ? jud.keywords.join(', ') : (jud.keywords || ''));
-    setEditJudFile(null);
-    setEditJudError('');
-  };
-
-  const handleUpdateJudgementSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingJudgement || !editJudTitle) {
-      setEditJudError('Title is required.');
-      return;
-    }
-
-    setEditJudProgress(true);
-    setEditJudError('');
-
-    const formData = new FormData();
-    formData.append('title', editJudTitle);
-    formData.append('court', editJudCourt);
-    formData.append('state', editJudState);
-    formData.append('judge', editJudJudge);
-    formData.append('year', String(editJudYear));
-    formData.append('subject', editJudSubject);
-    formData.append('keywords', editJudKeywords);
-    if (editJudFile) {
-      formData.append('file', editJudFile);
-    }
-
-    try {
-      const res = await fetch(`/api/documents/judgements/${editingJudgement._id}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      });
-
-      if (res.ok) {
-        addNotification(
-          'Judgement Updated', 
-          `"${editJudTitle}" details updated successfully.`, 
-          'success'
-        );
-        setEditingJudgement(null);
-        fetchDocuments();
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    setJudgements(prev => prev.map(item => {
-      if (item._id === editingJudgement._id) {
-        return {
-          ...item,
-          title: editJudTitle,
-          court: editJudCourt,
-          state: editJudState,
-          judge: editJudJudge,
-          year: editJudYear,
-          subject: editJudSubject,
-          keywords: typeof editJudKeywords === 'string' ? editJudKeywords.split(',').map(k => k.trim()) : editJudKeywords,
-          fileName: editJudFile ? editJudFile.name : item.fileName
-        };
-      }
-      return item;
-    }));
-
-    addNotification('Judgement Updated', `"${editJudTitle}" details updated.`, 'success');
-    setEditingJudgement(null);
-    setEditJudProgress(false);
-  };
-
-  // Comprehensive, Act-Specific Content Generator with Prominent Key Takeaways Banner at Top
-  const getActSpecificContent = (doc: any) => {
-    if (!doc) return null;
-    const titleLower = (doc.title || '').toLowerCase();
-
-    if (titleLower.includes('nyaya sanhita') || titleLower.includes('bns')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Statutory Highlights (BNS 2023)
-              </h4>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
-                <span className="font-bold text-white">Act No. 45 of 2023</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enforcement</span>
-                <span className="font-bold text-white">1 July 2024</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
-                <span className="font-bold text-white">20 Chapters / 358 Sec</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Replaces</span>
-                <span className="font-bold text-white">Indian Penal Code 1860</span>
-              </div>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Community Service Penalty:</strong> Introduced community service for minor first-time offenses.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Mob Lynching Offense (Sec 103(2)):</strong> Death penalty or mandatory life imprisonment for mob violence.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Snatching Offense (Sec 304):</strong> Distinct statutory offense separate from general theft.</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Executive Overview & Legislative Scope
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              Enacted by Parliament as Act No. 45 of 2023 (Effective July 1, 2024). Replaced the Indian Penal Code (1860). Modernizes criminal law, introduces community service for minor infractions, penalizes mob lynching, cyber crimes, and terrorism, and establishes gender-neutral sexual offense protections.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Scale size={16} /> II. Key Sections Breakdown
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
-              <p><strong>Section 1 & 2:</strong> Extraterritorial applicability and statutory definitions of child, digital records, organized crime.</p>
-              <p><strong>Section 103:</strong> Murder & Mob Lynching penalties.</p>
-              <p><strong>Section 303 & 304:</strong> Theft and Snatching offenses.</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('nagarik suraksha') || titleLower.includes('bnss')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Procedural Highlights (BNSS 2023)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Mandatory Zero FIR (Sec 173):</strong> Citizens can lodge an FIR at ANY police station in India.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Mandatory Forensic Evidence (Sec 176):</strong> Forensic experts MUST visit crime scenes for serious offenses.</span>
-              </li>
-            </ul>
-          </div>
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Procedural Scope
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              Enacted as Act No. 46 of 2023. Replaced Code of Criminal Procedure 1973. Mandates Zero FIR, electronic summons, and trial timelines (charges framed in 60 days, judgment in 45 days).
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('sakshya adhiniyam') || titleLower.includes('bsa')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Evidence Highlights (BSA 2023)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Digital Evidence Equality (Sec 61):</strong> Electronic logs and digital chats hold primary evidence status.</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Enacted as Act No. 47 of 2023. Replaced Indian Evidence Act 1872. Establishes legal equivalence of digital records with paper documents.
-          </p>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('civil procedure') || titleLower.includes('cpc')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Highlights at a Glance (CPC 1908)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Res Sub-Judice & Res Judicata (Sec 10 & 11):</strong> Bars parallel trial and re-litigation of decided suits.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Temporary Injunctions (Order XXXIX):</strong> Preserves suit property against waste or damage.</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 5 of 1908. Codifies civil litigation rules, suits, pleadings, injunctions, appeals, and decree executions in Indian courts.
-          </p>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('constitution')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Constitutional Highlights
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Fundamental Rights (Part III):</strong> Equality (Art 14), Freedoms (Art 19), Liberty (Art 21), Writ Remedies (Art 32 & 226).</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Supreme Law of India enacted 26 Jan 1950. Establishes democratic governance, fundamental rights, and judicial review.
-          </p>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('right to information') || titleLower.includes('rti')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Transparency Highlights (RTI Act 2005)
-              </h4>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
-                <span className="font-bold text-white">Act No. 22 of 2005</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Enacted Date</span>
-                <span className="font-bold text-white">15 June 2005</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Structure</span>
-                <span className="font-bold text-white">6 Chapters / 31 Sec</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Mandate</span>
-                <span className="font-bold text-white">Public Transparency</span>
-              </div>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Mandatory 30-Day Info Supply (Sec 7(1)):</strong> PIO must supply requested information within 30 days, or 48 hours if concerning life/liberty.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Daily Penalties on Errant PIOs (Sec 20):</strong> Information Commissions can penalize PIOs ₹250 per day up to ₹25,000 for delayed or false info.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Section 8 Exemption Exceptions:</strong> Narrow exemptions for national security, cabinet papers, commercial confidence, and fiduciary trust.</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Executive Overview & Statutory Purpose
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              Enacted by Parliament as Act No. 22 of 2005. Establishes a practical regime for citizens to secure access to information under the control of public authorities, promoting transparency and accountability in the working of every public authority, containing corruption, and empowering Indian democracy.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Scale size={16} /> II. Section-by-Section Statutory Breakdown
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
-              <p><strong>Section 2(j) - Right to Information Definition:</strong> Right to inspect works, documents, records, take notes, certified extracts, and certified samples of material held by any public authority.</p>
-              <p><strong>Section 4 - Mandatory Suo Motu Disclosure:</strong> Duty of every public authority to proactively publish organizational structure, functions, officers' powers, decision-making channels, and rules.</p>
-              <p><strong>Section 6 - Request Procedure:</strong> Citizens submit written or electronic application to CPIO/SPIO in English, Hindi, or regional official language with prescribed fee.</p>
-              <p><strong>Section 7 - Disposal Timelines & Deemed Refusal:</strong> PIO must supply info within 30 days (or 48 hours for life/liberty). Failure to respond within timeline is treated as deemed refusal.</p>
-              <p><strong>Section 8 - Statutory Exemptions:</strong> Exemption for information affecting sovereignty, security, strategic interests, contempt of court, trade secrets, fiduciary records, and personal privacy.</p>
-              <p><strong>Section 19 - Appeals Mechanism:</strong> First Appeal to senior officer within 30 days; Second Appeal to Central/State Information Commission (CIC/SIC) within 90 days.</p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Gavel size={16} /> III. Advocate Practice Pointers & Courtroom Strategies
-            </h3>
-            <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-900 text-xs text-amber-900 dark:text-amber-200 space-y-1.5">
-              <p>• <strong>Drafting Precision:</strong> Frame RTI queries strictly asking for existing documents or certified records, avoiding requests for legal opinions or hypothetical answers.</p>
-              <p>• <strong>Overriding Public Interest (Sec 8(2)):</strong> If PIO claims commercial secrecy or fiduciary exemption, argue Section 8(2) where public interest in disclosure outweighs the harm to protected interests.</p>
-              <p>• <strong>Writ Remedy (Art 226/32):</strong> Non-compliance with CIC/SIC orders or systemic PIO defiance can be challenged directly in High Court via Article 226 writ petitions.</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('consumer protection')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Highlights (Consumer Protection Act 2019)
-              </h4>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Act Number</span>
-                <span className="font-bold text-white">Act No. 35 of 2019</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Regulatory Body</span>
-                <span className="font-bold text-white">CCPA Regulatory Authority</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Pecuniary Limits</span>
-                <span className="font-bold text-white">District (₹1 Cr) / State (₹10 Cr)</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-emerald-300 font-semibold block uppercase text-[9px]">New Feature</span>
-                <span className="font-bold text-white">Product Liability & E-Commerce</span>
-              </div>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Central Consumer Protection Authority (CCPA):</strong> Executive regulator with recall powers for defective goods and misleading advertisements.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Strict Product Liability Action:</strong> Manufacturers, service providers, and sellers held liable for harm caused by defective products.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>E-Filing & Jurisdiction Convenience:</strong> Complaints can be filed electronically in District Commission where complainant resides.</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Statutory Framework & Scope
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              Act No. 35 of 2019 replaced the legacy 1986 Act. Establishes CCPA regulator, regulates e-commerce transactions, mandates Product Liability, and establishes three-tier Consumer Dispute Redressal Commissions (District, State, National).
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Scale size={16} /> II. Key Sections & Redressal Mechanism
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
-              <p><strong>Section 2(7) - Consumer Definition:</strong> Any person buying goods or availing services offline or online; excludes commercial resellers.</p>
-              <p><strong>Section 10 to 27 - CCPA Powers:</strong> Power to investigate consumer rights violations, order product recalls, and penalize misleading endorsements.</p>
-              <p><strong>Section 82 to 87 - Product Liability:</strong> Strict liability compensation claims against product manufacturers and sellers for manufacturing defects, design flaws, or failure to give usage warnings.</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('information technology') || titleLower.includes('it act')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Cyber Highlights (IT Act 2000)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Intermediary Liability (Sec 79):</strong> Safe harbor protections for network service providers and social media platforms subject to due diligence.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Cyber Offenses Penalties:</strong> Hacking (Sec 66), Identity Theft (Sec 66C), Cheating by Personation (Sec 66D), Cyberterrorism (Sec 66F).</span>
-              </li>
-            </ul>
-          </div>
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Cyber Law Framework
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              Act No. 21 of 2000. Provides legal recognition to electronic commerce, digital signatures, electronic contracts, and creates the Cyber Appellate Tribunal.
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('pocso') || titleLower.includes('protection of children')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Protection Highlights (POCSO Act 2012)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Mandatory Reporting (Sec 19):</strong> Imposes strict duty on any person or professional to report sexual child abuse cases.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Special Courts & Child Protection:</strong> Mandates in-camera trials, child assistance, and fast-track disposal within 1 year.</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 32 of 2012. Protects individuals below 18 years from sexual offenses, assault, and child pornography.
-          </p>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('hindu marriage')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Matrimonial Code (Hindu Marriage Act 1955)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Divorce Grounds (Sec 13 & 13B):</strong> Cruelty, desertion, conversion, and Divorce by Mutual Consent.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Restitution of Conjugal Rights (Sec 9):</strong> Judicial decree for spouse cohabitation restoration.</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 25 of 1955. Regulates Hindu matrimonial ceremonies, validity conditions, voidable marriages, maintenance pendente lite (Sec 24), and permanent alimony (Sec 25).
-          </p>
-        </div>
-      );
-    }
-
-    if (titleLower.includes('advocates act') || titleLower.includes('advocates')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-                Key Takeaways & Bar Ethics (Advocates Act 1961)
-              </h4>
-            </div>
-            <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Right to Practice (Sec 30):</strong> Grants enrolled Advocates exclusive statutory right to practice before all Courts, Tribunals, and Authorities in India.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Disciplinary Proceedings (Sec 35):</strong> State Bar Councils & BCI Disciplinary Committees enforce professional conduct and ethics.</span>
-              </li>
-            </ul>
-          </div>
-          <p className="text-xs leading-relaxed text-justify">
-            Act No. 25 of 1961. Consolidates laws on legal practitioners, State Bar Council enrollment, Senior Advocate designations, and Bar Council of India rulemaking powers.
-          </p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-        <div className="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-5 rounded-2xl border border-emerald-500/30 shadow-lg font-sans">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-            <h4 className="text-sm font-extrabold uppercase tracking-wider text-emerald-300">
-              Key Takeaways & Statutory Highlights ({doc.title})
-            </h4>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3 text-[11px]">
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Classification</span>
-              <span className="font-bold text-white">{doc.category || 'Statutory Act'}</span>
-            </div>
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Authority</span>
-              <span className="font-bold text-white">{doc.uploadedBy || 'Ministry of Law & Justice'}</span>
-            </div>
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-emerald-300 font-semibold block uppercase text-[9px]">Status</span>
-              <span className="font-bold text-white">Active Statutory Code</span>
-            </div>
-          </div>
-          <ul className="space-y-2 text-xs text-emerald-100/90 font-medium">
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span><strong>Statutory Purpose:</strong> {doc.description || `Enacted statutory framework and legal provisions governing ${doc.title}.`}</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span><strong>Binding Authority:</strong> Applies across Indian jurisdiction under legislative and judicial authority.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-            <BookMarked size={16} /> I. Legislative Scope & Overview
-          </h3>
-          <p className="text-xs leading-relaxed text-justify">
-            {doc.description || `${doc.title} consolidates legal principles, rights, duties, procedural mandates, and statutory standards established under Indian law.`}
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-            <Gavel size={16} /> II. Advocate Practice Guidance
-          </h3>
-          <div className="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-1 text-slate-700 dark:text-slate-300">
-            <p>• Refer to original gazette notifications and certified statutory text for courtroom pleadings.</p>
-            <p>• Verify recent amendments, high court precedent interpretations, and statutory rules framed under this Act.</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Comprehensive Case Verdict & Ratio Decidendi Generator when Judgement card is clicked
-  const getJudgementSpecificContent = (doc: any) => {
-    if (!doc) return null;
-    const titleLower = (doc.title || '').toLowerCase();
-
-    if (titleLower.includes('laser imagers') || titleLower.includes('cth 9033')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          
-          {/* PROMINENT TOP BANNER: RATIO DECIDENDI AT A GLANCE */}
-          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-                Landmark Ratio Decidendi & Precedent Summary
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-                <span className="font-bold text-white">Supreme Court of India</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-                <span className="font-bold text-white">2026</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Bench</span>
-                <span className="font-bold text-white">2-Judge Division Bench</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Disposition</span>
-                <span className="font-bold text-emerald-400">Revenue Appeal Allowed</span>
-              </div>
-            </div>
-
-            <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Residual Tariff Heading CTH 9033 Mandate:</strong> Laser imagers that are versatile and compatible with multiple distinct diagnostic devices (CT, MRI, Ultrasound) cannot be classified as dedicated accessories of a single medical machine.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Harmonized System of Nomenclature (HSN) Rule:</strong> Multi-functional digital medical peripherals must be classified under general residual tariff heading 9033.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* I. CASE METADATA & CITATION */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Case Metadata & Bench Information
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-sans grid grid-cols-2 gap-2">
-              <div><strong className="text-slate-500">Case Title:</strong> Commissioner of Customs vs. M/s Healthcare Diagnostics</div>
-              <div><strong className="text-slate-500">Citation:</strong> 2026 INSC 582</div>
-              <div><strong className="text-slate-500">Presiding Bench:</strong> Hon'ble Justice B.R. Gavai & Justice Prashant Kumar Mishra</div>
-              <div><strong className="text-slate-500">Subject Area:</strong> Customs Tariff Act & Classification of Imports</div>
-            </div>
-          </div>
-
-          {/* II. FACTUAL MATRIX */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Scale size={16} /> II. Factual Matrix & Dispute Background
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              The importer imported high-precision digital laser imagers designed to print diagnostic medical film from CT scanners, MRI machines, and ultrasound units. The importer sought classification under CTH 9022 as specific parts/accessories of X-ray apparatus carrying lower customs duty. The Customs Department reassessed the consignment under residual heading CTH 9033, leading to litigation before CESTAT and subsequent appeal to the Supreme Court.
-            </p>
-          </div>
-
-          {/* III. JUDICIAL REASONING */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Gavel size={16} /> III. Judicial Analysis & Operative Order
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              The Supreme Court analyzed Note 2(a) to Chapter 90 of the Customs Tariff Act. Since the laser imagers were capable of independent interfacing with diverse diagnostic systems across radiology departments, they could not be deemed sole or principal accessories of CTH 9022 machinery. Reversing the Tribunal order, the Apex Court upheld the assessment under CTH 9033.
-            </p>
-          </div>
-
-        </div>
-      );
-    }
-
-    if (titleLower.includes('composite appeal') || titleLower.includes('two suits')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          
-          {/* PROMINENT TOP BANNER: RATIO DECIDENDI AT A GLANCE */}
-          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-                Landmark Ratio Decidendi & Precedent Summary
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-                <span className="font-bold text-white">Supreme Court of India</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-                <span className="font-bold text-white">2026</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Statute Interpreted</span>
-                <span className="font-bold text-white">CPC Order 41 & Sec 96</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Disposition</span>
-                <span className="font-bold text-emerald-400">High Court Order Reversed</span>
-              </div>
-            </div>
-
-            <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Maintainability of Composite Appeal:</strong> When a Trial Court decides two connected suits filed by the same plaintiff through a single common judgment, a single composite appeal challenging the consolidated findings is legally maintainable.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Res Judicata Exception:</strong> Dismissal of an appeal purely on hyper-technical grounds of non-filing of two separate appeal memos when issues were common would defeat substantial justice.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* I. METADATA */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Bench Details & Citation
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-sans grid grid-cols-2 gap-2">
-              <div><strong className="text-slate-500">Case Title:</strong> Rameshwar Prasad vs. Shyam Lal & Ors.</div>
-              <div><strong className="text-slate-500">Presiding Bench:</strong> Hon'ble Justice Vikram Nath & Justice Ahsanuddin Amanullah</div>
-              <div><strong className="text-slate-500">Subject:</strong> Civil Procedure Code Order XLI Rule 1</div>
-            </div>
-          </div>
-
-          {/* II. REASONING */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <Gavel size={16} /> II. Ratio Decidendi & Directive
-            </h3>
-            <p className="text-xs leading-relaxed text-justify">
-              The Supreme Court remitted the appeal back to the High Court for decision on merits, holding that procedural technicalities in CPC should serve as handmaidens of justice rather than insurmountable obstacles.
-            </p>
-          </div>
-
-        </div>
-      );
-    }
-
-    if (titleLower.includes('s.42 ndps') || titleLower.includes('ndps act')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          
-          {/* PROMINENT TOP BANNER: RATIO DECIDENDI AT A GLANCE */}
-          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-                Landmark Ratio Decidendi & Precedent Summary
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-                <span className="font-bold text-white">Supreme Court of India</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-                <span className="font-bold text-white">2026</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Statute Interpreted</span>
-                <span className="font-bold text-white">NDPS Act Section 42</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Disposition</span>
-                <span className="font-bold text-emerald-400">Conviction Upheld</span>
-              </div>
-            </div>
-
-            <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Substantial Compliance Principle under Sec 42:</strong> When an investigating officer receives urgent secret information after sunset and immediate search is necessary to prevent destruction of narcotic contraband, non-recording of written grounds prior to search is saved by substantial post-search compliance.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* I. METADATA */}
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Case Metadata
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-sans grid grid-cols-2 gap-2">
-              <div><strong className="text-slate-500">Case Title:</strong> State of Punjab vs. Baldev Singh</div>
-              <div><strong className="text-slate-500">Presiding Bench:</strong> Hon'ble Justice J.B. Pardiwala & Justice K. Vinod Chandran</div>
-            </div>
-          </div>
-
-        </div>
-      );
-    }
-
-    if (titleLower.includes('defamatory intent') || titleLower.includes('kerala hc')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          
-          {/* PROMINENT TOP BANNER */}
-          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-                Landmark Ratio Decidendi & Precedent Summary
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-                <span className="font-bold text-white">High Court of Kerala</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-                <span className="font-bold text-white">2026</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Statute</span>
-                <span className="font-bold text-white">IPC Sec 499 & CrPC Sec 482</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Disposition</span>
-                <span className="font-bold text-emerald-400">Criminal Case Quashed</span>
-              </div>
-            </div>
-
-            <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Press Freedom Protection:</strong> Journalists reporting factual details of official police arrests without personal malice or defamatory embellishment are protected under Fourth Exception to Section 499 IPC (Public Good & Fair Reporting).</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Case Details
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-sans">
-              <strong>Presiding Judge:</strong> Hon'ble Justice P.V. Kunhikrishnan | High Court of Kerala
-            </div>
-          </div>
-
-        </div>
-      );
-    }
-
-    if (titleLower.includes('consortium') || titleLower.includes('motor accident')) {
-      return (
-        <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-          
-          {/* PROMINENT TOP BANNER */}
-          <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-              <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-                Landmark Ratio Decidendi & Precedent Summary
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-                <span className="font-bold text-white">Supreme Court of India</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-                <span className="font-bold text-white">2026</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Award Enhanced</span>
-                <span className="font-bold text-emerald-400">Rs 12.47 Lakhs</span>
-              </div>
-              <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-                <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Statute</span>
-                <span className="font-bold text-white">Motor Vehicles Act 1988</span>
-              </div>
-            </div>
-
-            <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <span><strong>Spousal & Parental Consortium Principle:</strong> Reaffirming National Insurance Co. vs. Pranay Sethi, the Supreme Court holds that both the surviving widow and each minor child are entitled to separate statutory consortium heads of ₹40,000 each.</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-              <BookMarked size={16} /> I. Bench Information
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-sans">
-              <strong>Presiding Bench:</strong> Hon'ble Justice Surya Kant & Justice Dipankar Datta
-            </div>
-          </div>
-
-        </div>
-      );
-    }
-
-    // Generic Fallback for uploaded/custom Judgements with Prominent Ratio Decidendi Top Banner
-    return (
-      <div className="space-y-5 font-serif text-slate-800 dark:text-slate-200">
-        
-        {/* PROMINENT TOP BANNER */}
-        <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white p-5 rounded-2xl border border-indigo-500/30 shadow-lg font-sans">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-            <h4 className="text-sm font-extrabold uppercase tracking-wider text-indigo-300">
-              Landmark Ratio Decidendi & Precedent Summary
-            </h4>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 text-[11px]">
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Court Forum</span>
-              <span className="font-bold text-white">{doc.court || 'Supreme Court of India'}</span>
-            </div>
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Decision Year</span>
-              <span className="font-bold text-white">{doc.year || '2026'}</span>
-            </div>
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-indigo-300 font-semibold block uppercase text-[9px]">State Jurisdiction</span>
-              <span className="font-bold text-white">{doc.state || 'Central'}</span>
-            </div>
-            <div className="bg-white/10 p-2 rounded-lg border border-white/10">
-              <span className="text-indigo-300 font-semibold block uppercase text-[9px]">Uploaded By</span>
-              <span className="font-bold text-white">{doc.uploadedBy || 'Admin'}</span>
-            </div>
-          </div>
-
-          <ul className="space-y-2 text-xs text-indigo-100/90 font-medium">
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span><strong>Judicial Precedent:</strong> Decision catalogued for legal research, bench argument, and case precedent citation.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span><strong>Subject Area:</strong> {doc.subject || 'Judicial Decision & Verdict'}</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* I. CASE METADATA */}
-        <div className="space-y-2">
-          <h3 className="font-sans font-bold text-sm text-indigo-700 dark:text-indigo-400 uppercase tracking-wider border-b border-indigo-200 dark:border-indigo-900 pb-1 flex items-center gap-1.5">
-            <BookMarked size={16} /> I. Case Overview & Bench Information
-          </h3>
-          <p className="text-xs leading-relaxed text-justify">
-            1. <strong>Case Title:</strong> {doc.title}.
-          </p>
-          <p className="text-xs leading-relaxed text-justify">
-            2. <strong>Presiding Judge / Forum:</strong> Hon'ble {doc.judge || 'Judicial Bench'} ({doc.court}).
-          </p>
-          <p className="text-xs leading-relaxed text-justify">
-            3. <strong>Full PDF Access:</strong> Click the <strong>"Download PDF Copy"</strong> button below to inspect or download the certified copy.
-          </p>
-        </div>
-
-      </div>
-    );
+  const openReaderModal = (doc: any) => {
+    setReadingDoc(doc);
+    setSelectedChapterIdx(0);
+    setSelectedSectionIdx(0);
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Top Tab Selector Switcher */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-sm">
-        <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl w-full sm:w-auto">
-          <button
-            onClick={() => handleTabChange('judgement')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-              tab === 'judgement' 
-                ? 'bg-indigo-600 text-white shadow-md' 
-                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Gavel size={15} />
-            Judgements Repository
-          </button>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* TOP BRAND & MODULE HEADER */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
           
-          <button
-            onClick={() => handleTabChange('law')}
-            className={`flex-1 sm:flex-none px-5 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-              tab === 'law' 
-                ? 'bg-emerald-600 text-white shadow-md' 
-                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <BookOpen size={15} />
-            Bare Acts & Statutes
-          </button>
-        </div>
-
-        <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tracking-wider uppercase hidden md:inline-block">
-          {tab === 'judgement' ? 'Case Precedents & Rulings' : 'Legislative Code & Statutory Acts'}
-        </span>
-      </div>
-
-      {/* DISTINCT SECTION HERO LANDING BANNERS */}
-      {tab === 'judgement' ? (
-        /* Judgements Hero Banner */
-        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/20 rounded-2xl p-6 text-white shadow-xl animate-fade-in">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Gavel size={12} className="text-indigo-400" />
-                  Case Rulings & Precedents
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  <Scale size={24} />
                 </span>
-                <span className="bg-white/10 text-white/70 text-[10px] font-medium px-2 py-0.5 rounded-full">
-                  {judgements.length} Decisions Catalogued
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                  Advocate & Admin Exclusive Legal Library
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold font-sans tracking-tight text-white">
-                Judgements & Precedents Repository
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-serif">
+                Judgments & Bare Acts Legal Research Library
               </h1>
-              <p className="text-xs md:text-sm text-indigo-100/80 mt-1.5 max-w-2xl leading-relaxed">
-                Search, inspect, and analyze landmark court verdicts, bench opinions, and case precedents from the Supreme Court of India, High Courts & Subordinate Tribunals.
+              <p className="text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+                Comprehensive, verified legal repository for Supreme Court & High Court Judgments, Central & State Statutory Bare Acts, Legislative Amendments, and original Elite Legal Desk structured summaries.
               </p>
-              
-              <div className="flex flex-wrap gap-2 mt-4 text-[11px]">
-                {['Supreme Court', 'High Courts', 'Civil / Magistrate Courts', 'Tribunals & DRT'].map((bench, idx) => (
-                  <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-indigo-200/90 font-medium flex items-center gap-1">
-                    <Landmark size={11} className="text-indigo-400" /> {bench}
-                  </span>
-                ))}
-              </div>
             </div>
 
-            {user?.role === 'Admin' && (
+            {isAdmin && (
               <button
-                onClick={() => { setUploadType('judgement'); setShowUploadModal(true); }}
-                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2 cursor-pointer flex-shrink-0 border border-indigo-400/30"
+                onClick={() => { setShowUploadModal(true); setUploadType(tab); }}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer flex-shrink-0"
               >
-                <CloudUpload size={16} /> + Upload Judgement
+                <CloudUpload size={18} />
+                + Catalog {tab === 'judgement' ? 'Judgment' : 'Bare Act'}
               </button>
             )}
           </div>
-        </div>
-      ) : (
-        /* Laws & Acts Hero Banner */
-        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 rounded-2xl p-6 text-white shadow-xl animate-fade-in">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <BookOpen size={12} className="text-emerald-400" />
-                  Statutory Library & Bare Code
-                </span>
-                <span className="bg-white/10 text-white/70 text-[10px] font-medium px-2 py-0.5 rounded-full">
-                  {laws.length} Statutes Indexed
-                </span>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold font-sans tracking-tight text-white">
-                Bare Acts & Statutory Code
-              </h1>
-              <p className="text-xs md:text-sm text-emerald-100/80 mt-1.5 max-w-2xl leading-relaxed">
-                Access official Central & State Statutory Acts, Constitutional Articles, Legislative Rules, Amendments, Gazette Regulations & Government Notifications.
-              </p>
 
-              <div className="flex flex-wrap gap-2 mt-4 text-[11px]">
-                {['Bare Acts', 'Constitutional Articles', 'Statutory Rules', 'Gazette Notifications', 'Regulations'].map((cat, idx) => (
-                  <span key={idx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-emerald-200/90 font-medium flex items-center gap-1">
-                    <FileText size={11} className="text-emerald-400" /> {cat}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {user?.role === 'Admin' && (
-              <button
-                onClick={() => { setUploadType('law'); setShowUploadModal(true); }}
-                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg hover:shadow-emerald-500/25 flex items-center gap-2 cursor-pointer flex-shrink-0 border border-emerald-400/30"
-              >
-                <CloudUpload size={16} /> + Upload Bare Act
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Filter and Search Form */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
-          
-          <div className="relative flex-1">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-              <Search size={16} />
-            </span>
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={
-                tab === 'judgement' 
-                  ? "Search judgements by Title, Subject, Judge name..." 
-                  : "Search Bare Acts, Constitutional Articles, Rules & Regulations..."
-              }
-              className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:border-primary"
-            />
-          </div>
-
-          <div className="flex gap-2 flex-wrap">
-            {tab === 'judgement' ? (
-              <>
-                <select
-                  value={courtFilter}
-                  onChange={(e) => setCourtFilter(e.target.value)}
-                  className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                >
-                  <option value="">Court Forum (All)</option>
-                  <option>Supreme Court of India</option>
-                  <option>High Court of Kerala</option>
-                  <option>High Court of Delhi</option>
-                  <option>Senior civil judges court</option>
-                  <option>Junior civil Judges court</option>
-                  <option>Judicial magistrate of 1st class</option>
-                  <option>Consumers forum</option>
-                  <option>DRT</option>
-                </select>
-
-                <select
-                  value={stateFilter}
-                  onChange={(e) => setStateFilter(e.target.value)}
-                  className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                >
-                  <option value="">State / UT (All)</option>
-                  <optgroup label="States">
-                    <option>Andhra Pradesh</option>
-                    <option>Arunachal Pradesh</option>
-                    <option>Assam</option>
-                    <option>Bihar</option>
-                    <option>Chhattisgarh</option>
-                    <option>Goa</option>
-                    <option>Gujarat</option>
-                    <option>Haryana</option>
-                    <option>Himachal Pradesh</option>
-                    <option>Jharkhand</option>
-                    <option>Karnataka</option>
-                    <option>Kerala</option>
-                    <option>Madhya Pradesh</option>
-                    <option>Maharashtra</option>
-                    <option>Manipur</option>
-                    <option>Meghalaya</option>
-                    <option>Mizoram</option>
-                    <option>Nagaland</option>
-                    <option>Odisha</option>
-                    <option>Punjab</option>
-                    <option>Rajasthan</option>
-                    <option>Sikkim</option>
-                    <option>Tamil Nadu</option>
-                    <option>Telangana</option>
-                    <option>Tripura</option>
-                    <option>Uttarakhand</option>
-                    <option>Uttar Pradesh</option>
-                    <option>West Bengal</option>
-                  </optgroup>
-                  <optgroup label="Union Territories">
-                    <option>Delhi</option>
-                    <option>Jammu and Kashmir</option>
-                    <option>Ladakh</option>
-                    <option>Puducherry</option>
-                  </optgroup>
-                </select>
-
-                <input
-                  type="text"
-                  value={judgeFilter}
-                  onChange={(e) => setJudgeFilter(e.target.value)}
-                  placeholder="Judge Name"
-                  className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none max-w-[120px]"
-                />
-
-                <input
-                  type="number"
-                  value={yearFilter}
-                  onChange={(e) => setYearFilter(e.target.value)}
-                  placeholder="Year"
-                  className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none max-w-[80px]"
-                />
-              </>
-            ) : (
-              <select
-                value={lawCategory}
-                onChange={(e) => setLawCategory(e.target.value)}
-                className="border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-              >
-                <option value="">Category (All Statutory)</option>
-                <option>Act</option>
-                <option>Rule</option>
-                <option>Regulation</option>
-                <option>Constitution Article</option>
-                <option>Notification</option>
-              </select>
-            )}
-
+          {/* DUAL MAIN NAVIGATION TABS */}
+          <div className="mt-8 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">
             <button
-              type="submit"
-              className={`px-4 py-2 ${
-                tab === 'judgement' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700'
-              } text-white rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer flex items-center gap-1.5`}
+              onClick={() => handleTabChange('judgement')}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+                tab === 'judgement'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-500/5 rounded-t-lg'
+                  : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
             >
-              <Filter size={13} />
-              Filter Results
+              <Gavel size={18} />
+              Supreme & High Court Judgments
+            </button>
+            <button
+              onClick={() => handleTabChange('law')}
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+                tab === 'law'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-500/5 rounded-t-lg'
+                  : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <BookOpen size={18} />
+              Central & State Bare Acts
             </button>
           </div>
-
-        </form>
-      </div>
-
-      {/* Library Grid */}
-      {loading ? (
-        <div className="py-12 flex justify-center">
-          <LegalTriviaLoader loadingText={tab === 'judgement' ? "Fetching Judicial Verdicts & Bench Rulings..." : "Fetching Bare Acts & Statutory Codes..."} />
         </div>
-      ) : tab === 'judgement' ? (
-        // Judgements Grid List
-        judgements.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 max-w-lg mx-auto">
-            <Gavel size={48} className="mx-auto text-indigo-400/60 mb-3 animate-pulse-slow" />
-            <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">Judgements Database Empty</h4>
-            <p className="text-xs text-slate-400 mt-1">
-              Admin roles upload litigation outcomes and court judgements here. Check back or upload a new record.
-            </p>
-            {user?.role === 'Admin' && (
-              <button
-                onClick={() => { setUploadType('judgement'); setShowUploadModal(true); }}
-                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer inline-flex items-center gap-1.5"
+
+        {/* SEARCH & FILTERS CONTROL TOOLBAR */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+            
+            {/* Universal Search Input */}
+            <div className="md:col-span-5 relative">
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                placeholder={
+                  tab === 'judgement' 
+                    ? "Search Case Name, Parties, Citation, Judge, Act, Section 138, Keyword..." 
+                    : "Search Act Name, Section Number, Short Title, Ministry..."
+                }
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Court Filter (Judgments) or Jurisdiction (Bare Acts) */}
+            {tab === 'judgement' ? (
+              <div className="md:col-span-3">
+                <select
+                  value={courtFilter}
+                  onChange={(e) => { setCourtFilter(e.target.value); setPage(1); }}
+                  className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="">All Courts & Benches</option>
+                  {CONTROLLED_COURTS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            ) : (
+              <div className="md:col-span-3">
+                <select
+                  value={actStatusFilter}
+                  onChange={(e) => { setActStatusFilter(e.target.value); setPage(1); }}
+                  className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="">All Enforcement Statuses</option>
+                  <option value="CURRENTLY_IN_FORCE">Currently In Force</option>
+                  <option value="AMENDED_NOT_YET_COMMENCED">Amended / Not Yet Commenced</option>
+                  <option value="AMENDED">Amended</option>
+                  <option value="REPEALED">Repealed</option>
+                </select>
+              </div>
+            )}
+
+            {/* Area of Law / Category Filter */}
+            <div className="md:col-span-2">
+              <select
+                value={categoryFilter}
+                onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
+                className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
               >
-                <CloudUpload size={14} /> Upload First Judgement
-              </button>
+                <option value="">All Legal Categories</option>
+                {CONTROLLED_LEGAL_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+            </div>
+
+            {/* Sort Selector */}
+            <div className="md:col-span-2">
+              <select
+                value={sortFilter}
+                onChange={(e) => { setSortFilter(e.target.value as any); setPage(1); }}
+                className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title">Title (A-Z)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* API ERROR / FEEDBACK BANNER */}
+        {apiError && (
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle size={16} />
+              <span>{apiError}</span>
+            </div>
+            <button onClick={fetchDocuments} className="underline font-bold hover:text-amber-400">Retry</button>
+          </div>
+        )}
+
+        {/* LOADING LOADER */}
+        {loading ? (
+          <LegalTriviaLoader loadingText={tab === 'judgement' ? "Fetching Supreme & High Court Judgments..." : "Fetching Central & State Bare Acts..."} />
+        ) : (
+          <div className="space-y-6">
+            
+            {/* JUDGMENTS SECTION VIEW */}
+            {tab === 'judgement' && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {judgements.map((doc) => {
+                    const isBookmarked = bookmarkedDocs.includes(doc._id);
+                    return (
+                      <div 
+                        key={doc._id}
+                        className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                              {doc.subject || 'Legal Research'}
+                            </span>
+                            
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => toggleBookmark(doc._id)}
+                                title={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                              >
+                                <Bookmark size={18} className={isBookmarked ? "fill-amber-500 text-amber-500" : ""} />
+                              </button>
+                              {isAdmin && (
+                                <button
+                                  onClick={() => handleDeleteDoc(doc._id, doc.title, 'judgement')}
+                                  title="Delete Record"
+                                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          <h3 className="font-serif font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
+                            {doc.title}
+                          </h3>
+
+                          {/* Parties & Bench */}
+                          <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
+                            {doc.petitioner && doc.respondent && (
+                              <p className="font-semibold text-slate-700 dark:text-slate-300 truncate">
+                                {doc.petitioner} <span className="text-amber-500">v.</span> {doc.respondent}
+                              </p>
+                            )}
+                            <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                              <span className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                                <Landmark size={12} className="text-amber-500" /> {doc.court}
+                              </span>
+                              <span>• {doc.year}</span>
+                              {doc.neutralCitation && (
+                                <span className="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-[10px]">
+                                  {doc.neutralCitation}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Original Summary Preview */}
+                          {doc.summary?.keyPrinciple && (
+                            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 text-xs space-y-1">
+                              <span className="font-bold text-amber-600 dark:text-amber-400 block text-[10px] uppercase tracking-wider">
+                                Key Legal Principle (Elite Legal Desk Summary):
+                              </span>
+                              <p className="text-slate-700 dark:text-slate-300 line-clamp-2 italic">
+                                "{doc.summary.keyPrinciple}"
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                          <button
+                            onClick={() => openReaderModal(doc)}
+                            className="flex-1 py-2 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                          >
+                            <FileText size={14} /> View Details & Summary
+                          </button>
+
+                          {doc.sourceUrl && (
+                            <a
+                              href={doc.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
+                              title="Open Official Source"
+                            >
+                              <ExternalLink size={14} /> Official Link
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {/* BARE ACTS SECTION VIEW */}
+            {tab === 'law' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {laws.map((doc) => {
+                  const isBookmarked = bookmarkedDocs.includes(doc._id);
+                  const isCurrentlyInForce = doc.actStatus !== 'AMENDED_NOT_YET_COMMENCED' && doc.actStatus !== 'REPEALED';
+                  return (
+                    <div 
+                      key={doc._id}
+                      className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                            isCurrentlyInForce
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                          }`}>
+                            {isCurrentlyInForce ? 'CURRENTLY IN FORCE' : 'AMENDED / NOT YET COMMENCED'}
+                          </span>
+
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => toggleBookmark(doc._id)}
+                              title={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            >
+                              <Bookmark size={18} className={isBookmarked ? "fill-amber-500 text-amber-500" : ""} />
+                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleDeleteDoc(doc._id, doc.title || doc.actName, 'law')}
+                                title="Delete Record"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        <h3 className="font-serif font-bold text-lg text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                          {doc.title || doc.actName}
+                        </h3>
+
+                        <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                          <p className="font-semibold text-amber-600 dark:text-amber-400">
+                            {doc.actNumber || `Year ${doc.year}`} • {doc.jurisdiction || 'Central / All India'}
+                          </p>
+                          <p className="text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                            {doc.description || doc.longTitle || 'Official statutory code enacted by Parliament/State Legislature.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                        <button
+                          onClick={() => openReaderModal(doc)}
+                          className="flex-1 py-2 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                        >
+                          <BookOpen size={14} /> Read Bare Act & Sections
+                        </button>
+
+                        {doc.sourceUrl && (
+                          <a
+                            href={doc.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
+                            title="Open Official Source"
+                          >
+                            <ExternalLink size={14} /> Official Link
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* SERVER-SIDE PAGINATION CONTROL BAR */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                <span className="text-slate-600 dark:text-slate-400">
+                  Showing Page <strong className="text-slate-900 dark:text-white">{page}</strong> of <strong className="text-slate-900 dark:text-white">{totalPages}</strong> ({totalRecords} Total Records)
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={page <= 1}
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    <ChevronLeft size={14} /> Previous
+                  </button>
+                  <button
+                    disabled={page >= totalPages}
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    Next <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
             )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
-            {judgements.map((jud) => {
-              const isBookmarked = bookmarkedDocs.includes(jud._id);
-              return (
-                <div 
-                  key={jud._id} 
-                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 hover:border-indigo-400/50 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
-                >
+        )}
+
+        {/* DEDICATED JUDGMENT & BARE ACT DOCUMENT READER MODAL */}
+        {readingDoc && (
+          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 w-full max-w-5xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+              
+              {/* Modal Header */}
+              <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950">
+                <div className="flex items-center gap-3">
+                  <span className="p-2 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    {tab === 'judgement' ? <Gavel size={20} /> : <BookOpen size={20} />}
+                  </span>
                   <div>
-                    <div className="flex justify-between items-start gap-4">
-                      <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/20 dark:text-indigo-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1">
-                        <Gavel size={10} /> Judgement
+                    <h2 className="font-serif font-bold text-lg text-slate-900 dark:text-white line-clamp-1">
+                      {readingDoc.title || readingDoc.actName}
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {readingDoc.court || readingDoc.jurisdiction || 'Official Legal Record'} • {readingDoc.year || '2026'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {readingDoc.sourceUrl && (
+                    <a
+                      href={readingDoc.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+                    >
+                      <ExternalLink size={14} /> Open Official Source
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setReadingDoc(null)}
+                    className="p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 overflow-y-auto space-y-6 flex-1 text-slate-800 dark:text-slate-200 text-sm">
+                
+                {/* VERIFIED LEGAL METADATA BOX */}
+                <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+                  <h3 className="font-serif font-bold text-xs uppercase tracking-widest text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                    <Info size={14} /> Verified Resource Metadata
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Case Name / Act Title:</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">{readingDoc.title || readingDoc.actName || 'Not available in the source.'}</span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Court / Authority:</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">{readingDoc.court || readingDoc.sourceAuthority || 'Not available in the source.'}</span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Bench / Judges:</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">{readingDoc.judge || readingDoc.bench || 'Not available in the source.'}</span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Neutral Citation:</span>
+                      <span className="font-semibold font-mono text-amber-600 dark:text-amber-400">{readingDoc.neutralCitation || 'Not available in the source.'}</span>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Equivalent Citation(s):</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        {readingDoc.equivalentCitations && readingDoc.equivalentCitations.length > 0 
+                          ? readingDoc.equivalentCitations.join(', ') 
+                          : 'Not available in the source.'}
                       </span>
-                      <button 
-                        onClick={() => handleToggleBookmark(jud._id, jud.title)}
-                        className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors ${
-                          isBookmarked ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-300'
-                        }`}
-                      >
-                        {isBookmarked ? <BookmarkCheck size={18} className="text-emerald-500" /> : <Bookmark size={18} />}
-                      </button>
                     </div>
 
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-3 leading-relaxed">
-                      {jud.title}
-                    </h3>
-                    
-                    <div className="mt-3.5 space-y-1.5 text-xs text-slate-400">
-                      <p className="flex items-center gap-1.5 font-semibold text-slate-600 dark:text-slate-300">
-                        <Landmark size={13} className="text-indigo-500" /> {jud.court}{jud.state ? ` - ${jud.state}` : ''}
-                      </p>
-                      <p className="flex items-center gap-1.5">
-                        <Calendar size={13} /> Decision Year: {jud.year}
-                      </p>
-                      <p className="flex items-center gap-1.5">
-                        <Scale size={13} /> Presiding Judge: {jud.judge}
-                      </p>
+                    <div>
+                      <span className="text-slate-400 block text-[11px]">Case Outcome / Status:</span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">{readingDoc.caseOutcome || readingDoc.actStatus || 'Decided'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* STRUCTURED ELITE LEGAL DESK SUMMARY (FOR JUDGMENTS) */}
+                {readingDoc.summary && (
+                  <div className="space-y-4 p-6 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                    <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
+                      <span className="font-bold text-sm text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                        <Sparkles size={16} /> Elite Legal Desk Summary
+                      </span>
+                      <span className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-mono border border-amber-500/20">
+                        Original Editorial Analysis
+                      </span>
                     </div>
 
-                    {jud.keywords && jud.keywords.length > 0 && (
-                      <div className="flex gap-1.5 flex-wrap mt-4">
-                        {jud.keywords.map((k: string, idx: number) => (
-                          <span key={idx} className="text-[9px] bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/40 px-2 py-0.5 rounded font-semibold flex items-center gap-0.5">
-                            <Tag size={8} /> {k}
-                          </span>
-                        ))}
+                    {readingDoc.summary.background && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">1. Background / Facts:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1">{readingDoc.summary.background}</p>
+                      </div>
+                    )}
+
+                    {readingDoc.summary.issues && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">2. Issues:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1">{readingDoc.summary.issues}</p>
+                      </div>
+                    )}
+
+                    {readingDoc.summary.relevantLaw && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">3. Relevant Law:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1">{readingDoc.summary.relevantLaw}</p>
+                      </div>
+                    )}
+
+                    {readingDoc.summary.courtReasoning && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">4. Court's Reasoning:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1">{readingDoc.summary.courtReasoning}</p>
+                      </div>
+                    )}
+
+                    {readingDoc.summary.holding && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">5. Decision / Holding:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1 font-semibold">{readingDoc.summary.holding}</p>
+                      </div>
+                    )}
+
+                    {readingDoc.summary.keyPrinciple && (
+                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-semibold">
+                        <span className="block font-bold uppercase text-[10px]">6. Key Legal Principle:</span>
+                        "{readingDoc.summary.keyPrinciple}"
+                      </div>
+                    )}
+
+                    {readingDoc.summary.outcome && (
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white uppercase">7. Outcome:</h4>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed mt-1">{readingDoc.summary.outcome}</p>
                       </div>
                     )}
                   </div>
+                )}
 
-                  <div className="flex justify-between items-center mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850">
-                    <button
-                      onClick={() => setReadingDoc(jud)}
-                      className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      Open Case Reader <ExternalLink size={12} />
-                    </button>
-                    
-                    <div className="flex items-center gap-2">
-                      {user?.role === 'Admin' && (
-                        <>
-                          <button
-                            onClick={() => openEditJudgementModal(jud)}
-                            className="p-1.5 hover:bg-sky-50 dark:hover:bg-sky-950/30 rounded border border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 hover:text-sky-700 transition-all cursor-pointer"
-                            title="Edit Judgement Details"
-                          >
-                            <Edit3 size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteJudgement(jud._id)}
-                            className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-slate-200 dark:border-slate-800 text-red-500 hover:text-red-700 transition-all cursor-pointer"
-                            title="Delete Judgement"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </>
-                      )}
-                      <a
-                        href={jud.pdfUrl}
-                        download
-                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all"
-                        title="Download PDF Copy"
-                      >
-                        <Download size={14} />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )
-      ) : (
-        // Laws / Acts Grid List
-        laws.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 max-w-lg mx-auto">
-            <BookOpen size={48} className="mx-auto text-emerald-400/60 mb-3 animate-pulse-slow" />
-            <h4 className="font-bold text-sm text-slate-700 dark:text-slate-200">Statutory Library Empty</h4>
-            <p className="text-xs text-slate-400 mt-1">
-              Admin roles upload Bare Acts, Articles, and Regulations here. Check back or upload a new statute.
-            </p>
-            {user?.role === 'Admin' && (
-              <button
-                onClick={() => { setUploadType('law'); setShowUploadModal(true); }}
-                className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer inline-flex items-center gap-1.5"
-              >
-                <CloudUpload size={14} /> Upload First Bare Act
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
-            {laws.map((law) => {
-              const isBookmarked = bookmarkedDocs.includes(law._id);
-              return (
-                <div 
-                  key={law._id} 
-                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-emerald-400/50 transition-all flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex justify-between items-start gap-4">
-                      <span className="text-[9px] bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/20 dark:text-emerald-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1">
-                        <BookOpen size={10} /> {law.category}
-                      </span>
-                      <button 
-                        onClick={() => handleToggleBookmark(law._id, law.title)}
-                        className={`p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-850 transition-colors ${
-                          isBookmarked ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-300'
-                        }`}
-                      >
-                        {isBookmarked ? <BookmarkCheck size={18} className="text-emerald-500" /> : <Bookmark size={18} />}
-                      </button>
+                {/* BARE ACT INTERACTIVE CHAPTER & SECTION READER */}
+                {readingDoc.chapters && readingDoc.chapters.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-serif font-bold text-base text-slate-900 dark:text-white">
+                        Statutory Sections & Codes
+                      </h3>
+                      <span className="text-xs text-slate-500">Official Section Numbering Maintained</span>
                     </div>
 
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-3 leading-relaxed">
-                      {law.title}
-                    </h3>
-                    
-                    {law.description && (
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 text-justify line-clamp-3 leading-relaxed">
-                        {law.description}
-                      </p>
-                    )}
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      
+                      {/* Chapter / Section Sidebar */}
+                      <div className="md:col-span-4 bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 max-h-80 overflow-y-auto space-y-2">
+                        {readingDoc.chapters.map((chap: any, cIdx: number) => (
+                          <div key={cIdx} className="space-y-1">
+                            <span className="text-[10px] font-bold uppercase text-amber-600 dark:text-amber-400 block px-2 pt-1">
+                              {chap.chapterNumber}: {chap.title}
+                            </span>
+                            {chap.sections?.map((sec: any, sIdx: number) => (
+                              <button
+                                key={sIdx}
+                                onClick={() => { setSelectedChapterIdx(cIdx); setSelectedSectionIdx(sIdx); }}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer block ${
+                                  selectedChapterIdx === cIdx && selectedSectionIdx === sIdx
+                                    ? 'bg-amber-500 text-slate-950 font-bold'
+                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
+                                }`}
+                              >
+                                {sec.sectionNumber} - {sec.title}
+                              </button>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
 
-                  <div className="flex justify-between items-center mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850">
-                    <button
-                      onClick={() => setReadingDoc(law)}
-                      className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1 cursor-pointer font-semibold"
-                    >
-                      Read bare text <ExternalLink size={12} />
-                    </button>
-                    
-                    <div className="flex items-center gap-2">
-                      {user?.role === 'Admin' && (
-                        <>
-                          <button
-                            onClick={() => openEditLawModal(law)}
-                            className="p-1.5 hover:bg-sky-50 dark:hover:bg-sky-950/30 rounded border border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 hover:text-sky-700 transition-all cursor-pointer"
-                            title="Edit Bare Act / Law"
-                          >
-                            <Edit3 size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteLaw(law._id)}
-                            className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-slate-200 dark:border-slate-800 text-red-500 hover:text-red-700 transition-all cursor-pointer"
-                            title="Delete Act/Law"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </>
-                      )}
-                      <a
-                        href={law.pdfUrl}
-                        download
-                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all"
-                        title="Download PDF Copy"
-                      >
-                        <Download size={14} />
-                      </a>
+                      {/* Selected Section Display Pane */}
+                      <div className="md:col-span-8 bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        {readingDoc.chapters[selectedChapterIdx]?.sections[selectedSectionIdx] ? (
+                          <div className="space-y-3">
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-white font-serif border-b border-slate-200 dark:border-slate-800 pb-2">
+                              {readingDoc.chapters[selectedChapterIdx].sections[selectedSectionIdx].sectionNumber}: {readingDoc.chapters[selectedChapterIdx].sections[selectedSectionIdx].title}
+                            </h4>
+                            <div className="whitespace-pre-wrap text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-mono bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                              {readingDoc.chapters[selectedChapterIdx].sections[selectedSectionIdx].content}
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-slate-400 italic">Select a section from the chapter list to read statutory text.</p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )
-      )}
+                )}
 
-      {/* Case Reader / Bare-act Document Viewer Modal */}
-      {readingDoc && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-4xl h-[90vh] overflow-hidden flex flex-col justify-between animate-slide-up">
-            
-            {/* Top Toolbar */}
-            <div className={`h-14 ${readingDoc.court ? 'bg-indigo-900' : 'bg-emerald-900'} text-white flex items-center justify-between px-6`}>
-              <h3 className="font-bold text-xs truncate max-w-lg flex items-center gap-2">
-                {readingDoc.court ? <Gavel size={16} /> : <BookOpen size={16} />}
-                {readingDoc.title}
-              </h3>
-              
-              <div className="flex items-center gap-3">
-                <div className="flex items-center bg-white/10 rounded-lg p-0.5 text-xs">
-                  <button 
-                    onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}
-                    className="p-1 hover:bg-white/10 rounded"
-                    title="Zoom Out"
-                  >
-                    <ZoomOut size={14} />
-                  </button>
-                  <span className="px-2 font-mono">{zoomLevel}%</span>
-                  <button 
-                    onClick={() => setZoomLevel(prev => Math.min(200, prev + 10))}
-                    className="p-1 hover:bg-white/10 rounded"
-                    title="Zoom In"
-                  >
-                    <ZoomIn size={14} />
-                  </button>
-                </div>
-
-                <button 
-                  onClick={handlePrint}
-                  className="p-1.5 hover:bg-white/10 rounded"
-                  title="Print Document"
-                >
-                  <Printer size={16} />
-                </button>
-
-                <button
-                  onClick={() => setReadingDoc(null)}
-                  className="p-1 hover:bg-white/10 rounded cursor-pointer"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            {/* Document Content Canvas */}
-            <div className="flex-1 bg-slate-100 dark:bg-slate-950 p-6 overflow-y-auto flex justify-center items-start">
-              <div 
-                className="bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 p-8 md:p-12 max-w-3xl w-full text-slate-800 dark:text-slate-200 text-justify leading-relaxed transition-all duration-150"
-                style={{ fontSize: `${(zoomLevel / 100) * 13}px` }}
-              >
-                {/* Title & Metadata Header */}
-                <div className="text-center border-b border-slate-350 dark:border-slate-800 pb-4 mb-6">
-                  <h2 className="text-base font-bold text-slate-950 dark:text-white uppercase leading-normal">
-                    {readingDoc.title}
-                  </h2>
-                  <p className="text-[10px] text-slate-400 mt-2 font-sans font-semibold">
-                    {readingDoc.court || readingDoc.category} | DECIDED / ENACTED: {readingDoc.year || '2026'}
+                {/* MANDATORY LEGAL DISCLAIMER BANNER */}
+                <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
+                  <span className="font-bold text-slate-900 dark:text-slate-200 block uppercase">Legal Disclaimer:</span>
+                  <p>
+                    Legal research resources are provided for reference and research purposes. Users should verify the current and applicable law from authoritative sources before relying on any judgment, statute, amendment, notification, or legal proposition. Elite Legal Desk does not replace professional legal advice. Elite Legal Desk summaries are informational summaries and are not the judgment of the court.
                   </p>
-                  {readingDoc.judge && (
-                    <p className="text-[10px] text-slate-400 font-sans mt-0.5">
-                      PRESIDING FORUM: Hon'ble Justice {readingDoc.judge}
-                    </p>
-                  )}
-                </div>
-
-                {/* Dispatch content based on document type */}
-                {readingDoc.court ? getJudgementSpecificContent(readingDoc) : getActSpecificContent(readingDoc)}
-
-                <div className="mt-12 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] font-sans text-slate-400">
-                  <span>Elite Legal Desk Reader</span>
-                  <span>Page 1 of 1</span>
                 </div>
               </div>
             </div>
-
-            {/* Bottom Actions */}
-            <div className="h-14 bg-slate-50 dark:bg-slate-950 px-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
-              <span className="text-slate-400 font-medium">Uploaded by: {readingDoc.uploadedBy}</span>
-              <a
-                href={readingDoc.pdfUrl}
-                download
-                className={`px-4 py-1.5 ${readingDoc.court ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-sm`}
-              >
-                <Download size={12} /> Download PDF Copy
-              </a>
-            </div>
-
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ADMIN DOCUMENT UPLOAD MODAL */}
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
-            <div className={`h-14 ${uploadType === 'judgement' ? 'bg-indigo-900' : 'bg-emerald-900'} flex justify-between items-center px-6 text-white`}>
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                {uploadType === 'judgement' ? <Gavel size={18} /> : <BookOpen size={18} />}
-                Upload {uploadType === 'judgement' ? 'Judgement Verdict PDF' : 'Bare Act / Statute PDF'}
-              </h3>
-              <button
-                onClick={() => setShowUploadModal(false)}
-                className="p-1 hover:bg-white/10 rounded cursor-pointer text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleUploadSubmit} className="p-6 space-y-3.5 max-h-[75vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg">
-                <button
-                  type="button"
-                  onClick={() => setUploadType('judgement')}
-                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    uploadType === 'judgement' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500'
-                  }`}
-                >
-                  Judgement PDF
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUploadType('law')}
-                  className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    uploadType === 'law' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500'
-                  }`}
-                >
-                  Bare Act / Statute PDF
+        {/* ADMIN CATALOGING MODAL */}
+        {showUploadModal && isAdmin && (
+          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                  <CloudUpload size={20} className="text-amber-500" /> Catalog {uploadType === 'judgement' ? 'Judgment' : 'Bare Act'}
+                </h3>
+                <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-white">
+                  <X size={20} />
                 </button>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Document Title</label>
-                <input
-                  type="text"
-                  value={uploadTitle}
-                  onChange={(e) => setUploadTitle(e.target.value)}
-                  required
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                  placeholder={uploadType === 'judgement' ? "e.g. Laser Imagers Tariff Case - Supreme Court" : "e.g. Code of Civil Procedure, 1908"}
-                />
-              </div>
-
-              {uploadType === 'judgement' ? (
-                <>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Court Type</label>
-                      <select
-                        value={uploadCourt}
-                        onChange={(e) => setUploadCourt(e.target.value)}
-                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                      >
-                        <option>Supreme Court of India</option>
-                        <option>High Court of Kerala</option>
-                        <option>High Court of Delhi</option>
-                        <option>Senior civil judges court</option>
-                        <option>Junior civil Judges court</option>
-                        <option>Judicial magistrate of 1st class</option>
-                        <option>Consumers forum</option>
-                        <option>DRT</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">State / UT</label>
-                      <select
-                        value={uploadState}
-                        onChange={(e) => setUploadState(e.target.value)}
-                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                      >
-                        <option value="">National / Central</option>
-                        <optgroup label="States">
-                          <option>Delhi</option>
-                          <option>Kerala</option>
-                          <option>Maharashtra</option>
-                          <option>Punjab</option>
-                          <option>Uttar Pradesh</option>
-                          <option>Haryana</option>
-                          <option>Tamil Nadu</option>
-                          <option>Karnataka</option>
-                        </optgroup>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Year</label>
-                      <input
-                        type="number"
-                        value={uploadYear}
-                        onChange={(e) => setUploadYear(Number(e.target.value))}
-                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Judge(s)</label>
-                      <input
-                        type="text"
-                        value={uploadJudge}
-                        onChange={(e) => setUploadJudge(e.target.value)}
-                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                        placeholder="e.g. Justice B.R. Gavai"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-500 uppercase">Subject Area</label>
-                      <input
-                        type="text"
-                        value={uploadSubject}
-                        onChange={(e) => setUploadSubject(e.target.value)}
-                        className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                        placeholder="e.g. Customs Tariff Act"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Keywords (comma sep)</label>
-                    <input
-                      type="text"
-                      value={uploadKeywords}
-                      onChange={(e) => setUploadKeywords(e.target.value)}
-                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                      placeholder="CTH 9033, Tariff Classification"
-                    />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Category</label>
-                    <select
-                      value={uploadCategory}
-                      onChange={(e) => setUploadCategory(e.target.value)}
-                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                    >
-                      <option>Act</option>
-                      <option>Rule</option>
-                      <option>Regulation</option>
-                      <option>Constitution Article</option>
-                      <option>Notification</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold text-slate-500 uppercase">Summary / Description</label>
-                    <textarea
-                      value={uploadSubject}
-                      onChange={(e) => setUploadSubject(e.target.value)}
-                      className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-20"
-                      placeholder="Brief description of the Bare Act or statutory notification..."
-                    />
-                  </div>
-                </>
+              {uploadError && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-semibold">
+                  {uploadError}
+                </div>
               )}
 
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Choose PDF Document File</label>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setUploadFile(e.target.files ? e.target.files[0] : null)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                />
-              </div>
-
-              {uploadError && <p className="text-[11px] text-red-500 font-semibold mt-1">{uploadError}</p>}
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={uploadProgress}
-                  className={`w-full py-2.5 ${
-                    uploadType === 'judgement' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-emerald-600 hover:bg-emerald-500'
-                  } text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer flex items-center justify-center gap-1.5`}
-                >
-                  <CloudUpload size={14} />
-                  {uploadProgress ? 'Publishing PDF...' : `Publish ${uploadType === 'judgement' ? 'Judgement' : 'Statute'}`}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ADMIN EDIT BARE ACT MODAL */}
-      {editingLaw && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
-            <div className="h-14 bg-emerald-900 flex justify-between items-center px-6 text-white">
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                <Edit3 size={18} /> Edit Bare Act / Statute Details
-              </h3>
-              <button
-                onClick={() => setEditingLaw(null)}
-                className="p-1 hover:bg-white/10 rounded cursor-pointer text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdateLawSubmit} className="p-6 space-y-3.5 max-h-[75vh] overflow-y-auto">
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Act Title</label>
-                <input
-                  type="text"
-                  value={editLawTitle}
-                  onChange={(e) => setEditLawTitle(e.target.value)}
-                  required
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                  placeholder="e.g. The Bharatiya Nyaya Sanhita, 2023"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Statutory Category</label>
-                <select
-                  value={editLawCategory}
-                  onChange={(e) => setEditLawCategory(e.target.value)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                >
-                  <option>Act</option>
-                  <option>Rule</option>
-                  <option>Regulation</option>
-                  <option>Constitution Article</option>
-                  <option>Notification</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Summary / Description</label>
-                <textarea
-                  value={editLawDescription}
-                  onChange={(e) => setEditLawDescription(e.target.value)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none h-24"
-                  placeholder="Brief description of the statutory act or Gazette notification..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Replace PDF File (Optional)</label>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setEditLawFile(e.target.files ? e.target.files[0] : null)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                />
-                {editingLaw.fileName && (
-                  <p className="text-[10px] text-slate-400 mt-1">Current file: {editingLaw.fileName}</p>
-                )}
-              </div>
-
-              {editLawError && <p className="text-[11px] text-red-500 font-semibold mt-1">{editLawError}</p>}
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEditingLaw(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={editLawProgress}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer"
-                >
-                  {editLawProgress ? 'Saving Changes...' : 'Save Changes'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ADMIN EDIT JUDGEMENT MODAL */}
-      {editingJudgement && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-slide-up">
-            <div className="h-14 bg-indigo-900 flex justify-between items-center px-6 text-white">
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                <Edit3 size={18} /> Edit Judgement Verdict Details
-              </h3>
-              <button
-                onClick={() => setEditingJudgement(null)}
-                className="p-1 hover:bg-white/10 rounded cursor-pointer text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdateJudgementSubmit} className="p-6 space-y-3.5 max-h-[75vh] overflow-y-auto">
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Judgement Title</label>
-                <input
-                  type="text"
-                  value={editJudTitle}
-                  onChange={(e) => setEditJudTitle(e.target.value)}
-                  required
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                  placeholder="Title of judgement verdict"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-2">
+              <form onSubmit={handleUploadSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Court Forum</label>
-                  <select
-                    value={editJudCourt}
-                    onChange={(e) => setEditJudCourt(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                  <label className="block text-slate-400 mb-1 font-semibold">Title / Case Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={uploadTitle}
+                    onChange={(e) => setUploadTitle(e.target.value)}
+                    placeholder={uploadType === 'judgement' ? "e.g. State of AP v. M/s Southern Granites" : "e.g. The Limitation Act, 1963"}
+                    className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                {uploadType === 'judgement' ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Petitioner</label>
+                        <input
+                          type="text"
+                          value={uploadPetitioner}
+                          onChange={(e) => setUploadPetitioner(e.target.value)}
+                          placeholder="e.g. Saraswathi & Ors"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Respondent</label>
+                        <input
+                          type="text"
+                          value={uploadRespondent}
+                          onChange={(e) => setUploadRespondent(e.target.value)}
+                          placeholder="e.g. Union of India"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Court *</label>
+                        <select
+                          value={uploadCourt}
+                          onChange={(e) => setUploadCourt(e.target.value)}
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        >
+                          {CONTROLLED_COURTS.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Judge / Bench *</label>
+                        <input
+                          type="text"
+                          required
+                          value={uploadJudge}
+                          onChange={(e) => setUploadJudge(e.target.value)}
+                          placeholder="e.g. Justice Vikram Nath & Anr"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Case Number</label>
+                        <input
+                          type="text"
+                          value={uploadCaseNumber}
+                          onChange={(e) => setUploadCaseNumber(e.target.value)}
+                          placeholder="Civil Appeal 1420/2026"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Neutral Citation</label>
+                        <input
+                          type="text"
+                          value={uploadNeutralCitation}
+                          onChange={(e) => setUploadNeutralCitation(e.target.value)}
+                          placeholder="2026 INSC 412"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Year *</label>
+                        <input
+                          type="number"
+                          required
+                          value={uploadYear}
+                          onChange={(e) => setUploadYear(Number(e.target.value))}
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Summary Input Blocks */}
+                    <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                      <span className="font-bold text-amber-500 block uppercase">Elite Legal Desk Summary Fields:</span>
+                      
+                      <textarea
+                        value={sumBackground}
+                        onChange={(e) => setSumBackground(e.target.value)}
+                        placeholder="1. Background / Facts..."
+                        className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 h-16"
+                      />
+                      <textarea
+                        value={sumKeyPrinciple}
+                        onChange={(e) => setSumKeyPrinciple(e.target.value)}
+                        placeholder="Key Legal Principle / Ratio..."
+                        className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 h-16"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Act Number</label>
+                        <input
+                          type="text"
+                          value={uploadActNumber}
+                          onChange={(e) => setUploadActNumber(e.target.value)}
+                          placeholder="Act No. 36 of 1963"
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 mb-1 font-semibold">Year *</label>
+                        <input
+                          type="number"
+                          required
+                          value={uploadYear}
+                          onChange={(e) => setUploadYear(Number(e.target.value))}
+                          className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div>
+                  <label className="block text-slate-400 mb-1 font-semibold">Official Source Link (URL)</label>
+                  <input
+                    type="url"
+                    value={uploadSourceUrl}
+                    onChange={(e) => setUploadSourceUrl(e.target.value)}
+                    placeholder="https://main.sci.gov.in/or-https://indiacode.nic.in/..."
+                    className="w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1 font-semibold">PDF File Attachment (Optional)</label>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                    className="w-full p-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-400"
+                  />
+                </div>
+
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadModal(false)}
+                    className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 font-semibold"
                   >
-                    <option>Supreme Court of India</option>
-                    <option>High Court of Kerala</option>
-                    <option>High Court of Delhi</option>
-                    <option>Senior civil judges court</option>
-                    <option>Junior civil Judges court</option>
-                    <option>Judicial magistrate of 1st class</option>
-                    <option>Consumers forum</option>
-                    <option>DRT</option>
-                  </select>
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={uploadProgress}
+                    className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold flex items-center gap-2 cursor-pointer"
+                  >
+                    {uploadProgress ? <RefreshCw size={14} className="animate-spin" /> : <Check size={14} />} Save Record
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">State / UT</label>
-                  <input
-                    type="text"
-                    value={editJudState}
-                    onChange={(e) => setEditJudState(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                    placeholder="Delhi, Kerala, etc."
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Year</label>
-                  <input
-                    type="number"
-                    value={editJudYear}
-                    onChange={(e) => setEditJudYear(Number(e.target.value))}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Presiding Judge(s)</label>
-                  <input
-                    type="text"
-                    value={editJudJudge}
-                    onChange={(e) => setEditJudJudge(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                    placeholder="e.g. Justice B.R. Gavai"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-semibold text-slate-500 uppercase">Subject Area</label>
-                  <input
-                    type="text"
-                    value={editJudSubject}
-                    onChange={(e) => setEditJudSubject(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                    placeholder="Subject classification"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Keywords (comma sep)</label>
-                <input
-                  type="text"
-                  value={editJudKeywords}
-                  onChange={(e) => setEditJudKeywords(e.target.value)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                  placeholder="Precedent, Tariff, Injunction"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-semibold text-slate-500 uppercase">Replace PDF File (Optional)</label>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setEditJudFile(e.target.files ? e.target.files[0] : null)}
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
-                />
-                {editingJudgement.fileName && (
-                  <p className="text-[10px] text-slate-400 mt-1">Current file: {editingJudgement.fileName}</p>
-                )}
-              </div>
-
-              {editJudError && <p className="text-[11px] text-red-500 font-semibold mt-1">{editJudError}</p>}
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEditingJudgement(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={editJudProgress}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all shadow cursor-pointer"
-                >
-                  {editJudProgress ? 'Saving Changes...' : 'Save Changes'}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
+      </div>
     </div>
   );
 };

@@ -52,7 +52,11 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
         if (typeof val === 'object' && val !== null) {
           if (val.$regex) {
             const regex = new RegExp(val.$regex, val.$options || 'i');
-            if (!regex.test(String(itemVal || ''))) return false;
+            if (Array.isArray(itemVal)) {
+              if (!itemVal.some((elem: any) => regex.test(String(elem || '')))) return false;
+            } else {
+              if (!regex.test(String(itemVal || ''))) return false;
+            }
           } else if (val.$in) {
             if (!Array.isArray(val.$in) || !val.$in.includes(itemVal)) return false;
           } else if (val.$ne !== undefined) {
@@ -204,24 +208,88 @@ const AdvocateSchema = new mongoose.Schema({
 
 const JudgementSchema = new mongoose.Schema({
   title: { type: String, required: true },
+  petitioner: { type: String },
+  respondent: { type: String },
   court: { type: String, required: true },
   state: { type: String },
   judge: { type: String, required: true },
+  bench: { type: String },
+  caseNumber: { type: String },
+  appealNumber: { type: String },
+  neutralCitation: { type: String },
+  equivalentCitations: { type: [String], default: [] },
+  judgmentDate: { type: String },
   year: { type: Number, required: true },
-  subject: { type: String, required: true },
+  judgmentType: { type: String, default: 'Civil Appeal' },
+  subject: { type: String, required: true }, // Area of Law
+  actsInvolved: { type: [String], default: [] },
+  sectionsConsidered: { type: [String], default: [] },
   keywords: { type: [String], default: [] },
-  pdfUrl: { type: String, required: true },
-  fileName: { type: String, required: true },
-  uploadedBy: { type: String, required: true }
+  caseOutcome: { type: String, default: 'Decided' },
+  sourceAuthority: { type: String, required: true, default: 'Supreme Court of India' },
+  sourceUrl: { type: String, required: true },
+  legalStatus: { type: String, default: 'Public Judicial Record' },
+  lastVerified: { type: String },
+  canonicalKey: { type: String, unique: true, sparse: true },
+  pdfUrl: { type: String, required: false },
+  fileName: { type: String, required: false },
+  uploadedBy: { type: String, required: true, default: 'Supreme Court Registry' },
+  summary: {
+    background: { type: String },
+    issues: { type: String },
+    relevantLaw: { type: String },
+    courtReasoning: { type: String },
+    holding: { type: String },
+    keyPrinciple: { type: String },
+    outcome: { type: String },
+    fullSummaryText: { type: String }
+  }
 }, { timestamps: true });
 
 const LawSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  category: { type: String, required: true }, // Act, Rule, Regulation, Constitution, Article
+  actName: { type: String, required: true },
+  shortTitle: { type: String },
+  actNumber: { type: String },
+  year: { type: Number, required: true },
+  enactmentDate: { type: String },
+  commencementDate: { type: String },
+  ministry: { type: String },
+  jurisdiction: { type: String, default: 'Central / All India' },
+  actStatus: { type: String, enum: ['CURRENTLY_IN_FORCE', 'AMENDED', 'AMENDED_NOT_YET_COMMENCED', 'REPEALED'], default: 'CURRENTLY_IN_FORCE' },
+  longTitle: { type: String },
+  category: { type: String, required: true }, // Act, Rule, Regulation, Constitution, Article, Controlled Category
   description: { type: String },
-  pdfUrl: { type: String, required: true },
-  fileName: { type: String, required: true },
-  uploadedBy: { type: String, required: true }
+  sourceAuthority: { type: String, default: 'India Code / Legislative Department' },
+  sourceUrl: { type: String },
+  lastVerified: { type: String },
+  canonicalKey: { type: String, unique: true, sparse: true },
+  pdfUrl: { type: String, required: false },
+  fileName: { type: String, required: false },
+  uploadedBy: { type: String, required: true, default: 'Ministry of Law & Justice' },
+  amendmentHistory: [{
+    title: { type: String },
+    date: { type: String },
+    details: { type: String }
+  }],
+  chapters: [{
+    chapterNumber: { type: String },
+    title: { type: String },
+    sections: [{
+      sectionNumber: { type: String, required: true },
+      title: { type: String, required: true },
+      content: { type: String, required: true },
+      subsections: [{
+        number: { type: String },
+        text: { type: String }
+      }]
+    }]
+  }],
+  schedules: [{
+    scheduleNumber: { type: String },
+    title: { type: String },
+    content: { type: String }
+  }]
 }, { timestamps: true });
 
 const MessageSchema = new mongoose.Schema({

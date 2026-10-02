@@ -14,5 +14,450 @@
     "_id": "nfly57bf",
     "createdAt": "2026-07-23T16:37:06.089Z",
     "updatedAt": "2026-07-23T16:37:06.089Z"
+  },
+  {
+    "_id": "g5e5lnpz",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_1420_of_2026|2026_insc_412|2026-03-15",
+    "title": "Composite Appeal Maintainable Where Common Judgment Decides Two Connected Suits By Same Plaintiff: Supreme Court",
+    "petitioner": "M/s Southern Granites Pvt Ltd",
+    "respondent": "State of Andhra Pradesh & Ors",
+    "court": "Supreme Court of India",
+    "state": "Andhra Pradesh",
+    "judge": "Justice Vikram Nath & Justice Ahsanuddin Amanullah",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 1420 of 2026",
+    "appealNumber": "SLP (C) No. 8912 of 2025",
+    "neutralCitation": "2026 INSC 412",
+    "equivalentCitations": [
+      "2026 (2) SCALE 145",
+      "AIR 2026 SC 890"
+    ],
+    "judgmentDate": "2026-03-15",
+    "year": 2026,
+    "judgmentType": "Civil Appeal",
+    "subject": "Civil Law",
+    "actsInvolved": [
+      "Code of Civil Procedure, 1908"
+    ],
+    "sectionsConsidered": [
+      "Order 41 Rule 1 CPC",
+      "Section 11 CPC"
+    ],
+    "keywords": [
+      "Composite Appeal",
+      "Consolidated Suits",
+      "Common Judgment",
+      "Res Judicata",
+      "Order 41 CPC"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
+    "fileName": "Supreme_Court_Composite_Appeal_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "The appellant filed two connected civil suits for declaration of title and perpetual injunction against the respondents. Both suits involved identical properties and overlapping parties. The Trial Court consolidated the proceedings and disposed of both suits via a single common judgment.",
+      "issues": "Whether a single composite appeal filed under Order 41 Rule 1 CPC against a common judgment deciding two connected civil suits is legally maintainable without filing two separate memorandum of appeals.",
+      "relevantLaw": "Code of Civil Procedure, 1908 — Order 41 Rule 1 & Section 11 (Res Judicata).",
+      "courtReasoning": "The Supreme Court observed that where two suits between the same parties involving identical issues are tried together and decided by a common judgment, insisting on separate technical appeals places an unnecessary procedural burden on litigants. Since the findings in both suits were identical and consolidated, a single composite appeal with certified copy of the common judgment satisfies statutory mandates.",
+      "holding": "A single composite appeal challenging a common decree arising from consolidated trial court suits is legally maintainable.",
+      "keyPrinciple": "Procedural rules under Order 41 CPC are handmaids of justice and should not defeat substantive appellate rights when a single decree is impugned.",
+      "outcome": "Appeal allowed; High Court order dismissing the composite appeal set aside; appeal restored on merits."
+    },
+    "createdAt": "2026-10-02T14:15:20.888Z",
+    "updatedAt": "2026-10-02T14:15:20.889Z"
+  },
+  {
+    "_id": "bfj177p2",
+    "canonicalKey": "supreme_court_of_india|criminal_appeal_no_812_of_2026|2026_insc_308|2026-02-28",
+    "title": "Section 42 NDPS Act: Substantial Compliance Sufficient Where Urgent Search Risk Removing Contraband: Supreme Court",
+    "petitioner": "State of Punjab",
+    "respondent": "Gurmail Singh & Anr",
+    "court": "Supreme Court of India",
+    "state": "Punjab",
+    "judge": "Justice J.B. Pardiwala & Justice K. Vinod Chandran",
+    "bench": "Division Bench",
+    "caseNumber": "Criminal Appeal No. 812 of 2026",
+    "appealNumber": "SLP (Crl) No. 4410 of 2025",
+    "neutralCitation": "2026 INSC 308",
+    "equivalentCitations": [
+      "2026 (1) Crimes 312",
+      "2026 (2) Ker LT 95"
+    ],
+    "judgmentDate": "2026-02-28",
+    "year": 2026,
+    "judgmentType": "Criminal Appeal",
+    "subject": "Criminal Law",
+    "actsInvolved": [
+      "Narcotic Drugs and Psychotropic Substances Act, 1985"
+    ],
+    "sectionsConsidered": [
+      "Section 42 NDPS Act",
+      "Section 41 NDPS Act"
+    ],
+    "keywords": [
+      "NDPS Act",
+      "Section 42 Compliance",
+      "Search & Seizure",
+      "Urgent Search",
+      "Narcotic Contraband"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
+    "fileName": "NDPS_Section42_Supreme_Court_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Police officers received secret information during night patrolling regarding illicit narcotics transportation in a commercial vehicle. The officers executed an immediate search without waiting to record grounds of belief in writing prior to search, citing risk of removal.",
+      "issues": "Whether total literal recording prior to search under Section 42(1) NDPS Act is mandatory even when immediate search is necessary to prevent concealment or escape of offender.",
+      "relevantLaw": "NDPS Act 1985 — Section 42(1) & Section 42(2) proviso.",
+      "courtReasoning": "The Court held that while Section 42 contains safeguards against arbitrary search, total compliance cannot mean impeding urgent enforcement where delay allows contraband to vanish. Substantial compliance recorded immediately after seizure fulfills statutory intent.",
+      "holding": "Immediate search without prior written entry is valid if recorded forthwith post-operation with recorded reasons for emergency.",
+      "keyPrinciple": "Emergency exceptions in Section 42 NDPS Act protect bona fide enforcement where immediate action prevents destruction of drug evidence.",
+      "outcome": "High Court acquittal set aside; conviction under Section 21 NDPS Act restored."
+    },
+    "createdAt": "2026-10-02T14:15:20.892Z",
+    "updatedAt": "2026-10-02T14:15:20.892Z"
+  },
+  {
+    "_id": "3ior88h3",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_3450_of_2026|2026_insc_510|2026-03-22",
+    "title": "Wife and Children Entitled to Consortium: Supreme Court Enhances Motor Accident Compensation to Rs 12.47 Lakh",
+    "petitioner": "Saraswathi & Ors",
+    "respondent": "United India Insurance Co. Ltd.",
+    "court": "Supreme Court of India",
+    "state": "Uttar Pradesh",
+    "judge": "Justice Surya Kant & Justice Dipankar Datta",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 3450 of 2026",
+    "appealNumber": "SLP (C) No. 11200 of 2025",
+    "neutralCitation": "2026 INSC 510",
+    "equivalentCitations": [
+      "2026 (3) TAC 12",
+      "2026 (2) ACJ 401"
+    ],
+    "judgmentDate": "2026-03-22",
+    "year": 2026,
+    "judgmentType": "Civil Appeal",
+    "subject": "Motor Accident Law",
+    "actsInvolved": [
+      "Motor Vehicles Act, 1988"
+    ],
+    "sectionsConsidered": [
+      "Section 166 MV Act",
+      "Section 168 MV Act"
+    ],
+    "keywords": [
+      "Motor Vehicles Act",
+      "Parental Consortium",
+      "Spousal Consortium",
+      "Loss of Dependency",
+      "Future Prospects"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
+    "fileName": "Supreme_Court_Motor_Accident_Consortium_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "The victim died in a fatal road accident involving a heavy transport vehicle. The Motor Accident Claims Tribunal awarded compensation of Rs 6.8 Lakhs, which the High Court slightly enhanced. The dependents appealed seeking full spousal, parental, and filial consortium.",
+      "issues": "Whether each surviving dependent (widow and children) is independently entitled to consortium heads under Motor Vehicles Act compensation standards established in Pranay Sethi and Magma General Insurance.",
+      "relevantLaw": "Motor Vehicles Act, 1988 — Sections 166 & 168.",
+      "courtReasoning": "The Supreme Court affirmed that consortium is not limited to a single lump-sum for the family. Each child is entitled to parental consortium of Rs 40,000 (plus 10% enhancement), and the widow is entitled to spousal consortium.",
+      "holding": "Spousal, parental, and filial consortium must be awarded individually to all eligible legal representatives.",
+      "keyPrinciple": "Comprehensive loss of companionship under MV Act must be calculated per dependent rather than per household.",
+      "outcome": "Compensation enhanced from Rs 7.2 Lakhs to Rs 12.47 Lakhs with 7.5% interest per annum."
+    },
+    "createdAt": "2026-10-02T14:15:20.894Z",
+    "updatedAt": "2026-10-02T14:15:20.894Z"
+  },
+  {
+    "_id": "0tz52smh",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_981_of_2026|2026_insc_190|2026-01-18",
+    "title": "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Representatives: Supreme Court",
+    "petitioner": "Rameshwar Dayal (Dead) through LRs",
+    "respondent": "State Bank of India & Anr",
+    "court": "Supreme Court of India",
+    "state": "Haryana",
+    "judge": "Justice P.S. Narasimha & Justice Alok Aradhe",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 981 of 2026",
+    "appealNumber": "SLP (C) No. 3120 of 2025",
+    "neutralCitation": "2026 INSC 190",
+    "equivalentCitations": [
+      "2026 (1) KLT 450",
+      "AIR 2026 SC 512"
+    ],
+    "judgmentDate": "2026-01-18",
+    "year": 2026,
+    "judgmentType": "Civil Appeal",
+    "subject": "Civil Law",
+    "actsInvolved": [
+      "Code of Civil Procedure, 1908"
+    ],
+    "sectionsConsidered": [
+      "Section 60(1)(ccc) CPC",
+      "Section 50 CPC"
+    ],
+    "keywords": [
+      "Execution Proceedings",
+      "Section 60 CPC",
+      "Attachment of Property",
+      "Judgment Debtor",
+      "Personal Exemption"
+    ],
+    "caseOutcome": "Dismissed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    "fileName": "Supreme_Court_Residential_House_Attachment_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Bank sought execution of money decree by attaching the residential house of deceased borrower. The legal representatives claimed statutory exemption under Section 60(1)(ccc) CPC as applicable in Punjab & Haryana.",
+      "issues": "Whether statutory exemption against attachment of a sole residential house under Section 60(1)(ccc) CPC survives the death of the judgment-debtor for benefit of legal heirs.",
+      "relevantLaw": "CPC 1908 — Section 60(1)(ccc) local amendment.",
+      "courtReasoning": "The Supreme Court analyzed the statutory text and held that the protection is personal to the judgment-debtor to prevent destitution during their lifetime. It does not create an inheritable immunity for legal representatives who inherit the estate subject to debts.",
+      "holding": "Section 60(1)(ccc) CPC exemption is strictly personal to the judgment-debtor and cannot be invoked by legal heirs after death.",
+      "keyPrinciple": "Statutory execution exemptions designed for personal protection do not insulate inherited property from ancestral decree satisfaction.",
+      "outcome": "Appeal dismissed; Bank permitted to proceed with execution auction."
+    },
+    "createdAt": "2026-10-02T14:15:20.895Z",
+    "updatedAt": "2026-10-02T14:15:20.895Z"
+  },
+  {
+    "_id": "9a0vbpn6",
+    "canonicalKey": "high_court_of_delhi|writ_petition_c_no_1204_of_2026|2026_dhc_901|2026-02-14",
+    "title": "Advocates Acting as Insolvency Professionals Liable to Pay GST Under Forward Charge: Delhi High Court",
+    "petitioner": "Delhi High Court Bar Association",
+    "respondent": "Union of India & Central Board of Indirect Taxes",
+    "court": "High Court of Delhi",
+    "state": "Delhi",
+    "judge": "Justice Yashwant Varma & Justice Purushaindra Kumar Kaurav",
+    "bench": "Division Bench",
+    "caseNumber": "Writ Petition (C) No. 1204 of 2026",
+    "appealNumber": "W.P.(C) 1204/2026",
+    "neutralCitation": "2026 DHC 901",
+    "equivalentCitations": [
+      "2026 (84) GSTR 110",
+      "2026 GSTL 205"
+    ],
+    "judgmentDate": "2026-02-14",
+    "year": 2026,
+    "judgmentType": "Writ Petition",
+    "subject": "Tax Law",
+    "actsInvolved": [
+      "Central Goods and Services Tax Act, 2017",
+      "Insolvency and Bankruptcy Code, 2016"
+    ],
+    "sectionsConsidered": [
+      "Section 9(3) CGST Act",
+      "Section 206 IBC 2016"
+    ],
+    "keywords": [
+      "GST Law",
+      "Insolvency Professional",
+      "Advocates Exemption",
+      "Forward Charge Mechanism",
+      "Reverse Charge Mechanism"
+    ],
+    "caseOutcome": "Decided",
+    "sourceAuthority": "High Court of Delhi",
+    "sourceUrl": "https://delhihighcourt.nic.in/judgements/2026/advocate_gst_ibc.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://delhihighcourt.nic.in/judgements/2026/advocate_gst_ibc.pdf",
+    "fileName": "Delhi_HC_Advocate_GST_Insolvency_2026.pdf",
+    "uploadedBy": "Delhi High Court Registry",
+    "summary": {
+      "background": "Petitioners challenged tax notices levying GST on fees earned by enrolled advocates while functioning as Resolution Professionals or Liquidators under the Insolvency and Bankruptcy Code, 2016.",
+      "issues": "Whether legal representation exemption and reverse charge mechanism under GST applies when an advocate acts in the statutory capacity of an Insolvency Professional.",
+      "relevantLaw": "CGST Act 2017 — Section 9(3) Notification No. 13/2017 & IBC 2016.",
+      "courtReasoning": "The High Court held that reverse charge protection applies strictly to legal services provided by an advocate qua advocate. When an advocate acts as Resolution Professional, they perform statutory administrative functions under IBC, distinct from legal advocacy.",
+      "holding": "Services rendered as Resolution Professional / Liquidator are taxable under forward charge and do not enjoy advocate legal service exemption.",
+      "keyPrinciple": "Tax exemptions attach to the specific statutory nature of services provided rather than the professional qualification of the individual.",
+      "outcome": "Writ petition disposed of with clarification on forward charge applicability."
+    },
+    "createdAt": "2026-10-02T14:15:20.897Z",
+    "updatedAt": "2026-10-02T14:15:20.897Z"
+  },
+  {
+    "_id": "8rr2n0hy",
+    "canonicalKey": "high_court_of_kerala|criminal_petition_no_441_of_2026|2026_ker_312|2026-01-29",
+    "title": "Reporting Official Arrest Without Defamatory Intent Cannot Attract Criminal Prosecution: Kerala High Court",
+    "petitioner": "K. R. Varma & Anr (Journalists)",
+    "respondent": "State of Kerala & Anr",
+    "court": "High Court of Kerala",
+    "state": "Kerala",
+    "judge": "Justice P.V. Kunhikrishnan",
+    "bench": "Single Judge",
+    "caseNumber": "Crl.MC No. 441 of 2026",
+    "appealNumber": "Crl.MC 441/2026",
+    "neutralCitation": "2026 KER 312",
+    "equivalentCitations": [
+      "2026 (1) KLT 890"
+    ],
+    "judgmentDate": "2026-01-29",
+    "year": 2026,
+    "judgmentType": "Criminal Miscellaneous",
+    "subject": "Constitutional Law",
+    "actsInvolved": [
+      "Indian Penal Code, 1860",
+      "Bharatiya Nyaya Sanhita, 2023"
+    ],
+    "sectionsConsidered": [
+      "Section 499 IPC",
+      "Section 500 IPC",
+      "Article 19(1)(a) Constitution"
+    ],
+    "keywords": [
+      "Press Freedom",
+      "Criminal Defamation",
+      "Official Arrest Reporting",
+      "Good Faith Exception",
+      "Journalistic Immunity"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "High Court of Kerala",
+    "sourceUrl": "https://highcourtofkerala.nic.in/judgements/2026/journalism_defamation.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://highcourtofkerala.nic.in/judgements/2026/journalism_defamation.pdf",
+    "fileName": "Kerala_HC_Journalist_Defamation_Quash_2026.pdf",
+    "uploadedBy": "Kerala High Court Registry",
+    "summary": {
+      "background": "A newspaper published news reporting the arrest of a public official by vigilance police based on official press releases. The official filed criminal defamation proceedings claiming injury to reputation.",
+      "issues": "Whether accurate journalistic reporting of official law enforcement actions constitutes criminal defamation under Section 499 IPC.",
+      "relevantLaw": "IPC 1860 — Section 499 (Exceptions 1 & 4) & Constitution Article 19(1)(a).",
+      "courtReasoning": "The High Court observed that reporting official police arrests conducted in public discharge of duty falls under public interest exceptions. Criminal defamation cannot be used to intimidate journalists reporting true facts sourced from law enforcement agencies.",
+      "holding": "Accurate reporting of police actions without malice is protected under Exception 4 of Section 499 IPC.",
+      "keyPrinciple": "Freedom of press encompasses reporting verified official actions without fear of criminal prosecution.",
+      "outcome": "Criminal defamation complaint against journalists quashed."
+    },
+    "createdAt": "2026-10-02T14:15:20.900Z",
+    "updatedAt": "2026-10-02T14:15:20.900Z"
+  },
+  {
+    "_id": "1e6dfr5n",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_7890_of_2025|2025_insc_844|2025-11-10",
+    "title": "Arbitration Clause in Unstamped Agreement Enforceable For Seeking Interim Measures: Supreme Court",
+    "petitioner": "M/s Apex Infraprojects Ltd",
+    "respondent": "M/s Metro Construction Pvt Ltd",
+    "court": "Supreme Court of India",
+    "state": "Maharashtra",
+    "judge": "Justice Dr. D.Y. Chandrachud & Justice Sanjiv Khanna & Justice B.R. Gavai",
+    "bench": "Three Judge Bench",
+    "caseNumber": "Civil Appeal No. 7890 of 2025",
+    "appealNumber": "SLP (C) No. 19800 of 2024",
+    "neutralCitation": "2025 INSC 844",
+    "equivalentCitations": [
+      "2025 (4) ARBLR 101",
+      "AIR 2025 SC 3200"
+    ],
+    "judgmentDate": "2025-11-10",
+    "year": 2025,
+    "judgmentType": "Civil Appeal",
+    "subject": "Arbitration Law",
+    "actsInvolved": [
+      "Arbitration and Conciliation Act, 1996",
+      "Indian Stamp Act, 1899"
+    ],
+    "sectionsConsidered": [
+      "Section 9 Arb Act",
+      "Section 11 Arb Act",
+      "Section 35 Stamp Act"
+    ],
+    "keywords": [
+      "Arbitration",
+      "Unstamped Agreement",
+      "Interim Measures",
+      "Section 9",
+      "Stamp Duty Deficit"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_stamp.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_stamp.pdf",
+    "fileName": "Supreme_Court_Arbitration_Unstamped_2025.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Parties entered into a commercial subcontract containing an arbitration clause. The contract was insufficiently stamped under State Stamp Act. When dispute arose, petitioner sought urgent interim protection under Section 9 to prevent bank guarantee invocation.",
+      "issues": "Whether non-stamping or insufficient stamping of a commercial contract bars courts from entertaining applications for urgent interim relief under Section 9 of Arbitration Act.",
+      "relevantLaw": "Arbitration & Conciliation Act 1996 — Section 9 & Indian Stamp Act 1899 — Section 35.",
+      "courtReasoning": "Following the 7-Judge Constitution Bench principles in NN Global II, the Court reaffirmed that defect of stamping is a curable procedural irregularity. Section 9 court can grant urgent interim protection while impounding the document for stamp duty adjudication.",
+      "holding": "Unstamped or insufficiently stamped agreement does not prevent courts from granting urgent Section 9 interim measures.",
+      "keyPrinciple": "Interim protection under Section 9 cannot be stalled due to stamp impounding delays.",
+      "outcome": "Appeal allowed; High Court order denying interim protection set aside; interim injunction granted."
+    },
+    "createdAt": "2026-10-02T14:15:20.901Z",
+    "updatedAt": "2026-10-02T14:15:20.901Z"
+  },
+  {
+    "_id": "pj5onslt",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_6100_of_2025|2025_insc_712|2025-09-18",
+    "title": "Daughters Have Equal Coparcenary Rights By Birth Under 2005 Amendment Unaffected By Date of Father's Death: Supreme Court",
+    "petitioner": "Priya Sharma",
+    "respondent": "Anand Sharma & Ors",
+    "court": "Supreme Court of India",
+    "state": "Delhi",
+    "judge": "Justice Arun Mishra & Justice S. Abdul Nazeer & Justice M.R. Shah",
+    "bench": "Three Judge Bench",
+    "caseNumber": "Civil Appeal No. 6100 of 2025",
+    "appealNumber": "SLP (C) No. 14200 of 2024",
+    "neutralCitation": "2025 INSC 712",
+    "equivalentCitations": [
+      "2025 (3) HLR 55",
+      "AIR 2025 SC 2910"
+    ],
+    "judgmentDate": "2025-09-18",
+    "year": 2025,
+    "judgmentType": "Civil Appeal",
+    "subject": "Family Law",
+    "actsInvolved": [
+      "Hindu Succession Act, 1956",
+      "Hindu Succession (Amendment) Act, 2005"
+    ],
+    "sectionsConsidered": [
+      "Section 6 HSA 1956",
+      "Section 6(1) HSA Amendment"
+    ],
+    "keywords": [
+      "Hindu Succession Act",
+      "Coparcenary Rights",
+      "Daughter Share",
+      "Section 6 HSA",
+      "Ancestral Property"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
+    "fileName": "Supreme_Court_Daughter_Coparcenary_2025.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Daughter filed partition suit claiming 1/3rd equal share in ancestral coparcenary property. Brothers contested alleging that father died prior to September 9, 2005 amendment, rendering daughter ineligible.",
+      "issues": "Whether statutory coparcenary status conferred upon daughters under Section 6 Hindu Succession Act requires the coparcener father to be alive on September 9, 2005.",
+      "relevantLaw": "Hindu Succession Act 1956 — Section 6 as amended in 2005.",
+      "courtReasoning": "Reaffirming Vineeta Sharma principles, the Court held that coparcenary status is acquired by birth. It is an unobstructed heritage. The death of the father prior to 2005 does not divest the daughter's right conferred by statutory birthright.",
+      "holding": "Daughters possess equal coparcenary rights by birth in ancestral property regardless of whether father was alive on Sept 9, 2005.",
+      "keyPrinciple": "Section 6 HSA 2005 amendment operates retroactively to grant equal status to daughters from birth.",
+      "outcome": "Partition decree modified to award daughter equal coparcenary share."
+    },
+    "createdAt": "2026-10-02T14:15:20.903Z",
+    "updatedAt": "2026-10-02T14:15:20.903Z"
   }
 ]

@@ -47,12 +47,20 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string
     );
   }
 
-  // Role Access Control Enforcement
+  // Role Access Control Enforcement & Advocate Verification Status Enforcement
   if (allowedRoles && allowedRoles.length > 0) {
     const roleLower = (user?.role || '').toLowerCase();
-    const isAllowed = allowedRoles.some(r => r.toLowerCase() === roleLower);
-    if (!isAllowed) {
+    const isAllowedRole = allowedRoles.some(r => r.toLowerCase() === roleLower);
+    
+    if (!isAllowedRole) {
       return <Navigate to="/dashboard" replace />;
+    }
+
+    if (roleLower === 'advocate') {
+      const isApprovedAdvocate = user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED';
+      if (!isApprovedAdvocate) {
+        return <Navigate to="/dashboard" replace />;
+      }
     }
   }
 
@@ -148,10 +156,35 @@ export const App: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          {/* Protected Judgments & Bare Acts Legal Library Module (Admin & Approved Advocate Only) */}
           <Route 
             path="judgements" 
             element={
-              <ProtectedRoute featureName="Judgments Repository">
+              <ProtectedRoute featureName="Judgments & Bare Acts Legal Library" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="judgements/:id" 
+            element={
+              <ProtectedRoute featureName="Judgment Details" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="judgments" 
+            element={
+              <ProtectedRoute featureName="Judgments & Bare Acts Legal Library" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="judgments/:id" 
+            element={
+              <ProtectedRoute featureName="Judgment Details" allowedRoles={['Admin', 'Advocate']}>
                 <Documents />
               </ProtectedRoute>
             } 
@@ -159,7 +192,31 @@ export const App: React.FC = () => {
           <Route 
             path="laws" 
             element={
-              <ProtectedRoute featureName="Bare Acts & Laws Repository">
+              <ProtectedRoute featureName="Bare Acts & Statutory Library" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="laws/:id" 
+            element={
+              <ProtectedRoute featureName="Bare Act Details" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="bare-acts" 
+            element={
+              <ProtectedRoute featureName="Bare Acts & Statutory Library" allowedRoles={['Admin', 'Advocate']}>
+                <Documents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="bare-acts/:id" 
+            element={
+              <ProtectedRoute featureName="Bare Act Details" allowedRoles={['Admin', 'Advocate']}>
                 <Documents />
               </ProtectedRoute>
             } 

@@ -383,5 +383,129 @@
     "uploadedBy": "Legislative Department",
     "createdAt": "2026-08-15T10:00:00.000Z",
     "updatedAt": "2026-08-15T10:00:00.000Z"
+  },
+  {
+    "_id": "ggj3h4ul",
+    "canonicalKey": "the_limitation_act_1963|act_no_36_of_1963|1963|central_all_india",
+    "title": "The Limitation Act, 1963",
+    "actName": "The Limitation Act, 1963",
+    "shortTitle": "Limitation Act 1963",
+    "actNumber": "Act No. 36 of 1963",
+    "year": 1963,
+    "enactmentDate": "1963-10-05",
+    "commencementDate": "1964-01-01",
+    "ministry": "Ministry of Law and Justice",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law for the limitation of suits and other proceedings and for purposes connected therewith.",
+    "category": "Civil Law",
+    "description": "Act No. 36 of 1963. Governs periods of limitation for instituting suits, appeals, and applications in Indian courts, exclusion of time in legal proceedings, and condonation of delay.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1565",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://www.indiacode.nic.in/handle/123456789/1565",
+    "fileName": "Limitation_Act_1963.pdf",
+    "uploadedBy": "Legislative Department",
+    "chapters": [
+      {
+        "chapterNumber": "Part I",
+        "title": "Preliminary",
+        "sections": [
+          {
+            "sectionNumber": "Section 1",
+            "title": "Short title, extent and commencement",
+            "content": "(1) This Act may be called the Limitation Act, 1963.\n(2) It extends to the whole of India.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 3",
+            "title": "Bar of limitation",
+            "content": "(1) Subject to the provisions contained in sections 4 to 24 (inclusive), every suit instituted, appeal preferred, and application made after the prescribed period shall be dismissed, although limitation has not been set up as a defence.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 5",
+            "title": "Extension of prescribed period in certain cases (Condonation of Delay)",
+            "content": "Any appeal or any application, other than an application under any of the provisions of Order XXI of the Code of Civil Procedure, 1908, may be admitted after the prescribed period, if the appellant or the applicant satisfies the court that he had sufficient cause for not preferring the appeal or making the application within such period.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-10-02T14:15:20.904Z",
+    "updatedAt": "2026-10-02T14:15:20.904Z"
+  },
+  {
+    "_id": "lhxac4ax",
+    "canonicalKey": "the_arbitration_and_conciliation_act_1996|act_no_26_of_1996|1996|central_all_india",
+    "title": "The Arbitration and Conciliation Act, 1996",
+    "actName": "The Arbitration and Conciliation Act, 1996",
+    "shortTitle": "Arbitration Act 1996",
+    "actNumber": "Act No. 26 of 1996",
+    "year": 1996,
+    "enactmentDate": "1996-08-16",
+    "commencementDate": "1996-01-25",
+    "ministry": "Ministry of Law and Justice",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law relating to domestic arbitration, international commercial arbitration and enforcement of foreign arbitral awards.",
+    "category": "Arbitration",
+    "description": "Act No. 26 of 1996. Consolidated statutory framework for domestic arbitration, conciliation, international commercial arbitration, and enforcement of foreign arbitral awards.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1978",
+    "lastVerified": "2026-04-01",
+    "pdfUrl": "https://www.indiacode.nic.in/handle/123456789/1978",
+    "fileName": "Arbitration_and_Conciliation_Act_1996.pdf",
+    "uploadedBy": "Ministry of Law & Justice",
+    "chapters": [
+      {
+        "chapterNumber": "Part I - Chapter I",
+        "title": "General Provisions",
+        "sections": [
+          {
+            "sectionNumber": "Section 7",
+            "title": "Arbitration agreement",
+            "content": "(1) In this Part, 'arbitration agreement' means an agreement by the parties to submit to arbitration all or certain disputes which have arisen or which may arise between them in respect of a defined legal relationship, whether contractual or not.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 9",
+            "title": "Interim measures, etc., by Court",
+            "content": "A party may, before or during arbitral proceedings or at any time after the making of the arbitral award but before it is enforced in accordance with section 36, apply to a court for interim measures of protection.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 11",
+            "title": "Appointment of arbitrators",
+            "content": "A person of any nationality may be an arbitrator, unless otherwise agreed by the parties. Court shall appoint arbitrator where party fails to agree.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-10-02T14:15:20.906Z",
+    "updatedAt": "2026-10-02T14:15:20.906Z"
+  },
+  {
+    "title": "The Bharatiya Nyaya Sanhita, 2023",
+    "actName": "The Bharatiya Nyaya Sanhita, 2023",
+    "actNumber": "Act No. 45 of 2023",
+    "year": 2023,
+    "ministry": "Ministry of Law and Justice",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "category": "Criminal Law",
+    "description": "",
+    "sourceAuthority": "India Code / Legislative Department",
+    "sourceUrl": "",
+    "lastVerified": "2026-10-02",
+    "canonicalKey": "the_bharatiya_nyaya_sanhita__2023|act_no__45_of_2023|2023|central___all_india",
+    "pdfUrl": "",
+    "fileName": "The_Bharatiya_Nyaya_Sanhita__2023.pdf",
+    "uploadedBy": "System Admin",
+    "chapters": [],
+    "_id": "4euy41pv",
+    "createdAt": "2026-10-02T14:15:21.300Z",
+    "updatedAt": "2026-10-02T14:15:21.300Z"
   }
 ]

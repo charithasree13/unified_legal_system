@@ -799,5 +799,16 @@
     "_id": "h70spht8",
     "createdAt": "2026-10-02T11:25:57.531Z",
     "updatedAt": "2026-10-02T11:25:57.531Z"
+  },
+  {
+    "userId": "user_admin_1",
+    "userName": "System Admin",
+    "role": "Admin",
+    "action": "LAW_UPLOADED",
+    "ip": "::1",
+    "details": "Catalogued Bare Act: The Bharatiya Nyaya Sanhita, 2023 (2023)",
+    "_id": "9ig8b3v0",
+    "createdAt": "2026-10-02T14:15:21.302Z",
+    "updatedAt": "2026-10-02T14:15:21.302Z"
   }
 ]

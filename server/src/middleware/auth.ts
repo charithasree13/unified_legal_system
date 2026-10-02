@@ -68,10 +68,16 @@ export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Res
   }
 
   if (roleLower === 'advocate') {
-    // Check if advocate is approved/verified in DB
+    // Check if advocate is approved/verified in JWT token payload or in DB
     try {
-      const dbUser = await User.findById(req.user.id);
-      let isVerified = dbUser ? dbUser.isVerified === true : false;
+      let isVerified = req.user.isVerified === true;
+      
+      if (!isVerified) {
+        const dbUser = await User.findById(req.user.id);
+        if (dbUser && (dbUser.isVerified === true || dbUser.verificationStatus === 'APPROVED')) {
+          isVerified = true;
+        }
+      }
 
       if (!isVerified) {
         const dbAdv = await Advocate.findOne({
@@ -80,7 +86,7 @@ export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Res
             ...(req.user.phone ? [{ phone: req.user.phone }] : [])
           ]
         });
-        if (dbAdv && dbAdv.isVerified === true) {
+        if (dbAdv && (dbAdv.isVerified === true || dbAdv.verificationStatus === 'APPROVED')) {
           isVerified = true;
         }
       }

@@ -28,6 +28,7 @@ import * as noteCtrl from './controllers/noteController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
+import { seedExpandedLegalLibrary } from './seed/expandedLegalLibrarySeed';
 import { startHearingReminderScheduler } from './services/hearingReminderScheduler';
 import { AuditLog, User, Advocate, Judgement, Law, Project } from './models/Schemas';
 
@@ -120,13 +121,16 @@ app.put('/api/advocates/:id', authenticateToken, advCtrl.updateAdvocate);
 app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.deleteAdvocate);
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 
-// DOCUMENTS / REPOSITORY
+// DOCUMENTS / REPOSITORY (JUDGMENTS & BARE ACTS LEGAL LIBRARY)
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
-app.get('/api/documents/judgements', docCtrl.getJudgements);
+app.get('/api/documents/judgements', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgements);
+app.get('/api/documents/judgements/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgementById);
 app.delete('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.deleteJudgement);
 app.put('/api/documents/judgements/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateJudgement);
+
 app.post('/api/documents/laws', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadLaw);
-app.get('/api/documents/laws', docCtrl.getLaws);
+app.get('/api/documents/laws', authenticateToken, requireAdminOrAdvocate, docCtrl.getLaws);
+app.get('/api/documents/laws/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getLawById);
 app.put('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.updateLaw);
 app.delete('/api/documents/laws/:id', authenticateToken, requireAdmin, docCtrl.deleteLaw);
 
@@ -337,9 +341,14 @@ if (fs.existsSync(clientDistPath)) {
 
 // Start Server
 if (!process.env.VERCEL) {
-  server.listen(PORT, () => {
+  server.listen(PORT, async () => {
     console.log(`🚀 Secure Legal System API Server listening on port ${PORT}`);
     startHearingReminderScheduler();
+    try {
+      await seedExpandedLegalLibrary();
+    } catch (err) {
+      console.error('Legal library seed startup error:', err);
+    }
   });
 }
 
