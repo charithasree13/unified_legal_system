@@ -22,6 +22,7 @@ import * as mappingCtrl from './controllers/sectionMappingController';
 import * as reminderCtrl from './controllers/reminderController';
 import * as legalTipCtrl from './controllers/legalTipController';
 import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
+import * as islamicInheritanceCtrl from './controllers/islamicInheritanceController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -182,6 +183,12 @@ app.post('/api/calculators/hindu-succession/calculate', authenticateToken, requi
 app.post('/calculators/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
 app.post('/api/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
 app.post('/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
+
+// ISLAMIC INHERITANCE CALCULATOR API (Protected: Enrolled Advocates & Admins only)
+app.post('/api/calculators/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
+app.post('/calculators/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
+app.post('/api/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
+app.post('/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
 app.post('/api', optionalAuthToken, (req, res, next) => {

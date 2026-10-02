@@ -17,6 +17,7 @@ import { Settings } from './pages/Settings';
 import { LegalSectionMapping } from './pages/LegalSectionMapping';
 import { DailyLegalTipsPage } from './pages/DailyLegalTipsPage';
 import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
+import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculator';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
@@ -112,6 +113,16 @@ export const App: React.FC = () => {
             element={
               <ProtectedRoute featureName="Hindu Succession Calculator" allowedRoles={['Admin', 'Advocate']}>
                 <HinduSuccessionCalculator />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Protected Islamic Inheritance Calculator Module (Admin & Advocate Only) */}
+          <Route 
+            path="islamic-inheritance-calculator" 
+            element={
+              <ProtectedRoute featureName="Islamic Inheritance Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <IslamicInheritanceCalculator />
               </ProtectedRoute>
             } 
           />

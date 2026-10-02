@@ -171,6 +171,19 @@ export const PortalOverview: React.FC = () => {
           gradientBorder: 'hover:border-amber-500/50'
         },
         {
+          id: 'islamic-inheritance',
+          title: 'Islamic Inheritance Calculator',
+          description: 'Calculate indicative Islamic inheritance shares based on the selected succession framework and surviving heirs.',
+          tag: 'Fara\'id Personal Law',
+          icon: Scale,
+          path: '/islamic-inheritance-calculator',
+          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
+          badgeText: 'text-emerald-600 dark:text-emerald-400',
+          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+          iconColor: 'text-emerald-600 dark:text-emerald-400',
+          gradientBorder: 'hover:border-emerald-500/50'
+        },
+        {
           id: 'chat',
           title: 'Secure Chat Hub',
           description: 'Inspect active messaging channels, system communications, and user support conversations.',
@@ -278,6 +291,19 @@ export const PortalOverview: React.FC = () => {
           iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
           iconColor: 'text-amber-600 dark:text-amber-400',
           gradientBorder: 'hover:border-amber-500/50'
+        },
+        {
+          id: 'islamic-inheritance',
+          title: 'Islamic Inheritance Calculator',
+          description: 'Calculate indicative Islamic inheritance shares based on the selected succession framework and surviving heirs.',
+          tag: 'Fara\'id Personal Law',
+          icon: Scale,
+          path: '/islamic-inheritance-calculator',
+          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
+          badgeText: 'text-emerald-600 dark:text-emerald-400',
+          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+          iconColor: 'text-emerald-600 dark:text-emerald-400',
+          gradientBorder: 'hover:border-emerald-500/50'
         },
         {
           id: 'chat',
