@@ -156,20 +156,55 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchPendingAdvocates = async () => {
     try {
-      const res = await fetch('/api/advocates', {
+      const res = await fetch('/api/advocates/pending', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
-      if (res.ok) {
-        // filter unverified advocates
-        setPendingAdvocates(data.advocates.filter((a: any) => !a.isVerified));
+      if (res.ok && Array.isArray(data.advocates)) {
+        setPendingAdvocates(data.advocates);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching pending advocates:', err);
     }
   };
 
-  const handleVerify = async (advocateId: string, status: boolean) => {
+  const handleVerify = async (advocateId: string, status: string | boolean) => {
+    try {
+      const isApproved = status === true || status === 'APPROVED';
+      const res = await fetch(`/api/advocates/${advocateId}/verify`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: isApproved ? 'APPROVED' : 'REJECTED' })
+      });
+      
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (isApproved) {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          addNotification('Advocate Approved', `Advocate profile for ${data.advocate?.name || 'applicant'} approved and added to directory.`, 'success');
+        } else {
+          addNotification('Advocate Rejected', `Advocate application rejected.`, 'info');
+        }
+        fetchStats();
+        fetchPendingAdvocates();
+        fetchLogs();
+      } else {
+        addNotification('Action Failed', data.message || 'Verification status update failed.', 'warning');
+      }
+    } catch (err) {
+      console.error(err);
+      addNotification('Error', 'Network error during verification update.', 'warning');
+    }
+  };
+
+  const handleRejectAdvocate = async (advocateId: string, advocateName: string) => {
+    const reason = window.prompt(`Enter optional rejection reason for advocate "${advocateName}":`, 'Details could not be verified with Bar Council records.');
+    if (reason === null) return; // user cancelled
+
     try {
       const res = await fetch(`/api/advocates/${advocateId}/verify`, {
         method: 'PUT',
@@ -177,39 +212,16 @@ export const AdminDashboard: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status: 'REJECTED', rejectionReason: reason })
       });
-      
+      const data = await res.json();
       if (res.ok) {
-        if (status) {
-          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-          addNotification('Advocate Verified', 'Advocate enrollment credentials successfully approved.', 'success');
-        } else {
-          addNotification('Advocate Status Updated', 'Verification status set to unverified.', 'warning');
-        }
+        addNotification('Advocate Rejected', `Advocate application for "${advocateName}" rejected.`, 'info');
         fetchStats();
         fetchPendingAdvocates();
         fetchLogs();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDeleteAdvocate = async (advocateId: string, advocateName: string) => {
-    const confirmed = window.confirm(`Are you sure you want to permanently delete the advocate profile for "${advocateName}"?`);
-    if (!confirmed) return;
-
-    try {
-      const res = await fetch(`/api/advocates/${advocateId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        addNotification('Advocate Deleted', `Advocate profile for "${advocateName}" deleted successfully.`, 'info');
-        fetchStats();
-        fetchPendingAdvocates();
-        fetchLogs();
+      } else {
+        addNotification('Rejection Failed', data.message || 'Failed to reject advocate.', 'warning');
       }
     } catch (err) {
       console.error(err);
@@ -553,30 +565,44 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               ) : (
                 pendingAdvocates.map((adv: any) => (
-                  <div key={adv._id} className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-lg flex flex-col justify-between">
+                  <div key={adv._id} className="p-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl flex flex-col justify-between space-y-2">
                     <div>
                       <div className="flex justify-between items-start">
-                        <h4 className="font-semibold text-xs text-slate-950 dark:text-slate-50">{adv.name}</h4>
-                        <span className="text-[9px] bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">
-                          Exp: {adv.experience} yrs
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          {adv.name}
+                          {adv.authProvider === 'GOOGLE' && (
+                            <span className="text-[9px] bg-sky-500/10 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded font-semibold border border-sky-400/20">
+                              Google Auth
+                            </span>
+                          )}
+                        </h4>
+                        <span className="text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                          Pending
                         </span>
                       </div>
-                      <p className="text-[10px] text-slate-400 mt-1">Enrollment No: {adv.enrollmentNumber}</p>
-                      <p className="text-[10px] text-slate-400">Specialization: {adv.specialization}</p>
-                      <p className="text-[10px] text-slate-400">Court: {adv.court}</p>
+
+                      <div className="mt-2 text-[10px] space-y-0.5 text-slate-600 dark:text-slate-400">
+                        <p><span className="font-semibold text-slate-700 dark:text-slate-300">Email:</span> {adv.email}</p>
+                        <p><span className="font-semibold text-slate-700 dark:text-slate-300">Phone:</span> {adv.phone || 'N/A'}</p>
+                        <p><span className="font-semibold text-slate-700 dark:text-slate-300">Enrollment No:</span> <span className="font-mono">{adv.enrollmentNumber}</span> ({adv.enrollmentDate || 'N/A'})</p>
+                        <p><span className="font-semibold text-slate-700 dark:text-slate-300">Specialization:</span> {adv.specialization || 'N/A'}</p>
+                        <p><span className="font-semibold text-slate-700 dark:text-slate-300">Court / City:</span> {adv.court || 'N/A'}, {adv.city || 'N/A'}</p>
+                        <p className="text-[9px] text-slate-400 mt-1">Submitted: {new Date(adv.createdAt || Date.now()).toLocaleDateString()}</p>
+                      </div>
                     </div>
-                    <div className="flex justify-end gap-2 mt-3.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-800/50">
+
+                    <div className="flex justify-end gap-2 pt-2 border-t border-slate-200/50 dark:border-slate-800/50">
                       <button
-                        onClick={() => handleDeleteAdvocate(adv._id, adv.name)}
+                        onClick={() => handleRejectAdvocate(adv._id, adv.name)}
                         className="px-2.5 py-1 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 rounded text-[10px] font-bold cursor-pointer transition-colors border border-red-200/60 dark:border-red-800/60 flex items-center gap-1"
                       >
-                        <Trash2 size={12} /> Reject & Delete
+                        <Trash2 size={11} /> Reject
                       </button>
                       <button
-                        onClick={() => handleVerify(adv._id, true)}
-                        className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-[10px] font-bold cursor-pointer transition-colors shadow-sm"
+                        onClick={() => handleVerify(adv._id, 'APPROVED')}
+                        className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold cursor-pointer transition-colors shadow-sm"
                       >
-                        Approve Credentials
+                        Approve
                       </button>
                     </div>
                   </div>

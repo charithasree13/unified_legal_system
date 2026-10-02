@@ -168,6 +168,7 @@ const UserSchema = new mongoose.Schema({
   enrollmentNumber: { type: String }, // Bar Council Enrollment Number (Advocates)
   enrollmentYear: { type: String }, // For admin advocates
   isVerified: { type: Boolean, default: false },
+  verificationStatus: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' },
   hasCompletedProfile: { type: Boolean, default: false },
   profilePhoto: { type: String },
   otp: { type: String },
@@ -192,7 +193,11 @@ const AdvocateSchema = new mongoose.Schema({
   bio: { type: String },
   address: { type: String },
   availability: { type: String, default: 'Available' }, // Available, Busy, Away
-  isVerified: { type: Boolean, default: false }
+  isVerified: { type: Boolean, default: false },
+  verificationStatus: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' },
+  rejectionReason: { type: String },
+  verifiedAt: { type: Date },
+  verifiedBy: { type: String }
 }, { timestamps: true });
 
 const JudgementSchema = new mongoose.Schema({

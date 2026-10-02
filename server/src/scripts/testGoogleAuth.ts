@@ -110,7 +110,7 @@ async function testSuite() {
     );
 
     // -------------------------------------------------------------
-    // Test 6: New Advocate Google Signup (Directly verified, no manual verification barrier)
+    // Test 6: New Advocate Google Signup (Requires professional details & Admin verification)
     // -------------------------------------------------------------
     const mockAdvSub = 'google_sub_advocate_test_88888';
     const mockAdvPayload = Buffer.from(JSON.stringify({
@@ -127,17 +127,17 @@ async function testSuite() {
     await googleAuth(req6, res6);
 
     assert(
-      res6.statusCode === 200 && res6.data?.user?.role === 'Advocate',
-      'Test 6: Advocate Google Signup creates Advocate account'
+      res6.statusCode === 200 && res6.data?.requiresAdvocateDetails === true && res6.data?.user?.role === 'Advocate',
+      'Test 6: Advocate Google Signup requires Advocate details and sets PENDING verification'
     );
 
     const dbAdvUser = await User.findOne({ googleSub: mockAdvSub });
-    assert(dbAdvUser && dbAdvUser.isVerified === true, 'Test 6b: Advocate isVerified is true directly (verification process off)');
+    assert(dbAdvUser && dbAdvUser.isVerified === false, 'Test 6b: Advocate isVerified is false initially until Admin verification');
 
     // -------------------------------------------------------------
     // Test 7: Direct login into Advocate Google account
     // -------------------------------------------------------------
-    const req7: any = { body: { credential: mockAdvToken, accountType: 'Client' }, ip: '127.0.0.1' };
+    const req7: any = { body: { credential: mockAdvToken, accountType: 'Advocate' }, ip: '127.0.0.1' };
     const res7 = createMockRes();
     await googleAuth(req7, res7);
 

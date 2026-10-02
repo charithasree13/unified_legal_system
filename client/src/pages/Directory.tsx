@@ -639,24 +639,38 @@ export const Directory: React.FC = () => {
                   </span>
                   
                   <div className="flex gap-1.5 items-center">
-                    {user?.role === 'Admin' && (
-                      <>
-                        <button
-                          onClick={() => openEditForm(adv)}
-                          className="px-2 py-1 text-[11px] bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-sky-200/60 dark:border-sky-800/60"
-                          title="Edit Advocate Details"
-                        >
-                          <Edit3 size={12} /> Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteAdvocate(adv)}
-                          className="px-2 py-1 text-[11px] bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-red-200/60 dark:border-red-800/60"
-                          title="Delete Advocate Profile"
-                        >
-                          <Trash2 size={12} /> Delete
-                        </button>
-                      </>
-                    )}
+                    {(() => {
+                      const isOwner = user?.role === 'Advocate' && (
+                        (user.email && adv.email && user.email.toLowerCase().trim() === adv.email.toLowerCase().trim()) ||
+                        (user.phone && adv.phone && user.phone.trim() === adv.phone.trim()) ||
+                        String(user.id) === String(adv._id)
+                      );
+                      const canEdit = user?.role === 'Admin' || isOwner;
+                      const canDelete = user?.role === 'Admin';
+
+                      return (
+                        <>
+                          {canEdit && (
+                            <button
+                              onClick={() => openEditForm(adv)}
+                              className="px-2 py-1 text-[11px] bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-sky-200/60 dark:border-sky-800/60"
+                              title="Edit Advocate Details"
+                            >
+                              <Edit3 size={12} /> Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => handleDeleteAdvocate(adv)}
+                              className="px-2 py-1 text-[11px] bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 rounded font-semibold flex items-center gap-1 cursor-pointer transition-colors border border-red-200/60 dark:border-red-800/60"
+                              title="Delete Advocate Profile"
+                            >
+                              <Trash2 size={12} /> Delete
+                            </button>
+                          )}
+                        </>
+                      );
+                    })()}
                     <button
                       onClick={() => { setSelectedAdv(adv); setShowQr(false); }}
                       className="text-xs text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-sky-400 font-bold hover:underline ml-1"

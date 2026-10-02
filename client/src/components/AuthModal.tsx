@@ -531,6 +531,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               {loading ? 'Creating Account...' : 'Register Account'}
             </button>
 
+            {/* Google Signup Option */}
+            <div className="pt-2">
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                <span className="flex-shrink mx-2 text-[10px] text-slate-400 font-semibold uppercase">Or Continue With</span>
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+              </div>
+              <GoogleAuthButton 
+                accountType={signupRole} 
+                text="Sign up with Google" 
+                onError={(msg) => setErrorMsg(msg)}
+                onSuccess={(msg) => {
+                  setSuccessMsg(msg);
+                  setTimeout(() => {
+                    onClose();
+                    navigate('/dashboard');
+                  }, 600);
+                }}
+              />
+            </div>
+
           </form>
         )}
 

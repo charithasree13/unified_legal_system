@@ -88,7 +88,8 @@ export const register = async (req: Request, res: Response) => {
           city: 'Madanapalle',
           state: 'Andhra Pradesh',
           experience: 15,
-          isVerified: false // Unverified initially - pending Legal Administrator verification
+          isVerified: false, // Unverified initially - pending Admin verification
+          verificationStatus: 'PENDING'
         });
       } catch (advErr) {
         console.error('Error auto-creating advocate directory document:', advErr);
@@ -107,7 +108,7 @@ export const register = async (req: Request, res: Response) => {
     return res.status(201).json({
       success: true,
       message: assignedRole === 'Advocate' 
-        ? 'Advocate registration successful! Your enrollment details have been submitted and are pending verification by the Legal Administrator.'
+        ? 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.'
         : 'Registration successful! You can now sign in with your credentials.',
       userId: newUser._id,
       email: newUser.email,
@@ -178,6 +179,8 @@ export const login = async (req: Request, res: Response) => {
 
     let hasCompletedProfile = (user as any).hasCompletedProfile === true;
     let isAdvocateVerified = true;
+    let verificationStatus = 'APPROVED';
+
     if (user.role === 'Advocate') {
       const existingAdv = await Advocate.findOne({
         $or: [
@@ -190,8 +193,10 @@ export const login = async (req: Request, res: Response) => {
           hasCompletedProfile = true;
         }
         isAdvocateVerified = existingAdv.isVerified === true;
+        verificationStatus = existingAdv.verificationStatus || (existingAdv.isVerified ? 'APPROVED' : 'PENDING');
       } else {
         isAdvocateVerified = false;
+        verificationStatus = 'PENDING';
       }
     }
 
@@ -209,7 +214,8 @@ export const login = async (req: Request, res: Response) => {
         enrollmentNumber: (user as any).enrollmentNumber,
         profilePhoto: user.profilePhoto,
         hasCompletedProfile,
-        isVerified: user.role === 'Advocate' ? isAdvocateVerified : true
+        isVerified: user.role === 'Advocate' ? isAdvocateVerified : true,
+        verificationStatus: user.role === 'Advocate' ? verificationStatus : 'APPROVED'
       }
     });
   } catch (error: any) {
@@ -340,7 +346,7 @@ export const googleAuth = async (req: Request, res: Response) => {
       });
     }
 
-    const normalizedRole = (accountType === 'Advocate' || accountType === 'ADVOCATE') ? 'Advocate' : 'Client';
+    const requestedRole = (accountType === 'Advocate' || accountType === 'ADVOCATE') ? 'Advocate' : 'Client';
     const googleClientId = process.env.GOOGLE_CLIENT_ID || '300143041269-oa6toeacsqdo25rg31n0g3hagbkiaird.apps.googleusercontent.com';
 
     let googleSub = '';
@@ -392,61 +398,30 @@ export const googleAuth = async (req: Request, res: Response) => {
       });
     }
 
-    // 1. Find existing account by googleSub or email
+    // Find existing user by googleSub or email
     let user = await User.findOne({ googleSub });
-
     if (!user && email) {
       user = await User.findOne({ email });
     }
 
-    if (user) {
-      // Direct Login into Existing Account
-      // Link googleSub & verify account directly if not already set
-      const updateData: any = {};
-      if (!user.googleSub) updateData.googleSub = googleSub;
-      if (!user.emailVerified) updateData.emailVerified = true;
-      if (!user.isVerified) updateData.isVerified = true;
-      if (!user.profilePhoto && picture) updateData.profilePhoto = picture;
+    // Determine target role: if existing user, keep user's role; otherwise requestedRole
+    const targetRole = user ? user.role : requestedRole;
 
-      if (Object.keys(updateData).length > 0) {
-        await User.findByIdAndUpdate(user._id, updateData);
-        Object.assign(user, updateData);
-      }
-    } else {
-      // Direct Signup - Create New User Account immediately with isVerified: true
-      const isAdvocate = normalizedRole === 'Advocate';
+    if (!user) {
+      // Create new user account
+      const isAdv = targetRole === 'Advocate';
       user = await User.create({
         name,
         email: email || undefined,
         googleSub,
         authProvider: 'GOOGLE',
         emailVerified: true,
-        role: normalizedRole,
+        role: targetRole,
         profilePhoto: picture,
-        isVerified: true // Direct activation, no verification process needed
+        isVerified: !isAdv, // Client = true, Advocate = false (requires Admin verification)
+        verificationStatus: isAdv ? 'PENDING' : 'APPROVED',
+        hasCompletedProfile: false
       });
-
-      if (isAdvocate) {
-        const existingAdv = await Advocate.findOne({ email });
-        if (!existingAdv) {
-          await Advocate.create({
-            name,
-            email: email || `${googleSub}@google.user`,
-            googleSub,
-            authProvider: 'GOOGLE',
-            emailVerified: true,
-            photo: picture,
-            isVerified: true, // Direct verification for Advocate profile
-            availability: 'Available'
-          });
-        } else {
-          await Advocate.findByIdAndUpdate(existingAdv._id, {
-            googleSub,
-            isVerified: true,
-            emailVerified: true
-          });
-        }
-      }
 
       await AuditLog.create({
         userId: user._id,
@@ -454,11 +429,111 @@ export const googleAuth = async (req: Request, res: Response) => {
         role: user.role,
         action: 'GOOGLE_USER_REGISTERED',
         ip: req.ip || '127.0.0.1',
-        details: `New ${normalizedRole} account registered directly via Continue with Google.`
+        details: `New ${targetRole} account registered via Google.`
+      });
+    } else {
+      // Update existing user with googleSub & profilePhoto if not already linked
+      const updateData: any = {};
+      if (!user.googleSub) updateData.googleSub = googleSub;
+      if (!user.emailVerified) updateData.emailVerified = true;
+      if (!user.profilePhoto && picture) updateData.profilePhoto = picture;
+
+      if (Object.keys(updateData).length > 0) {
+        await User.findByIdAndUpdate(user._id, updateData);
+        Object.assign(user, updateData);
+      }
+    }
+
+    // Handle Client role
+    if (targetRole === 'Client' || targetRole === 'User') {
+      const tokenPayload = {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+        phone: user.phone
+      };
+      const accessToken = createToken(tokenPayload, JWT_SECRET, '1h');
+      const refreshTokenStr = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
+
+      await RefreshToken.create({
+        userId: user._id,
+        token: refreshTokenStr,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        revoked: false
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Google login successful.',
+        accessToken,
+        refreshToken: refreshTokenStr,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phone: user.phone || '',
+          profilePhoto: user.profilePhoto || picture,
+          isVerified: true,
+          verificationStatus: 'APPROVED',
+          hasCompletedProfile: true
+        }
       });
     }
 
-    // Generate JWT Tokens for immediate session startup
+    // Handle Advocate role
+    // Check if an Advocate profile document exists in Advocate collection
+    let existingAdv = await Advocate.findOne({
+      $or: [
+        { googleSub },
+        ...(email ? [{ email }] : [])
+      ]
+    });
+
+    // If Advocate profile details have NOT been submitted yet
+    if (!existingAdv || !user.hasCompletedProfile || !existingAdv.enrollmentNumber || !existingAdv.specialization || !existingAdv.court) {
+      const tokenPayload = {
+        id: user._id,
+        email: user.email || email,
+        role: 'Advocate',
+        name: user.name,
+        phone: user.phone
+      };
+      const accessToken = createToken(tokenPayload, JWT_SECRET, '1h');
+      const refreshTokenStr = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
+
+      return res.status(200).json({
+        success: true,
+        requiresAdvocateDetails: true,
+        message: 'Google account authenticated. Please provide your professional Advocate details for Admin verification.',
+        accessToken,
+        refreshToken: refreshTokenStr,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email || email,
+          role: 'Advocate',
+          phone: user.phone || '',
+          enrollmentNumber: (user as any).enrollmentNumber || '',
+          profilePhoto: user.profilePhoto || picture,
+          hasCompletedProfile: false,
+          isVerified: false,
+          verificationStatus: 'PENDING'
+        },
+        googleProfile: {
+          email: email || user.email || '',
+          name: user.name || name,
+          picture: user.profilePhoto || picture,
+          googleSub
+        }
+      });
+    }
+
+    // Advocate profile details exist. Check verification status.
+    const isAdvVerified = existingAdv.isVerified === true;
+    const advStatus = existingAdv.verificationStatus || (isAdvVerified ? 'APPROVED' : 'PENDING');
+
     const tokenPayload = {
       id: user._id,
       email: user.email,
@@ -482,25 +557,16 @@ export const googleAuth = async (req: Request, res: Response) => {
       role: user.role,
       action: 'GOOGLE_USER_LOGIN',
       ip: req.ip || '127.0.0.1',
-      details: `Successful sign-in via Google (${user.role}).`
+      details: `Sign-in via Google (Advocate Status: ${advStatus}).`
     });
-
-    let hasCompletedProfile = (user as any).hasCompletedProfile === true;
-    if (user.role === 'Advocate' && !hasCompletedProfile) {
-      const existingAdv = await Advocate.findOne({
-        $or: [
-          ...(user.email ? [{ email: user.email.toLowerCase() }] : []),
-          ...(user.phone ? [{ phone: user.phone }] : [])
-        ]
-      });
-      if (existingAdv && existingAdv.enrollmentNumber && existingAdv.specialization && existingAdv.court) {
-        hasCompletedProfile = true;
-      }
-    }
 
     return res.status(200).json({
       success: true,
-      message: 'Google login successful.',
+      message: isAdvVerified 
+        ? 'Google login successful.' 
+        : (advStatus === 'REJECTED' 
+            ? 'Your Advocate registration was rejected by Admin.' 
+            : 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.'),
       accessToken,
       refreshToken: refreshTokenStr,
       user: {
@@ -509,9 +575,11 @@ export const googleAuth = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         phone: user.phone || '',
-        enrollmentNumber: (user as any).enrollmentNumber || '',
+        enrollmentNumber: existingAdv.enrollmentNumber || '',
         profilePhoto: user.profilePhoto || picture,
-        hasCompletedProfile
+        hasCompletedProfile: true,
+        isVerified: isAdvVerified,
+        verificationStatus: advStatus
       }
     });
   } catch (error: any) {

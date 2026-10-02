@@ -102,10 +102,12 @@ app.post('/api/auth/reset-password', authCtrl.resetPassword);
 // ADVOCATE DIRECTORY
 app.post('/api/advocates/profile', authenticateToken, advCtrl.selfOnboardAdvocateProfile);
 app.post('/advocates/profile', authenticateToken, advCtrl.selfOnboardAdvocateProfile);
-app.post('/api/advocates', authenticateToken, requireAdminOrAdvocate, advCtrl.addAdvocate);
+app.post('/api/advocates', authenticateToken, requireAdmin, advCtrl.addAdvocate);
+app.get('/api/advocates/pending', authenticateToken, requireAdmin, advCtrl.getPendingAdvocates);
+app.get('/advocates/pending', authenticateToken, requireAdmin, advCtrl.getPendingAdvocates);
 app.get('/api/advocates', advCtrl.getAdvocates);
 app.get('/api/advocates/:id', advCtrl.getAdvocateById);
-app.put('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.updateAdvocate);
+app.put('/api/advocates/:id', authenticateToken, advCtrl.updateAdvocate);
 app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.deleteAdvocate);
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 

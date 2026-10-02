@@ -131,12 +131,14 @@ export const AdvocateOnboardingModal: React.FC = () => {
           name: name.trim(),
           phone: phone.trim(),
           email: email.trim(),
-          enrollmentNumber: enrollmentNumber.trim()
+          enrollmentNumber: enrollmentNumber.trim(),
+          isVerified: false,
+          verificationStatus: 'PENDING'
         });
         addNotification(
-          'Advocate Profile Published!',
-          'Your profile has been indexed into the Advocate Directory and is awaiting Administrator verification.',
-          'success'
+          'Registration Submitted',
+          'Your Advocate registration has been submitted successfully and is pending verification by the Admin.',
+          'info'
         );
       } else {
         setError(data.message || 'Failed to submit advocate directory profile.');
@@ -180,10 +182,12 @@ export const AdvocateOnboardingModal: React.FC = () => {
           )}
 
           {/* Form Header Info Banner */}
-          <div className="p-3 bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100 dark:border-slate-700 rounded-lg text-xs text-slate-700 dark:text-slate-300">
-            <p className="font-semibold text-blue-900 dark:text-sky-300">📋 Advocate Directory Onboarding</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              Please enter your bar enrollment and practice details below to index your profile in the Advocate Directory. Once submitted, your profile will be accessible on the portal while pending Administrator verification.
+          <div className="p-3.5 bg-amber-500/10 dark:bg-amber-950/40 border border-amber-500/30 rounded-lg text-xs text-amber-900 dark:text-amber-300">
+            <p className="font-bold text-amber-800 dark:text-amber-400 text-sm flex items-center gap-1.5">
+              ⚖️ Complete Advocate Registration & Verification Details
+            </p>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+              Your Google / authentication account has been verified. Please provide your professional Advocate enrollment details below for Legal Administrator verification.
             </p>
           </div>
 

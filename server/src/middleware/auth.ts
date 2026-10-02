@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { User, Advocate } from '../models/Schemas';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretlegaljwttokenkey12345!';
 
@@ -10,6 +11,8 @@ export interface AuthenticatedRequest extends Request {
     role: 'Admin' | 'Advocate' | 'Client' | 'User';
     name: string;
     phone?: string;
+    googleSub?: string;
+    isVerified?: boolean;
   };
 }
 
@@ -54,11 +57,45 @@ export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: Nex
   next();
 };
 
-export const requireAdminOrAdvocate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const roleLower = (req.user?.role || '').toLowerCase();
-  if (!req.user || (roleLower !== 'admin' && roleLower !== 'advocate')) {
-    return res.status(403).json({ success: false, message: 'Daily Legal Tips/Updates are available only to enrolled advocates.' });
+export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required.' });
   }
+
+  const roleLower = (req.user.role || '').toLowerCase();
+  if (roleLower !== 'admin' && roleLower !== 'advocate') {
+    return res.status(403).json({ success: false, message: 'Advocate legal tools are available only to enrolled advocates.' });
+  }
+
+  if (roleLower === 'advocate') {
+    // Check if advocate is approved/verified in DB
+    try {
+      const dbUser = await User.findById(req.user.id);
+      let isVerified = dbUser ? dbUser.isVerified === true : false;
+
+      if (!isVerified) {
+        const dbAdv = await Advocate.findOne({
+          $or: [
+            ...(req.user.email ? [{ email: req.user.email.toLowerCase() }] : []),
+            ...(req.user.phone ? [{ phone: req.user.phone }] : [])
+          ]
+        });
+        if (dbAdv && dbAdv.isVerified === true) {
+          isVerified = true;
+        }
+      }
+
+      if (!isVerified) {
+        return res.status(403).json({
+          success: false,
+          message: 'Your Advocate account is pending Admin verification. Access to advocate legal tools is restricted until approved.'
+        });
+      }
+    } catch (err) {
+      return res.status(500).json({ success: false, message: 'Authorization verification failed.' });
+    }
+  }
+
   next();
 };
 

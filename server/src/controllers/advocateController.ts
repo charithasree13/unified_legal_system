@@ -92,20 +92,18 @@ export const addAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-// Search, Filter & Sort Advocates (Fetches from MongoDB Atlas Advocates & Users collections)
+// Search, Filter & Sort Advocates (Public Advocate Directory - Approved Advocates ONLY)
 export const getAdvocates = async (req: Request, res: Response) => {
   try {
-    const { search, state, court, practiceArea, enrollmentYear, minExperience, sortBy } = req.query;
+    const { search, state, court, practiceArea, minExperience, sortBy } = req.query;
 
     // Fetch from advocates collection in MongoDB Atlas
-    const rawAdvocates = await Advocate.find({});
+    const rawAdvocates = await Advocate.find({ isVerified: true });
 
-    // Fetch from users collection for Advocate role accounts or accounts with enrollment numbers
+    // Fetch from users collection for Advocate role accounts that are approved/verified
     const advocateUsers = await User.find({
-      $or: [
-        { role: 'Advocate' },
-        { enrollmentNumber: { $exists: true, $ne: '' } }
-      ]
+      role: 'Advocate',
+      isVerified: true
     });
 
     const map = new Map<string, any>();
@@ -146,27 +144,32 @@ export const getAdvocates = async (req: Request, res: Response) => {
         bio: obj.bio || 'Verified legal practitioner registered with Bar Council.',
         address: obj.address || 'Chamber / Court Complex',
         availability: obj.availability || 'Available',
-        isVerified: obj.isVerified !== false, // default true so all MongoDB records display
+        isVerified: obj.isVerified === true,
+        verificationStatus: obj.verificationStatus || 'APPROVED',
         createdAt: obj.createdAt || new Date().toISOString()
       };
     };
 
     // 1. Map documents from Advocates collection
     for (const item of rawAdvocates) {
-      const norm = normalize(item);
-      const key = (norm.email && norm.email !== 'N/A' ? norm.email : norm.phone) || norm._id;
-      map.set(key, norm);
+      if (item.isVerified === true && item.verificationStatus !== 'PENDING' && item.verificationStatus !== 'REJECTED') {
+        const norm = normalize(item);
+        const key = (norm.email && norm.email !== 'N/A' ? norm.email : norm.phone) || norm._id;
+        map.set(key, norm);
+      }
     }
 
     // 2. Map & merge advocate accounts from Users collection
     for (const u of advocateUsers) {
-      const norm = normalize(u);
-      const key = (norm.email && norm.email !== 'N/A' ? norm.email : norm.phone) || norm._id;
-      if (!map.has(key)) {
-        map.set(key, norm);
-      } else {
-        const existing = map.get(key);
-        map.set(key, { ...norm, ...existing });
+      if (u.isVerified === true && u.verificationStatus !== 'PENDING' && u.verificationStatus !== 'REJECTED') {
+        const norm = normalize(u);
+        const key = (norm.email && norm.email !== 'N/A' ? norm.email : norm.phone) || norm._id;
+        if (!map.has(key)) {
+          map.set(key, norm);
+        } else {
+          const existing = map.get(key);
+          map.set(key, { ...norm, ...existing });
+        }
       }
     }
 
@@ -187,7 +190,8 @@ export const getAdvocates = async (req: Request, res: Response) => {
           bio: "Advocate, Notary, Bank Panel Advocate, Verification of legal title",
           address: "Vasavi Bhavan Street, Madanapalle",
           availability: "Available",
-          isVerified: true
+          isVerified: true,
+          verificationStatus: "APPROVED"
         },
         {
           name: "Bestha Sreenivasulu  Advocate",
@@ -203,7 +207,8 @@ export const getAdvocates = async (req: Request, res: Response) => {
           bio: "Verified legal practitioner registered with Bar Council.",
           address: "2-245-8-B-7, Madanapalle",
           availability: "Available",
-          isVerified: true
+          isVerified: true,
+          verificationStatus: "APPROVED"
         }
       ];
 
@@ -220,6 +225,9 @@ export const getAdvocates = async (req: Request, res: Response) => {
     }
 
     let advocatesList = Array.from(map.values());
+
+    // STRICT CHECK: Ensure directory output contains ONLY approved/verified advocates
+    advocatesList = advocatesList.filter((a: any) => a.isVerified === true && a.verificationStatus !== 'PENDING' && a.verificationStatus !== 'REJECTED');
 
     // Apply global search query filter
     if (search) {
@@ -288,6 +296,69 @@ export const getAdvocates = async (req: Request, res: Response) => {
   }
 };
 
+// Get Pending Advocate Applications (Admin Only)
+export const getPendingAdvocates = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (roleLower !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied. Administrator privileges required.' });
+    }
+
+    const pendingAdvocates = await Advocate.find({
+      $or: [
+        { isVerified: false },
+        { verificationStatus: 'PENDING' }
+      ]
+    });
+
+    const pendingUsers = await User.find({
+      role: 'Advocate',
+      isVerified: false
+    });
+
+    const map = new Map<string, any>();
+    for (const item of pendingAdvocates) {
+      if (item.verificationStatus !== 'APPROVED') {
+        const obj = item.toObject ? item.toObject() : { ...item };
+        const key = obj.email || obj.phone || String(obj._id);
+        map.set(key, obj);
+      }
+    }
+
+    for (const u of pendingUsers) {
+      if (u.verificationStatus !== 'APPROVED') {
+        const obj = u.toObject ? u.toObject() : { ...u };
+        const key = obj.email || obj.phone || String(obj._id);
+        if (!map.has(key)) {
+          map.set(key, {
+            _id: obj._id,
+            name: obj.name,
+            email: obj.email,
+            phone: obj.phone,
+            enrollmentNumber: obj.enrollmentNumber || 'Pending Submission',
+            isVerified: false,
+            verificationStatus: 'PENDING',
+            authProvider: obj.authProvider || 'LOCAL',
+            createdAt: obj.createdAt
+          });
+        }
+      }
+    }
+
+    const pendingList = Array.from(map.values());
+    pendingList.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+
+    return res.status(200).json({
+      success: true,
+      count: pendingList.length,
+      advocates: pendingList
+    });
+  } catch (error) {
+    console.error('Error fetching pending advocates:', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch pending advocate applications.' });
+  }
+};
+
 // Get Single Advocate details
 export const getAdvocateById = async (req: Request, res: Response) => {
   try {
@@ -301,51 +372,108 @@ export const getAdvocateById = async (req: Request, res: Response) => {
   }
 };
 
-// Verify Advocate credentials (Admin only)
+// Verify/Approve or Reject Advocate credentials (Admin only)
 export const verifyAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    const roleLower = (req.user?.role || '').toLowerCase();
+    if (roleLower !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied. Only Admins can approve or reject Advocate verification requests.' });
+    }
+
     const { id } = req.params;
-    const { status } = req.body; // true = verified, false = unverified
+    const { status, rejectionReason } = req.body;
 
     const advocate = await Advocate.findById(id);
     if (!advocate) {
-      return res.status(404).json({ success: false, message: 'Advocate not found.' });
+      return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
     }
 
-    const updated = await Advocate.findByIdAndUpdate(id, { isVerified: status === true }, { new: true });
+    const isApproved = status === true || status === 'true' || status === 'APPROVED' || status === 'approved';
+    const isRejected = status === false || status === 'false' || status === 'REJECTED' || status === 'rejected';
+
+    const newVerificationStatus = isApproved ? 'APPROVED' : (isRejected ? 'REJECTED' : 'PENDING');
+    const newIsVerified = isApproved;
+
+    const updated = await Advocate.findByIdAndUpdate(id, {
+      isVerified: newIsVerified,
+      verificationStatus: newVerificationStatus,
+      rejectionReason: isRejected ? (rejectionReason || 'Application details did not meet Bar Council verification standards.') : undefined,
+      verifiedAt: new Date(),
+      verifiedBy: req.user?.id || 'system'
+    }, { new: true });
+
+    // Update associated User account if one exists
+    try {
+      await User.updateMany(
+        { $or: [{ email: advocate.email.toLowerCase() }, { phone: advocate.phone }, { googleSub: advocate.googleSub }] },
+        {
+          isVerified: newIsVerified,
+          verificationStatus: newVerificationStatus
+        }
+      );
+    } catch (uErr) { }
 
     await AuditLog.create({
       userId: req.user?.id || 'system',
       userName: req.user?.name || 'Administrator',
       role: 'Admin',
-      action: 'ADVOCATE_VERIFIED',
+      action: isApproved ? 'ADVOCATE_APPROVED' : 'ADVOCATE_REJECTED',
       ip: req.ip || '127.0.0.1',
-      details: `${status === true ? 'Approved' : 'Revoked'} credentials for advocate: ${advocate.name}`
+      details: `${isApproved ? 'Approved' : 'Rejected'} verification for advocate: ${advocate.name} (Enrollment: ${advocate.enrollmentNumber})`
     });
 
     return res.status(200).json({
       success: true,
-      message: `Advocate verification status updated successfully to ${status === true ? 'Verified' : 'Unverified'}.`,
+      message: isApproved 
+        ? `Advocate ${advocate.name} approved successfully and published to Advocate Directory.` 
+        : `Advocate ${advocate.name} application rejected.`,
       advocate: updated
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: 'Error verifying credentials.' });
+    console.error('Error in verifyAdvocate:', error);
+    return res.status(500).json({ success: false, message: 'Error updating advocate verification status.' });
   }
 };
 
-// Update Advocate details (Admin Only)
+// Update Advocate details (Admin or Advocate OWN profile ONLY)
 export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Authentication required.' });
+    }
+
+    const roleLower = (req.user.role || '').toLowerCase();
+    if (roleLower !== 'admin' && roleLower !== 'advocate') {
+      return res.status(403).json({ success: false, message: 'Normal users cannot edit advocate information.' });
+    }
+
     const { id } = req.params;
     const advocate = await Advocate.findById(id);
     if (!advocate) {
       return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
     }
 
+    // Ownership Security Check for Advocates
+    if (roleLower === 'advocate') {
+      const userEmail = (req.user.email || '').toLowerCase().trim();
+      const userPhone = (req.user.phone || '').trim();
+      const advEmail = (advocate.email || '').toLowerCase().trim();
+      const advPhone = (advocate.phone || '').trim();
+
+      const isOwner = (userEmail && userEmail === advEmail) || 
+                      (userPhone && userPhone === advPhone) ||
+                      (req.user.googleSub && req.user.googleSub === advocate.googleSub) ||
+                      (String(req.user.id) === String(advocate._id));
+
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'You are not authorized to modify this Advocate profile.' });
+      }
+    }
+
     const {
       name, phone, email, enrollmentNumber, enrollmentDate,
       specialization, court, city, state, experience,
-      photo, bio, address, availability, isVerified
+      photo, bio, address, availability, isVerified, verificationStatus
     } = req.body;
 
     const updatedData: any = {};
@@ -354,8 +482,8 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
     if (email !== undefined) updatedData.email = email;
     if (enrollmentNumber !== undefined) updatedData.enrollmentNumber = enrollmentNumber;
     if (enrollmentDate !== undefined) updatedData.enrollmentDate = enrollmentDate;
-    if (specialization !== undefined) updatedData.specialization = specialization;
-    if (court !== undefined) updatedData.court = court;
+    if (specialization !== undefined) updatedData.specialization = Array.isArray(specialization) ? specialization.join(', ') : String(specialization);
+    if (court !== undefined) updatedData.court = Array.isArray(court) ? court.join(', ') : String(court);
     if (city !== undefined) updatedData.city = city;
     if (state !== undefined) updatedData.state = state;
     if (experience !== undefined) updatedData.experience = Number(experience);
@@ -363,14 +491,19 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
     if (bio !== undefined) updatedData.bio = bio;
     if (address !== undefined) updatedData.address = address;
     if (availability !== undefined) updatedData.availability = availability;
-    if (isVerified !== undefined) updatedData.isVerified = isVerified === true || isVerified === 'true';
+
+    // ONLY Admins can modify verification status directly
+    if (roleLower === 'admin') {
+      if (isVerified !== undefined) updatedData.isVerified = isVerified === true || isVerified === 'true';
+      if (verificationStatus !== undefined) updatedData.verificationStatus = verificationStatus;
+    }
 
     const updatedAdvocate = await Advocate.findByIdAndUpdate(id, updatedData, { new: true });
 
     await AuditLog.create({
-      userId: req.user?.id || 'system',
-      userName: req.user?.name || 'Administrator',
-      role: 'Admin',
+      userId: req.user.id || 'system',
+      userName: req.user.name || 'User',
+      role: req.user.role,
       action: 'ADVOCATE_UPDATED',
       ip: req.ip || '127.0.0.1',
       details: `Updated advocate profile details for ${advocate.name}`
@@ -387,9 +520,18 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-// Delete Advocate profile (Admin Only)
+// Delete Advocate profile (ONLY Admin Can Delete)
 export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Authentication required.' });
+    }
+
+    const roleLower = (req.user.role || '').toLowerCase();
+    if (roleLower !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Only Admins can delete Advocate profiles.' });
+    }
+
     const { id } = req.params;
     const advocate = await Advocate.findById(id);
     if (!advocate) {
@@ -399,8 +541,8 @@ export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) =
     await Advocate.findByIdAndDelete(id);
 
     await AuditLog.create({
-      userId: req.user?.id || 'system',
-      userName: req.user?.name || 'Administrator',
+      userId: req.user.id || 'system',
+      userName: req.user.name || 'Administrator',
       role: 'Admin',
       action: 'ADVOCATE_DELETED',
       ip: req.ip || '127.0.0.1',
@@ -417,7 +559,7 @@ export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-// Advocate Onboarding - Self-Service Directory Profile Completion
+// Advocate Onboarding - Self-Service Directory Profile Completion (Submits details & sets status to PENDING)
 export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const roleLower = (req.user?.role || '').toLowerCase();
@@ -439,7 +581,7 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
     const cleanPhone = phone.trim();
     const cleanEnrollment = enrollmentNumber.trim();
 
-    // Check if advocate record exists
+    // Check if advocate record exists by enrollment, email or phone
     let advocate = await Advocate.findOne({
       $or: [
         { email: cleanEmail },
@@ -463,7 +605,9 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
         photo: photo || advocate.photo || '',
         bio: bio ? String(bio).trim() : '',
         address: address ? String(address).trim() : '',
-        isVerified: advocate.isVerified === true
+        googleSub: (req.user as any).googleSub || advocate.googleSub,
+        isVerified: advocate.isVerified === true, // Keep existing verification state if already approved
+        verificationStatus: advocate.verificationStatus || (advocate.isVerified ? 'APPROVED' : 'PENDING')
       }, { new: true });
     } else {
       advocate = await Advocate.create({
@@ -481,11 +625,13 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
         bio: bio ? String(bio).trim() : '',
         address: address ? String(address).trim() : '',
         availability: 'Available',
-        isVerified: false // Unverified initially - requires Admin verification
+        googleSub: (req.user as any).googleSub,
+        isVerified: false, // Unverified initially - requires Admin verification
+        verificationStatus: 'PENDING'
       });
     }
 
-    // Update User record to mark profile completed
+    // Update User record to mark profile completed and set PENDING status
     let updatedUser: any = null;
     try {
       if (req.user.id) {
@@ -494,7 +640,9 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
           enrollmentNumber: cleanEnrollment,
           phone: cleanPhone,
           email: cleanEmail,
-          name: name.trim()
+          name: name.trim(),
+          isVerified: advocate.isVerified === true,
+          verificationStatus: advocate.verificationStatus || 'PENDING'
         }, { new: true });
       }
     } catch (uErr) { }
@@ -512,7 +660,7 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
 
     return res.status(200).json({
       success: true,
-      message: 'Advocate profile details published successfully! Your profile has been added to the directory and is pending Administrator verification.',
+      message: 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.',
       advocate,
       user: {
         id: updatedUser ? updatedUser._id : req.user.id,
@@ -521,7 +669,9 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
         role: updatedUser ? updatedUser.role : req.user.role,
         phone: updatedUser ? updatedUser.phone : cleanPhone,
         enrollmentNumber: cleanEnrollment,
-        hasCompletedProfile: true
+        hasCompletedProfile: true,
+        isVerified: advocate.isVerified === true,
+        verificationStatus: advocate.verificationStatus || 'PENDING'
       }
     });
   } catch (error: any) {
