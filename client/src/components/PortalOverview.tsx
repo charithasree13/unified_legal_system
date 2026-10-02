@@ -184,6 +184,19 @@ export const PortalOverview: React.FC = () => {
           gradientBorder: 'hover:border-emerald-500/50'
         },
         {
+          id: 'limitation-calculator',
+          title: 'Limitation Act Calculator',
+          description: 'Calculate indicative limitation periods, statutory filing deadlines, and excludable time under the Limitation Act, 1963.',
+          tag: 'Statutory Limitation',
+          icon: Scale,
+          path: '/limitation-calculator',
+          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
+          badgeText: 'text-sky-600 dark:text-sky-400',
+          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
+          iconColor: 'text-sky-600 dark:text-sky-400',
+          gradientBorder: 'hover:border-sky-500/50'
+        },
+        {
           id: 'chat',
           title: 'Secure Chat Hub',
           description: 'Inspect active messaging channels, system communications, and user support conversations.',
@@ -304,6 +317,19 @@ export const PortalOverview: React.FC = () => {
           iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
           iconColor: 'text-emerald-600 dark:text-emerald-400',
           gradientBorder: 'hover:border-emerald-500/50'
+        },
+        {
+          id: 'limitation-calculator',
+          title: 'Limitation Act Calculator',
+          description: 'Calculate indicative limitation periods, statutory filing deadlines, and excludable time under the Limitation Act, 1963.',
+          tag: 'Statutory Limitation',
+          icon: Scale,
+          path: '/limitation-calculator',
+          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
+          badgeText: 'text-sky-600 dark:text-sky-400',
+          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
+          iconColor: 'text-sky-600 dark:text-sky-400',
+          gradientBorder: 'hover:border-sky-500/50'
         },
         {
           id: 'chat',

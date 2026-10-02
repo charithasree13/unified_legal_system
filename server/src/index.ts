@@ -23,6 +23,7 @@ import * as reminderCtrl from './controllers/reminderController';
 import * as legalTipCtrl from './controllers/legalTipController';
 import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
 import * as islamicInheritanceCtrl from './controllers/islamicInheritanceController';
+import * as limitationCtrl from './controllers/limitationController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -189,6 +190,16 @@ app.post('/api/calculators/islamic-inheritance/calculate', authenticateToken, re
 app.post('/calculators/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
 app.post('/api/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
 app.post('/islamic-inheritance/calculate', authenticateToken, requireAdminOrAdvocate, islamicInheritanceCtrl.calculateInheritance);
+
+// LIMITATION ACT CALCULATOR API (Protected: Enrolled Advocates & Admins only)
+app.get('/api/calculators/limitation/articles', authenticateToken, requireAdminOrAdvocate, limitationCtrl.getArticles);
+app.get('/calculators/limitation/articles', authenticateToken, requireAdminOrAdvocate, limitationCtrl.getArticles);
+app.get('/api/calculators/limitation/articles/:id', authenticateToken, requireAdminOrAdvocate, limitationCtrl.getArticleById);
+app.get('/calculators/limitation/articles/:id', authenticateToken, requireAdminOrAdvocate, limitationCtrl.getArticleById);
+app.post('/api/calculators/limitation/calculate', authenticateToken, requireAdminOrAdvocate, limitationCtrl.calculate);
+app.post('/calculators/limitation/calculate', authenticateToken, requireAdminOrAdvocate, limitationCtrl.calculate);
+app.get('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
+app.post('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
 app.post('/api', optionalAuthToken, (req, res, next) => {
