@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
-  Tag, Calendar, Landmark, Scale, ExternalLink, X, BookmarkCheck, Trash2,
+  Tag, Calendar, Landmark, Scale, X, BookmarkCheck, Trash2,
   Gavel, BookOpen, CloudUpload, Filter, Edit3, ShieldAlert, Sparkles, CheckCircle2, 
   BookMarked, ChevronLeft, ChevronRight, AlertCircle, Info, RefreshCw, Check
 } from 'lucide-react';
@@ -919,22 +919,10 @@ export const Documents: React.FC = () => {
                         <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                           <button
                             onClick={() => openReaderModal(doc)}
-                            className="flex-1 py-2 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                            className="w-full py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
                           >
                             <FileText size={14} /> View Details & Summary
                           </button>
-
-                          {doc.sourceUrl && (
-                            <a
-                              href={doc.sourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                              title="Open Official Source"
-                            >
-                              <ExternalLink size={14} /> Official Link
-                            </a>
-                          )}
                         </div>
                       </div>
                     );
@@ -1001,22 +989,10 @@ export const Documents: React.FC = () => {
                       <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                         <button
                           onClick={() => openReaderModal(doc)}
-                          className="flex-1 py-2 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                          className="w-full py-2.5 px-4 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
                         >
                           <BookOpen size={14} /> Read Bare Act & Sections
                         </button>
-
-                        {doc.sourceUrl && (
-                          <a
-                            href={doc.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                            title="Open Official Source"
-                          >
-                            <ExternalLink size={14} /> Official Link
-                          </a>
-                        )}
                       </div>
                     </div>
                   );
