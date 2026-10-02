@@ -65,32 +65,61 @@ export const register = async (req: Request, res: Response) => {
 
     // Hash password and save verified account
     const hashedPassword = await bcrypt.hash(password, 10);
+    const isAdvRole = assignedRole === 'Advocate';
     const newUser = await User.create({
       name,
       phone: cleanPhone,
       email: email ? email.trim().toLowerCase() : undefined,
       password: hashedPassword,
       role: assignedRole,
-      enrollmentNumber: assignedRole === 'Advocate' ? enrollmentNumber : undefined,
-      isVerified: true
+      enrollmentNumber: isAdvRole ? enrollmentNumber : undefined,
+      isVerified: !isAdvRole,
+      verificationStatus: isAdvRole ? 'PENDING' : 'APPROVED'
     });
 
-    if (assignedRole === 'Advocate') {
+    if (isAdvRole) {
       try {
-        await Advocate.create({
-          name: name.trim(),
-          phone: cleanPhone,
-          email: email ? email.trim().toLowerCase() : `${cleanPhone}@court.org`,
-          enrollmentNumber: enrollmentNumber ? enrollmentNumber.trim() : `BAR/${new Date().getFullYear()}`,
-          enrollmentDate: new Date().toISOString().split('T')[0],
-          specialization: 'Civil Litigation, Notary, Bank legal advisors',
-          court: 'Senior civil judges court, Junior civil Judges court, High Court',
-          city: 'Madanapalle',
-          state: 'Andhra Pradesh',
-          experience: 15,
-          isVerified: false, // Unverified initially - pending Admin verification
-          verificationStatus: 'PENDING'
+        const cleanEmail = email ? email.trim().toLowerCase() : `${cleanPhone}@court.org`;
+        const cleanEnrollment = enrollmentNumber ? enrollmentNumber.trim() : `BAR/${new Date().getFullYear()}`;
+
+        let existingAdv = await Advocate.findOne({
+          $or: [
+            { email: cleanEmail },
+            { phone: cleanPhone },
+            { enrollmentNumber: cleanEnrollment }
+          ]
         });
+
+        if (existingAdv) {
+          await Advocate.findByIdAndUpdate(existingAdv._id, {
+            name: name.trim(),
+            phone: cleanPhone,
+            email: cleanEmail,
+            enrollmentNumber: cleanEnrollment,
+            enrollmentDate: new Date().toISOString().split('T')[0],
+            specialization: 'Civil Litigation, Notary, Bank legal advisors',
+            court: 'Senior civil judges court, Junior civil Judges court, High Court',
+            city: 'Madanapalle',
+            state: 'Andhra Pradesh',
+            isVerified: false,
+            verificationStatus: 'PENDING'
+          });
+        } else {
+          await Advocate.create({
+            name: name.trim(),
+            phone: cleanPhone,
+            email: cleanEmail,
+            enrollmentNumber: cleanEnrollment,
+            enrollmentDate: new Date().toISOString().split('T')[0],
+            specialization: 'Civil Litigation, Notary, Bank legal advisors',
+            court: 'Senior civil judges court, Junior civil Judges court, High Court',
+            city: 'Madanapalle',
+            state: 'Andhra Pradesh',
+            experience: 15,
+            isVerified: false, // Unverified initially - pending Admin verification
+            verificationStatus: 'PENDING'
+          });
+        }
       } catch (advErr) {
         console.error('Error auto-creating advocate directory document:', advErr);
       }

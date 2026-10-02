@@ -62,7 +62,9 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
             if (val.$exists !== exists) return false;
           }
         } else {
-          if (String(itemVal || '').toLowerCase() !== String(val || '').toLowerCase()) {
+          const itemStr = (itemVal !== undefined && itemVal !== null) ? String(itemVal).toLowerCase() : '';
+          const valStr = String(val).toLowerCase();
+          if (itemStr !== valStr) {
             return false;
           }
         }

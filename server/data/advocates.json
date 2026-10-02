@@ -11,5 +11,49 @@
     "_id": "9tm1c1y5",
     "createdAt": "2026-08-12T14:20:49.043Z",
     "updatedAt": "2026-09-12T05:09:29.706Z"
+  },
+  {
+    "name": "Advocate B",
+    "email": "advocateB@court.org",
+    "phone": "9876599999",
+    "enrollmentNumber": "AP/888/2020",
+    "isVerified": true,
+    "verificationStatus": "APPROVED",
+    "_id": "3p2hs73b",
+    "createdAt": "2026-10-02T10:08:42.160Z",
+    "updatedAt": "2026-10-02T10:08:42.160Z"
+  },
+  {
+    "name": "Advocate B",
+    "email": "advocateB@court.org",
+    "phone": "9876599999",
+    "enrollmentNumber": "AP/888/2020",
+    "isVerified": true,
+    "verificationStatus": "APPROVED",
+    "_id": "mlu61sok",
+    "createdAt": "2026-10-02T10:22:41.129Z",
+    "updatedAt": "2026-10-02T10:22:41.129Z"
+  },
+  {
+    "name": "Advocate B",
+    "email": "advocateB@court.org",
+    "phone": "9876599999",
+    "enrollmentNumber": "AP/888/2020",
+    "isVerified": true,
+    "verificationStatus": "APPROVED",
+    "_id": "i9h1qjmw",
+    "createdAt": "2026-10-02T10:49:55.527Z",
+    "updatedAt": "2026-10-02T10:49:55.527Z"
+  },
+  {
+    "name": "Advocate B",
+    "email": "advocateB@court.org",
+    "phone": "9876599999",
+    "enrollmentNumber": "AP/888/2020",
+    "isVerified": true,
+    "verificationStatus": "APPROVED",
+    "_id": "opongbgr",
+    "createdAt": "2026-10-02T11:03:21.233Z",
+    "updatedAt": "2026-10-02T11:03:21.233Z"
   }
 ]
