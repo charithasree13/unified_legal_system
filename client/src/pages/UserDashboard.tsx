@@ -5,6 +5,7 @@ import {
   Landmark, BookOpen, Calculator, UserCheck, ShieldAlert
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { getApiUrl } from '../config/api';
 import { PortalOverview } from '../components/PortalOverview';
 import { FounderSection } from '../components/FounderSection';
 import { FooterSection } from '../components/FooterSection';
@@ -33,7 +34,7 @@ export const UserDashboard: React.FC = () => {
   const fetchUserData = async () => {
     try {
       // 1. Fetch cases
-      const caseRes = await fetch('/api/projects', {
+      const caseRes = await fetch(getApiUrl('/api/projects'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const caseData = await caseRes.json();
@@ -43,7 +44,7 @@ export const UserDashboard: React.FC = () => {
       }
 
       // 2. Fetch bookmarks/judgements
-      const docsRes = await fetch('/api/documents/judgements', {
+      const docsRes = await fetch(getApiUrl('/api/documents/judgements'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const docsData = await docsRes.json();

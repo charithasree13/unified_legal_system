@@ -2,46 +2,251 @@
   {
     "_id": "act_bns_2023",
     "title": "The Bharatiya Nyaya Sanhita, 2023 (BNS)",
-    "category": "Act",
+    "category": "Criminal Law",
     "description": "Enacted by Parliament (Act No. 45 of 2023). Replaced the Indian Penal Code (1860). Governs criminal offenses, public order, bodily safety, cyber crimes, mob lynching penalties, and community service sanctions across India.",
     "pdfUrl": "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
     "fileName": "Bharatiya_Nyaya_Sanhita_2023.pdf",
     "uploadedBy": "Ministry of Law & Justice",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.101Z",
+    "canonicalKey": "bharatiya_nyaya_sanhita_2023|act_no_45_of_2023|2023|central_all_india",
+    "actName": "The Bharatiya Nyaya Sanhita, 2023",
+    "shortTitle": "BNS 2023",
+    "actNumber": "Act No. 45 of 2023",
+    "year": 2023,
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "ministry": "Ministry of Home Affairs / Ministry of Law and Justice",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the provisions relating to offences and for matters connected therewith or incidental thereto.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
+    "lastVerified": "2026-10-02",
+    "amendmentHistory": [
+      {
+        "title": "Enactment & Presidential Assent",
+        "date": "2023-12-25",
+        "details": "Passed by Lok Sabha & Rajya Sabha; received Presidential assent on Dec 25, 2023."
+      },
+      {
+        "title": "Enforcement Notification",
+        "date": "2024-07-01",
+        "details": "Brought into full statutory operation across India replacing IPC 1860."
+      }
+    ],
+    "chapters": [
+      {
+        "chapterNumber": "Chapter I",
+        "title": "Preliminary",
+        "sections": [
+          {
+            "sectionNumber": "Section 1",
+            "title": "Short title, extent and commencement",
+            "content": "(1) This Act may be called the Bharatiya Nyaya Sanhita, 2023.\n(2) It extends to the whole of India.\n(3) It shall come into force on such date as the Central Government may, by notification in the Official Gazette, appoint.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "This Act may be called the Bharatiya Nyaya Sanhita, 2023."
+              },
+              {
+                "number": "(2)",
+                "text": "It extends to the whole of India."
+              }
+            ]
+          },
+          {
+            "sectionNumber": "Section 2",
+            "title": "Definitions",
+            "content": "In this Sanhita, unless the context otherwise requires,—\n(1) 'child' means any person below the age of eighteen years;\n(2) 'court' means a Judge who is empowered by law to act judicially;\n(3) 'document' means any matter expressed or described upon any substance by means of letters, figures or marks, including electronic and digital records.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "'child' means any person below the age of eighteen years;"
+              },
+              {
+                "number": "(2)",
+                "text": "'court' means a Judge empowered judicially;"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "chapterNumber": "Chapter V",
+        "title": "Offences Against the Human Body",
+        "sections": [
+          {
+            "sectionNumber": "Section 103",
+            "title": "Punishment for Murder",
+            "content": "(1) Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine.\n(2) When a group of five or more persons acting in concert commits murder on the ground of race, caste or community, sex, place of birth, language, personal belief or any other similar ground, each member of such group shall be punished with death or with imprisonment for life, and shall also be liable to fine.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "Punishment with death or imprisonment for life, and fine."
+              },
+              {
+                "number": "(2)",
+                "text": "Mob lynching offense by group of 5 or more persons."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "department": "Legislative Department",
+    "subCategory": "Substantive Criminal Law",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
     "_id": "act_bnss_2023",
     "title": "The Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)",
-    "category": "Act",
+    "category": "Procedure",
     "description": "Enacted by Parliament (Act No. 46 of 2023). Replaced the Code of Criminal Procedure (1973). Regulates criminal investigation, Zero FIR, mandatory digital forensics, electronic summons, court trial timelines, and undertrial bail.",
     "pdfUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
     "fileName": "Bharatiya_Nagarik_Suraksha_Sanhita_2023.pdf",
     "uploadedBy": "Ministry of Law & Justice",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.104Z",
+    "actName": "The Bharatiya Nagarik Suraksha Sanhita, 2023",
+    "shortTitle": "BNSS 2023",
+    "actNumber": "Act No. 46 of 2023",
+    "year": 2023,
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "ministry": "Ministry of Home Affairs / Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law relating to Criminal Procedure.",
+    "subCategory": "Criminal Procedure",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter I",
+        "title": "Preliminary",
+        "sections": [
+          {
+            "sectionNumber": "Section 1",
+            "title": "Short title, extent and commencement",
+            "content": "(1) This Act may be called the Bharatiya Nagarik Suraksha Sanhita, 2023.\n(2) It extends to the whole of India.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 173",
+            "title": "Information in cognizable cases (Zero FIR & Electronic Information)",
+            "content": "(1) Every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing... Provided that information may be given electronically and taken on record as Zero FIR irrespective of territorial jurisdiction.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "bharatiya_nagarik_suraksha_sanhita_2023|act_no_46_of_2023|2023|central_all_india"
   },
   {
     "_id": "act_bsa_2023",
     "title": "The Bharatiya Sakshya Adhiniyam, 2023 (BSA)",
-    "category": "Act",
-    "description": "Enacted by Parliament (Act No. 47 of 2023). Replaced the Indian Evidence Act (1872). Governs rules of evidence, primary status of electronic and digital records, secondary evidence, and witness examinations.",
+    "category": "Evidence",
+    "description": "Act No. 47 of 2023. Replaced the Indian Evidence Act (1872). Equates electronic records with primary evidence and updates digital testimony rules.",
     "pdfUrl": "https://www.mha.gov.in/sites/default/files/250885_english_01042024.pdf",
     "fileName": "Bharatiya_Sakshya_Adhiniyam_2023.pdf",
     "uploadedBy": "Ministry of Law & Justice",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.061Z",
+    "actName": "The Bharatiya Sakshya Adhiniyam, 2023",
+    "shortTitle": "BSA 2023",
+    "actNumber": "Act No. 47 of 2023",
+    "year": 2023,
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and provide general rules and principles of evidence for fair trial.",
+    "subCategory": "Law of Evidence",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/20002",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250885_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Part I",
+        "title": "Relevancy of Facts",
+        "sections": [
+          {
+            "sectionNumber": "Section 61",
+            "title": "Electronic and Digital Evidence",
+            "content": "Electronic or digital records shall have the same legal effect, validity and enforceability as paper documents.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "bharatiya_sakshya_adhiniyam_2023|act_no_47_of_2023|2023|central_all_india"
   },
   {
     "_id": "act_ipc_1860",
-    "title": "Indian Penal Code, 1860 (IPC)",
-    "category": "Act",
-    "description": "Act No. 45 of 1860. The substantive criminal code governing offenses, culpable homicide, murder, theft, fraud, forgery, and criminal liability for acts prior to July 1, 2024.",
+    "title": "The Indian Penal Code, 1860 (IPC)",
+    "category": "Criminal Law",
+    "description": "Act No. 45 of 1860. The primary substantive penal code of India for over 160 years defining criminal offences and punishments.",
     "pdfUrl": "https://drive.google.com/file/d/19YpcyfiNZ0hp6XyKJTnHh2b9-QCaGy2E/view?usp=sharing",
     "fileName": "Indian_Penal_Code_1860.pdf",
     "uploadedBy": "Legislative Department",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.073Z",
+    "actName": "The Indian Penal Code, 1860",
+    "shortTitle": "IPC 1860",
+    "actNumber": "Act No. 45 of 1860",
+    "year": 1860,
+    "enactmentDate": "1860-10-06",
+    "commencementDate": "1862-01-01",
+    "ministry": "Ministry of Home Affairs",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "AMENDED",
+    "longTitle": "An Act to provide a general Penal Code for India.",
+    "subCategory": "Substantive Penal Law",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2263",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/2263/1/A1860-45.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XVI",
+        "title": "Of Offences Affecting the Human Body",
+        "sections": [
+          {
+            "sectionNumber": "Section 302",
+            "title": "Punishment for Murder",
+            "content": "Whoever commits murder shall be punished with death, or imprisonment for life, and shall also be liable to fine.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 304B",
+            "title": "Dowry death",
+            "content": "(1) Where the death of a woman is caused by any burns or bodily injury or occurs otherwise than under normal circumstances within seven years of her marriage, and it is shown that soon before her death she was subjected to cruelty or harassment by her husband or any relative of her husband for, or in connection with, any demand for dowry, such death shall be called 'dowry death'.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "indian_penal_code_1860|act_no_45_of_1860|1860|central_all_india"
   },
   {
     "_id": "act_pocso_2012",
@@ -79,13 +284,53 @@
   {
     "_id": "act_it_2000",
     "title": "The Information Technology Act, 2000 (IT Act)",
-    "category": "Act",
-    "description": "Act No. 21 of 2000. Provides legal recognition for transactions carried out by means of electronic data interchange, cyber offenses, digital signatures, and intermediary liabilities.",
-    "pdfUrl": "https://drive.google.com/file/d/1hsVYQJ8c1PU42YO7d5wIny3SQm9fRgty/view?usp=sharing",
+    "category": "Cyber Law",
+    "description": "Act No. 21 of 2000. Provides legal recognition for transactions carried out by electronic data interchange, cyber offenses, digital signatures, electronic contracts, and intermediary liabilities.",
+    "pdfUrl": "https://www.meity.gov.in/content/information-technology-act-2000",
     "fileName": "Information_Technology_Act_2000.pdf",
     "uploadedBy": "Ministry of Electronics & IT",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.113Z",
+    "canonicalKey": "the_information_technology_act_2000|act_no_21_of_2000|2000|central_all_india",
+    "actName": "The Information Technology Act, 2000",
+    "shortTitle": "IT Act 2000",
+    "actNumber": "Act No. 21 of 2000",
+    "year": 2000,
+    "enactmentDate": "2000-06-09",
+    "commencementDate": "2000-10-17",
+    "ministry": "Ministry of Electronics and Information Technology",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to provide legal recognition for transactions carried out by means of electronic data interchange and other means of electronic communication.",
+    "sourceAuthority": "India Code / MeitY, Govt. of India",
+    "sourceUrl": "https://www.meity.gov.in/content/information-technology-act-2000",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XI",
+        "title": "Offences",
+        "sections": [
+          {
+            "sectionNumber": "Section 66",
+            "title": "Computer related offences",
+            "content": "If any person dishonestly or fraudulently does any act referred to in section 43, he shall be punishable with imprisonment for a term which may extend to three years or with fine.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 66E",
+            "title": "Punishment for violation of privacy",
+            "content": "Whoever, intentionally or knowingly captures, publishes or transmits the image of a private area of any person without consent shall be punished with imprisonment up to three years.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 79",
+            "title": "Exemption from liability of intermediary in certain cases",
+            "content": "An intermediary shall not be liable for any third party information, data, or communication link made available or hosted by him if he observes due diligence.",
+            "subsections": []
+          }
+        ]
+      }
+    ]
   },
   {
     "_id": "act_hindu_marriage_1955",
@@ -320,25 +565,129 @@
   },
   {
     "_id": "act_cpc_1908",
-    "title": "Code of Civil Procedure, 1908 (CPC)",
-    "category": "Act",
-    "description": "Act No. 5 of 1908. Regulates civil litigation, suits, injunctions, appeals, revisions, and execution of decrees in civil courts.",
+    "title": "The Code of Civil Procedure, 1908 (CPC)",
+    "category": "Civil Law",
+    "description": "Act No. 5 of 1908. Fundamental code governing jurisdiction, trial procedure, pleadings, injunctions, execution of decrees, and civil appeals in Indian civil courts.",
     "pdfUrl": "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051676.pdf",
     "fileName": "Code_of_Civil_Procedure_1908.pdf",
     "uploadedBy": "Legislative Department",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.065Z",
+    "actName": "The Code of Civil Procedure, 1908",
+    "shortTitle": "CPC 1908",
+    "actNumber": "Act No. 5 of 1908",
+    "year": 1908,
+    "enactmentDate": "1908-03-21",
+    "commencementDate": "1909-01-01",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the laws relating to the Procedure of the Courts of Civil Judicature.",
+    "subCategory": "Civil Procedure",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2191",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/2191/1/A1908-05.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Part I",
+        "title": "Suits in General",
+        "sections": [
+          {
+            "sectionNumber": "Section 9",
+            "title": "Courts to try all civil suits unless barred",
+            "content": "The Courts shall (subject to the provisions herein contained) have jurisdiction to try all suits of a civil nature excepting suits of which their cognizance is either expressly or impliedly barred.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 11",
+            "title": "Res Judicata",
+            "content": "No Court shall try any suit or issue in which the matter directly and substantially in issue has been directly and substantially in issue in a former suit between the same parties...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 89",
+            "title": "Settlement of disputes outside the Court (ADR)",
+            "content": "Where it appears to the Court that there exist elements of a settlement which may be acceptable to the parties, the Court shall formulate the terms of settlement and refer the same for Arbitration, Conciliation, Judicial Settlement or Mediation.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "code_of_civil_procedure_1908|act_no_5_of_1908|1908|central_all_india"
   },
   {
     "_id": "act_constitution_1950",
-    "title": "The Constitution of India",
-    "category": "Constitution Article",
-    "description": "Supreme Law of India enacted on 26 January 1950. Outlines Fundamental Rights, Directive Principles of State Policy, and Judicial Powers.",
+    "title": "The Constitution of India, 1950",
+    "category": "Constitutional Law",
+    "description": "The supreme law of India. Contains 395 Articles in 22 Parts and 12 Schedules establishing fundamental rights, state policy, parliament, judiciary, and emergency powers.",
     "pdfUrl": "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa788ccfcdf1b99b5d8f/uploads/2023/05/2023051648.pdf",
     "fileName": "Constitution_of_India.pdf",
-    "uploadedBy": "Constituent Assembly of India",
+    "uploadedBy": "Constituent Assembly / Govt of India",
     "createdAt": "2026-08-15T10:00:00.000Z",
-    "updatedAt": "2026-08-15T10:00:00.000Z"
+    "updatedAt": "2026-10-02T16:20:33.077Z",
+    "actName": "The Constitution of India",
+    "shortTitle": "Constitution of India",
+    "actNumber": "Supreme Lex of India",
+    "year": 1950,
+    "enactmentDate": "1949-11-26",
+    "commencementDate": "1950-01-26",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "The supreme law of the Republic of India establishing fundamental rights, directive principles, and government frameworks.",
+    "subCategory": "Supreme Law",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2186",
+    "officialSourceUrl": "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa58fa5520f8138d0174/uploads/2023/05/2023050195.pdf",
+    "rightsStatus": "Public Supreme Law Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "chapters": [
+      {
+        "chapterNumber": "Part III",
+        "title": "Fundamental Rights",
+        "sections": [
+          {
+            "sectionNumber": "Article 14",
+            "title": "Equality before law",
+            "content": "The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 19",
+            "title": "Protection of certain rights regarding freedom of speech, etc.",
+            "content": "(1) All citizens shall have the right— (a) to freedom of speech and expression; (b) to assemble peaceably and without arms; (c) to form associations or unions; (d) to move freely throughout the territory of India...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 21",
+            "title": "Protection of life and personal liberty",
+            "content": "No person shall be deprived of his life or personal liberty except according to procedure established by law.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 32",
+            "title": "Remedies for enforcement of rights conferred by Part III (Writ Jurisdiction)",
+            "content": "(1) The right to move the Supreme Court by appropriate proceedings for the enforcement of the rights conferred by this Part is guaranteed. (2) The Supreme Court shall have power to issue directions or orders or writs, including writs in the nature of habeas corpus, mandamus, prohibition, quo warranto and certiorari...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 226",
+            "title": "Power of High Courts to issue certain writs",
+            "content": "Notwithstanding anything in Article 32 every High Court shall have powers, throughout the territories in relation to which it exercises jurisdiction, to issue to any person or authority directions, orders or writs...",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "constitution_of_india|supreme_lex_of_india|1950|central_all_india"
   },
   {
     "_id": "act_rti_2005",
@@ -385,7 +734,7 @@
     "updatedAt": "2026-08-15T10:00:00.000Z"
   },
   {
-    "_id": "ggj3h4ul",
+    "_id": "act_limitation_1963",
     "canonicalKey": "the_limitation_act_1963|act_no_36_of_1963|1963|central_all_india",
     "title": "The Limitation Act, 1963",
     "actName": "The Limitation Act, 1963",
@@ -402,7 +751,7 @@
     "description": "Act No. 36 of 1963. Governs periods of limitation for instituting suits, appeals, and applications in Indian courts, exclusion of time in legal proceedings, and condonation of delay.",
     "sourceAuthority": "India Code / Legislative Department, Govt. of India",
     "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1565",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://www.indiacode.nic.in/handle/123456789/1565",
     "fileName": "Limitation_Act_1963.pdf",
     "uploadedBy": "Legislative Department",
@@ -433,10 +782,16 @@
       }
     ],
     "createdAt": "2026-10-02T14:15:20.904Z",
-    "updatedAt": "2026-10-02T14:15:20.904Z"
+    "updatedAt": "2026-10-02T16:20:33.107Z",
+    "department": "Legislative Department",
+    "subCategory": "Limitation & Prescription",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/1565/1/A1963-36.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "_id": "lhxac4ax",
+    "_id": "act_arbitration_1996",
     "canonicalKey": "the_arbitration_and_conciliation_act_1996|act_no_26_of_1996|1996|central_all_india",
     "title": "The Arbitration and Conciliation Act, 1996",
     "actName": "The Arbitration and Conciliation Act, 1996",
@@ -453,7 +808,7 @@
     "description": "Act No. 26 of 1996. Consolidated statutory framework for domestic arbitration, conciliation, international commercial arbitration, and enforcement of foreign arbitral awards.",
     "sourceAuthority": "India Code / Legislative Department, Govt. of India",
     "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1978",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://www.indiacode.nic.in/handle/123456789/1978",
     "fileName": "Arbitration_and_Conciliation_Act_1996.pdf",
     "uploadedBy": "Ministry of Law & Justice",
@@ -484,28 +839,730 @@
       }
     ],
     "createdAt": "2026-10-02T14:15:20.906Z",
-    "updatedAt": "2026-10-02T14:15:20.906Z"
+    "updatedAt": "2026-10-02T16:20:33.110Z",
+    "department": "Department of Legal Affairs",
+    "subCategory": "Alternative Dispute Resolution",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/1978/1/A1996-26.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "title": "The Bharatiya Nyaya Sanhita, 2023",
+    "title": "The Bharatiya Nyaya Sanhita, 2023 (BNS)",
     "actName": "The Bharatiya Nyaya Sanhita, 2023",
     "actNumber": "Act No. 45 of 2023",
     "year": 2023,
-    "ministry": "Ministry of Law and Justice",
+    "ministry": "Ministry of Home Affairs / Ministry of Law and Justice",
     "jurisdiction": "Central / All India",
     "actStatus": "CURRENTLY_IN_FORCE",
     "category": "Criminal Law",
-    "description": "",
-    "sourceAuthority": "India Code / Legislative Department",
-    "sourceUrl": "",
+    "description": "Enacted by Parliament (Act No. 45 of 2023). Replaced the Indian Penal Code (1860). Modernized offences against women & children, organized crime, terrorism, mob lynching, and community service penalties.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/20000",
     "lastVerified": "2026-10-02",
-    "canonicalKey": "the_bharatiya_nyaya_sanhita__2023|act_no__45_of_2023|2023|central___all_india",
+    "canonicalKey": "bharatiya_nyaya_sanhita_2023|act_no_45_of_2023|2023|central_all_india",
     "pdfUrl": "",
     "fileName": "The_Bharatiya_Nyaya_Sanhita__2023.pdf",
-    "uploadedBy": "System Admin",
-    "chapters": [],
-    "_id": "4euy41pv",
+    "uploadedBy": "Ministry of Law & Justice",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter I",
+        "title": "Preliminary",
+        "sections": [
+          {
+            "sectionNumber": "Section 1",
+            "title": "Short title, extent and commencement",
+            "content": "(1) This Act may be called the Bharatiya Nyaya Sanhita, 2023.\n(2) It extends to the whole of India.\n(3) It shall come into force on such date as the Central Government may, by notification in the Official Gazette, appoint.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "Short title: Bharatiya Nyaya Sanhita, 2023."
+              },
+              {
+                "number": "(2)",
+                "text": "Territorial extent: Whole of India."
+              }
+            ]
+          },
+          {
+            "sectionNumber": "Section 2",
+            "title": "Definitions",
+            "content": "In this Sanhita, unless the context otherwise requires,—\n(1) 'child' means any person below the age of eighteen years;\n(2) 'court' means a Judge who is empowered by law to act judicially;\n(3) 'document' means any matter expressed or described upon any substance by means of letters, figures or marks, including electronic and digital records.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "'child' means any person below the age of eighteen years;"
+              },
+              {
+                "number": "(2)",
+                "text": "'court' means a Judge empowered judicially;"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "chapterNumber": "Chapter V",
+        "title": "Offences Against the Human Body",
+        "sections": [
+          {
+            "sectionNumber": "Section 103",
+            "title": "Punishment for Murder",
+            "content": "(1) Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine.\n(2) When a group of five or more persons acting in concert commits murder on the ground of race, caste or community, sex, place of birth, language, personal belief or any other similar ground, each member of such group shall be punished with death or with imprisonment for life, and shall also be liable to fine.",
+            "subsections": [
+              {
+                "number": "(1)",
+                "text": "Punishment with death or imprisonment for life, and fine."
+              },
+              {
+                "number": "(2)",
+                "text": "Mob lynching offense by group of 5 or more persons."
+              }
+            ]
+          },
+          {
+            "sectionNumber": "Section 106",
+            "title": "Causing death by negligence",
+            "content": "(1) Whoever causes the death of any person by doing any rash or negligent act not amounting to culpable homicide, shall be punished with imprisonment of either description for a term which may extend to five years, and shall also be liable to fine.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "_id": "act_bns_2023",
     "createdAt": "2026-10-02T14:15:21.300Z",
-    "updatedAt": "2026-10-02T14:15:21.300Z"
+    "updatedAt": "2026-10-02T16:08:53.743Z",
+    "shortTitle": "BNS 2023",
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "department": "Legislative Department",
+    "longTitle": "An Act to consolidate and amend the provisions relating to offences and for matters connected therewith or incidental thereto.",
+    "subCategory": "Substantive Criminal Law",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0"
+  },
+  {
+    "_id": "act_bnss_2023",
+    "title": "The Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS)",
+    "actName": "The Bharatiya Nagarik Suraksha Sanhita, 2023",
+    "shortTitle": "BNSS 2023",
+    "actNumber": "Act No. 46 of 2023",
+    "year": 2023,
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "ministry": "Ministry of Home Affairs / Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law relating to Criminal Procedure.",
+    "category": "Procedure",
+    "subCategory": "Criminal Procedure",
+    "description": "Enacted by Parliament (Act No. 46 of 2023). Replaced the Code of Criminal Procedure (1973). Regulates criminal investigation, Zero FIR, mandatory digital forensics, electronic summons, court trial timelines, and undertrial bail.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Law & Justice",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter I",
+        "title": "Preliminary",
+        "sections": [
+          {
+            "sectionNumber": "Section 1",
+            "title": "Short title, extent and commencement",
+            "content": "(1) This Act may be called the Bharatiya Nagarik Suraksha Sanhita, 2023.\n(2) It extends to the whole of India.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 173",
+            "title": "Information in cognizable cases (Zero FIR & Electronic Information)",
+            "content": "(1) Every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing... Provided that information may be given electronically and taken on record as Zero FIR irrespective of territorial jurisdiction.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "bharatiya_nagarik_suraksha_sanhita_2023|act_no_46_of_2023|2023|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.746Z",
+    "updatedAt": "2026-10-02T16:08:53.784Z",
+    "pdfUrl": "https://www.mha.gov.in/sites/default/files/250884_english_01042024.pdf",
+    "fileName": "Bharatiya_Nagarik_Suraksha_Sanhita_2023.pdf"
+  },
+  {
+    "_id": "act_bsa_2023",
+    "title": "The Bharatiya Sakshya Adhiniyam, 2023 (BSA)",
+    "actName": "The Bharatiya Sakshya Adhiniyam, 2023",
+    "shortTitle": "BSA 2023",
+    "actNumber": "Act No. 47 of 2023",
+    "year": 2023,
+    "enactmentDate": "2023-12-25",
+    "commencementDate": "2024-07-01",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and provide general rules and principles of evidence for fair trial.",
+    "category": "Evidence",
+    "subCategory": "Law of Evidence",
+    "description": "Act No. 47 of 2023. Replaced the Indian Evidence Act (1872). Equates electronic records with primary evidence and updates digital testimony rules.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/20002",
+    "officialSourceUrl": "https://www.mha.gov.in/sites/default/files/250885_english_01042024.pdf",
+    "rightsStatus": "Public Statutory Gazette & Official Government Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Law & Justice",
+    "chapters": [
+      {
+        "chapterNumber": "Part I",
+        "title": "Relevancy of Facts",
+        "sections": [
+          {
+            "sectionNumber": "Section 61",
+            "title": "Electronic and Digital Evidence",
+            "content": "Electronic or digital records shall have the same legal effect, validity and enforceability as paper documents.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "bharatiya_sakshya_adhiniyam_2023|act_no_47_of_2023|2023|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.749Z",
+    "updatedAt": "2026-10-02T16:19:06.550Z"
+  },
+  {
+    "_id": "act_cpc_1908",
+    "title": "The Code of Civil Procedure, 1908 (CPC)",
+    "actName": "The Code of Civil Procedure, 1908",
+    "shortTitle": "CPC 1908",
+    "actNumber": "Act No. 5 of 1908",
+    "year": 1908,
+    "enactmentDate": "1908-03-21",
+    "commencementDate": "1909-01-01",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the laws relating to the Procedure of the Courts of Civil Judicature.",
+    "category": "Civil Law",
+    "subCategory": "Civil Procedure",
+    "description": "Act No. 5 of 1908. Fundamental code governing jurisdiction, trial procedure, pleadings, injunctions, execution of decrees, and civil appeals in Indian civil courts.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2191",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/2191/1/A1908-05.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Legislative Department",
+    "chapters": [
+      {
+        "chapterNumber": "Part I",
+        "title": "Suits in General",
+        "sections": [
+          {
+            "sectionNumber": "Section 9",
+            "title": "Courts to try all civil suits unless barred",
+            "content": "The Courts shall (subject to the provisions herein contained) have jurisdiction to try all suits of a civil nature excepting suits of which their cognizance is either expressly or impliedly barred.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 11",
+            "title": "Res Judicata",
+            "content": "No Court shall try any suit or issue in which the matter directly and substantially in issue has been directly and substantially in issue in a former suit between the same parties...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 89",
+            "title": "Settlement of disputes outside the Court (ADR)",
+            "content": "Where it appears to the Court that there exist elements of a settlement which may be acceptable to the parties, the Court shall formulate the terms of settlement and refer the same for Arbitration, Conciliation, Judicial Settlement or Mediation.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "code_of_civil_procedure_1908|act_no_5_of_1908|1908|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.751Z",
+    "updatedAt": "2026-10-02T16:19:06.554Z"
+  },
+  {
+    "_id": "act_crpc_1973",
+    "title": "The Code of Criminal Procedure, 1973 (CrPC)",
+    "actName": "The Code of Criminal Procedure, 1973",
+    "shortTitle": "CrPC 1973",
+    "actNumber": "Act No. 2 of 1974",
+    "year": 1973,
+    "enactmentDate": "1974-01-25",
+    "commencementDate": "1974-04-01",
+    "ministry": "Ministry of Home Affairs / Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "AMENDED",
+    "longTitle": "An Act to consolidate and amend the law relating to Criminal Procedure.",
+    "category": "Procedure",
+    "subCategory": "Criminal Procedure",
+    "description": "Act No. 2 of 1974. Historical procedure code governing investigation, arrest, bail, trial, and appeals in criminal courts.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1611",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/1611/1/A1974-02.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Legislative Department",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XII",
+        "title": "Information to the Police and Their Powers to Investigate",
+        "sections": [
+          {
+            "sectionNumber": "Section 154",
+            "title": "Information in cognizable cases (FIR)",
+            "content": "(1) Every information relating to the commission of a cognizable offence, if given orally to an officer in charge of a police station, shall be reduced to writing by him or under his direction...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 438",
+            "title": "Direction for grant of bail to person apprehending arrest (Anticipatory Bail)",
+            "content": "Where any person has reason to believe that he may be arrested on an accusation of having committed a non-bailable offence, he may apply to the High Court or the Court of Session for a direction under this section.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "code_of_criminal_procedure_1973|act_no_2_of_1974|1973|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.753Z",
+    "updatedAt": "2026-10-02T16:20:33.070Z"
+  },
+  {
+    "_id": "act_ipc_1860",
+    "title": "The Indian Penal Code, 1860 (IPC)",
+    "actName": "The Indian Penal Code, 1860",
+    "shortTitle": "IPC 1860",
+    "actNumber": "Act No. 45 of 1860",
+    "year": 1860,
+    "enactmentDate": "1860-10-06",
+    "commencementDate": "1862-01-01",
+    "ministry": "Ministry of Home Affairs",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "AMENDED",
+    "longTitle": "An Act to provide a general Penal Code for India.",
+    "category": "Criminal Law",
+    "subCategory": "Substantive Penal Law",
+    "description": "Act No. 45 of 1860. The primary substantive penal code of India for over 160 years defining criminal offences and punishments.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2263",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/2263/1/A1860-45.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Legislative Department",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XVI",
+        "title": "Of Offences Affecting the Human Body",
+        "sections": [
+          {
+            "sectionNumber": "Section 302",
+            "title": "Punishment for Murder",
+            "content": "Whoever commits murder shall be punished with death, or imprisonment for life, and shall also be liable to fine.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 304B",
+            "title": "Dowry death",
+            "content": "(1) Where the death of a woman is caused by any burns or bodily injury or occurs otherwise than under normal circumstances within seven years of her marriage, and it is shown that soon before her death she was subjected to cruelty or harassment by her husband or any relative of her husband for, or in connection with, any demand for dowry, such death shall be called 'dowry death'.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "indian_penal_code_1860|act_no_45_of_1860|1860|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.756Z",
+    "updatedAt": "2026-10-02T16:19:06.562Z"
+  },
+  {
+    "_id": "act_constitution_1950",
+    "title": "The Constitution of India, 1950",
+    "actName": "The Constitution of India",
+    "shortTitle": "Constitution of India",
+    "actNumber": "Supreme Lex of India",
+    "year": 1950,
+    "enactmentDate": "1949-11-26",
+    "commencementDate": "1950-01-26",
+    "ministry": "Ministry of Law and Justice",
+    "department": "Legislative Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "The supreme law of the Republic of India establishing fundamental rights, directive principles, and government frameworks.",
+    "category": "Constitutional Law",
+    "subCategory": "Supreme Law",
+    "description": "The supreme law of India. Contains 395 Articles in 22 Parts and 12 Schedules establishing fundamental rights, state policy, parliament, judiciary, and emergency powers.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2186",
+    "officialSourceUrl": "https://cdnbbsr.s3waas.gov.in/s380537a945c7aaa58fa5520f8138d0174/uploads/2023/05/2023050195.pdf",
+    "rightsStatus": "Public Supreme Law Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Constituent Assembly / Govt of India",
+    "chapters": [
+      {
+        "chapterNumber": "Part III",
+        "title": "Fundamental Rights",
+        "sections": [
+          {
+            "sectionNumber": "Article 14",
+            "title": "Equality before law",
+            "content": "The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 19",
+            "title": "Protection of certain rights regarding freedom of speech, etc.",
+            "content": "(1) All citizens shall have the right— (a) to freedom of speech and expression; (b) to assemble peaceably and without arms; (c) to form associations or unions; (d) to move freely throughout the territory of India...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 21",
+            "title": "Protection of life and personal liberty",
+            "content": "No person shall be deprived of his life or personal liberty except according to procedure established by law.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 32",
+            "title": "Remedies for enforcement of rights conferred by Part III (Writ Jurisdiction)",
+            "content": "(1) The right to move the Supreme Court by appropriate proceedings for the enforcement of the rights conferred by this Part is guaranteed. (2) The Supreme Court shall have power to issue directions or orders or writs, including writs in the nature of habeas corpus, mandamus, prohibition, quo warranto and certiorari...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Article 226",
+            "title": "Power of High Courts to issue certain writs",
+            "content": "Notwithstanding anything in Article 32 every High Court shall have powers, throughout the territories in relation to which it exercises jurisdiction, to issue to any person or authority directions, orders or writs...",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "constitution_of_india|supreme_lex_of_india|1950|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.759Z",
+    "updatedAt": "2026-10-02T16:19:06.565Z"
+  },
+  {
+    "_id": "act_motor_vehicles_1988",
+    "title": "The Motor Vehicles Act, 1988",
+    "actName": "The Motor Vehicles Act, 1988",
+    "shortTitle": "Motor Vehicles Act 1988",
+    "actNumber": "Act No. 59 of 1988",
+    "year": 1988,
+    "enactmentDate": "1988-10-14",
+    "commencementDate": "1989-07-01",
+    "ministry": "Ministry of Road Transport and Highways",
+    "department": "Transport Department",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law relating to motor vehicles.",
+    "category": "Motor Vehicles",
+    "subCategory": "Road Transport & Accident Compensation",
+    "description": "Act No. 59 of 1988. Regulates licensing of drivers, vehicle registration, traffic rules, insurance of motor vehicles against third party risks, and Motor Accident Claims Tribunals (MACT).",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1798",
+    "officialSourceUrl": "https://morth.nic.in/sites/default/files/motor-vehicles-act-1988.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Road Transport & Highways",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XI",
+        "title": "Insurance of Motor Vehicles Against Third Party Risks",
+        "sections": [
+          {
+            "sectionNumber": "Section 166",
+            "title": "Application for compensation",
+            "content": "(1) An application for compensation arising out of an accident of the nature specified in sub-section (1) of section 165 may be made— (a) by the person who has sustained the injury; or (b) by the owner of the property; or (c) where death has resulted from the accident, by all or any of the legal representatives of the deceased.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "motor_vehicles_act_1988|act_no_59_of_1988|1988|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.767Z",
+    "updatedAt": "2026-10-02T16:20:33.087Z"
+  },
+  {
+    "_id": "act_ni_1881",
+    "title": "The Negotiable Instruments Act, 1881",
+    "actName": "The Negotiable Instruments Act, 1881",
+    "shortTitle": "NI Act 1881",
+    "actNumber": "Act No. 26 of 1881",
+    "year": 1881,
+    "enactmentDate": "1881-12-09",
+    "commencementDate": "1882-03-01",
+    "ministry": "Ministry of Finance / Ministry of Law and Justice",
+    "department": "Department of Financial Services",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to define and amend the law relating to Promissory Notes, Bills of Exchange and Cheques.",
+    "category": "Banking Law",
+    "subCategory": "Commercial & Financial Law",
+    "description": "Act No. 26 of 1881. Governs promissory notes, bills of exchange, cheques, dishonour of cheques for insufficiency of funds (Section 138), statutory demand notice, and interim compensation (Section 143A).",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2196",
+    "officialSourceUrl": "https://www.indiacode.nic.in/bitstream/123456789/2196/1/A1881-26.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Finance",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XVII",
+        "title": "Of Penalties in Case of Dishonour of Certain Cheques for Insufficiency of Funds in the Accounts",
+        "sections": [
+          {
+            "sectionNumber": "Section 138",
+            "title": "Dishonour of cheque for insufficiency, etc., of funds in the account",
+            "content": "Where any cheque drawn by a person on an account maintained by him with a banker for payment of any amount of money to another person from out of that account for the discharge, in whole or in part, of any debt or other liability, is returned by the bank unpaid...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 141",
+            "title": "Offences by companies",
+            "content": "(1) If the person committing an offence under section 138 is a company, every person who, at the time the offence was committed, was in charge of, and was responsible to the company for the conduct of the business of the company...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 143A",
+            "title": "Power to direct interim compensation",
+            "content": "(1) Notwithstanding anything contained in the Code of Criminal Procedure, 1973, the Court trying an offence under section 138 may order the drawer of the cheque to pay interim compensation to the complainant.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "negotiable_instruments_act_1881|act_no_26_of_1881|1881|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.770Z",
+    "updatedAt": "2026-10-02T16:20:33.090Z"
+  },
+  {
+    "_id": "act_it_2000",
+    "title": "The Information Technology Act, 2000 (IT Act)",
+    "actName": "The Information Technology Act, 2000",
+    "shortTitle": "IT Act 2000",
+    "actNumber": "Act No. 21 of 2000",
+    "year": 2000,
+    "enactmentDate": "2000-06-09",
+    "commencementDate": "2000-10-17",
+    "ministry": "Ministry of Electronics and Information Technology",
+    "department": "Cyber Law & Governance Division",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to provide legal recognition for transactions carried out by means of electronic data interchange and other means of electronic communication.",
+    "category": "Cyber Law",
+    "subCategory": "Information Technology & Digital Protection",
+    "description": "Act No. 21 of 2000. Provides legal recognition for transactions carried out by electronic data interchange, cyber offenses, digital signatures, electronic contracts, and intermediary liabilities.",
+    "sourceAuthority": "India Code / MeitY, Govt. of India",
+    "sourceUrl": "https://www.meity.gov.in/content/information-technology-act-2000",
+    "officialSourceUrl": "https://www.meity.gov.in/writereaddata/files/itact2000.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Electronics & IT",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XI",
+        "title": "Offences",
+        "sections": [
+          {
+            "sectionNumber": "Section 66",
+            "title": "Computer related offences",
+            "content": "If any person dishonestly or fraudulently does any act referred to in section 43, he shall be punishable with imprisonment for a term which may extend to three years or with fine.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 66E",
+            "title": "Punishment for violation of privacy",
+            "content": "Whoever, intentionally or knowingly captures, publishes or transmits the image of a private area of any person without consent shall be punished with imprisonment up to three years.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 79",
+            "title": "Exemption from liability of intermediary in certain cases",
+            "content": "An intermediary shall not be liable for any third party information, data, or communication link made available or hosted by him if he observes due diligence.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "the_information_technology_act_2000|act_no_21_of_2000|2000|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.773Z",
+    "updatedAt": "2026-10-02T16:08:53.791Z",
+    "pdfUrl": "https://www.meity.gov.in/content/information-technology-act-2000",
+    "fileName": "Information_Technology_Act_2000.pdf"
+  },
+  {
+    "_id": "act_ibc_2016",
+    "title": "The Insolvency and Bankruptcy Code, 2016 (IBC)",
+    "actName": "The Insolvency and Bankruptcy Code, 2016",
+    "shortTitle": "IBC 2016",
+    "actNumber": "Act No. 31 of 2016",
+    "year": 2016,
+    "enactmentDate": "2016-05-28",
+    "commencementDate": "2016-12-01",
+    "ministry": "Ministry of Corporate Affairs",
+    "department": "Insolvency Section",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the laws relating to reorganisation and insolvency resolution of corporate persons, partnership firms and individuals in a time bound manner.",
+    "category": "Corporate Law",
+    "subCategory": "Insolvency & Restructuring",
+    "description": "Act No. 31 of 2016. Unified framework governing Corporate Insolvency Resolution Process (CIRP), NCLT proceedings, moratorium under Section 14, operational & financial creditors (Sections 7 & 9), and liquidation.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2154",
+    "officialSourceUrl": "https://www.mca.gov.in/Ministry/pdf/TheInsolvencyandBankruptcyCode2016.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Ministry of Corporate Affairs",
+    "chapters": [
+      {
+        "chapterNumber": "Part II Chapter II",
+        "title": "Corporate Insolvency Resolution Process (CIRP)",
+        "sections": [
+          {
+            "sectionNumber": "Section 7",
+            "title": "Initiation of corporate insolvency resolution process by financial creditor",
+            "content": "A financial creditor either by itself or jointly with other financial creditors may file an application for initiating corporate insolvency resolution process against a corporate debtor before the Adjudicating Authority when a default has occurred.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 14",
+            "title": "Moratorium",
+            "content": "Subject to provisions of sub-sections (2) and (3), on the insolvency commencement date, the Adjudicating Authority shall by order declare moratorium for prohibiting the institution of suits or continuation of pending suits against the corporate debtor...",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "insolvency_and_bankruptcy_code_2016|act_no_31_of_2016|2016|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.776Z",
+    "updatedAt": "2026-10-02T16:20:33.096Z"
+  },
+  {
+    "_id": "act_ndps_1985",
+    "title": "The Narcotic Drugs and Psychotropic Substances Act, 1985 (NDPS)",
+    "actName": "The Narcotic Drugs and Psychotropic Substances Act, 1985",
+    "shortTitle": "NDPS Act 1985",
+    "actNumber": "Act No. 61 of 1985",
+    "year": 1985,
+    "enactmentDate": "1985-09-16",
+    "commencementDate": "1985-11-14",
+    "ministry": "Ministry of Finance / Narcotics Control Bureau",
+    "department": "Department of Revenue",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to consolidate and amend the law relating to narcotic drugs, to make stringent provisions for the control and regulation of operations relating to narcotic drugs and psychotropic substances.",
+    "category": "Criminal Law",
+    "subCategory": "Special Criminal Legislation",
+    "description": "Act No. 61 of 1985. Governs prohibition, control, and regulation of narcotic drugs, search and seizure safeguards (Sections 42 & 50), commercial quantity penalties, and stringent bail conditions under Section 37.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1789",
+    "officialSourceUrl": "https://narcoticsindia.nic.in/upload/download/document_id1649232309.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "Narcotics Control Bureau",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter V",
+        "title": "Procedure",
+        "sections": [
+          {
+            "sectionNumber": "Section 42",
+            "title": "Power of entry, search, seizure and arrest without warrant or authorisation",
+            "content": "Any such officer (being an officer superior in rank to a peon, sepoy or constable) of the departments of central excise, narcotics, customs, revenue intelligence or any other department of a State Government empowered in this behalf...",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 50",
+            "title": "Conditions under which search of persons shall be conducted",
+            "content": "When any officer authorised under section 42 is about to search any person under the provisions of section 41, section 42 or section 43, he shall, if such person so requires, take such person without unnecessary delay to the nearest Gazetted Officer of any of the departments mentioned in section 42 or to the nearest Magistrate.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "narcotic_drugs_and_psychotropic_substances_act_1985|act_no_61_of_1985|1985|central_all_india",
+    "createdAt": "2026-10-02T16:08:53.778Z",
+    "updatedAt": "2026-10-02T16:20:33.099Z"
+  },
+  {
+    "_id": "act_it_2000",
+    "title": "The Information Technology Act, 2000",
+    "actName": "The Information Technology Act, 2000",
+    "shortTitle": "IT Act 2000",
+    "actNumber": "Act No. 21 of 2000",
+    "year": 2000,
+    "enactmentDate": "2000-06-09",
+    "commencementDate": "2000-10-17",
+    "ministry": "Ministry of Electronics and Information Technology (MeitY)",
+    "department": "Cyber Law & Governance Division",
+    "jurisdiction": "Central / All India",
+    "actStatus": "CURRENTLY_IN_FORCE",
+    "longTitle": "An Act to provide legal recognition for transactions carried out by means of electronic data interchange and other means of electronic communication.",
+    "category": "Cyber Law",
+    "subCategory": "Information Technology & Digital Protection",
+    "description": "Act No. 21 of 2000. Provides legal recognition to electronic signatures, electronic governance, cyber crime penalties, computer hacking (Section 66), intermediary safe harbor (Section 79), and digital privacy protection.",
+    "sourceAuthority": "India Code / Legislative Department, Govt. of India",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1999",
+    "officialSourceUrl": "https://www.meity.gov.in/writereaddata/files/itact2000.pdf",
+    "rightsStatus": "Public Statutory Record",
+    "importSource": "India Code Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "lastVerified": "2026-10-02",
+    "uploadedBy": "MeitY",
+    "chapters": [
+      {
+        "chapterNumber": "Chapter XI",
+        "title": "Offences",
+        "sections": [
+          {
+            "sectionNumber": "Section 66",
+            "title": "Computer related offences",
+            "content": "If any person dishonestly or fraudulently does any act referred to in section 43, he shall be punishable with imprisonment for a term which may extend to three years or with fine.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 66E",
+            "title": "Punishment for violation of privacy",
+            "content": "Whoever, intentionally or knowingly captures, publishes or transmits the image of a private area of any person without consent shall be punished with imprisonment up to three years.",
+            "subsections": []
+          },
+          {
+            "sectionNumber": "Section 79",
+            "title": "Exemption from liability of intermediary in certain cases (Safe Harbor)",
+            "content": "An intermediary shall not be liable for any third party information, data, or communication link made available or hosted by him if he observes due diligence.",
+            "subsections": []
+          }
+        ]
+      }
+    ],
+    "canonicalKey": "information_technology_act_2000|act_no_21_of_2000|2000|central_all_india",
+    "createdAt": "2026-10-02T16:19:06.583Z",
+    "updatedAt": "2026-10-02T16:20:33.092Z"
   }
 ]

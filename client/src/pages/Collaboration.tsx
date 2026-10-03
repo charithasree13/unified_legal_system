@@ -5,6 +5,7 @@ import {
   Users, ChevronRight, Activity, Send, CheckCircle, RefreshCw
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { getApiUrl } from '../config/api';
 
 export const Collaboration: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
@@ -30,7 +31,7 @@ export const Collaboration: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/projects', {
+      const res = await fetch(getApiUrl('/api/projects'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -92,7 +93,7 @@ export const Collaboration: React.FC = () => {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/projects/${selectedProj._id}/draft`, {
+        const res = await fetch(getApiUrl(`/api/projects/${selectedProj._id}/draft`), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export const Collaboration: React.FC = () => {
     if (!newVersionTitle.trim() || !selectedProj) return;
 
     try {
-      const res = await fetch(`/api/projects/${selectedProj._id}/version`, {
+      const res = await fetch(getApiUrl(`/api/projects/${selectedProj._id}/version`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +139,7 @@ export const Collaboration: React.FC = () => {
     if (!commentText.trim() || !selectedProj) return;
 
     try {
-      const res = await fetch(`/api/projects/${selectedProj._id}/comments`, {
+      const res = await fetch(getApiUrl(`/api/projects/${selectedProj._id}/comments`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

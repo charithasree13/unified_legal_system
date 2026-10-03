@@ -5,6 +5,7 @@ import {
   Trash2, Loader2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { getApiUrl } from '../config/api';
 
 export const Projects: React.FC = () => {
   const { token, user, addNotification } = useAuthStore();
@@ -49,7 +50,7 @@ export const Projects: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/projects', {
+      const res = await fetch(getApiUrl('/api/projects'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -129,11 +130,12 @@ export const Projects: React.FC = () => {
       teamMembers: projTeam.trim()
     };
 
+    const targetEndpoint = getApiUrl('/api/projects');
     console.log('FORM DATA:', formData);
-    console.log('ABOUT TO CALL CREATE CASE API: POST /api/projects');
+    console.log('ABOUT TO CALL CREATE CASE API:', targetEndpoint);
 
     try {
-      const res = await fetch('/api/projects', {
+      const res = await fetch(targetEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -180,14 +182,29 @@ export const Projects: React.FC = () => {
           await fetchProjects();
         }, 1200);
       } else {
-        const errMsg = data.message || 'Case creation failed. Please check the details and try again.';
+        let errMsg = data.message;
+        if (!errMsg) {
+          if (res.status === 401) {
+            errMsg = 'Your session has expired. Please log in again.';
+          } else if (res.status === 403) {
+            errMsg = 'You do not have permission to create or modify a case file.';
+          } else if (res.status === 404) {
+            errMsg = 'Case creation API endpoint was not found on backend server.';
+          } else if (res.status === 422) {
+            errMsg = 'The case information provided is invalid.';
+          } else if (res.status >= 500) {
+            errMsg = 'The backend encountered an error while creating the case.';
+          } else {
+            errMsg = `Case creation failed with HTTP status ${res.status}.`;
+          }
+        }
         console.error('CREATE CASE API REJECTED:', errMsg);
         setFormError(errMsg);
         addNotification('Case Creation Failed', errMsg, 'error');
       }
     } catch (err: any) {
       console.error('CREATE CASE API EXCEPTION:', err);
-      const errMsg = 'Unable to reach backend server. Please check your network connection.';
+      const errMsg = `Unable to reach backend server at ${targetEndpoint}. Please verify server connection.`;
       setFormError(errMsg);
       addNotification('Network Error', errMsg, 'error');
     } finally {
@@ -200,7 +217,7 @@ export const Projects: React.FC = () => {
     if (!taskTitle || !activeProj) return;
 
     try {
-      const res = await fetch(`/api/projects/${activeProj._id}/tasks`, {
+      const res = await fetch(getApiUrl(`/api/projects/${activeProj._id}/tasks`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -240,7 +257,7 @@ export const Projects: React.FC = () => {
     else if (currentStatus === 'In Progress') nextStatus = 'Done';
 
     try {
-      const res = await fetch(`/api/projects/${activeProj._id}/tasks`, {
+      const res = await fetch(getApiUrl(`/api/projects/${activeProj._id}/tasks`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -266,7 +283,7 @@ export const Projects: React.FC = () => {
     }
 
     try {
-      const res = await fetch(`/api/projects/${projectId}`, {
+      const res = await fetch(getApiUrl(`/api/projects/${projectId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

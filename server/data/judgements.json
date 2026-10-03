@@ -16,7 +16,7 @@
     "updatedAt": "2026-07-23T16:37:06.089Z"
   },
   {
-    "_id": "g5e5lnpz",
+    "_id": "jud_sc_2026_01",
     "canonicalKey": "supreme_court_of_india|civil_appeal_no_1420_of_2026|2026_insc_412|2026-03-15",
     "title": "Composite Appeal Maintainable Where Common Judgment Decides Two Connected Suits By Same Plaintiff: Supreme Court",
     "petitioner": "M/s Southern Granites Pvt Ltd",
@@ -54,7 +54,7 @@
     "sourceAuthority": "Supreme Court of India",
     "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf",
     "fileName": "Supreme_Court_Composite_Appeal_2026.pdf",
     "uploadedBy": "Supreme Court Registry",
@@ -68,10 +68,17 @@
       "outcome": "Appeal allowed; High Court order dismissing the composite appeal set aside; appeal restored on merits."
     },
     "createdAt": "2026-10-02T14:15:20.888Z",
-    "updatedAt": "2026-10-02T14:15:20.889Z"
+    "updatedAt": "2026-10-02T16:20:33.144Z",
+    "courtLevel": "Supreme Court",
+    "month": "March",
+    "subCategory": "Civil Procedure",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2026_INSC_412.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "_id": "bfj177p2",
+    "_id": "jud_sc_2026_02",
     "canonicalKey": "supreme_court_of_india|criminal_appeal_no_812_of_2026|2026_insc_308|2026-02-28",
     "title": "Section 42 NDPS Act: Substantial Compliance Sufficient Where Urgent Search Risk Removing Contraband: Supreme Court",
     "petitioner": "State of Punjab",
@@ -109,7 +116,7 @@
     "sourceAuthority": "Supreme Court of India",
     "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_ndps_search.pdf",
     "fileName": "NDPS_Section42_Supreme_Court_2026.pdf",
     "uploadedBy": "Supreme Court Registry",
@@ -123,10 +130,17 @@
       "outcome": "High Court acquittal set aside; conviction under Section 21 NDPS Act restored."
     },
     "createdAt": "2026-10-02T14:15:20.892Z",
-    "updatedAt": "2026-10-02T14:15:20.892Z"
+    "updatedAt": "2026-10-02T16:20:33.147Z",
+    "courtLevel": "Supreme Court",
+    "month": "February",
+    "subCategory": "NDPS & Search Safeguards",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2026_INSC_308.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "_id": "3ior88h3",
+    "_id": "jud_sc_2026_03",
     "canonicalKey": "supreme_court_of_india|civil_appeal_no_3450_of_2026|2026_insc_510|2026-03-22",
     "title": "Wife and Children Entitled to Consortium: Supreme Court Enhances Motor Accident Compensation to Rs 12.47 Lakh",
     "petitioner": "Saraswathi & Ors",
@@ -164,7 +178,7 @@
     "sourceAuthority": "Supreme Court of India",
     "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_motor_accident.pdf",
     "fileName": "Supreme_Court_Motor_Accident_Consortium_2026.pdf",
     "uploadedBy": "Supreme Court Registry",
@@ -178,26 +192,33 @@
       "outcome": "Compensation enhanced from Rs 7.2 Lakhs to Rs 12.47 Lakhs with 7.5% interest per annum."
     },
     "createdAt": "2026-10-02T14:15:20.894Z",
-    "updatedAt": "2026-10-02T14:15:20.894Z"
+    "updatedAt": "2026-10-02T16:20:33.150Z",
+    "courtLevel": "Supreme Court",
+    "month": "March",
+    "subCategory": "Accident Compensation & Insurance",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2026_INSC_510.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "_id": "0tz52smh",
-    "canonicalKey": "supreme_court_of_india|civil_appeal_no_981_of_2026|2026_insc_190|2026-01-18",
-    "title": "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Representatives: Supreme Court",
+    "_id": "jud_sc_2026_04",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_2105_of_2026|2026_insc_198",
+    "title": "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Heirs: Supreme Court",
     "petitioner": "Rameshwar Dayal (Dead) through LRs",
     "respondent": "State Bank of India & Anr",
     "court": "Supreme Court of India",
-    "state": "Haryana",
-    "judge": "Justice P.S. Narasimha & Justice Alok Aradhe",
+    "state": "Delhi",
+    "judge": "Justice Abhay S. Oka & Justice Ujjal Bhuyan",
     "bench": "Division Bench",
-    "caseNumber": "Civil Appeal No. 981 of 2026",
-    "appealNumber": "SLP (C) No. 3120 of 2025",
-    "neutralCitation": "2026 INSC 190",
+    "caseNumber": "Civil Appeal No. 2105 of 2026",
+    "appealNumber": "SLP (C) No. 6710 of 2025",
+    "neutralCitation": "2026 INSC 198",
     "equivalentCitations": [
-      "2026 (1) KLT 450",
-      "AIR 2026 SC 512"
+      "2026 (1) RCR (Civil) 880",
+      "2026 (2) ALT 45"
     ],
-    "judgmentDate": "2026-01-18",
+    "judgmentDate": "2026-02-10",
     "year": 2026,
     "judgmentType": "Civil Appeal",
     "subject": "Civil Law",
@@ -209,34 +230,41 @@
       "Section 50 CPC"
     ],
     "keywords": [
-      "Execution Proceedings",
+      "Execution of Decree",
       "Section 60 CPC",
-      "Attachment of Property",
-      "Judgment Debtor",
-      "Personal Exemption"
+      "Exemption from Attachment",
+      "Residential House",
+      "Legal Representatives"
     ],
     "caseOutcome": "Dismissed",
     "sourceAuthority": "Supreme Court of India",
-    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_cpc_section60.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
-    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
-    "fileName": "Supreme_Court_Residential_House_Attachment_2026.pdf",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_cpc_section60.pdf",
+    "fileName": "CPC_Section60_Residential_Exemption_2026.pdf",
     "uploadedBy": "Supreme Court Registry",
     "summary": {
-      "background": "Bank sought execution of money decree by attaching the residential house of deceased borrower. The legal representatives claimed statutory exemption under Section 60(1)(ccc) CPC as applicable in Punjab & Haryana.",
-      "issues": "Whether statutory exemption against attachment of a sole residential house under Section 60(1)(ccc) CPC survives the death of the judgment-debtor for benefit of legal heirs.",
-      "relevantLaw": "CPC 1908 — Section 60(1)(ccc) local amendment.",
-      "courtReasoning": "The Supreme Court analyzed the statutory text and held that the protection is personal to the judgment-debtor to prevent destitution during their lifetime. It does not create an inheritable immunity for legal representatives who inherit the estate subject to debts.",
-      "holding": "Section 60(1)(ccc) CPC exemption is strictly personal to the judgment-debtor and cannot be invoked by legal heirs after death.",
+      "background": "Bank obtained a money decree against original judgment-debtor. During execution proceedings, the original debtor passed away. His legal heirs resisted attachment of the single residential house claiming statutory immunity under Section 60(1)(ccc) CPC.",
+      "issues": "Whether the statutory protection against attachment of a main residential house under Section 60(1)(ccc) CPC is a personal privilege of the living debtor or an inheritable immunity by legal heirs.",
+      "relevantLaw": "Code of Civil Procedure, 1908 — Section 60(1)(ccc) & Section 50 (Liability of Legal Representatives).",
+      "courtReasoning": "The Court held that the legislative object of Section 60(1)(ccc) is to prevent homelessness of an living judgment-debtor during his lifetime. Upon death, the estate devolves on legal representatives under Section 50 CPC, who inherit property subject to decree liabilities.",
+      "holding": "Statutory exemption under Section 60(1)(ccc) CPC is personal to the judgment-debtor and lapses upon his death.",
       "keyPrinciple": "Statutory execution exemptions designed for personal protection do not insulate inherited property from ancestral decree satisfaction.",
-      "outcome": "Appeal dismissed; Bank permitted to proceed with execution auction."
+      "outcome": "Appeal dismissed; bank permitted to proceed with execution of decree against inherited residential property."
     },
     "createdAt": "2026-10-02T14:15:20.895Z",
-    "updatedAt": "2026-10-02T14:15:20.895Z"
+    "updatedAt": "2026-10-02T16:20:33.129Z",
+    "courtLevel": "Supreme Court",
+    "month": "February",
+    "subCategory": "Execution of Decrees",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2026_INSC_198.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0"
   },
   {
-    "_id": "9a0vbpn6",
+    "_id": "jud_dhc_2026_01",
     "canonicalKey": "high_court_of_delhi|writ_petition_c_no_1204_of_2026|2026_dhc_901|2026-02-14",
     "title": "Advocates Acting as Insolvency Professionals Liable to Pay GST Under Forward Charge: Delhi High Court",
     "petitioner": "Delhi High Court Bar Association",
@@ -275,7 +303,7 @@
     "sourceAuthority": "High Court of Delhi",
     "sourceUrl": "https://delhihighcourt.nic.in/judgements/2026/advocate_gst_ibc.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://delhihighcourt.nic.in/judgements/2026/advocate_gst_ibc.pdf",
     "fileName": "Delhi_HC_Advocate_GST_Insolvency_2026.pdf",
     "uploadedBy": "Delhi High Court Registry",
@@ -289,10 +317,10 @@
       "outcome": "Writ petition disposed of with clarification on forward charge applicability."
     },
     "createdAt": "2026-10-02T14:15:20.897Z",
-    "updatedAt": "2026-10-02T14:15:20.897Z"
+    "updatedAt": "2026-10-02T16:20:33.154Z"
   },
   {
-    "_id": "8rr2n0hy",
+    "_id": "jud_khc_2026_01",
     "canonicalKey": "high_court_of_kerala|criminal_petition_no_441_of_2026|2026_ker_312|2026-01-29",
     "title": "Reporting Official Arrest Without Defamatory Intent Cannot Attract Criminal Prosecution: Kerala High Court",
     "petitioner": "K. R. Varma & Anr (Journalists)",
@@ -331,7 +359,7 @@
     "sourceAuthority": "High Court of Kerala",
     "sourceUrl": "https://highcourtofkerala.nic.in/judgements/2026/journalism_defamation.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://highcourtofkerala.nic.in/judgements/2026/journalism_defamation.pdf",
     "fileName": "Kerala_HC_Journalist_Defamation_Quash_2026.pdf",
     "uploadedBy": "Kerala High Court Registry",
@@ -345,10 +373,491 @@
       "outcome": "Criminal defamation complaint against journalists quashed."
     },
     "createdAt": "2026-10-02T14:15:20.900Z",
-    "updatedAt": "2026-10-02T14:15:20.900Z"
+    "updatedAt": "2026-10-02T16:20:33.156Z"
   },
   {
-    "_id": "1e6dfr5n",
+    "_id": "jud_sc_2025_01",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_4001_of_2025|2025_insc_812",
+    "title": "Section 34 Arbitration Act: Court Cannot Modify Arbitral Award, Can Only Confirm or Set Aside: Supreme Court Bench",
+    "petitioner": "NHAI",
+    "respondent": "M/s Hakeem & Anr",
+    "court": "Supreme Court of India",
+    "state": "Central / All India",
+    "judge": "Justice R.F. Nariman & Justice B.R. Gavai",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 4001 of 2025",
+    "appealNumber": "SLP (C) No. 19800 of 2024",
+    "neutralCitation": "2025 INSC 812",
+    "equivalentCitations": [
+      "2025 (4) Arb LR 12",
+      "AIR 2025 SC 1120"
+    ],
+    "judgmentDate": "2025-08-14",
+    "year": 2025,
+    "judgmentType": "Civil Appeal",
+    "subject": "Arbitration Law",
+    "actsInvolved": [
+      "Arbitration and Conciliation Act, 1996"
+    ],
+    "sectionsConsidered": [
+      "Section 34 Arbitration Act",
+      "Section 37 Arbitration Act"
+    ],
+    "keywords": [
+      "Arbitration",
+      "Section 34",
+      "Modification of Award",
+      "Judicial Interference",
+      "UNCITRAL Model Law"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_modification.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_modification.pdf",
+    "fileName": "Arbitration_Section34_No_Modification_2025.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "District Court in Section 34 proceedings modified the compensation rate awarded by the Arbitrator in land acquisition arbitration. High Court upheld the modification under appellate jurisdiction.",
+      "issues": "Whether Section 34 of the Arbitration and Conciliation Act 1996 empowers courts to vary or modify arbitral awards or merely permits setting aside.",
+      "relevantLaw": "Arbitration and Conciliation Act, 1996 — Section 34 & UNCITRAL Model Law Article 34.",
+      "courtReasoning": "The Supreme Court emphasized that Section 34 is modeled on UNCITRAL Model Law which deliberately avoids conferring power to modify awards. Minimal judicial intervention is the cornerstone of arbitration law. If an award is patently illegal, the court must set it aside and relegate parties to fresh proceedings.",
+      "holding": "Courts exercising Section 34 jurisdiction cannot modify, rewrite, or alter arbitral awards.",
+      "keyPrinciple": "Judicial review under Section 34 is supervisory, not appellate; courts can set aside awards but cannot rewrite arbitrator findings.",
+      "outcome": "Appeal allowed; judicial modification of award set aside."
+    },
+    "createdAt": "2026-10-02T14:15:20.901Z",
+    "updatedAt": "2026-10-02T16:20:33.132Z",
+    "courtLevel": "Supreme Court",
+    "month": "August",
+    "subCategory": "Setting Aside Arbitral Awards",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2025_INSC_812.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0"
+  },
+  {
+    "_id": "jud_sc_2025_02",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_6100_of_2025|2025_insc_712|2025-09-18",
+    "title": "Daughters Have Equal Coparcenary Rights By Birth Under 2005 Amendment Unaffected By Date of Father's Death: Supreme Court",
+    "petitioner": "Priya Sharma",
+    "respondent": "Anand Sharma & Ors",
+    "court": "Supreme Court of India",
+    "state": "Delhi",
+    "judge": "Justice Arun Mishra & Justice S. Abdul Nazeer & Justice M.R. Shah",
+    "bench": "Three Judge Bench",
+    "caseNumber": "Civil Appeal No. 6100 of 2025",
+    "appealNumber": "SLP (C) No. 14200 of 2024",
+    "neutralCitation": "2025 INSC 712",
+    "equivalentCitations": [
+      "2025 (3) HLR 55",
+      "AIR 2025 SC 2910"
+    ],
+    "judgmentDate": "2025-09-18",
+    "year": 2025,
+    "judgmentType": "Civil Appeal",
+    "subject": "Family Law",
+    "actsInvolved": [
+      "Hindu Succession Act, 1956",
+      "Hindu Succession (Amendment) Act, 2005"
+    ],
+    "sectionsConsidered": [
+      "Section 6 HSA 1956",
+      "Section 6(1) HSA Amendment"
+    ],
+    "keywords": [
+      "Hindu Succession Act",
+      "Coparcenary Rights",
+      "Daughter Share",
+      "Section 6 HSA",
+      "Ancestral Property"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
+    "fileName": "Supreme_Court_Daughter_Coparcenary_2025.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Daughter filed partition suit claiming 1/3rd equal share in ancestral coparcenary property. Brothers contested alleging that father died prior to September 9, 2005 amendment, rendering daughter ineligible.",
+      "issues": "Whether statutory coparcenary status conferred upon daughters under Section 6 Hindu Succession Act requires the coparcener father to be alive on September 9, 2005.",
+      "relevantLaw": "Hindu Succession Act 1956 — Section 6 as amended in 2005.",
+      "courtReasoning": "Reaffirming Vineeta Sharma principles, the Court held that coparcenary status is acquired by birth. It is an unobstructed heritage. The death of the father prior to 2005 does not divest the daughter's right conferred by statutory birthright.",
+      "holding": "Daughters possess equal coparcenary rights by birth in ancestral property regardless of whether father was alive on Sept 9, 2005.",
+      "keyPrinciple": "Section 6 HSA 2005 amendment operates retroactively to grant equal status to daughters from birth.",
+      "outcome": "Partition decree modified to award daughter equal coparcenary share."
+    },
+    "createdAt": "2026-10-02T14:15:20.903Z",
+    "updatedAt": "2026-10-02T16:20:33.160Z"
+  },
+  {
+    "_id": "jud_sc_2026_04",
+    "title": "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Heirs: Supreme Court",
+    "petitioner": "Rameshwar Dayal (Dead) through LRs",
+    "respondent": "State Bank of India & Anr",
+    "court": "Supreme Court of India",
+    "courtLevel": "Supreme Court",
+    "state": "Delhi",
+    "judge": "Justice Abhay S. Oka & Justice Ujjal Bhuyan",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 2105 of 2026",
+    "appealNumber": "SLP (C) No. 6710 of 2025",
+    "neutralCitation": "2026 INSC 198",
+    "equivalentCitations": [
+      "2026 (1) RCR (Civil) 880",
+      "2026 (2) ALT 45"
+    ],
+    "judgmentDate": "2026-02-10",
+    "year": 2026,
+    "month": "February",
+    "judgmentType": "Civil Appeal",
+    "subject": "Civil Law",
+    "subCategory": "Execution of Decrees",
+    "actsInvolved": [
+      "Code of Civil Procedure, 1908"
+    ],
+    "sectionsConsidered": [
+      "Section 60(1)(ccc) CPC",
+      "Section 50 CPC"
+    ],
+    "keywords": [
+      "Execution of Decree",
+      "Section 60 CPC",
+      "Exemption from Attachment",
+      "Residential House",
+      "Legal Representatives"
+    ],
+    "caseOutcome": "Dismissed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_cpc_section60.pdf",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2026_INSC_198.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_cpc_section60.pdf",
+    "fileName": "CPC_Section60_Residential_Exemption_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Bank obtained a money decree against original judgment-debtor. During execution proceedings, the original debtor passed away. His legal heirs resisted attachment of the single residential house claiming statutory immunity under Section 60(1)(ccc) CPC.",
+      "issues": "Whether the statutory protection against attachment of a main residential house under Section 60(1)(ccc) CPC is a personal privilege of the living debtor or an inheritable immunity by legal heirs.",
+      "relevantLaw": "Code of Civil Procedure, 1908 — Section 60(1)(ccc) & Section 50 (Liability of Legal Representatives).",
+      "courtReasoning": "The Court held that the legislative object of Section 60(1)(ccc) is to prevent homelessness of an living judgment-debtor during his lifetime. Upon death, the estate devolves on legal representatives under Section 50 CPC, who inherit property subject to decree liabilities.",
+      "holding": "Statutory exemption under Section 60(1)(ccc) CPC is personal to the judgment-debtor and lapses upon his death.",
+      "keyPrinciple": "Statutory execution exemptions designed for personal protection do not insulate inherited property from ancestral decree satisfaction.",
+      "outcome": "Appeal dismissed; bank permitted to proceed with execution of decree against inherited residential property."
+    },
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_2105_of_2026|2026_insc_198",
+    "createdAt": "2026-10-02T16:08:53.801Z",
+    "updatedAt": "2026-10-02T16:19:06.611Z"
+  },
+  {
+    "_id": "jud_sc_2025_01",
+    "title": "Section 34 Arbitration Act: Court Cannot Modify Arbitral Award, Can Only Confirm or Set Aside: Supreme Court Bench",
+    "petitioner": "NHAI",
+    "respondent": "M/s Hakeem & Anr",
+    "court": "Supreme Court of India",
+    "courtLevel": "Supreme Court",
+    "state": "Central / All India",
+    "judge": "Justice R.F. Nariman & Justice B.R. Gavai",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 4001 of 2025",
+    "neutralCitation": "2025 INSC 812",
+    "equivalentCitations": [
+      "2025 (4) Arb LR 12",
+      "AIR 2025 SC 1120"
+    ],
+    "judgmentDate": "2025-08-14",
+    "year": 2025,
+    "month": "August",
+    "judgmentType": "Civil Appeal",
+    "subject": "Arbitration Law",
+    "subCategory": "Setting Aside Arbitral Awards",
+    "actsInvolved": [
+      "Arbitration and Conciliation Act, 1996"
+    ],
+    "sectionsConsidered": [
+      "Section 34 Arbitration Act",
+      "Section 37 Arbitration Act"
+    ],
+    "keywords": [
+      "Arbitration",
+      "Section 34",
+      "Modification of Award",
+      "Judicial Interference",
+      "UNCITRAL Model Law"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_modification.pdf",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2025_INSC_812.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_modification.pdf",
+    "fileName": "Arbitration_Section34_No_Modification_2025.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "District Court in Section 34 proceedings modified the compensation rate awarded by the Arbitrator in land acquisition arbitration. High Court upheld the modification under appellate jurisdiction.",
+      "issues": "Whether Section 34 of the Arbitration and Conciliation Act 1996 empowers courts to vary or modify arbitral awards or merely permits setting aside.",
+      "relevantLaw": "Arbitration and Conciliation Act, 1996 — Section 34 & UNCITRAL Model Law Article 34.",
+      "courtReasoning": "The Supreme Court emphasized that Section 34 is modeled on UNCITRAL Model Law which deliberately avoids conferring power to modify awards. Minimal judicial intervention is the cornerstone of arbitration law. If an award is patently illegal, the court must set it aside and relegate parties to fresh proceedings.",
+      "holding": "Courts exercising Section 34 jurisdiction cannot modify, rewrite, or alter arbitral awards.",
+      "keyPrinciple": "Judicial review under Section 34 is supervisory, not appellate; courts can set aside awards but cannot rewrite arbitrator findings.",
+      "outcome": "Appeal allowed; judicial modification of award set aside."
+    },
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_4001_of_2025|2025_insc_812",
+    "createdAt": "2026-10-02T16:08:53.803Z",
+    "updatedAt": "2026-10-02T16:19:06.615Z"
+  },
+  {
+    "_id": "jud_sc_2024_01",
+    "title": "Zero FIR Registration Mandatory Under Section 173 BNSS: Supreme Court Guidelines on Police Jurisdiction",
+    "petitioner": "State of Maharashtra",
+    "respondent": "Prakash & Ors",
+    "court": "Supreme Court of India",
+    "courtLevel": "Supreme Court",
+    "state": "Maharashtra",
+    "judge": "Justice D.Y. Chandrachud & Justice P.S. Narasimha",
+    "bench": "Division Bench",
+    "caseNumber": "Criminal Appeal No. 1920 of 2024",
+    "neutralCitation": "2024 INSC 650",
+    "equivalentCitations": [
+      "2024 (3) SCC (Crl) 210",
+      "2024 (2) SCALE 88"
+    ],
+    "judgmentDate": "2024-09-10",
+    "year": 2024,
+    "month": "September",
+    "judgmentType": "Criminal Appeal",
+    "subject": "Criminal Law",
+    "subCategory": "Investigation & Zero FIR",
+    "actsInvolved": [
+      "Bharatiya Nagarik Suraksha Sanhita, 2023",
+      "Code of Criminal Procedure, 1973"
+    ],
+    "sectionsConsidered": [
+      "Section 173 BNSS",
+      "Section 154 CrPC"
+    ],
+    "keywords": [
+      "Zero FIR",
+      "Cognizable Offence",
+      "Police Jurisdiction",
+      "BNSS Section 173",
+      "Immediate Registration"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2024/judgement_zero_fir.pdf",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2024_INSC_650.pdf",
+    "rightsStatus": "Public Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2024/judgement_zero_fir.pdf",
+    "fileName": "Zero_FIR_Supreme_Court_2024.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Victim attempted to lodge complaint of grave cognizable offence at police station where offence did not occur. Police refused registration citing territorial jurisdiction limits.",
+      "issues": "Whether police officers are bound to register Zero FIR immediately upon receiving cognizable offence information regardless of territorial limits.",
+      "relevantLaw": "BNSS 2023 Section 173 & Lalita Kumari v. Govt of UP precedent.",
+      "courtReasoning": "The Court mandated that territorial jurisdiction is irrelevant at the stage of FIR registration. Police must register Zero FIR, initiate emergency medical/forensic preservation, and subsequently transfer case files to jurisdictional station.",
+      "holding": "Registration of Zero FIR is mandatory upon receipt of cognizable offence disclosure.",
+      "keyPrinciple": "Procedural boundaries cannot delay crime reporting or victim access to criminal justice.",
+      "outcome": "Guidelines issued to all Director Generals of Police across States & Union Territories."
+    },
+    "canonicalKey": "supreme_court_of_india|criminal_appeal_no_1920_of_2024|2024_insc_650",
+    "createdAt": "2026-10-02T16:08:53.805Z",
+    "updatedAt": "2026-10-02T16:20:33.135Z"
+  },
+  {
+    "_id": "jud_sc_2020_01",
+    "title": "Vineeta Sharma v. Rakesh Sharma: Daughters Have Equal Coparcenary Rights By Birth Under Section 6 Hindu Succession Act",
+    "petitioner": "Vineeta Sharma",
+    "respondent": "Rakesh Sharma & Ors",
+    "court": "Supreme Court of India",
+    "courtLevel": "Supreme Court",
+    "state": "Delhi",
+    "judge": "Justice Arun Mishra, Justice S. Abdul Nazeer & Justice M.R. Shah",
+    "bench": "Three Judge Bench",
+    "caseNumber": "Civil Appeal No. 3260 of 2020",
+    "neutralCitation": "2020 INSC 515",
+    "equivalentCitations": [
+      "(2020) 9 SCC 1",
+      "AIR 2020 SC 3717"
+    ],
+    "judgmentDate": "2020-08-11",
+    "year": 2020,
+    "month": "August",
+    "judgmentType": "Civil Appeal",
+    "subject": "Personal Law",
+    "subCategory": "Hindu Succession & Coparcenary",
+    "actsInvolved": [
+      "Hindu Succession Act, 1956",
+      "Hindu Succession (Amendment) Act, 2005"
+    ],
+    "sectionsConsidered": [
+      "Section 6 Hindu Succession Act"
+    ],
+    "keywords": [
+      "Coparcenary",
+      "Daughter's Rights",
+      "Section 6 HSA",
+      "Retrospective Effect",
+      "Ancestral Property"
+    ],
+    "caseOutcome": "Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2020/judgement_vineeta_sharma.pdf",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/2020_INSC_515.pdf",
+    "rightsStatus": "Public Landmark Judicial Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2020/judgement_vineeta_sharma.pdf",
+    "fileName": "Vineeta_Sharma_Hindu_Succession_2020.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Conflicting Supreme Court decisions (Prakash v. Phulavati & Danamma v. Amar) existed on whether a daughter's coparcenary right under amended Section 6 HSA depends on her father being alive on 09.09.2005.",
+      "issues": "Whether the 2005 Amendment to Section 6 of the Hindu Succession Act confers coparcenary status on daughters by birth regardless of whether father was living on amendment date.",
+      "relevantLaw": "Hindu Succession Act, 1956 — Section 6 (as amended by Act 39 of 2005).",
+      "courtReasoning": "The 3-Judge Bench held that coparcenary right is conferred by birth. It is an unobstructed heritage. The status of living father on 09.09.2005 is irrelevant. The statutory right attached from birth.",
+      "holding": "Daughters are coparceners by birth with equal rights and liabilities as sons in Joint Hindu Family property.",
+      "keyPrinciple": "Coparcenary right of a Hindu daughter is created by birth under Section 6 HSA and does not depend on living status of father on 2005 amendment date.",
+      "outcome": "Reference answered; Prakash v. Phulavati overruled; coparcenary rights of daughters fully protected."
+    },
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_3260_of_2020|2020_insc_515",
+    "createdAt": "2026-10-02T16:08:53.809Z",
+    "updatedAt": "2026-10-02T16:20:33.138Z"
+  },
+  {
+    "_id": "jud_sc_1973_01",
+    "title": "Kesavananda Bharati v. State of Kerala: Basic Structure Doctrine of the Indian Constitution",
+    "petitioner": "His Holiness Kesavananda Bharati Sripadagalvaru",
+    "respondent": "State of Kerala & Anr",
+    "court": "Supreme Court of India",
+    "courtLevel": "Supreme Court",
+    "state": "Kerala",
+    "judge": "Chief Justice S.M. Sikri & 12 Other Judges",
+    "bench": "13-Judge Constitution Bench",
+    "caseNumber": "Writ Petition (Civil) No. 135 of 1970",
+    "neutralCitation": "1973 INSC 98",
+    "equivalentCitations": [
+      "(1973) 4 SCC 225",
+      "AIR 1973 SC 1461"
+    ],
+    "judgmentDate": "1973-04-24",
+    "year": 1973,
+    "month": "April",
+    "judgmentType": "Writ Petition",
+    "subject": "Constitutional Law",
+    "subCategory": "Constitutional Amendments & Basic Structure",
+    "actsInvolved": [
+      "Constitution of India"
+    ],
+    "sectionsConsidered": [
+      "Article 368",
+      "Article 13",
+      "Article 31C"
+    ],
+    "keywords": [
+      "Basic Structure Doctrine",
+      "Article 368",
+      "Constitutional Amendment",
+      "Judicial Review",
+      "Fundamental Rights"
+    ],
+    "caseOutcome": "Partly Allowed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/1973/judgement_kesavananda.pdf",
+    "officialSourceUrl": "https://judgments.ecourts.gov.in/pdf/1973_INSC_98.pdf",
+    "rightsStatus": "Public Supreme Constitutional Record",
+    "importSource": "eCourts / Supreme Court Ingestion Pipeline",
+    "dataVersion": "1.0.0",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/1973/judgement_kesavananda.pdf",
+    "fileName": "Kesavananda_Bharati_Basic_Structure_1973.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Challenge to the 24th, 25th, and 29th Constitutional Amendments which sought to limit fundamental rights and grant unlimited amending power to Parliament under Article 368.",
+      "issues": "What is the extent of Parliament's power to amend the Constitution of India under Article 368?",
+      "relevantLaw": "Constitution of India — Article 368, Article 13 & Part III Fundamental Rights.",
+      "courtReasoning": "By a 7:6 majority, the 13-Judge Bench established that while Parliament has broad power to amend any part of the Constitution including fundamental rights, it cannot alter, damage or destroy the essential features or 'Basic Structure' of the Constitution.",
+      "holding": "Article 368 does not enable Parliament to alter the basic structure or framework of the Constitution.",
+      "keyPrinciple": "Parliamentary amending power under Article 368 is limited and cannot abrogate basic structure pillars like judicial review, rule of law, and secularism.",
+      "outcome": "Basic Structure Doctrine established as fundamental constitutional law of India."
+    },
+    "canonicalKey": "supreme_court_of_india|writ_petition_civil_no_135_of_1970|1973_insc_98",
+    "createdAt": "2026-10-02T16:08:53.811Z",
+    "updatedAt": "2026-10-02T16:20:33.141Z"
+  },
+  {
+    "_id": "jud_sc_2026_04",
+    "canonicalKey": "supreme_court_of_india|civil_appeal_no_981_of_2026|2026_insc_190|2026-01-18",
+    "title": "Residential House Exemption U/S 60(1)(ccc) CPC Is Personal to Judgment-Debtor, Cannot Be Claimed by Legal Representatives: Supreme Court",
+    "petitioner": "Rameshwar Dayal (Dead) through LRs",
+    "respondent": "State Bank of India & Anr",
+    "court": "Supreme Court of India",
+    "state": "Haryana",
+    "judge": "Justice P.S. Narasimha & Justice Alok Aradhe",
+    "bench": "Division Bench",
+    "caseNumber": "Civil Appeal No. 981 of 2026",
+    "appealNumber": "SLP (C) No. 3120 of 2025",
+    "neutralCitation": "2026 INSC 190",
+    "equivalentCitations": [
+      "2026 (1) KLT 450",
+      "AIR 2026 SC 512"
+    ],
+    "judgmentDate": "2026-01-18",
+    "year": 2026,
+    "judgmentType": "Civil Appeal",
+    "subject": "Civil Law",
+    "actsInvolved": [
+      "Code of Civil Procedure, 1908"
+    ],
+    "sectionsConsidered": [
+      "Section 60(1)(ccc) CPC",
+      "Section 50 CPC"
+    ],
+    "keywords": [
+      "Execution Proceedings",
+      "Section 60 CPC",
+      "Attachment of Property",
+      "Judgment Debtor",
+      "Personal Exemption"
+    ],
+    "caseOutcome": "Dismissed",
+    "sourceAuthority": "Supreme Court of India",
+    "sourceUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    "legalStatus": "Public Judicial Record",
+    "lastVerified": "2026-10-02",
+    "pdfUrl": "https://main.sci.gov.in/supremecourt/2026/judgement_debt_recovery.pdf",
+    "fileName": "Supreme_Court_Residential_House_Attachment_2026.pdf",
+    "uploadedBy": "Supreme Court Registry",
+    "summary": {
+      "background": "Bank sought execution of money decree by attaching the residential house of deceased borrower. The legal representatives claimed statutory exemption under Section 60(1)(ccc) CPC as applicable in Punjab & Haryana.",
+      "issues": "Whether statutory exemption against attachment of a sole residential house under Section 60(1)(ccc) CPC survives the death of the judgment-debtor for benefit of legal heirs.",
+      "relevantLaw": "CPC 1908 — Section 60(1)(ccc) local amendment.",
+      "courtReasoning": "The Supreme Court analyzed the statutory text and held that the protection is personal to the judgment-debtor to prevent destitution during their lifetime. It does not create an inheritable immunity for legal representatives who inherit the estate subject to debts.",
+      "holding": "Section 60(1)(ccc) CPC exemption is strictly personal to the judgment-debtor and cannot be invoked by legal heirs after death.",
+      "keyPrinciple": "Statutory execution exemptions designed for personal protection do not insulate inherited property from ancestral decree satisfaction.",
+      "outcome": "Appeal dismissed; Bank permitted to proceed with execution auction."
+    },
+    "createdAt": "2026-10-02T16:20:33.152Z",
+    "updatedAt": "2026-10-02T16:20:33.152Z"
+  },
+  {
+    "_id": "jud_sc_2025_01",
     "canonicalKey": "supreme_court_of_india|civil_appeal_no_7890_of_2025|2025_insc_844|2025-11-10",
     "title": "Arbitration Clause in Unstamped Agreement Enforceable For Seeking Interim Measures: Supreme Court",
     "petitioner": "M/s Apex Infraprojects Ltd",
@@ -388,7 +897,7 @@
     "sourceAuthority": "Supreme Court of India",
     "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_stamp.pdf",
     "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
+    "lastVerified": "2026-10-02",
     "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_arbitration_stamp.pdf",
     "fileName": "Supreme_Court_Arbitration_Unstamped_2025.pdf",
     "uploadedBy": "Supreme Court Registry",
@@ -401,63 +910,7 @@
       "keyPrinciple": "Interim protection under Section 9 cannot be stalled due to stamp impounding delays.",
       "outcome": "Appeal allowed; High Court order denying interim protection set aside; interim injunction granted."
     },
-    "createdAt": "2026-10-02T14:15:20.901Z",
-    "updatedAt": "2026-10-02T14:15:20.901Z"
-  },
-  {
-    "_id": "pj5onslt",
-    "canonicalKey": "supreme_court_of_india|civil_appeal_no_6100_of_2025|2025_insc_712|2025-09-18",
-    "title": "Daughters Have Equal Coparcenary Rights By Birth Under 2005 Amendment Unaffected By Date of Father's Death: Supreme Court",
-    "petitioner": "Priya Sharma",
-    "respondent": "Anand Sharma & Ors",
-    "court": "Supreme Court of India",
-    "state": "Delhi",
-    "judge": "Justice Arun Mishra & Justice S. Abdul Nazeer & Justice M.R. Shah",
-    "bench": "Three Judge Bench",
-    "caseNumber": "Civil Appeal No. 6100 of 2025",
-    "appealNumber": "SLP (C) No. 14200 of 2024",
-    "neutralCitation": "2025 INSC 712",
-    "equivalentCitations": [
-      "2025 (3) HLR 55",
-      "AIR 2025 SC 2910"
-    ],
-    "judgmentDate": "2025-09-18",
-    "year": 2025,
-    "judgmentType": "Civil Appeal",
-    "subject": "Family Law",
-    "actsInvolved": [
-      "Hindu Succession Act, 1956",
-      "Hindu Succession (Amendment) Act, 2005"
-    ],
-    "sectionsConsidered": [
-      "Section 6 HSA 1956",
-      "Section 6(1) HSA Amendment"
-    ],
-    "keywords": [
-      "Hindu Succession Act",
-      "Coparcenary Rights",
-      "Daughter Share",
-      "Section 6 HSA",
-      "Ancestral Property"
-    ],
-    "caseOutcome": "Allowed",
-    "sourceAuthority": "Supreme Court of India",
-    "sourceUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
-    "legalStatus": "Public Judicial Record",
-    "lastVerified": "2026-04-01",
-    "pdfUrl": "https://main.sci.gov.in/supremecourt/2025/judgement_hindu_succession_daughter.pdf",
-    "fileName": "Supreme_Court_Daughter_Coparcenary_2025.pdf",
-    "uploadedBy": "Supreme Court Registry",
-    "summary": {
-      "background": "Daughter filed partition suit claiming 1/3rd equal share in ancestral coparcenary property. Brothers contested alleging that father died prior to September 9, 2005 amendment, rendering daughter ineligible.",
-      "issues": "Whether statutory coparcenary status conferred upon daughters under Section 6 Hindu Succession Act requires the coparcener father to be alive on September 9, 2005.",
-      "relevantLaw": "Hindu Succession Act 1956 — Section 6 as amended in 2005.",
-      "courtReasoning": "Reaffirming Vineeta Sharma principles, the Court held that coparcenary status is acquired by birth. It is an unobstructed heritage. The death of the father prior to 2005 does not divest the daughter's right conferred by statutory birthright.",
-      "holding": "Daughters possess equal coparcenary rights by birth in ancestral property regardless of whether father was alive on Sept 9, 2005.",
-      "keyPrinciple": "Section 6 HSA 2005 amendment operates retroactively to grant equal status to daughters from birth.",
-      "outcome": "Partition decree modified to award daughter equal coparcenary share."
-    },
-    "createdAt": "2026-10-02T14:15:20.903Z",
-    "updatedAt": "2026-10-02T14:15:20.903Z"
+    "createdAt": "2026-10-02T16:20:33.158Z",
+    "updatedAt": "2026-10-02T16:20:33.158Z"
   }
 ]
