@@ -234,8 +234,14 @@ export const getProjectById = async (req: AuthenticatedRequest, res: Response) =
 // Create Project (Admin & Advocate ONLY)
 export const createProject = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    console.log("--------------------------------------------------");
+    console.log("CREATE CASE ROUTE HIT: POST /api/projects");
+    console.log("REQUEST BODY:", JSON.stringify(req.body, null, 2));
+    console.log("AUTH USER:", JSON.stringify(req.user, null, 2));
+
     // 1. Role Authorization Check
     if (req.user?.role === 'Client') {
+      console.warn("CREATE CASE REJECTED: User role is Client");
       return res.status(403).json({
         success: false,
         message: 'Unauthorized: Clients cannot initialize or create case files.'

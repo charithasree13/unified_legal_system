@@ -17,6 +17,9 @@ export const Projects: React.FC = () => {
   // Form states
   const [showAddProject, setShowAddProject] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+
   const [projectName, setProjectName] = useState('');
   const [caseNo, setCaseNo] = useState('');
   const [nextHearingDate, setNextHearingDate] = useState('');
@@ -62,15 +65,39 @@ export const Projects: React.FC = () => {
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching projects:', err);
     }
   };
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('--------------------------------------------------');
+    console.log('CREATE CASE BUTTON CLICKED');
+    console.log('CASE FORM SUBMISSION STARTED');
+    setFormError(null);
+    setFormSuccess(null);
+
+    if (!token) {
+      const errMsg = 'Your session has expired. Please log in again.';
+      console.error('CREATE CASE ERROR:', errMsg);
+      setFormError(errMsg);
+      addNotification('Authentication Failure', errMsg, 'error');
+      return;
+    }
+
+    if (user?.role === 'Client') {
+      const errMsg = 'You do not have permission to create or modify case files.';
+      console.error('CREATE CASE ERROR:', errMsg);
+      setFormError(errMsg);
+      addNotification('Authorization Failure', errMsg, 'error');
+      return;
+    }
 
     if (!nextHearingDate) {
-      addNotification('Validation Error', 'Case creation failed: Hearing date is required.', 'error');
+      const errMsg = 'Case creation failed: Next Hearing Date is required.';
+      console.error('CREATE CASE ERROR:', errMsg);
+      setFormError(errMsg);
+      addNotification('Validation Error', errMsg, 'error');
       return;
     }
 
@@ -81,6 +108,30 @@ export const Projects: React.FC = () => {
       (projDesc.trim() ? (projDesc.trim().length > 35 ? projDesc.trim().substring(0, 32) + '...' : projDesc.trim()) : '') ||
       'Litigation Case File';
 
+    const formData = {
+      name: effectiveName,
+      caseNo: caseNo.trim(),
+      referenceNumber: caseNo.trim(),
+      nextHearingDate,
+      hearingDate: nextHearingDate,
+      plaintiffName: plaintiffName.trim(),
+      defendantName: defendantName.trim(),
+      plaintiffEmail: plaintiffEmail.trim(),
+      defendantEmail: defendantEmail.trim(),
+      clientPhone: clientPhone.trim(),
+      courtType,
+      courtCity: courtCity.trim(),
+      caseType,
+      description: projDesc.trim(),
+      priority: projPriority,
+      deadline: projDeadline,
+      finalDeadline: projDeadline,
+      teamMembers: projTeam.trim()
+    };
+
+    console.log('FORM DATA:', formData);
+    console.log('ABOUT TO CALL CREATE CASE API: POST /api/projects');
+
     try {
       const res = await fetch('/api/projects', {
         method: 'POST',
@@ -88,60 +139,57 @@ export const Projects: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: effectiveName,
-          caseNo: caseNo.trim(),
-          referenceNumber: caseNo.trim(),
-          nextHearingDate,
-          hearingDate: nextHearingDate,
-          plaintiffName: plaintiffName.trim(),
-          defendantName: defendantName.trim(),
-          plaintiffEmail: plaintiffEmail.trim(),
-          defendantEmail: defendantEmail.trim(),
-          clientPhone: clientPhone.trim(),
-          courtType,
-          courtCity: courtCity.trim(),
-          caseType,
-          description: projDesc.trim(),
-          priority: projPriority,
-          deadline: projDeadline,
-          finalDeadline: projDeadline,
-          teamMembers: projTeam.trim()
-        })
+        body: JSON.stringify(formData)
       });
+
+      console.log('CREATE CASE API HTTP STATUS:', res.status);
       const data = await res.json();
-      if (res.ok) {
+      console.log('CREATE CASE API RESPONSE BODY:', data);
+
+      if (res.ok && data.success) {
         const msg = data.emailWarning 
           ? `Case "${effectiveName}" initialized successfully. Note: ${data.emailWarning}` 
-          : `Case "${effectiveName}" initialized and saved successfully.`;
+          : `Case file "${effectiveName}" created successfully and saved to MongoDB.`;
+
+        console.log('CREATE CASE SUCCESS:', msg);
+        setFormSuccess(msg);
         addNotification('Case File Created', msg, 'success');
-        setShowAddProject(false);
-        const newProj = data.project;
-        if (newProj) {
-          setActiveProj(newProj);
-        }
-        setProjectName('');
-        setCaseNo('');
-        setNextHearingDate('');
-        setPlaintiffName('');
-        setDefendantName('');
-        setPlaintiffEmail('');
-        setDefendantEmail('');
-        setClientPhone('');
-        setCourtType('District Court');
-        setCourtCity('');
-        setCaseType('Civil');
-        setProjDesc('');
-        setProjDeadline('');
-        setProjTeam('');
-        
-        await fetchProjects();
+
+        setTimeout(async () => {
+          setShowAddProject(false);
+          setFormSuccess(null);
+          const newProj = data.project;
+          if (newProj) {
+            setActiveProj(newProj);
+          }
+          setProjectName('');
+          setCaseNo('');
+          setNextHearingDate('');
+          setPlaintiffName('');
+          setDefendantName('');
+          setPlaintiffEmail('');
+          setDefendantEmail('');
+          setClientPhone('');
+          setCourtType('District Court');
+          setCourtCity('');
+          setCaseType('Civil');
+          setProjDesc('');
+          setProjDeadline('');
+          setProjTeam('');
+          
+          await fetchProjects();
+        }, 1200);
       } else {
-        addNotification('Case Creation Failed', data.message || 'Failed to create case file.', 'error');
+        const errMsg = data.message || 'Case creation failed. Please check the details and try again.';
+        console.error('CREATE CASE API REJECTED:', errMsg);
+        setFormError(errMsg);
+        addNotification('Case Creation Failed', errMsg, 'error');
       }
     } catch (err: any) {
-      console.error(err);
-      addNotification('Network Error', 'Unable to reach backend server.', 'error');
+      console.error('CREATE CASE API EXCEPTION:', err);
+      const errMsg = 'Unable to reach backend server. Please check your network connection.';
+      setFormError(errMsg);
+      addNotification('Network Error', errMsg, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -593,6 +641,20 @@ export const Projects: React.FC = () => {
             </div>
             
             <form onSubmit={handleCreateProject} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto scrollbar-thin">
+              {formError && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-2">
+                  <AlertTriangle size={16} className="flex-shrink-0 text-red-500" />
+                  <span>{formError}</span>
+                </div>
+              )}
+
+              {formSuccess && (
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                  <CheckCircle2 size={16} className="flex-shrink-0 text-emerald-500" />
+                  <span>{formSuccess}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase">Case Name (Optional)</label>
                 <input
