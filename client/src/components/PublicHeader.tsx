@@ -53,30 +53,27 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
         {/* Brand Logo & Name */}
-        <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => navigate('/dashboard')}>
+        <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none flex-shrink-0" onClick={() => navigate('/dashboard')}>
           <img
             src="/logo.jpg"
             alt="Elite Legal Desk Logo"
-            className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white shadow-sm"
+            className="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-full border border-amber-400 bg-white shadow-sm flex-shrink-0"
           />
-          <div className="flex flex-col">
-            <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none">
-              ELITE LEGAL DESK
-            </span>
-
-          </div>
+          <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none whitespace-nowrap">
+            ELITE LEGAL DESK
+          </span>
         </div>
 
         {/* Global Search input for Desktop */}
-        <form onSubmit={handleSearch} className="hidden lg:flex max-w-xs w-full relative">
+        <form onSubmit={handleSearch} className="hidden md:flex max-w-[200px] lg:max-w-xs w-full relative flex-shrink">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search advocates, laws, judgments..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-slate-800 dark:text-slate-100"
+            placeholder="Search advocates, laws..."
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 text-slate-800 dark:text-slate-100 transition-colors"
           />
-          <Search size={14} className="absolute left-3 top-2.5 text-slate-400" />
+          <Search size={14} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
         </form>
 
         {/* Desktop Navigation Links */}

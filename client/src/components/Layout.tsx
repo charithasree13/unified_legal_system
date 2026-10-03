@@ -20,14 +20,14 @@ export const Layout: React.FC = () => {
   const location = useLocation();
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
-  const { 
+  const {
     token,
-    user, 
-    darkMode, 
-    setDarkMode, 
-    updateActivity 
+    user,
+    darkMode,
+    setDarkMode,
+    updateActivity
   } = useAuthStore();
-  
+
   const navigate = useNavigate();
 
   // Monitor user activity for session timeout
@@ -71,14 +71,14 @@ export const Layout: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
         <PublicHeader onOpenAuthModal={handleOpenAuthModal} />
-        
+
         <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
 
         <FooterSection />
 
-        <AuthModal 
+        <AuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           initialMode={authModalMode}
@@ -93,9 +93,9 @@ export const Layout: React.FC = () => {
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
       {/* Sidebar - Visible on internal module pages, Hidden on Dashboard */}
       {!isDashboard && (
-        <Sidebar 
-          collapsed={collapsed} 
-          setCollapsed={setCollapsed} 
+        <Sidebar
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
         />
@@ -105,30 +105,27 @@ export const Layout: React.FC = () => {
       <div className="flex-1 flex flex-col overflow-hidden w-full">
         {/* Top Navbar */}
         <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-xs transition-colors duration-200">
-          
+
           {/* Left: Branding & Global Search */}
           <div className="flex items-center gap-4 flex-1">
-            <div 
-              onClick={() => navigate('/dashboard')} 
-              className="flex items-center gap-3 cursor-pointer select-none group"
+            <div
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-3 cursor-pointer select-none group flex-shrink-0"
             >
-              <img 
-                src="/logo.jpg" 
-                alt="Elite Legal Desk Logo" 
-                className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform" 
+              <img
+                src="/logo.jpg"
+                alt="Elite Legal Desk Logo"
+                className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform flex-shrink-0"
               />
               <div className="flex flex-col">
-                <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">
+                <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none group-hover:text-primary dark:group-hover:text-sky-400 transition-colors whitespace-nowrap">
                   ELITE LEGAL DESK
-                </span>
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
-                  MADANAPALLE
                 </span>
               </div>
             </div>
 
             {!isDashboard && (
-              <button 
+              <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
                 title="Toggle Navigation Menu"
@@ -154,7 +151,7 @@ export const Layout: React.FC = () => {
 
           {/* Right: Actions (Theme & Profile) */}
           <div className="flex items-center gap-4">
-            
+
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
