@@ -513,9 +513,6 @@ export const PortalOverview: React.FC = () => {
               <h1 className="text-base sm:text-lg font-extrabold font-sans text-white tracking-wider leading-none">
                 ELITE LEGAL DESK
               </h1>
-              <p className="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-widest uppercase mt-0.5">
-                MADANAPALLE
-              </p>
               <div className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
                 <Sparkles size={10} className="text-sky-400" />
                 <span className="text-[9px] font-bold uppercase tracking-wider">

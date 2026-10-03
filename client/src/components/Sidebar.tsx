@@ -75,9 +75,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
                   <span className="font-extrabold text-sm tracking-wider font-sans whitespace-nowrap text-white leading-none">
                     ELITE LEGAL DESK
                   </span>
-                  <span className="text-[9px] text-amber-300 font-bold uppercase tracking-widest mt-0.5">
-                    MADANAPALLE
-                  </span>
                 </div>
               )}
             </div>

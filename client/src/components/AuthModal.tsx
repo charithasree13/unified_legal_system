@@ -229,9 +229,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
               Elite Legal Desk Authentication
             </h3>
-            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold uppercase tracking-wider">
-              Madanapalle Legal Portal
-            </span>
           </div>
         </div>
 
