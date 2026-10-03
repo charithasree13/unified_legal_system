@@ -51,21 +51,19 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
   return (
     <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        
+
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => navigate('/dashboard')}>
-          <img 
-            src="/logo.jpg" 
-            alt="Elite Legal Desk Logo" 
-            className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white shadow-sm" 
+          <img
+            src="/logo.jpg"
+            alt="Elite Legal Desk Logo"
+            className="h-10 w-10 object-contain rounded-full border border-amber-400 bg-white shadow-sm"
           />
           <div className="flex flex-col">
             <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none">
               ELITE LEGAL DESK
             </span>
-            <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest mt-0.5">
-              MADANAPALLE
-            </span>
+
           </div>
         </div>
 
@@ -109,7 +107,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
-          
+
           {/* Dark Mode Toggle */}
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -184,7 +182,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-2 animate-fade-in">
-          
+
           <form onSubmit={handleSearch} className="relative mb-3">
             <input
               type="text"

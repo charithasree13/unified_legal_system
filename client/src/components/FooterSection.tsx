@@ -22,9 +22,7 @@ export const FooterSection: React.FC = () => {
                 <span className="font-extrabold text-sm tracking-wider font-sans text-white uppercase leading-none block">
                   ELITE LEGAL DESK
                 </span>
-                <span className="text-[10px] text-amber-400 font-bold uppercase tracking-widest block mt-0.5">
-                  MADANAPALLE
-                </span>
+
               </div>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -284,7 +282,7 @@ export const FooterSection: React.FC = () => {
             <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 flex flex-col justify-between hover:border-slate-700 transition-colors">
               <div className="space-y-1.5 mb-2">
                 <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
-                  <Code size={12} className="text-amber-400" />
+
                   <span>Developer</span>
                 </div>
                 <h5 className="font-bold text-white text-sm">
@@ -303,7 +301,7 @@ export const FooterSection: React.FC = () => {
             <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 flex flex-col justify-between hover:border-slate-700 transition-colors">
               <div className="space-y-1.5 mb-2">
                 <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
-                  <Code size={12} className="text-amber-400" />
+
                   <span>Mentor</span>
                 </div>
                 <h5 className="font-bold text-white text-sm">
