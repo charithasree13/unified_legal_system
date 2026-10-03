@@ -256,9 +256,6 @@ export const PublicDashboard: React.FC = () => {
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-tight">
                 Elite Legal Desk
               </h1>
-              <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest">
-                Madanapalle, Andhra Pradesh
-              </p>
             </div>
 
             <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-medium">
