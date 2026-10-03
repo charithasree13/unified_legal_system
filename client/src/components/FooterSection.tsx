@@ -269,48 +269,52 @@ export const FooterSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Section: TECHNICAL TEAM INVOLVED */}
+        {/* Section: WEBSITE DEVELOPING TEAM */}
         <div className="pb-4">
-          <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-slate-800 pb-2">
             <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
               <Code size={15} className="text-sky-400" />
-              <span>TECHNICAL TEAM INVOLVED</span>
+              <span>WEBSITE DEVELOPING TEAM</span>
             </h4>
-            <span className="text-[11px] text-slate-400 font-medium">Academic & Technical Contributors</span>
+            <span className="text-[11px] text-slate-400 font-medium">Website Development & Technical Team</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl">
-            {/* Professor */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-1.5 hover:border-slate-700 transition-colors">
-              <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
-                <GraduationCap size={12} className="text-amber-400" />
-                <span>Professor</span>
+            {/* Developer */}
+            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 flex flex-col justify-between hover:border-slate-700 transition-colors">
+              <div className="space-y-1.5 mb-2">
+                <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
+                  <Code size={12} className="text-amber-400" />
+                  <span>Developer</span>
+                </div>
+                <h5 className="font-bold text-white text-sm">
+                  Ms. P. Charitha Sree
+                </h5>
+                <p className="text-slate-300 text-xs font-medium leading-relaxed">
+                  B.Tech Student, Department of Computer Science and Engineering – Artificial Intelligence
+                </p>
               </div>
-              <h5 className="font-bold text-white text-sm">
-                Mr. P. Praneel Kumar
-              </h5>
-              <p className="text-slate-300 text-xs font-medium">
-                Assistant Professor
-              </p>
-              <p className="text-slate-400 text-xs">
-                MITS Deemed To Be University, Madanapalle
+              <p className="text-slate-400 text-xs pt-1">
+                MITS Deemed to be University, Madanapalle
               </p>
             </div>
 
-            {/* Student */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-1.5 hover:border-slate-700 transition-colors">
-              <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
-                <GraduationCap size={12} className="text-amber-400" />
-                <span>Student</span>
+            {/* Mentor */}
+            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 flex flex-col justify-between hover:border-slate-700 transition-colors">
+              <div className="space-y-1.5 mb-2">
+                <div className="text-[10px] text-amber-400 uppercase tracking-widest font-bold flex items-center gap-1">
+                  <Code size={12} className="text-amber-400" />
+                  <span>Mentor</span>
+                </div>
+                <h5 className="font-bold text-white text-sm">
+                  Mr. P. Praneel Kumar
+                </h5>
+                <p className="text-slate-300 text-xs font-medium leading-relaxed">
+                  Assistant Professor
+                </p>
               </div>
-              <h5 className="font-bold text-white text-sm">
-                P. Charitha Sree
-              </h5>
-              <p className="text-slate-300 text-xs font-medium">
-                Student
-              </p>
-              <p className="text-slate-400 text-xs">
-                MITS Deemed To Be University, Madanapalle
+              <p className="text-slate-400 text-xs pt-1">
+                MITS Deemed to be University, Madanapalle
               </p>
             </div>
           </div>
