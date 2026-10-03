@@ -69,14 +69,17 @@ export const Projects: React.FC = () => {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!nextHearingDate) {
+      addNotification('Validation Error', 'Case creation failed: Hearing date is required.', 'error');
+      return;
+    }
+
     setIsSubmitting(true);
     const effectiveName = projectName.trim() || 
       (plaintiffName.trim() && defendantName.trim() ? `${plaintiffName.trim()} v. ${defendantName.trim()}` : '') ||
       (caseNo.trim() ? `Case ${caseNo.trim()}` : '') ||
       (projDesc.trim() ? (projDesc.trim().length > 35 ? projDesc.trim().substring(0, 32) + '...' : projDesc.trim()) : '') ||
       'Litigation Case File';
-
-    const teamArray = projTeam ? projTeam.split(',').map(m => m.trim()).filter(Boolean) : [];
 
     try {
       const res = await fetch('/api/projects', {
@@ -88,7 +91,9 @@ export const Projects: React.FC = () => {
         body: JSON.stringify({
           name: effectiveName,
           caseNo: caseNo.trim(),
+          referenceNumber: caseNo.trim(),
           nextHearingDate,
+          hearingDate: nextHearingDate,
           plaintiffName: plaintiffName.trim(),
           defendantName: defendantName.trim(),
           plaintiffEmail: plaintiffEmail.trim(),
@@ -100,12 +105,16 @@ export const Projects: React.FC = () => {
           description: projDesc.trim(),
           priority: projPriority,
           deadline: projDeadline,
-          teamMembers: teamArray
+          finalDeadline: projDeadline,
+          teamMembers: projTeam.trim()
         })
       });
       const data = await res.json();
       if (res.ok) {
-        addNotification('Project Created', `Case "${effectiveName}" initialized and saved successfully.`, 'success');
+        const msg = data.emailWarning 
+          ? `Case "${effectiveName}" initialized successfully. Note: ${data.emailWarning}` 
+          : `Case "${effectiveName}" initialized and saved successfully.`;
+        addNotification('Case File Created', msg, 'success');
         setShowAddProject(false);
         const newProj = data.project;
         if (newProj) {
@@ -128,7 +137,7 @@ export const Projects: React.FC = () => {
         
         await fetchProjects();
       } else {
-        addNotification('Creation Error', data.message || 'Failed to create case file.', 'error');
+        addNotification('Case Creation Failed', data.message || 'Failed to create case file.', 'error');
       }
     } catch (err: any) {
       console.error(err);
@@ -684,12 +693,13 @@ export const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Next Hearing Date (Optional)</label>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase">Next Hearing Date <span className="text-red-500">*</span></label>
                   <input
                     type="date"
                     value={nextHearingDate}
                     onChange={(e) => setNextHearingDate(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    required
+                    className="w-full mt-1 border border-slate-200 dark:border-slate-850 rounded px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold"
                   />
                 </div>
               </div>

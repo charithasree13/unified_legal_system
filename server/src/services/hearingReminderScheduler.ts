@@ -1,4 +1,4 @@
-import { Project, HearingReminder } from '../models/Schemas';
+import { Project, HearingReminder, User, Advocate } from '../models/Schemas';
 import { findRegisteredPartyUsers, sendHearingReminderEmail, validateEmail } from './caseEmailService';
 
 /**
@@ -77,44 +77,79 @@ export const runReminderCheckOnce = async (): Promise<{ totalCases: number; elig
         eligibleCount++;
         const caseIdStr = proj._id ? String(proj._id) : proj.name;
 
-        // Resolve recipients: Registered parties OR direct case emails
-        const registeredParties = await findRegisteredPartyUsers(proj);
+        // Resolve recipients: Registered Client + Registered Advocates
         const recipientList: Array<{ email: string; name: string; clientId?: string }> = [];
+        const addedEmails = new Set<string>();
 
-        for (const party of registeredParties) {
-          if (party.email && validateEmail(party.email)) {
+        // 1. Client Resolution
+        if (proj.clientId) {
+          const clientUser = await User.findById(proj.clientId);
+          if (clientUser && clientUser.email && validateEmail(clientUser.email)) {
+            const emailClean = clientUser.email.trim().toLowerCase();
+            addedEmails.add(emailClean);
             recipientList.push({
-              email: party.email.trim().toLowerCase(),
-              name: party.name || 'Client',
-              clientId: party.user?._id ? String(party.user._id) : undefined
+              email: emailClean,
+              name: clientUser.name || proj.clientName || 'Valued Client',
+              clientId: String(clientUser._id)
             });
           }
         }
 
-        // Fallback: If no registered user matches, check case plaintiffEmail / defendantEmail directly
-        if (recipientList.length === 0) {
-          if (proj.plaintiffEmail && validateEmail(proj.plaintiffEmail)) {
+        // Additional registered party users (Plaintiff / Defendant / Client)
+        const registeredParties = await findRegisteredPartyUsers(proj);
+        for (const party of registeredParties) {
+          if (party.email && validateEmail(party.email)) {
+            const emailClean = party.email.trim().toLowerCase();
+            if (!addedEmails.has(emailClean)) {
+              addedEmails.add(emailClean);
+              recipientList.push({
+                email: emailClean,
+                name: party.name || 'Client',
+                clientId: party.user?._id ? String(party.user._id) : undefined
+              });
+            }
+          }
+        }
+
+        // Fallback Client Email if not already added
+        if (proj.plaintiffEmail && validateEmail(proj.plaintiffEmail)) {
+          const emailClean = proj.plaintiffEmail.trim().toLowerCase();
+          if (!addedEmails.has(emailClean)) {
+            addedEmails.add(emailClean);
             recipientList.push({
-              email: proj.plaintiffEmail.trim().toLowerCase(),
+              email: emailClean,
               name: proj.plaintiffName || proj.clientName || 'Client'
             });
           }
-          if (proj.defendantEmail && validateEmail(proj.defendantEmail) && proj.defendantEmail.trim().toLowerCase() !== proj.plaintiffEmail?.trim().toLowerCase()) {
-            recipientList.push({
-              email: proj.defendantEmail.trim().toLowerCase(),
-              name: proj.defendantName || 'Client'
-            });
+        }
+
+        // 2. Advocates Resolution (ALL assigned advocates)
+        if (Array.isArray(proj.advocateIds) && proj.advocateIds.length > 0) {
+          for (const advId of proj.advocateIds) {
+            const advUser = await User.findById(advId) || await Advocate.findById(advId);
+            if (advUser && advUser.email && validateEmail(advUser.email)) {
+              const emailClean = advUser.email.trim().toLowerCase();
+              if (!addedEmails.has(emailClean)) {
+                addedEmails.add(emailClean);
+                recipientList.push({
+                  email: emailClean,
+                  name: advUser.name || 'Assigned Advocate',
+                  clientId: String(advUser._id || advUser.id)
+                });
+              }
+            }
           }
         }
 
         if (recipientList.length === 0) {
-          console.log(`[Hearing Reminder] Missing client email for case: ${proj.caseNo || proj.name} - skipping`);
+          console.log(`[Hearing Reminder] Missing valid client/advocate emails for case: ${proj.caseNo || proj.name} - skipping`);
           skippedCount++;
           continue;
         }
 
-        const advocateName = (proj.teamMembers && proj.teamMembers.length > 0) ? proj.teamMembers[0] : 'Assigned Advocate';
+        const advocateName = (proj.teamMembers && proj.teamMembers.length > 0) ? proj.teamMembers.join(', ') : 'Assigned Advocate';
 
+        let anySentSuccess = false;
         for (const recipient of recipientList) {
           try {
             // Check if reminder was already sent for (caseId + hearingDate + '3_DAY_REMINDER' + email)
@@ -160,14 +195,18 @@ export const runReminderCheckOnce = async (): Promise<{ totalCases: number; elig
                 sentAt: new Date()
               });
 
-              // Legacy project update
+              // Legacy project update and 3-day reminder sent flag
               const sentLogs = Array.isArray(proj.hearingRemindersSent) ? proj.hearingRemindersSent : [];
               sentLogs.push({
                 hearingDate: proj.nextHearingDate,
                 userEmail: recipient.email,
                 sentAt: new Date()
               });
-              await Project.findByIdAndUpdate(caseIdStr, { hearingRemindersSent: sentLogs });
+              await Project.findByIdAndUpdate(caseIdStr, { 
+                hearingRemindersSent: sentLogs,
+                reminder3DaySent: true,
+                reminder3DaySentAt: new Date()
+              });
 
             } else {
               failedCount++;

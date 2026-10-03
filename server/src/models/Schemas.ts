@@ -321,19 +321,28 @@ const MessageSchema = new mongoose.Schema({
 
 const ProjectSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  uniqueCaseId: { type: String, index: true },
+  referenceNumber: { type: String },
+  clientId: { type: String, index: true },
+  advocateIds: [{ type: String, index: true }],
+  createdBy: { type: String },
+  createdByName: { type: String },
+  createdByRole: { type: String },
   clientName: { type: String },
-  caseNo: { type: String },
-  nextHearingDate: { type: String },
+  caseNo: { type: String, index: true },
+  nextHearingDate: { type: String, index: true },
+  hearingDate: { type: String, index: true },
   plaintiffName: { type: String },
   defendantName: { type: String },
   clientPhone: { type: String },
   courtType: { type: String },
   courtCity: { type: String },
-  caseType: { type: String, enum: ['Civil', 'Criminal'] },
+  caseType: { type: String, enum: ['Civil', 'Criminal'], default: 'Civil' },
   description: { type: String },
   priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
-  status: { type: String, enum: ['Planning', 'In Progress', 'On Hold', 'Completed'], default: 'Planning' },
+  status: { type: String, default: 'Active' },
   deadline: { type: String },
+  finalDeadline: { type: String },
   progress: { type: Number, default: 0 },
   teamMembers: { type: [String], default: [] }, // Array of user names/emails
   tasks: [{
@@ -360,6 +369,8 @@ const ProjectSchema = new mongoose.Schema({
   currentDocContent: { type: String, default: '' },
   plaintiffEmail: { type: String },
   defendantEmail: { type: String },
+  reminder3DaySent: { type: Boolean, default: false },
+  reminder3DaySentAt: { type: Date },
   hearingRemindersSent: [{
     hearingDate: { type: String, required: true },
     userEmail: { type: String, required: true },
@@ -371,6 +382,13 @@ const ProjectSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
   }]
 }, { timestamps: true });
+
+ProjectSchema.index({ caseNo: 1 });
+ProjectSchema.index({ clientId: 1 });
+ProjectSchema.index({ advocateIds: 1 });
+ProjectSchema.index({ nextHearingDate: 1 });
+ProjectSchema.index({ hearingDate: 1 });
+ProjectSchema.index({ status: 1 });
 
 const NotificationSchema = new mongoose.Schema({
   userId: { type: String, required: true },

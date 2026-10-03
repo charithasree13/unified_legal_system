@@ -157,14 +157,14 @@ app.delete('/api/legal/bare-acts/:id', authenticateToken, requireAdmin, docCtrl.
 // CASE PROJECTS & COLLABORATION
 app.get('/api/projects', authenticateToken, projCtrl.getProjects);
 app.get('/api/projects/:id', authenticateToken, projCtrl.getProjectById);
-app.post('/api/projects', authenticateToken, projCtrl.createProject);
-app.put('/api/projects/:id', authenticateToken, projCtrl.updateProject);
-app.delete('/api/projects/:id', authenticateToken, projCtrl.deleteProject);
-app.post('/api/projects/:id/tasks', authenticateToken, projCtrl.addTask);
-app.put('/api/projects/:id/tasks', authenticateToken, projCtrl.updateTaskStatus);
+app.post('/api/projects', authenticateToken, requireAdminOrAdvocate, projCtrl.createProject);
+app.put('/api/projects/:id', authenticateToken, requireAdminOrAdvocate, projCtrl.updateProject);
+app.delete('/api/projects/:id', authenticateToken, requireAdminOrAdvocate, projCtrl.deleteProject);
+app.post('/api/projects/:id/tasks', authenticateToken, requireAdminOrAdvocate, projCtrl.addTask);
+app.put('/api/projects/:id/tasks', authenticateToken, requireAdminOrAdvocate, projCtrl.updateTaskStatus);
 app.post('/api/projects/:id/comments', authenticateToken, projCtrl.addComment);
-app.post('/api/projects/:id/draft', authenticateToken, projCtrl.saveDraft);
-app.post('/api/projects/:id/version', authenticateToken, projCtrl.createVersion);
+app.post('/api/projects/:id/draft', authenticateToken, requireAdminOrAdvocate, projCtrl.saveDraft);
+app.post('/api/projects/:id/version', authenticateToken, requireAdminOrAdvocate, projCtrl.createVersion);
 
 // HEARING REMINDERS & SMTP TESTING API
 app.post('/api/reminders/trigger', authenticateToken, requireAdminOrAdvocate, reminderCtrl.triggerReminders);
