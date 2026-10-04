@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calculator, FileText, Gavel, 
-  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote
+  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote, Calendar
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -31,6 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Advocate Directory', path: '/directory', icon: Users },
     { name: 'Court Fee & Land Calculators', path: '/calculators', icon: Calculator },
     { name: 'Interest Calculator', path: '/interest-calculator', icon: Calculator },
+    { name: 'Date Difference Calculator', path: '/date-difference-calculator', icon: Calendar },
     { name: 'Hindu Succession Calculator', path: '/hindu-succession-calculator', icon: Scale, normalUserHide: true },
     { name: 'Islamic Inheritance Calculator', path: '/islamic-inheritance-calculator', icon: Scale, normalUserHide: true },
     { name: 'Limitation Act Calculator', path: '/limitation-calculator', icon: Scale, normalUserHide: true },

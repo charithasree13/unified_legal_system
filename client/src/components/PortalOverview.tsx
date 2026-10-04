@@ -4,7 +4,7 @@ import {
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
   Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote,
-  CheckCircle, Clock
+  CheckCircle, Clock, Calendar
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -178,6 +178,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
           iconColor: 'text-emerald-600 dark:text-emerald-400',
           gradientBorder: 'hover:border-emerald-500/50'
+        },
+        {
+          id: 'date-difference-calculator',
+          title: 'Date Difference Calculator',
+          description: 'Calculate the exact number of days between two dates quickly and accurately.',
+          tag: 'DATE UTILITY',
+          icon: Calendar,
+          path: '/date-difference-calculator',
+          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
+          badgeText: 'text-sky-600 dark:text-sky-400',
+          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
+          iconColor: 'text-sky-600 dark:text-sky-400',
+          gradientBorder: 'hover:border-sky-500/50'
         },
         {
           id: 'hindu-succession',
@@ -354,6 +367,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-emerald-500/50'
         },
         {
+          id: 'date-difference-calculator',
+          title: 'Date Difference Calculator',
+          description: 'Calculate the exact number of days between two dates quickly and accurately.',
+          tag: 'DATE UTILITY',
+          icon: Calendar,
+          path: '/date-difference-calculator',
+          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
+          badgeText: 'text-sky-600 dark:text-sky-400',
+          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
+          iconColor: 'text-sky-600 dark:text-sky-400',
+          gradientBorder: 'hover:border-sky-500/50'
+        },
+        {
           id: 'hindu-succession',
           title: 'Hindu Succession Calculator',
           description: 'Determine statutory legal shares, coparcenary notional partitions, Class I/II intestate shares, and Section 15 female succession.',
@@ -500,6 +526,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
         iconColor: 'text-sky-600 dark:text-sky-400',
         gradientBorder: 'hover:border-sky-500/50'
+      },
+      {
+        id: 'date-difference-calculator',
+        title: 'Date Difference Calculator',
+        description: 'Calculate the exact number of days between two dates quickly and accurately.',
+        tag: 'DATE UTILITY',
+        icon: Calendar,
+        path: '/date-difference-calculator',
+        badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
+        badgeText: 'text-emerald-600 dark:text-emerald-400',
+        iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+        iconColor: 'text-emerald-600 dark:text-emerald-400',
+        gradientBorder: 'hover:border-emerald-500/50'
       },
       {
         id: 'chat',

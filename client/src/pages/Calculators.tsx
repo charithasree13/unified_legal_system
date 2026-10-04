@@ -735,18 +735,34 @@ export const Calculators: React.FC = () => {
       {activeTab === 'future' && (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
           {/* Active Public Calculators Bar */}
-          <div className="mb-6 p-6 bg-gradient-to-r from-sky-900 to-slate-900 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">Public Legal Utility</span>
-              <h3 className="font-extrabold text-lg text-white">Interest Calculator (Simple & Compound)</h3>
-              <p className="text-xs text-slate-300 mt-1">Compute simple and compound interest on litigation awards, court decrees, and financial claims with exact date conventions and step-by-step formulas.</p>
+          <div className="space-y-4 mb-6">
+            <div className="p-6 bg-gradient-to-r from-sky-900 to-slate-900 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">Public Legal Utility</span>
+                <h3 className="font-extrabold text-lg text-white">Interest Calculator (Simple & Compound)</h3>
+                <p className="text-xs text-slate-300 mt-1">Compute simple and compound interest on litigation awards, court decrees, and financial claims with exact date conventions and step-by-step formulas.</p>
+              </div>
+              <Link
+                to="/interest-calculator"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
+              >
+                Open Interest Calculator <ArrowRight size={14} />
+              </Link>
             </div>
-            <Link
-              to="/interest-calculator"
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
-            >
-              Open Interest Calculator <ArrowRight size={14} />
-            </Link>
+
+            <div className="p-6 bg-gradient-to-r from-indigo-950 via-slate-900 to-slate-950 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 border border-indigo-900/40">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Public Legal Utility</span>
+                <h3 className="font-extrabold text-lg text-white">Date Difference Calculator</h3>
+                <p className="text-xs text-slate-300 mt-1">Calculate the exact number of days between two dates quickly and accurately with leap year and calendar breakdown support.</p>
+              </div>
+              <Link
+                to="/date-difference-calculator"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
+              >
+                Open Date Calculator <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
 
           <div className="mb-6">

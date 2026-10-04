@@ -21,6 +21,7 @@ import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
 import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculator';
 import { LimitationCalculatorPage } from './pages/LimitationCalculatorPage';
 import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
+import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
@@ -119,6 +120,8 @@ export const App: React.FC = () => {
           <Route path="calculators" element={<Calculators />} />
           <Route path="interest-calculator" element={<InterestCalculatorPage />} />
           <Route path="calculators/interest" element={<InterestCalculatorPage />} />
+          <Route path="date-difference-calculator" element={<DateDifferenceCalculatorPage />} />
+          <Route path="calculators/date-difference" element={<DateDifferenceCalculatorPage />} />
 
           {/* Protected Hindu Succession Calculator Module (Admin & Advocate Only) */}
           <Route 

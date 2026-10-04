@@ -61,6 +61,11 @@ export const FooterSection: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/date-difference-calculator" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <span>Date Difference Calculator</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/laws" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                   <span>Bare Acts & Laws Library</span>
                 </Link>
