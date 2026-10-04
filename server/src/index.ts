@@ -275,10 +275,11 @@ app.post('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFee
 app.put('/api/admin/court-fee/rules/:id/toggle', authenticateToken, requireAdmin, courtFeeCtrl.toggleAdminRule);
 
 // LEGAL SECTION MAPPING API
+app.get('/api/section-mappings/health/report', authenticateToken, requireAdmin, mappingCtrl.getMappingHealthReport);
 app.get('/api/section-mappings', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
 app.get('/api/section-mappings/:id', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappingById);
-app.post('/api/section-mappings', authenticateToken, mappingCtrl.createSectionMapping);
-app.put('/api/section-mappings/:id', authenticateToken, mappingCtrl.updateSectionMapping);
+app.post('/api/section-mappings', authenticateToken, requireAdmin, mappingCtrl.createSectionMapping);
+app.put('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.updateSectionMapping);
 app.delete('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.deleteSectionMapping);
 
 // SYSTEM STATISTICS (Admin Only)
@@ -366,6 +367,7 @@ if (!process.env.VERCEL) {
     startHearingReminderScheduler();
     try {
       await seedExpandedLegalLibrary();
+      await seedSectionMappingDatabase();
     } catch (err) {
       console.error('Legal library seed startup error:', err);
     }

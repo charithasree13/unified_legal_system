@@ -581,28 +581,56 @@ const RefreshTokenSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const LegalSectionMappingSchema = new mongoose.Schema({
-  legacyAct: { type: String, required: true }, // e.g. IPC, CrPC, IEA
-  legacySection: { type: String, required: true }, // e.g. Section 302
-  legacyTitle: { type: String, required: true },
+  oldAct: { type: String, required: true }, // e.g. IPC, CrPC, Indian Evidence Act
+  oldSection: { type: String, required: true }, // e.g. Section 302, 154
+  oldSectionTitle: { type: String, required: true },
   newAct: { type: String, required: true }, // e.g. BNS, BNSS, BSA
-  newSection: { type: String, required: true }, // e.g. Section 103(1)
-  newTitle: { type: String, required: true },
-  newSectionContent: { type: String }, // Statutory content / text of the new section
-  keyChanges: { type: [String], default: [] }, // Key changes and legal implications
+  newSection: { type: String, required: true }, // e.g. Section 103(1), 173
+  newSectionTitle: { type: String, required: true },
+  
+  // Backward compatibility alias fields
+  legacyAct: { type: String },
+  legacySection: { type: String },
+  legacyTitle: { type: String },
+  
+  newSectionContent: { type: String }, // Statutory text of the new section
+  keyChanges: { type: [String], default: [] }, // Key legal changes & implications
   mappingType: { 
     type: String, 
-    enum: ['DIRECT_REPLACEMENT', 'MULTIPLE_REPLACEMENT', 'PARTIAL_REPLACEMENT', 'REORGANIZED', 'NO_DIRECT_EQUIVALENT'], 
+    enum: [
+      'DIRECT_EQUIVALENT', 'MODIFIED_EQUIVALENT', 'MERGED', 'SPLIT', 
+      'PARTIAL_EQUIVALENT', 'NO_DIRECT_EQUIVALENT', 'REPEALED_OR_OMITTED', 
+      'MULTIPLE_NEW_PROVISIONS', 'MULTIPLE_OLD_PROVISIONS',
+      'DIRECT_REPLACEMENT', 'PARTIAL_REPLACEMENT', 'REORGANIZED'
+    ], 
     required: true 
+  },
+  mappingExplanation: { type: String },
+  factualNotes: { type: String },
+  
+  sourceName: { type: String, default: 'India Code / Legislative Department' },
+  sourceUrl: { type: String, default: 'https://www.indiacode.nic.in/' },
+  officialSourceUrl: { type: String, default: 'https://www.indiacode.nic.in/' },
+  sourceReference: { type: String, default: 'Official Gazette of India' },
+  
+  verificationStatus: { 
+    type: String, 
+    enum: ['VERIFIED', 'SECONDARY_SOURCE_VERIFIED', 'NEEDS_REVIEW'], 
+    default: 'VERIFIED' 
   },
   mappingStatus: { 
     type: String, 
-    enum: ['VERIFIED', 'NEEDS_REVIEW'], 
+    enum: ['VERIFIED', 'SECONDARY_SOURCE_VERIFIED', 'NEEDS_REVIEW'], 
     default: 'VERIFIED' 
   },
-  sourceReference: { type: String, required: true },
-  factualNotes: { type: String },
+  verifiedBy: { type: String, default: 'System Legal Counsel' },
+  lastVerifiedAt: { type: Date, default: Date.now },
+  version: { type: Number, default: 1 },
+  canonicalKey: { type: String, unique: true, sparse: true },
   createdBy: { type: String, default: 'System Admin' }
 }, { timestamps: true });
+
+LegalSectionMappingSchema.index({ canonicalKey: 1 }, { unique: true, sparse: true });
 
 const HearingReminderSchema = new mongoose.Schema({
   caseId: { type: String, required: true },
