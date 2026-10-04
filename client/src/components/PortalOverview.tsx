@@ -206,6 +206,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-sky-500/50'
         },
         {
+          id: 'section-mapping',
+          title: 'Old Acts → New Acts Converter',
+          description: 'Convert and cross-reference provisions from the Indian Penal Code, Code of Criminal Procedure and Indian Evidence Act with the corresponding provisions under BNS, BNSS and BSA.',
+          tag: 'LEGAL CONVERSION',
+          icon: Compass,
+          path: '/section-mapping',
+          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
+          badgeText: 'text-purple-600 dark:text-purple-400',
+          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
+          iconColor: 'text-purple-600 dark:text-purple-400',
+          gradientBorder: 'hover:border-purple-500/50'
+        },
+        {
           id: 'chat',
           title: 'Secure Chat Hub',
           description: 'Inspect active messaging channels, system communications, and user support conversations.',
@@ -291,8 +304,8 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         ...((user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED') ? [{
           id: 'section-mapping',
           title: 'Old Acts → New Acts Converter',
-          description: 'Find corresponding provisions under India\'s new criminal laws (IPC ↔ BNS, CrPC ↔ BNSS, Evidence ↔ BSA).',
-          tag: 'Legal Research',
+          description: 'Convert and cross-reference provisions from the Indian Penal Code, Code of Criminal Procedure and Indian Evidence Act with the corresponding provisions under BNS, BNSS and BSA.',
+          tag: 'LEGAL CONVERSION',
           icon: Compass,
           path: '/section-mapping',
           badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
