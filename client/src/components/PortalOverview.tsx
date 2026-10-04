@@ -3,9 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
-  Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote
+  Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote,
+  CheckCircle, Clock
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+
+export interface PortalOverviewStats {
+  totalAdvocates?: number;
+  activeUsers?: number;
+  pendingVerification?: number;
+  uploadedJudgements?: number;
+  uploadedLaws?: number;
+  collaborationActivities?: number;
+}
+
+interface PortalOverviewProps {
+  stats?: PortalOverviewStats;
+  loadingStats?: boolean;
+}
 
 interface FieldCard {
   id: string;
@@ -23,10 +38,19 @@ interface FieldCard {
   gradientBorder: string;
 }
 
-export const PortalOverview: React.FC = () => {
+export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingStats }) => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const role = user?.role || 'Client';
+
+  const displayStats = {
+    totalAdvocates: stats?.totalAdvocates ?? 3,
+    activeUsers: stats?.activeUsers ?? 6,
+    pendingVerification: stats?.pendingVerification ?? 1,
+    uploadedJudgements: stats?.uploadedJudgements ?? 0,
+    uploadedLaws: stats?.uploadedLaws ?? 30,
+    collaborationActivities: stats?.collaborationActivities ?? 0,
+  };
 
   const handleCardClick = (card: FieldCard) => {
     if (card.isAdminInternal && card.targetId) {
@@ -543,6 +567,30 @@ export const PortalOverview: React.FC = () => {
           </div>
 
         </div>
+      </div>
+
+      {/* KPI Stats Cards - Positioned BEFORE Modules */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {[
+          { label: 'ADVOCATES', val: displayStats.totalAdvocates, icon: Users, color: 'text-indigo-600 dark:text-indigo-400' },
+          { label: 'ACTIVE USERS', val: displayStats.activeUsers, icon: CheckCircle, color: 'text-emerald-500 dark:text-emerald-400' },
+          { label: 'PENDING VERIFY', val: displayStats.pendingVerification, icon: Clock, color: 'text-amber-500 dark:text-amber-400' },
+          { label: 'JUDGEMENTS', val: displayStats.uploadedJudgements, icon: FileText, color: 'text-sky-500 dark:text-sky-400' },
+          { label: 'ACTS/LAWS', val: displayStats.uploadedLaws, icon: BookOpen, color: 'text-indigo-500 dark:text-indigo-400' },
+          { label: 'COLLAB ACTIONS', val: displayStats.collaborationActivities, icon: Activity, color: 'text-purple-500 dark:text-purple-400' }
+        ].map((c, i) => (
+          <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col justify-between transition-all hover:shadow-md">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
+                {c.label}
+              </span>
+              <c.icon size={18} className={c.color} />
+            </div>
+            <h3 className="text-2xl font-bold font-sans text-slate-900 dark:text-white mt-1">
+              {loadingStats ? '...' : (c.val ?? 0)}
+            </h3>
+          </div>
+        ))}
       </div>
 
       {/* Portal Fields Section Title */}

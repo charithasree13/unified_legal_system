@@ -304,31 +304,7 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-8">
       
       {/* Project Main Theme Overview & Interactive Field Cards */}
-      <PortalOverview />
-      
-      {/* Overview Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-        {[
-          { label: 'Advocates', val: stats.totalAdvocates, icon: Users, color: 'text-primary' },
-          { label: 'Active Users', val: stats.activeUsers, icon: CheckCircle, color: 'text-emerald-500' },
-          { label: 'Pending Verify', val: stats.pendingVerification, icon: Clock, color: 'text-amber-500' },
-          { label: 'Judgements', val: stats.uploadedJudgements, icon: FileText, color: 'text-sky-500' },
-          { label: 'Acts/Laws', val: stats.uploadedLaws, icon: FileText, color: 'text-indigo-500' },
-          { label: 'Collab Actions', val: stats.collaborationActivities, icon: Activity, color: 'text-purple-500' }
-        ].map((c, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm flex flex-col justify-between">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                {c.label}
-              </span>
-              <c.icon size={16} className={c.color} />
-            </div>
-            <h3 className="text-xl font-bold font-sans mt-1">
-              {loadingStats ? '...' : c.val}
-            </h3>
-          </div>
-        ))}
-      </div>
+      <PortalOverview stats={stats} loadingStats={loadingStats} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
