@@ -274,13 +274,20 @@ app.get('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFeeC
 app.post('/api/admin/court-fee/rules', authenticateToken, requireAdmin, courtFeeCtrl.createAdminRule);
 app.put('/api/admin/court-fee/rules/:id/toggle', authenticateToken, requireAdmin, courtFeeCtrl.toggleAdminRule);
 
-// LEGAL SECTION MAPPING API
+// LEGAL SECTION MAPPING API & ALIASES (Strict Access: Admin + Approved Advocate ONLY)
 app.get('/api/section-mappings/health/report', authenticateToken, requireAdmin, mappingCtrl.getMappingHealthReport);
 app.get('/api/section-mappings', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
 app.get('/api/section-mappings/:id', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappingById);
 app.post('/api/section-mappings', authenticateToken, requireAdmin, mappingCtrl.createSectionMapping);
 app.put('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.updateSectionMapping);
 app.delete('/api/section-mappings/:id', authenticateToken, requireAdmin, mappingCtrl.deleteSectionMapping);
+
+// Additional Protected Alias Routes
+app.get('/api/legal/act-mappings', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
+app.get('/api/legal/act-mappings/search', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
+app.get('/api/legal/act-mappings/old-to-new', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
+app.get('/api/legal/act-mappings/new-to-old', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappings);
+app.get('/api/legal/act-mappings/:id', authenticateToken, requireAdminOrAdvocate, mappingCtrl.getSectionMappingById);
 
 // SYSTEM STATISTICS (Admin Only)
 app.get('/api/system/stats', authenticateToken, requireAdmin, async (req, res) => {

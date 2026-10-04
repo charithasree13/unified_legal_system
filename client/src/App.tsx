@@ -224,7 +224,23 @@ export const App: React.FC = () => {
           <Route 
             path="section-mapping" 
             element={
-              <ProtectedRoute featureName="Legal Section Mapping">
+              <ProtectedRoute featureName="Old Acts → New Acts Converter" allowedRoles={['Admin', 'Advocate']}>
+                <LegalSectionMapping />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="old-acts-new-acts" 
+            element={
+              <ProtectedRoute featureName="Old Acts → New Acts Converter" allowedRoles={['Admin', 'Advocate']}>
+                <LegalSectionMapping />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="legal-tools/old-acts-new-acts" 
+            element={
+              <ProtectedRoute featureName="Old Acts → New Acts Converter" allowedRoles={['Admin', 'Advocate']}>
                 <LegalSectionMapping />
               </ProtectedRoute>
             } 

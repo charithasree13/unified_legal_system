@@ -288,11 +288,11 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           iconColor: 'text-emerald-600 dark:text-emerald-400',
           gradientBorder: 'hover:border-emerald-500/50'
         },
-        {
+        ...((user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED') ? [{
           id: 'section-mapping',
-          title: 'Legal Section Mapping',
-          description: 'Interactive mapping of legal sections, IPC / Bharatiya Nyaya Sanhita (BNS) cross-references, and procedural codes.',
-          tag: 'Legal Intelligence',
+          title: 'Old Acts → New Acts Converter',
+          description: 'Find corresponding provisions under India\'s new criminal laws (IPC ↔ BNS, CrPC ↔ BNSS, Evidence ↔ BSA).',
+          tag: 'Legal Research',
           icon: Compass,
           path: '/section-mapping',
           badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
@@ -300,7 +300,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
           iconColor: 'text-purple-600 dark:text-purple-400',
           gradientBorder: 'hover:border-purple-500/50'
-        },
+        }] : []),
         {
           id: 'calculators',
           title: 'Court Fee & Land Calculators',

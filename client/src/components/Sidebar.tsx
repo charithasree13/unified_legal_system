@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },
     { name: 'Doc Collaboration', path: '/collaboration', icon: FileText },
     { name: 'Case Projects', path: '/projects', icon: Scale },
-    { name: 'Legal Section Mapping', path: '/section-mapping', icon: BookOpen, normalUserHide: true },
+    { name: 'Old Acts → New Acts Converter', path: '/section-mapping', icon: BookOpen, normalUserHide: true },
     { name: 'Daily Legal Tips', path: '/daily-legal-tips', icon: BookOpen, normalUserHide: true },
     { name: 'My Notes', path: '/my-notes', icon: StickyNote, normalUserHide: true },
     { name: 'My Profile', path: '/profile', icon: User },

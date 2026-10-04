@@ -37,11 +37,14 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
     }
   };
 
+  const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
+  const canAccessConverter = user?.role === 'Admin' || isApprovedAdvocate;
+
   const navLinks = [
     { label: 'Home', path: '/dashboard' },
     { label: 'Advocates', path: '/directory' },
     { label: 'Legal Services', path: '#modules' },
-    { label: 'Legal Sections', path: '/section-mapping' },
+    ...(canAccessConverter ? [{ label: 'Old Acts → New Acts Converter', path: '/section-mapping' }] : []),
     { label: 'Judgments', path: '/judgements' },
     { label: 'Documents', path: '/laws' },
     { label: 'Calculators', path: '/calculators' },

@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Mail, Phone, ShieldCheck, Scale, Award, GraduationCap, Code } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 export const FooterSection: React.FC = () => {
+  const { user } = useAuthStore();
+  const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
+  const canAccessConverter = user?.role === 'Admin' || isApprovedAdvocate;
+
   return (
     <footer className="w-full bg-slate-900 text-slate-300 text-xs border-t border-slate-800 pt-12 pb-8 px-4 sm:px-6 lg:px-8 mt-auto">
       <div className="max-w-7xl mx-auto space-y-10">
@@ -60,11 +65,13 @@ export const FooterSection: React.FC = () => {
                   <span>Supreme & High Court Judgments</span>
                 </Link>
               </li>
-              <li>
-                <Link to="/section-mapping" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <span>Legal Section Mapping (IPC / BNS)</span>
-                </Link>
-              </li>
+              {canAccessConverter && (
+                <li>
+                  <Link to="/section-mapping" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <span>Old Acts → New Acts Converter</span>
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
