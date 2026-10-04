@@ -42,6 +42,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
 
   const navLinks = [
     { label: 'Home', path: '/dashboard' },
+    { label: 'Legal Dictionary', path: '/legal-dictionary' },
     { label: 'Advocates', path: '/directory' },
     { label: 'Legal Services', path: '#modules' },
     ...(canAccessConverter ? [{ label: 'Old Acts → New Acts Converter', path: '/section-mapping' }] : []),

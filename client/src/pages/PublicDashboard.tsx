@@ -75,6 +75,17 @@ export const PublicDashboard: React.FC = () => {
   // Comprehensive Module Catalog (ONLY Court Fee Calculator & Land Converter are Public Access)
   const modulesList = [
     {
+      id: 'legal-dictionary',
+      title: 'LEGAL DICTIONARY',
+      category: 'LEGAL REFERENCE',
+      isProtected: false,
+      icon: BookOpen,
+      description: 'Browse legal terms and definitions by category and alphabetical order.',
+      actionText: 'Access Module',
+      path: '/legal-dictionary',
+      iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800'
+    },
+    {
       id: 'court-fee-calc',
       title: 'Court Fee Calculator',
       category: 'Public Access',

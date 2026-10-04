@@ -22,7 +22,9 @@ import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculat
 import { LimitationCalculatorPage } from './pages/LimitationCalculatorPage';
 import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
 import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPage';
+import { LegalDictionary } from './pages/LegalDictionary';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
+
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
 
@@ -117,6 +119,7 @@ export const App: React.FC = () => {
           <Route path="dashboard" element={<DashboardSwitcher />} />
 
           {/* Publicly Accessible Modules (No Login Required) */}
+          <Route path="legal-dictionary" element={<LegalDictionary />} />
           <Route path="calculators" element={<Calculators />} />
           <Route path="interest-calculator" element={<InterestCalculatorPage />} />
           <Route path="calculators/interest" element={<InterestCalculatorPage />} />
