@@ -173,53 +173,56 @@ export const getAdvocates = async (req: Request, res: Response) => {
       }
     }
 
-    // 3. Fallback auto-seed if database collection is empty
+    // 3. Fallback auto-seed if database collection is empty and no advocate deletion has taken place
     if (map.size === 0) {
-      const defaults = [
-        {
-          name: "P V Prasad",
-          phone: "9247253096",
-          email: "pvprasadvmpl@gmail.com",
-          enrollmentNumber: "AP/298/1998",
-          enrollmentDate: "1998-03-05",
-          specialization: "Civil Litigation, Notary, Bank legal advisors",
-          court: "Senior civil judges court, Junior civil Judges court, Judicial magistrate of 1st class",
-          city: "Madanapalle",
-          state: "Andhra Pradesh",
-          experience: 28,
-          bio: "Advocate, Notary, Bank Panel Advocate, Verification of legal title",
-          address: "Vasavi Bhavan Street, Madanapalle",
-          availability: "Available",
-          isVerified: true,
-          verificationStatus: "APPROVED"
-        },
-        {
-          name: "Bestha Sreenivasulu  Advocate",
-          phone: "9441135084",
-          email: "bsreenivasadv@gmail.com",
-          enrollmentNumber: "AP/32/2008",
-          enrollmentDate: "2008-01-24",
-          specialization: "Civil Litigation",
-          court: "Senior civil judges court",
-          city: "Madanapalle",
-          state: "Andhra Pradesh",
-          experience: 16,
-          bio: "Verified legal practitioner registered with Bar Council.",
-          address: "2-245-8-B-7, Madanapalle",
-          availability: "Available",
-          isVerified: true,
-          verificationStatus: "APPROVED"
-        }
-      ];
+      const deletedLogsCount = await AuditLog.countDocuments({ action: 'ADVOCATE_DELETED' });
+      if (deletedLogsCount === 0) {
+        const defaults = [
+          {
+            name: "P V Prasad",
+            phone: "9247253096",
+            email: "pvprasadvmpl@gmail.com",
+            enrollmentNumber: "AP/298/1998",
+            enrollmentDate: "1998-03-05",
+            specialization: "Civil Litigation, Notary, Bank legal advisors",
+            court: "Senior civil judges court, Junior civil Judges court, Judicial magistrate of 1st class",
+            city: "Madanapalle",
+            state: "Andhra Pradesh",
+            experience: 28,
+            bio: "Advocate, Notary, Bank Panel Advocate, Verification of legal title",
+            address: "Vasavi Bhavan Street, Madanapalle",
+            availability: "Available",
+            isVerified: true,
+            verificationStatus: "APPROVED"
+          },
+          {
+            name: "Bestha Sreenivasulu  Advocate",
+            phone: "9441135084",
+            email: "bsreenivasadv@gmail.com",
+            enrollmentNumber: "AP/32/2008",
+            enrollmentDate: "2008-01-24",
+            specialization: "Civil Litigation",
+            court: "Senior civil judges court",
+            city: "Madanapalle",
+            state: "Andhra Pradesh",
+            experience: 16,
+            bio: "Verified legal practitioner registered with Bar Council.",
+            address: "2-245-8-B-7, Madanapalle",
+            availability: "Available",
+            isVerified: true,
+            verificationStatus: "APPROVED"
+          }
+        ];
 
-      for (const d of defaults) {
-        try {
-          const created = await Advocate.create(d);
-          const norm = normalize(created);
-          map.set(norm.email, norm);
-        } catch (e) {
-          const norm = normalize(d);
-          map.set(norm.email, norm);
+        for (const d of defaults) {
+          try {
+            const created = await Advocate.create(d);
+            const norm = normalize(created);
+            map.set(norm.email, norm);
+          } catch (e) {
+            const norm = normalize(d);
+            map.set(norm.email, norm);
+          }
         }
       }
     }
@@ -486,9 +489,28 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
     }
 
     const { id } = req.params;
-    const advocate = await Advocate.findById(id);
+    let advocate = await Advocate.findById(id);
+
     if (!advocate) {
-      return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
+      const userAdv = await User.findById(id);
+      if (userAdv) {
+        advocate = await Advocate.create({
+          name: userAdv.name,
+          email: userAdv.email || `${userAdv.phone}@court.org`,
+          phone: userAdv.phone || 'N/A',
+          enrollmentNumber: userAdv.enrollmentNumber || `BAR/${new Date().getFullYear()}`,
+          enrollmentDate: new Date().toISOString().split('T')[0],
+          specialization: 'Civil Litigation',
+          court: 'Senior civil judges court',
+          city: 'Madanapalle',
+          state: 'Andhra Pradesh',
+          experience: 15,
+          isVerified: userAdv.isVerified ?? true,
+          verificationStatus: userAdv.verificationStatus || 'APPROVED'
+        });
+      } else {
+        return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
+      }
     }
 
     // Ownership Security Check for Advocates
@@ -536,7 +558,30 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
       if (verificationStatus !== undefined) updatedData.verificationStatus = verificationStatus;
     }
 
-    const updatedAdvocate = await Advocate.findByIdAndUpdate(id, updatedData, { new: true });
+    const updatedAdvocate = await Advocate.findByIdAndUpdate(advocate._id, updatedData, { new: true });
+
+    // Sync updates to associated User record if present
+    if (advocate.email || advocate.phone) {
+      try {
+        await User.updateMany(
+          {
+            $or: [
+              ...(advocate.email ? [{ email: advocate.email.toLowerCase() }] : []),
+              ...(advocate.phone ? [{ phone: advocate.phone }] : []),
+              { _id: id }
+            ]
+          },
+          {
+            ...(updatedData.name ? { name: updatedData.name } : {}),
+            ...(updatedData.phone ? { phone: updatedData.phone } : {}),
+            ...(updatedData.email ? { email: updatedData.email.toLowerCase() } : {}),
+            ...(updatedData.enrollmentNumber ? { enrollmentNumber: updatedData.enrollmentNumber } : {}),
+            ...(updatedData.isVerified !== undefined ? { isVerified: updatedData.isVerified } : {}),
+            ...(updatedData.verificationStatus ? { verificationStatus: updatedData.verificationStatus } : {})
+          }
+        );
+      } catch (uErr) { }
+    }
 
     await AuditLog.create({
       userId: req.user.id || 'system',
@@ -558,7 +603,7 @@ export const updateAdvocate = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-// Delete Advocate profile (ONLY Admin Can Delete)
+// Delete Advocate profile (ONLY Admin Can Delete Permanently)
 export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) => {
   try {
     if (!req.user) {
@@ -571,12 +616,53 @@ export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) =
     }
 
     const { id } = req.params;
-    const advocate = await Advocate.findById(id);
-    if (!advocate) {
-      return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
-    }
+    let advocate = await Advocate.findById(id);
+    let advocateName = '';
+    let advocateEnrollment = '';
+    let advocateEmail = '';
+    let advocatePhone = '';
 
-    await Advocate.findByIdAndDelete(id);
+    if (advocate) {
+      advocateName = advocate.name;
+      advocateEnrollment = advocate.enrollmentNumber || 'N/A';
+      advocateEmail = advocate.email || '';
+      advocatePhone = advocate.phone || '';
+
+      await Advocate.findByIdAndDelete(id);
+
+      // Clean up matching user account if one exists
+      if (advocateEmail || advocatePhone) {
+        await User.deleteMany({
+          $or: [
+            ...(advocateEmail ? [{ email: advocateEmail.toLowerCase() }] : []),
+            ...(advocatePhone ? [{ phone: advocatePhone }] : []),
+            { _id: id }
+          ]
+        });
+      }
+    } else {
+      // Check User collection if not found in Advocates collection
+      const userAdv = await User.findById(id);
+      if (userAdv && (userAdv.role === 'Advocate' || userAdv.role === 'advocate')) {
+        advocateName = userAdv.name;
+        advocateEnrollment = userAdv.enrollmentNumber || 'N/A';
+        advocateEmail = userAdv.email || '';
+        advocatePhone = userAdv.phone || '';
+
+        await User.findByIdAndDelete(id);
+
+        if (advocateEmail || advocatePhone) {
+          await Advocate.deleteMany({
+            $or: [
+              ...(advocateEmail ? [{ email: advocateEmail.toLowerCase() }] : []),
+              ...(advocatePhone ? [{ phone: advocatePhone }] : [])
+            ]
+          });
+        }
+      } else {
+        return res.status(404).json({ success: false, message: 'Advocate profile not found.' });
+      }
+    }
 
     await AuditLog.create({
       userId: req.user.id || 'system',
@@ -584,12 +670,12 @@ export const deleteAdvocate = async (req: AuthenticatedRequest, res: Response) =
       role: 'Admin',
       action: 'ADVOCATE_DELETED',
       ip: req.ip || '127.0.0.1',
-      details: `Deleted advocate profile: ${advocate.name} (Enrollment: ${advocate.enrollmentNumber || 'N/A'})`
+      details: `Permanently deleted advocate profile: ${advocateName} (Enrollment: ${advocateEnrollment})`
     });
 
     return res.status(200).json({
       success: true,
-      message: `Advocate profile for ${advocate.name} deleted successfully.`
+      message: `Advocate profile for ${advocateName} permanently deleted successfully.`
     });
   } catch (error) {
     console.error('Error deleting advocate:', error);

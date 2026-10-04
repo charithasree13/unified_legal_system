@@ -275,7 +275,7 @@ export const Directory: React.FC = () => {
       const res = await fetch(`${API_BASE}/api/advocates?${queryParams.toString()}`, { headers });
       const data = await res.json();
 
-      if (res.ok && Array.isArray(data.advocates) && data.advocates.length > 0) {
+      if (res.ok && Array.isArray(data.advocates)) {
         setAdvocates(data.advocates);
       } else {
         setAdvocates(DEFAULT_ADVOCATE_FALLBACKS);
