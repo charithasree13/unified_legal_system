@@ -44,14 +44,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
     { label: 'Home', path: '/dashboard' },
     { label: 'Legal Dictionary', path: '/legal-dictionary' },
     { label: 'Advocates', path: '/directory' },
-    { label: 'Legal Services', path: '#modules' },
-    ...(canAccessConverter ? [{ label: 'Old Acts → New Acts Converter', path: '/section-mapping' }] : []),
-    { label: 'Judgments', path: '/judgements' },
-    { label: 'Documents', path: '/laws' },
     { label: 'Calculators', path: '/calculators' },
-    { label: 'Interest Calc', path: '/interest-calculator' },
-    { label: 'Date Calc', path: '/date-difference-calculator' },
-    { label: 'About Founder', path: '#founder' },
   ];
 
   return (
