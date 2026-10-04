@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
-  Calculator, Scale, Calendar, DollarSign, RefreshCw, Copy, Check, Printer, 
+import {
+  Calculator, Scale, Calendar, DollarSign, RefreshCw, Copy, Check, Printer,
   Info, AlertCircle, ShieldCheck, Sparkles, BookOpen, Layers, ArrowRight
 } from 'lucide-react';
-import { 
-  calculateInterest, 
-  formatINR, 
-  type CalculationType, 
-  type CompoundingFrequency, 
-  type DayCountConvention, 
+import {
+  calculateInterest,
+  formatINR,
+  type CalculationType,
+  type CompoundingFrequency,
+  type DayCountConvention,
   type CalculationMode,
   type InterestCalculationResult
 } from '../utils/interestCalculatorEngine';
@@ -112,7 +112,7 @@ ${result.legalReferenceNotice}`;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
-      
+
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-primary text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800">
         <div className="relative z-10 space-y-3">
@@ -137,11 +137,11 @@ ${result.legalReferenceNotice}`;
 
       {/* Main Grid: Inputs vs Results */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
+
         {/* Input Panel */}
         <div className="lg:col-span-6 space-y-6">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
-            
+
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
               <h2 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                 <Sparkles size={18} className="text-amber-500" /> Calculation Settings & Parameters
@@ -193,22 +193,20 @@ ${result.legalReferenceNotice}`;
                 <button
                   type="button"
                   onClick={() => setMode('GENERAL')}
-                  className={`p-3 rounded-2xl text-xs font-extrabold border transition-all ${
-                    mode === 'GENERAL'
+                  className={`p-3 rounded-2xl text-xs font-extrabold border transition-all ${mode === 'GENERAL'
                       ? 'bg-primary text-white border-primary shadow-md'
                       : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                  }`}
+                    }`}
                 >
                   General Financial Reference
                 </button>
                 <button
                   type="button"
                   onClick={() => setMode('LITIGATION_AWARD')}
-                  className={`p-3 rounded-2xl text-xs font-extrabold border transition-all ${
-                    mode === 'LITIGATION_AWARD'
+                  className={`p-3 rounded-2xl text-xs font-extrabold border transition-all ${mode === 'LITIGATION_AWARD'
                       ? 'bg-primary text-white border-primary shadow-md'
                       : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                  }`}
+                    }`}
                 >
                   Litigation Award Reference
                 </button>
@@ -224,24 +222,22 @@ ${result.legalReferenceNotice}`;
                 <button
                   type="button"
                   onClick={() => setCalculationType('SIMPLE')}
-                  className={`p-3.5 rounded-2xl text-xs font-extrabold border transition-all ${
-                    calculationType === 'SIMPLE'
+                  className={`p-3.5 rounded-2xl text-xs font-extrabold border transition-all ${calculationType === 'SIMPLE'
                       ? 'bg-sky-600 text-white border-sky-600 shadow-md'
                       : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                  }`}
+                    }`}
                 >
-                  Simple Interest (SI = P×R×T/100)
+                  Simple Interest
                 </button>
                 <button
                   type="button"
                   onClick={() => setCalculationType('COMPOUND')}
-                  className={`p-3.5 rounded-2xl text-xs font-extrabold border transition-all ${
-                    calculationType === 'COMPOUND'
+                  className={`p-3.5 rounded-2xl text-xs font-extrabold border transition-all ${calculationType === 'COMPOUND'
                       ? 'bg-sky-600 text-white border-sky-600 shadow-md'
                       : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                  }`}
+                    }`}
                 >
-                  Compound Interest (A = P(1+r/n)^(nt))
+                  Compound Interest
                 </button>
               </div>
             </div>
@@ -352,7 +348,7 @@ ${result.legalReferenceNotice}`;
 
         {/* Results Panel */}
         <div className="lg:col-span-6 space-y-6">
-          
+
           {!result.valid ? (
             <div className="bg-red-50 dark:bg-red-950/40 border-2 border-red-200 dark:border-red-900 rounded-3xl p-6 sm:p-8 space-y-3">
               <div className="flex items-center gap-2 text-red-600 dark:text-red-400 font-extrabold text-sm">
@@ -364,7 +360,7 @@ ${result.legalReferenceNotice}`;
             </div>
           ) : (
             <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border-2 border-sky-400 dark:border-sky-800 shadow-xl space-y-6">
-              
+
               {/* Top Result Header & Actions */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
@@ -435,26 +431,7 @@ ${result.legalReferenceNotice}`;
                 </div>
               </div>
 
-              {/* Formula & Step-by-Step Calculation Details */}
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-3">
-                <h4 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider border-b pb-2 flex items-center gap-2">
-                  <BookOpen size={15} className="text-primary dark:text-sky-400" /> Formula & Calculation Steps
-                </h4>
 
-                <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border text-xs font-mono space-y-1.5">
-                  <div className="text-sky-600 dark:text-sky-400 font-bold">Formula: {result.formulaText}</div>
-                  <div className="text-slate-600 dark:text-slate-400 leading-relaxed font-semibold">{result.substitutionText}</div>
-                </div>
-
-                <div className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                  {result.calculationSteps.map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <span>{step}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Legal Reference Disclaimer */}
               <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium space-y-1">
