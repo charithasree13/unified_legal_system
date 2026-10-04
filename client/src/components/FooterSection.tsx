@@ -56,6 +56,11 @@ export const FooterSection: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/interest-calculator" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <span>Interest Calculator</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/laws" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                   <span>Bare Acts & Laws Library</span>
                 </Link>

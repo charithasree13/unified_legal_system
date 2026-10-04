@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
-  Calculator, Scale, FileText, ArrowRightLeft, ShieldAlert, 
+  Calculator, Scale, FileText, ArrowRightLeft, ShieldAlert, ArrowRight,
   Printer, Download, History, RefreshCw, Copy, FileSpreadsheet, RotateCcw
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
@@ -733,6 +734,21 @@ export const Calculators: React.FC = () => {
       {/* FUTURE MODULES TAB */}
       {activeTab === 'future' && (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
+          {/* Active Public Calculators Bar */}
+          <div className="mb-6 p-6 bg-gradient-to-r from-sky-900 to-slate-900 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">Public Legal Utility</span>
+              <h3 className="font-extrabold text-lg text-white">Interest Calculator (Simple & Compound)</h3>
+              <p className="text-xs text-slate-300 mt-1">Compute simple and compound interest on litigation awards, court decrees, and financial claims with exact date conventions and step-by-step formulas.</p>
+            </div>
+            <Link
+              to="/interest-calculator"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
+            >
+              Open Interest Calculator <ArrowRight size={14} />
+            </Link>
+          </div>
+
           <div className="mb-6">
             <h3 className="font-bold text-base text-slate-950 dark:text-white mb-1">Future Ready Calculations</h3>
             <p className="text-xs text-slate-400">The following legal utilities are scheduled for upcoming platform updates.</p>
@@ -742,7 +758,6 @@ export const Calculators: React.FC = () => {
             {[
               { title: 'Stamp Duty Calculator', desc: 'Auto calculates stamp duties based on property deeds and local state laws.' },
               { title: 'Advocate Fee Calculator', desc: 'Estimates advocate service billings based on legal chambers standard time grids.' },
-              { title: 'Interest Calculator', desc: 'Computes simple and compound interest calculations on litigation awards.' },
               { title: 'Property Valuation Calculator', desc: 'Assesses land block rates and guideline values for property disputes.' },
               { title: 'Compensation Calculator', desc: 'Pre-evaluates damages and payouts under Motor Vehicle and Labour claims.' }
             ].map((mod, i) => (

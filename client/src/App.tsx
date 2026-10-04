@@ -20,6 +20,7 @@ import { MyNotesPage } from './pages/MyNotesPage';
 import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
 import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculator';
 import { LimitationCalculatorPage } from './pages/LimitationCalculatorPage';
+import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
@@ -114,8 +115,10 @@ export const App: React.FC = () => {
           {/* Main Dashboard Route (Public before login, Role-based after login) */}
           <Route path="dashboard" element={<DashboardSwitcher />} />
 
-          {/* Publicly Accessible Module: ONLY Court Fee Calculator */}
+          {/* Publicly Accessible Modules (No Login Required) */}
           <Route path="calculators" element={<Calculators />} />
+          <Route path="interest-calculator" element={<InterestCalculatorPage />} />
+          <Route path="calculators/interest" element={<InterestCalculatorPage />} />
 
           {/* Protected Hindu Succession Calculator Module (Admin & Advocate Only) */}
           <Route 

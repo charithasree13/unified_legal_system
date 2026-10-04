@@ -167,6 +167,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-cyan-500/50'
         },
         {
+          id: 'interest-calculator',
+          title: 'Interest Calculator',
+          description: 'Computes simple and compound interest calculations on litigation awards and financial claims.',
+          tag: 'LEGAL UTILITY',
+          icon: Calculator,
+          path: '/interest-calculator',
+          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
+          badgeText: 'text-emerald-600 dark:text-emerald-400',
+          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+          iconColor: 'text-emerald-600 dark:text-emerald-400',
+          gradientBorder: 'hover:border-emerald-500/50'
+        },
+        {
           id: 'hindu-succession',
           title: 'Hindu Succession Calculator',
           description: 'Determine statutory legal shares, coparcenary notional partitions, Class I/II intestate shares, and Section 15 female succession.',
@@ -328,6 +341,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-teal-500/50'
         },
         {
+          id: 'interest-calculator',
+          title: 'Interest Calculator',
+          description: 'Computes simple and compound interest calculations on litigation awards and financial claims.',
+          tag: 'LEGAL UTILITY',
+          icon: Calculator,
+          path: '/interest-calculator',
+          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
+          badgeText: 'text-emerald-600 dark:text-emerald-400',
+          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+          iconColor: 'text-emerald-600 dark:text-emerald-400',
+          gradientBorder: 'hover:border-emerald-500/50'
+        },
+        {
           id: 'hindu-succession',
           title: 'Hindu Succession Calculator',
           description: 'Determine statutory legal shares, coparcenary notional partitions, Class I/II intestate shares, and Section 15 female succession.',
@@ -461,6 +487,19 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
         iconColor: 'text-emerald-600 dark:text-emerald-400',
         gradientBorder: 'hover:border-emerald-500/50'
+      },
+      {
+        id: 'interest-calculator',
+        title: 'Interest Calculator',
+        description: 'Computes simple and compound interest calculations on litigation awards and financial claims.',
+        tag: 'LEGAL UTILITY',
+        icon: Calculator,
+        path: '/interest-calculator',
+        badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
+        badgeText: 'text-sky-600 dark:text-sky-400',
+        iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
+        iconColor: 'text-sky-600 dark:text-sky-400',
+        gradientBorder: 'hover:border-sky-500/50'
       },
       {
         id: 'chat',

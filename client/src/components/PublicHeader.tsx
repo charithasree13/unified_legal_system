@@ -48,6 +48,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
     { label: 'Judgments', path: '/judgements' },
     { label: 'Documents', path: '/laws' },
     { label: 'Calculators', path: '/calculators' },
+    { label: 'Interest Calc', path: '/interest-calculator' },
     { label: 'About Founder', path: '#founder' },
   ];
 

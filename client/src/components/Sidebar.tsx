@@ -30,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Advocate Directory', path: '/directory', icon: Users },
     { name: 'Court Fee & Land Calculators', path: '/calculators', icon: Calculator },
+    { name: 'Interest Calculator', path: '/interest-calculator', icon: Calculator },
     { name: 'Hindu Succession Calculator', path: '/hindu-succession-calculator', icon: Scale, normalUserHide: true },
     { name: 'Islamic Inheritance Calculator', path: '/islamic-inheritance-calculator', icon: Scale, normalUserHide: true },
     { name: 'Limitation Act Calculator', path: '/limitation-calculator', icon: Scale, normalUserHide: true },
