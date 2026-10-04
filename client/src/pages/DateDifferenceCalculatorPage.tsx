@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Calendar, Clock, RefreshCw, Copy, Check, Printer, 
-  Info, AlertCircle, ShieldCheck, ArrowRight, Scale, RotateCcw
+  Calendar, Clock, Copy, Check, Printer, 
+  AlertCircle, ShieldCheck, Scale, RotateCcw
 } from 'lucide-react';
 import { 
   calculateDateDifference, 
@@ -9,26 +9,36 @@ import {
 } from '../utils/dateDifferenceEngine';
 
 export const DateDifferenceCalculatorPage: React.FC = () => {
-  // Default dates: 20-10-2026 to 30-11-2026 (or today to today + 30 days)
-  const defaultStart = '2026-10-20';
-  const defaultEnd = '2026-11-30';
-
-  const [startDate, setStartDate] = useState<string>(defaultStart);
-  const [endDate, setEndDate] = useState<string>(defaultEnd);
+  // Initial empty date states - user must enter dates to calculate
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [includeBothDates, setIncludeBothDates] = useState<boolean>(false);
+  const [calculated, setCalculated] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Evaluate result
-  const result: DateDifferenceResult = calculateDateDifference({
-    startDate,
-    endDate,
-    includeBothDates
-  });
+  // Evaluate calculation result when calculate button is triggered or when user modifies inputs after initial calculate
+  const isFormSubmitted = calculated || Boolean(startDate && endDate);
+  const result: DateDifferenceResult | null = isFormSubmitted
+    ? calculateDateDifference({
+        startDate,
+        endDate,
+        includeBothDates
+      })
+    : null;
 
-  // Handle Presets
+  const handleCalculate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setCalculated(true);
+  };
+
+  // Quick Preset Handlers (e.g. +30 Days from start date or today)
   const applyPreset = (daysAdd: number) => {
-    if (!startDate) return;
-    const parts = startDate.split('-').map(Number);
+    let baseDateStr = startDate;
+    if (!baseDateStr) {
+      baseDateStr = new Date().toISOString().split('T')[0];
+      setStartDate(baseDateStr);
+    }
+    const parts = baseDateStr.split('-').map(Number);
     if (parts.length !== 3) return;
     const startUtc = Date.UTC(parts[0], parts[1] - 1, parts[2]);
     const targetUtc = new Date(startUtc + daysAdd * 24 * 60 * 60 * 1000);
@@ -36,18 +46,20 @@ export const DateDifferenceCalculatorPage: React.FC = () => {
     const mm = String(targetUtc.getUTCMonth() + 1).padStart(2, '0');
     const dd = String(targetUtc.getUTCDate()).padStart(2, '0');
     setEndDate(`${yyyy}-${mm}-${dd}`);
+    setCalculated(true);
   };
 
-  // Reset Form
+  // Reset Form to blank state
   const handleReset = () => {
-    setStartDate(defaultStart);
-    setEndDate(defaultEnd);
+    setStartDate('');
+    setEndDate('');
     setIncludeBothDates(false);
+    setCalculated(false);
   };
 
   // Copy Summary
   const handleCopy = () => {
-    if (!result.isValid) return;
+    if (!result || !result.isValid) return;
     const summaryText = `ELITE LEGAL DESK - DATE DIFFERENCE CALCULATION
 --------------------------------------------------
 Start Date: ${result.startDateFormatted} (${startDate})
@@ -98,7 +110,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Form Controls */}
-        <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 space-y-6">
+        <form onSubmit={handleCalculate} className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 space-y-6">
           
           <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -106,7 +118,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
               Date Inputs & Preferences
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Select Start Date and End Date below to compute elapsed calendar days.
+              Enter Start Date and End Date below to calculate elapsed calendar days.
             </p>
           </div>
 
@@ -122,7 +134,10 @@ Calculated via Elite Legal Desk Public Legal Utility`;
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    if (calculated) setCalculated(true);
+                  }}
                   className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
                 />
               </div>
@@ -137,7 +152,10 @@ Calculated via Elite Legal Desk Public Legal Utility`;
                 <input
                   type="date"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    if (calculated) setCalculated(true);
+                  }}
                   className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
                 />
               </div>
@@ -183,30 +201,36 @@ Calculated via Elite Legal Desk Public Legal Utility`;
               </span>
             </label>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pl-7">
-              When checked, both boundary dates are included in the count (e.g., 20-10-2026 to 30-11-2026 yields <strong>42 days</strong> instead of <strong>41 days</strong>).
+              When checked, both boundary dates are included in the count (e.g., adding 1 additional day to include both start and end dates).
             </p>
           </div>
 
           {/* Validation Error Banner */}
-          {!result.isValid && (
+          {result && !result.isValid && (
             <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-xs text-red-700 dark:text-red-300 flex items-start gap-2.5 font-medium">
               <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600 dark:text-red-400" />
               <span>{result.errorMessage}</span>
             </div>
           )}
 
-          {/* Action Buttons */}
+          {/* Action Buttons: Calculate Difference & Reset */}
           <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="flex-1 py-3 px-4 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white dark:text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
+            >
+              <Calendar size={15} /> Calculate Difference
+            </button>
             <button
               type="button"
               onClick={handleReset}
-              className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border border-slate-200 dark:border-slate-700"
+              className="px-5 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border border-slate-200 dark:border-slate-700"
             >
               <RotateCcw size={15} /> Reset
             </button>
           </div>
 
-        </div>
+        </form>
 
         {/* Right Column: Result Section */}
         <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 flex flex-col justify-between space-y-6">
@@ -223,7 +247,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
                 </p>
               </div>
 
-              {result.isValid && (
+              {result && result.isValid && (
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopy}
@@ -245,15 +269,20 @@ Calculated via Elite Legal Desk Public Legal Utility`;
               )}
             </div>
 
-            {!result.isValid ? (
-              <div className="py-12 text-center text-slate-400 dark:text-slate-500 space-y-2">
-                <Calendar size={40} className="mx-auto text-slate-300 dark:text-slate-700" />
-                <p className="text-xs">Enter valid start and end dates to calculate the day difference.</p>
+            {!result || !result.isValid ? (
+              <div className="py-16 text-center text-slate-400 dark:text-slate-500 space-y-3">
+                <Calendar size={44} className="mx-auto text-slate-300 dark:text-slate-700 stroke-[1.5]" />
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No dates entered yet</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 max-w-xs mx-auto">
+                    Select Start Date and End Date on the left and click <strong className="text-slate-600 dark:text-slate-400">Calculate Difference</strong> to view results.
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-6 animate-fade-in">
                 
-                {/* Clean Hero Display Card */}
+                {/* Hero Display Card */}
                 <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 rounded-2xl border border-slate-800 text-center relative overflow-hidden shadow-inner">
                   
                   <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest block mb-1">
@@ -280,7 +309,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
                   )}
                 </div>
 
-                {/* Detailed Key Metrics Table */}
+                {/* Key Metrics Table */}
                 <div className="space-y-2.5 text-xs">
                   
                   <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800">
@@ -303,17 +332,6 @@ Calculated via Elite Legal Desk Public Legal Utility`;
                       {result.breakdown.formatted}
                     </span>
                   </div>
-
-                  {result.isLeapYearSpan && (
-                    <div className="flex justify-between items-center p-2.5 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg border border-emerald-200 dark:border-emerald-900/40 text-[11px]">
-                      <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1.5">
-                        <Info size={13} /> Leap Year In Effect:
-                      </span>
-                      <span className="text-emerald-800 dark:text-emerald-300 font-semibold">
-                        Includes Feb 29 (29 days)
-                      </span>
-                    </div>
-                  )}
 
                 </div>
 
@@ -338,4 +356,5 @@ Calculated via Elite Legal Desk Public Legal Utility`;
     </div>
   );
 };
+
 export default DateDifferenceCalculatorPage;
