@@ -6,9 +6,7 @@ import {
   ArrowRight, ShieldAlert, CheckCircle2, Lock, Sparkles, Building2, PhoneCall
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
-import { PublicHeader } from '../components/PublicHeader';
 import { FounderSection } from '../components/FounderSection';
-import { FooterSection } from '../components/FooterSection';
 import { AuthModal } from '../components/AuthModal';
 
 export const PublicDashboard: React.FC = () => {
@@ -220,13 +218,9 @@ export const PublicDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors">
-
-      {/* Top Professional Legal Header Navigation (Single location for Sign In / Sign Up) */}
-      <PublicHeader onOpenAuthModal={openAuthModal} />
-
+    <div className="w-full font-sans">
       {/* Main Content Body */}
-      <main className="flex-1">
+      <main className="w-full">
 
         {/* HERO SECTION */}
         <section className="relative bg-gradient-to-br from-slate-200 via-sky-100/90 to-indigo-100/80 dark:from-slate-800 dark:via-[#1e293b] dark:to-indigo-950 text-slate-900 dark:text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-300 dark:border-slate-800 overflow-hidden transition-colors">
@@ -660,9 +654,6 @@ export const PublicDashboard: React.FC = () => {
         <FounderSection />
 
       </main>
-
-      {/* FOOTER SECTION */}
-      <FooterSection />
 
       {/* AUTHENTICATION PROMPT MODAL */}
       <AuthModal

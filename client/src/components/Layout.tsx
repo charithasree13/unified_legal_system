@@ -58,21 +58,11 @@ export const Layout: React.FC = () => {
 
   // If user is NOT logged in:
   if (!token) {
-    // For dashboard path, PublicDashboard component renders its own header and footer
-    if (isDashboard) {
-      return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
-          <Outlet />
-        </div>
-      );
-    }
-
-    // For public sub-routes like /directory, /calculators, /laws, /judgements, /section-mapping:
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors font-sans">
         <PublicHeader onOpenAuthModal={handleOpenAuthModal} />
 
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 w-full">
           <Outlet />
         </main>
 
