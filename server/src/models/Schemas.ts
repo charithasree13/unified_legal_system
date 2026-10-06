@@ -156,6 +156,27 @@ class MockModel<T extends { _id?: string; createdAt?: string; updatedAt?: string
     this.write(items);
     return deleted;
   }
+
+  async updateMany(query: any, update: any, options: any = {}): Promise<any> {
+    const matchingItems = await this.find(query);
+    let modifiedCount = 0;
+    for (const item of matchingItems) {
+      if (item._id) {
+        await this.findByIdAndUpdate(item._id, update, options);
+        modifiedCount++;
+      }
+    }
+    return { acknowledged: true, modifiedCount };
+  }
+
+  async deleteMany(query: any = {}): Promise<any> {
+    const matchingItems = await this.find(query);
+    const items = this.read();
+    const matchingIds = new Set(matchingItems.map((i: any) => String(i._id)));
+    const remaining = items.filter((item: any) => !matchingIds.has(String(item._id)));
+    this.write(remaining);
+    return { acknowledged: true, deletedCount: matchingItems.length };
+  }
 }
 
 // -------------------------------------------------------------

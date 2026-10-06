@@ -7,6 +7,9 @@ interface GoogleAuthButtonProps {
   onStart?: () => void;
   onError?: (msg: string) => void;
   onSuccess?: (msg: string) => void;
+  onRequiresAdvocateDetails?: (data: any) => void;
+  onPendingVerification?: (msg: string) => void;
+  onRejectedVerification?: (msg: string) => void;
   text?: string;
   className?: string;
 }
@@ -22,6 +25,9 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onStart,
   onError,
   onSuccess,
+  onRequiresAdvocateDetails,
+  onPendingVerification,
+  onRejectedVerification,
   text = 'Continue with Google',
   className = ''
 }) => {
@@ -52,7 +58,21 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
 
       if (!res.ok || !data.success) {
         const msg = data.message || 'Google authentication failed on server.';
-        if (onError) onError(msg);
+        if (data.verificationStatus === 'PENDING' || data.pendingVerification) {
+          if (onPendingVerification) onPendingVerification(msg);
+          else if (onError) onError(msg);
+        } else if (data.verificationStatus === 'REJECTED' || data.rejectedVerification) {
+          if (onRejectedVerification) onRejectedVerification(msg);
+          else if (onError) onError(msg);
+        } else {
+          if (onError) onError(msg);
+        }
+      } else if (data.requiresAdvocateDetails) {
+        if (onRequiresAdvocateDetails) {
+          onRequiresAdvocateDetails(data);
+        } else if (onSuccess) {
+          onSuccess(data.message || 'Google account authenticated. Please fill required advocate details.');
+        }
       } else {
         const successMsg = `Successfully authenticated as ${accountType}. Redirecting...`;
         if (onSuccess) onSuccess(successMsg);

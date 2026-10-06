@@ -227,6 +227,25 @@ export const login = async (req: Request, res: Response) => {
         isAdvocateVerified = false;
         verificationStatus = 'PENDING';
       }
+
+      if (!isAdvocateVerified || verificationStatus !== 'APPROVED') {
+        if (verificationStatus === 'REJECTED') {
+          return res.status(403).json({
+            success: false,
+            rejectedVerification: true,
+            verificationStatus: 'REJECTED',
+            message: existingAdv?.rejectionReason
+              ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
+              : 'Your advocate registration was not approved by the administrator.'
+          });
+        }
+        return res.status(403).json({
+          success: false,
+          pendingVerification: true,
+          verificationStatus: 'PENDING',
+          message: 'Your advocate account is awaiting administrator verification.'
+        });
+      }
     }
 
     return res.status(200).json({
@@ -563,6 +582,26 @@ export const googleAuth = async (req: Request, res: Response) => {
     const isAdvVerified = existingAdv.isVerified === true;
     const advStatus = existingAdv.verificationStatus || (isAdvVerified ? 'APPROVED' : 'PENDING');
 
+    if (!isAdvVerified || advStatus !== 'APPROVED') {
+      if (advStatus === 'REJECTED') {
+        return res.status(403).json({
+          success: false,
+          rejectedVerification: true,
+          verificationStatus: 'REJECTED',
+          message: existingAdv.rejectionReason
+            ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
+            : 'Your advocate registration was not approved by the administrator.'
+        });
+      }
+
+      return res.status(403).json({
+        success: false,
+        pendingVerification: true,
+        verificationStatus: 'PENDING',
+        message: 'Your advocate account is awaiting administrator verification.'
+      });
+    }
+
     const tokenPayload = {
       id: user._id,
       email: user.email,
@@ -591,11 +630,7 @@ export const googleAuth = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: isAdvVerified 
-        ? 'Google login successful.' 
-        : (advStatus === 'REJECTED' 
-            ? 'Your Advocate registration was rejected by Admin.' 
-            : 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.'),
+      message: 'Google login successful.',
       accessToken,
       refreshToken: refreshTokenStr,
       user: {
@@ -607,8 +642,8 @@ export const googleAuth = async (req: Request, res: Response) => {
         enrollmentNumber: existingAdv.enrollmentNumber || '',
         profilePhoto: user.profilePhoto || picture,
         hasCompletedProfile: true,
-        isVerified: isAdvVerified,
-        verificationStatus: advStatus
+        isVerified: true,
+        verificationStatus: 'APPROVED'
       }
     });
   } catch (error: any) {

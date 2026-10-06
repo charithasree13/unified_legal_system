@@ -1,13 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Scale, Mail, Lock, Phone, User, Landmark, ShieldAlert, CheckCircle2, KeyRound, Shield } from 'lucide-react';
+import { X, Scale, Mail, Lock, Phone, User, Landmark, ShieldAlert, CheckCircle2, KeyRound, Shield, Plus, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { GoogleAuthButton } from './GoogleAuthButton';
+
+const SPECIALIZATIONS = [
+  'Civil Litigation',
+  'Criminal Defense',
+  'Corporate Law',
+  'Taxation Law',
+  'Intellectual Property',
+  'Bank legal advisors',
+  'Notary',
+  'AGP',
+  'APP'
+];
+
+const PRACTICING_COURTS = [
+  'Supreme Court of India',
+  'High Court',
+  'Senior civil judges court',
+  'Junior civil Judges court',
+  'Judicial magistrate of 1st class',
+  'Consumers forum',
+  'DRT'
+];
+
+const INDIAN_STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+  'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+  'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
+  'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
+];
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialMode?: 'login' | 'signup' | 'forgot';
+  initialMode?: 'login' | 'signup' | 'forgot' | 'advocate-details';
   initialRole?: 'Advocate' | 'Client' | 'Admin';
   actionPrompt?: string;
 }
@@ -22,7 +55,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const navigate = useNavigate();
   const { login } = useAuthStore();
 
-  const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'advocate-details'>(initialMode);
   const [authRole, setAuthRole] = useState<'Advocate' | 'Client' | 'Admin'>(initialRole);
   const [signupRole, setSignupRole] = useState<'Advocate' | 'Client'>('Advocate');
 
@@ -43,6 +76,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [phone, setPhone] = useState('');
   const [enrollmentNumber, setEnrollmentNumber] = useState('');
 
+  // Advocate details specific form fields
+  const [enrollmentDate, setEnrollmentDate] = useState('');
+  const [selectedSpecs, setSelectedSpecs] = useState<string[]>(['Civil Litigation']);
+  const [selectedCourts, setSelectedCourts] = useState<string[]>(['High Court']);
+  const [experience, setExperience] = useState<number>(1);
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [address, setAddress] = useState('');
+  const [bio, setBio] = useState('');
+  const [tempToken, setTempToken] = useState('');
+  const [googleProfile, setGoogleProfile] = useState<any>(null);
+  const [registrationSubmitted, setRegistrationSubmitted] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -58,8 +104,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setPassword('');
     setConfirmPassword('');
     setEnrollmentNumber('');
+    setEnrollmentDate('');
+    setSelectedSpecs(['Civil Litigation']);
+    setSelectedCourts(['High Court']);
+    setExperience(1);
+    setCity('');
+    setState('');
+    setAddress('');
+    setBio('');
+    setTempToken('');
+    setGoogleProfile(null);
+    setRegistrationSubmitted(false);
     setErrorMsg('');
     setSuccessMsg('');
+  };
+
+  const handleRequiresAdvocateDetails = (data: any) => {
+    setGoogleProfile(data.googleProfile || null);
+    setTempToken(data.accessToken || '');
+    if (data.googleProfile?.name) setName(data.googleProfile.name);
+    if (data.googleProfile?.email) setEmail(data.googleProfile.email);
+    setErrorMsg('');
+    setSuccessMsg('');
+    setRegistrationSubmitted(false);
+    setMode('advocate-details');
+  };
+
+  const handleAuthSuccess = (msg: string) => {
+    setSuccessMsg(msg);
+    setTimeout(() => {
+      onClose();
+      navigate('/dashboard');
+    }, 600);
   };
 
   // Sign In Handler
@@ -83,7 +159,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(data.message || 'Login failed.');
+        if (data.verificationStatus === 'PENDING' || data.pendingVerification) {
+          setErrorMsg(data.message || 'Your advocate account is awaiting administrator verification.');
+        } else if (data.verificationStatus === 'REJECTED' || data.rejectedVerification) {
+          setErrorMsg(data.message || 'Your advocate registration was not approved by the administrator.');
+        } else {
+          setErrorMsg(data.message || 'Login failed.');
+        }
       } else {
         setSuccessMsg('Login successful! Welcome back.');
         login(data.user, data.accessToken, data.refreshToken);
@@ -99,7 +181,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  // Registration Handler
+  // Registration Handler (Password Registration)
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (signupRole === 'Advocate') {
@@ -143,14 +225,89 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       if (!res.ok) {
         setErrorMsg(data.message || 'Registration failed.');
       } else {
-        setSuccessMsg(data.message || 'Registration successful! You can now log in.');
-        setTimeout(() => {
-          setMode('login');
-          clearForm();
-        }, 1200);
+        if (signupRole === 'Advocate') {
+          setRegistrationSubmitted(true);
+          setSuccessMsg(data.message || 'Your advocate registration has been submitted successfully and is pending verification by the administrator.');
+        } else {
+          setSuccessMsg(data.message || 'Registration successful! You can now log in.');
+          setTimeout(() => {
+            setMode('login');
+            clearForm();
+          }, 1200);
+        }
       }
     } catch (err) {
       setErrorMsg('Network error during account registration.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Advocate Details Submission Handler (Google Auth Onboarding)
+  const handleAdvocateDetailsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    if (!name.trim() || !phone.trim() || !email.trim() || !enrollmentNumber.trim() || !enrollmentDate || !city.trim() || !state) {
+      setErrorMsg('Please fill in all mandatory advocate profile details: Name, Phone, Email, Bar Enrollment Number, Enrollment Date, Specialization, Practicing Court, City, State.');
+      return;
+    }
+
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      setErrorMsg('Please provide a valid 10-digit mobile phone number.');
+      return;
+    }
+
+    if (selectedSpecs.length === 0) {
+      setErrorMsg('Please select at least one Specialization.');
+      return;
+    }
+
+    if (selectedCourts.length === 0) {
+      setErrorMsg('Please select at least one Practicing Court.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const headers: any = { 'Content-Type': 'application/json' };
+      if (tempToken) {
+        headers['Authorization'] = `Bearer ${tempToken}`;
+      }
+
+      const res = await fetch(`${API_BASE}/api/advocates/profile`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: cleanPhone,
+          email: email.trim().toLowerCase(),
+          enrollmentNumber: enrollmentNumber.trim(),
+          enrollmentDate,
+          specialization: selectedSpecs,
+          court: selectedCourts,
+          experience: Number(experience || 1),
+          city: city.trim(),
+          state,
+          address: address.trim(),
+          bio: bio.trim(),
+          googleSub: googleProfile?.googleSub
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.message || 'Failed to submit advocate registration details.');
+      } else {
+        setRegistrationSubmitted(true);
+        setSuccessMsg(data.message || 'Your advocate registration has been submitted successfully and is pending verification by the administrator.');
+      }
+    } catch (err: any) {
+      setErrorMsg('Network error submitting advocate registration details. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -203,10 +360,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
+  const handleSpecToggle = (spec: string) => {
+    setSelectedSpecs(prev =>
+      prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
+    );
+  };
+
+  const handleCourtToggle = (court: string) => {
+    setSelectedCourts(prev =>
+      prev.includes(court) ? prev.filter(c => c !== court) : [...prev, court]
+    );
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
       <div 
-        className="relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 overflow-hidden animate-slide-up"
+        className={`relative w-full ${mode === 'advocate-details' ? 'max-w-2xl' : 'max-w-lg'} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 overflow-hidden animate-slide-up`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -227,42 +396,46 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           />
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
-              Elite Legal Desk Authentication
+              {mode === 'advocate-details' ? 'Advocate Registration & Verification' : 'Elite Legal Desk Authentication'}
             </h3>
           </div>
         </div>
 
         {/* Action Prompt Banner */}
-        <div className="mb-5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold flex items-center gap-2">
-          <Scale size={16} className="text-amber-500 flex-shrink-0" />
-          <span>{actionPrompt}</span>
-        </div>
+        {mode !== 'advocate-details' && (
+          <div className="mb-5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold flex items-center gap-2">
+            <Scale size={16} className="text-amber-500 flex-shrink-0" />
+            <span>{actionPrompt}</span>
+          </div>
+        )}
 
         {/* Mode Switcher Tabs */}
-        <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5">
-          <button
-            type="button"
-            onClick={() => { setMode('login'); clearForm(); }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              mode === 'login' 
-                ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => { setMode('signup'); clearForm(); }}
-            className={`py-2 text-xs font-bold rounded-lg transition-all ${
-              mode === 'signup' 
-                ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Create Account
-          </button>
-        </div>
+        {mode !== 'advocate-details' && (
+          <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5">
+            <button
+              type="button"
+              onClick={() => { setMode('login'); clearForm(); }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                mode === 'login' 
+                  ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode('signup'); clearForm(); }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                mode === 'signup' 
+                  ? 'bg-white dark:bg-slate-900 text-primary dark:text-sky-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+        )}
 
         {/* Alerts */}
         {errorMsg && (
@@ -381,7 +554,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             {/* Google OAuth Option - Exclude for Admin Sign In */}
             {authRole !== 'Admin' && (
               <div className="pt-2">
-                <GoogleAuthButton accountType={authRole} text="Sign in with Google" />
+                <GoogleAuthButton 
+                  accountType={authRole} 
+                  text="Sign in with Google" 
+                  onRequiresAdvocateDetails={handleRequiresAdvocateDetails}
+                  onPendingVerification={(msg) => setErrorMsg(msg)}
+                  onRejectedVerification={(msg) => setErrorMsg(msg)}
+                  onError={(msg) => setErrorMsg(msg)}
+                  onSuccess={handleAuthSuccess}
+                />
               </div>
             )}
 
@@ -389,7 +570,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         )}
 
         {/* 2. CREATE ACCOUNT FORM */}
-        {mode === 'signup' && (
+        {mode === 'signup' && !registrationSubmitted && (
           <form onSubmit={handleSignupSubmit} className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
             
             {/* Role Selection for Signup */}
@@ -538,21 +719,248 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <GoogleAuthButton 
                 accountType={signupRole} 
                 text="Sign up with Google" 
+                onRequiresAdvocateDetails={handleRequiresAdvocateDetails}
+                onPendingVerification={(msg) => setErrorMsg(msg)}
+                onRejectedVerification={(msg) => setErrorMsg(msg)}
                 onError={(msg) => setErrorMsg(msg)}
-                onSuccess={(msg) => {
-                  setSuccessMsg(msg);
-                  setTimeout(() => {
-                    onClose();
-                    navigate('/dashboard');
-                  }, 600);
-                }}
+                onSuccess={handleAuthSuccess}
               />
             </div>
 
           </form>
         )}
 
-        {/* 3. FORGOT PASSWORD FORM */}
+        {/* 3. PERSISTENT ADVOCATE DETAILS FORM (Google Auth Onboarding) */}
+        {mode === 'advocate-details' && (
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+            {!registrationSubmitted ? (
+              <form onSubmit={handleAdvocateDetailsSubmit} className="space-y-4">
+                <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-900 dark:text-amber-300">
+                  <p className="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-400">
+                    ⚖️ Advocate Registration Details Required
+                  </p>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                    Google identity verified ({googleProfile?.email || email}). Please provide your Bar Council enrollment & practice details below for administrator verification.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Advocate Name *</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                      placeholder="Advocate Name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Phone Number *</label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                      placeholder="10 digit mobile number"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Email Address *</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                      placeholder="advocate@court.org"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Bar Enrollment Number *</label>
+                    <input
+                      type="text"
+                      value={enrollmentNumber}
+                      onChange={(e) => setEnrollmentNumber(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white font-mono"
+                      placeholder="e.g. AP/298/1998"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Enrollment Date *</label>
+                    <input
+                      type="date"
+                      value={enrollmentDate}
+                      onChange={(e) => setEnrollmentDate(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Experience (Years) *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="60"
+                      value={experience}
+                      onChange={(e) => setExperience(Number(e.target.value))}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                      placeholder="1"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Specialization(s) */}
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+                      Specialization(s) * (Select Multiple)
+                    </label>
+                    <div className="grid grid-cols-1 gap-1.5 p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-300 dark:border-slate-700 max-h-36 overflow-y-auto">
+                      {SPECIALIZATIONS.map((spec) => (
+                        <label key={spec} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary dark:hover:text-sky-400 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={selectedSpecs.includes(spec)}
+                            onChange={() => handleSpecToggle(spec)}
+                            className="rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary"
+                          />
+                          <span>{spec}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Practicing Court(s) */}
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+                      Practicing Court(s) * (Select Multiple)
+                    </label>
+                    <div className="grid grid-cols-1 gap-1.5 p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-300 dark:border-slate-700 max-h-36 overflow-y-auto">
+                      {PRACTICING_COURTS.map((court) => (
+                        <label key={court} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:text-primary dark:hover:text-sky-400 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={selectedCourts.includes(court)}
+                            onChange={() => handleCourtToggle(court)}
+                            className="rounded border-slate-300 dark:border-slate-700 text-primary focus:ring-primary"
+                          />
+                          <span>{court}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">City / Practice Location *</label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                      placeholder="e.g. Madanapalle"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">State / UT *</label>
+                    <select
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      required
+                      className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                    >
+                      <option value="">Select State / UT</option>
+                      {INDIAN_STATES.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Office Address</label>
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                    placeholder="Chamber / Office address"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Professional Biography</label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    rows={2}
+                    className="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-primary text-slate-900 dark:text-white"
+                    placeholder="Practices primarily in Civil litigation and Title verification..."
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => { setMode('signup'); clearForm(); }}
+                    className="px-4 py-2 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition-colors"
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-6 py-2.5 bg-[#0B3B8E] hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {loading ? 'Submitting Application...' : 'Submit Advocate Registration'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="p-6 text-center space-y-4 animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center mx-auto">
+                  <ShieldAlert size={28} />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-slate-900 dark:text-white">Application Pending Verification</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                    Your advocate registration has been submitted successfully and is pending verification by the administrator.
+                  </p>
+                </div>
+                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500">
+                  Status: <span className="font-bold text-amber-600 dark:text-amber-400">PENDING ADMIN APPROVAL</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="w-full py-2.5 bg-primary text-white font-bold text-xs rounded-xl shadow cursor-pointer hover:bg-primary-hover transition-all"
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 4. FORGOT PASSWORD FORM */}
         {mode === 'forgot' && (
           <form onSubmit={handleResetPassword} className="space-y-4">
             <div>
