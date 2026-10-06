@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { Advocate, User, AuditLog } from '../models/Schemas';
 import { AuthenticatedRequest } from '../middleware/auth';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretlegaljwttokenkey12345!';
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'supersecretlegalrefreshjwttokenkey67890!';
 
 // Add Advocate (Admin or Advocate Authorized)
 export const addAdvocate = async (req: AuthenticatedRequest, res: Response) => {
@@ -782,15 +786,27 @@ export const selfOnboardAdvocateProfile = async (req: AuthenticatedRequest, res:
       });
     } catch (aErr) { }
 
+    const tokenPayload = {
+      id: updatedUser ? updatedUser._id : req.user.id,
+      email: updatedUser ? updatedUser.email : cleanEmail,
+      role: 'Advocate',
+      name: updatedUser ? updatedUser.name : name.trim(),
+      phone: updatedUser ? updatedUser.phone : cleanPhone
+    };
+    const accessToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
+    const refreshTokenStr = jwt.sign(tokenPayload, JWT_REFRESH_SECRET, { expiresIn: '30d' });
+
     return res.status(200).json({
       success: true,
-      message: 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.',
+      message: 'Your Advocate account has been created successfully. Your profile is pending verification for inclusion in the Advocate Directory.',
+      accessToken,
+      refreshToken: refreshTokenStr,
       advocate,
       user: {
         id: updatedUser ? updatedUser._id : req.user.id,
         name: updatedUser ? updatedUser.name : name.trim(),
         email: updatedUser ? updatedUser.email : cleanEmail,
-        role: updatedUser ? updatedUser.role : req.user.role,
+        role: 'Advocate',
         phone: updatedUser ? updatedUser.phone : cleanPhone,
         enrollmentNumber: cleanEnrollment,
         hasCompletedProfile: true,

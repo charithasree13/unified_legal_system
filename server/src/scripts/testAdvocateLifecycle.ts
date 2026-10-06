@@ -122,6 +122,20 @@ async function runTestSuite() {
     const createdAdvId = resOnboard.data?.advocate?._id;
 
     // -------------------------------------------------------------
+    // TEST 3B: PENDING Advocate Login IS ALLOWED
+    // -------------------------------------------------------------
+    const reqPendingLogin: any = { body: { credential: advToken, accountType: 'Advocate' }, ip: '127.0.0.1' };
+    const resPendingLogin = createMockRes();
+    await googleAuth(reqPendingLogin, resPendingLogin);
+
+    assert(
+      resPendingLogin.statusCode === 200 && 
+      resPendingLogin.data?.success === true && 
+      resPendingLogin.data?.user?.verificationStatus === 'PENDING',
+      'TEST 3B: PENDING Advocate CAN log in successfully (Login = YES, Account = YES, Directory = NO)'
+    );
+
+    // -------------------------------------------------------------
     // TEST 4: Public Advocate Directory excludes Pending Advocates
     // -------------------------------------------------------------
     const reqDir: any = { query: { search: 'Advocate Pending Google' } };
@@ -245,6 +259,41 @@ async function runTestSuite() {
     assert(
       isApprovedInDirectory,
       'TEST 11: Approved Advocate appears in the public Advocate Directory'
+    );
+
+    // -------------------------------------------------------------
+    // TEST 11B: Admin Rejects Advocate -> Login blocked (403), Directory excluded
+    // -------------------------------------------------------------
+    const reqReject: any = {
+      user: { id: 'admin1', role: 'Admin', name: 'Admin' },
+      params: { id: createdAdvId },
+      body: { status: 'REJECTED', rejectionReason: 'Credentials mismatch' }
+    };
+    const resReject = createMockRes();
+    await verifyAdvocate(reqReject, resReject);
+
+    assert(
+      resReject.statusCode === 200 && resReject.data?.advocate?.verificationStatus === 'REJECTED',
+      'TEST 11B: Admin rejection sets Advocate status to REJECTED'
+    );
+
+    const reqRejectedLogin: any = { body: { credential: advToken, accountType: 'Advocate' }, ip: '127.0.0.1' };
+    const resRejectedLogin = createMockRes();
+    await googleAuth(reqRejectedLogin, resRejectedLogin);
+
+    assert(
+      resRejectedLogin.statusCode === 403 && resRejectedLogin.data?.verificationStatus === 'REJECTED',
+      'TEST 11C: REJECTED Advocate login is BLOCKED (403 Forbidden)'
+    );
+
+    const reqDir3: any = { query: { search: 'Advocate Pending Google' } };
+    const resDir3 = createMockRes();
+    await getAdvocates(reqDir3, resDir3);
+
+    const isRejectedInDirectory = resDir3.data?.advocates?.some((a: any) => a.email === 'advocate.pending@court.org');
+    assert(
+      !isRejectedInDirectory,
+      'TEST 11D: REJECTED Advocate does NOT appear in Advocate Directory'
     );
 
     // -------------------------------------------------------------

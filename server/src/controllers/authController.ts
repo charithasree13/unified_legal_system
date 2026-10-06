@@ -228,22 +228,14 @@ export const login = async (req: Request, res: Response) => {
         verificationStatus = 'PENDING';
       }
 
-      if (!isAdvocateVerified || verificationStatus !== 'APPROVED') {
-        if (verificationStatus === 'REJECTED') {
-          return res.status(403).json({
-            success: false,
-            rejectedVerification: true,
-            verificationStatus: 'REJECTED',
-            message: existingAdv?.rejectionReason
-              ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
-              : 'Your advocate registration was not approved by the administrator.'
-          });
-        }
+      if (verificationStatus === 'REJECTED') {
         return res.status(403).json({
           success: false,
-          pendingVerification: true,
-          verificationStatus: 'PENDING',
-          message: 'Your advocate account is awaiting administrator verification.'
+          rejectedVerification: true,
+          verificationStatus: 'REJECTED',
+          message: existingAdv?.rejectionReason
+            ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
+            : 'Your advocate registration was not approved by the administrator.'
         });
       }
     }
@@ -582,23 +574,14 @@ export const googleAuth = async (req: Request, res: Response) => {
     const isAdvVerified = existingAdv.isVerified === true;
     const advStatus = existingAdv.verificationStatus || (isAdvVerified ? 'APPROVED' : 'PENDING');
 
-    if (!isAdvVerified || advStatus !== 'APPROVED') {
-      if (advStatus === 'REJECTED') {
-        return res.status(403).json({
-          success: false,
-          rejectedVerification: true,
-          verificationStatus: 'REJECTED',
-          message: existingAdv.rejectionReason
-            ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
-            : 'Your advocate registration was not approved by the administrator.'
-        });
-      }
-
+    if (advStatus === 'REJECTED') {
       return res.status(403).json({
         success: false,
-        pendingVerification: true,
-        verificationStatus: 'PENDING',
-        message: 'Your advocate account is awaiting administrator verification.'
+        rejectedVerification: true,
+        verificationStatus: 'REJECTED',
+        message: existingAdv.rejectionReason
+          ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
+          : 'Your advocate registration was not approved by the administrator.'
       });
     }
 
@@ -642,8 +625,8 @@ export const googleAuth = async (req: Request, res: Response) => {
         enrollmentNumber: existingAdv.enrollmentNumber || '',
         profilePhoto: user.profilePhoto || picture,
         hasCompletedProfile: true,
-        isVerified: true,
-        verificationStatus: 'APPROVED'
+        isVerified: advStatus === 'APPROVED',
+        verificationStatus: advStatus
       }
     });
   } catch (error: any) {

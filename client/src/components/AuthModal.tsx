@@ -304,7 +304,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         setErrorMsg(data.message || 'Failed to submit advocate registration details.');
       } else {
         setRegistrationSubmitted(true);
-        setSuccessMsg(data.message || 'Your advocate registration has been submitted successfully and is pending verification by the administrator.');
+        const msg = data.message || 'Your Advocate account has been created successfully. Your profile is pending verification for inclusion in the Advocate Directory.';
+        setSuccessMsg(msg);
+        if (data.user) {
+          login(data.user, data.accessToken || tempToken, data.refreshToken);
+          setTimeout(() => {
+            onClose();
+            navigate('/dashboard');
+          }, 1000);
+        }
       }
     } catch (err: any) {
       setErrorMsg('Network error submitting advocate registration details. Please try again.');
