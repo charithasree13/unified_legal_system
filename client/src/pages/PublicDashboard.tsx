@@ -19,44 +19,47 @@ export const PublicDashboard: React.FC = () => {
   const [authModalRole, setAuthModalRole] = useState<'Advocate' | 'Client' | 'Admin'>('Advocate');
   const [authActionPrompt, setAuthActionPrompt] = useState('Please sign in or create an account to continue.');
 
-  // Quick Calculator state preview on public dashboard
-  const [courtFeeAmount, setCourtFeeAmount] = useState('100000');
-  const [calcResult, setCalcResult] = useState<number | null>(7500);
-
-  // Quick Land Conversion state preview on public dashboard
-  const [landValue, setLandValue] = useState('1');
-  const [landUnitFrom, setLandUnitFrom] = useState('Acres');
-  const [landConvertedSqFt, setLandConvertedSqFt] = useState('43560');
-
-  const openAuthModal = (mode: 'login' | 'signup' = 'login', prompt?: string, role: 'Advocate' | 'Client' | 'Admin' = 'Advocate') => {
+  const openAuthModal = (mode: 'login' | 'signup', role: 'Advocate' | 'Client' | 'Admin' = 'Advocate', prompt?: string) => {
     setAuthModalMode(mode);
     setAuthModalRole(role);
     if (prompt) setAuthActionPrompt(prompt);
-    else setAuthActionPrompt('Please sign in or create an account to continue.');
     setAuthModalOpen(true);
   };
 
-  // Protected Action Interceptor
-  const handleProtectedAction = (moduleName: string, path?: string) => {
+  const handleProtectedAction = (path: string, isProtected: boolean) => {
     if (token) {
-      if (path) navigate(path);
-      else navigate('/dashboard');
+      navigate(path);
+    } else if (isProtected) {
+      openAuthModal('login', 'Client', 'Please sign in to access this feature.');
     } else {
-      openAuthModal('login', `Please sign in or create an account to access ${moduleName}.`);
+      navigate(path);
     }
   };
 
-  // Quick Court Fee calculation handler
-  const handleCalcSubmit = (e: React.FormEvent) => {
+  // Quick Land calculator preview state
+  const [landValue, setLandValue] = useState<string>('1');
+  const [landUnitFrom, setLandUnitFrom] = useState<string>('Acres');
+  const [landConvertedSqFt, setLandConvertedSqFt] = useState<string>('43,560');
+
+  // Quick Date Calculator state preview on public dashboard
+  const todayStr = new Date().toISOString().split('T')[0];
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
+  const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
+
+  const [startDateStr, setStartDateStr] = useState(oneMonthAgoStr);
+  const [endDateStr, setEndDateStr] = useState(todayStr);
+  const [dateDiffResult, setDateDiffResult] = useState<number>(30);
+
+  // Quick Date calculation handler
+  const handleDateCalcSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const val = parseFloat(courtFeeAmount) || 0;
-    if (val <= 10000) {
-      setCalcResult(Math.round(val * 0.05));
-    } else if (val <= 100000) {
-      setCalcResult(Math.round(500 + (val - 10000) * 0.075));
-    } else {
-      setCalcResult(Math.round(7250 + (val - 100000) * 0.05));
-    }
+    if (!startDateStr || !endDateStr) return;
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setDateDiffResult(diffDays);
   };
 
   // Quick Land conversion handler
@@ -293,7 +296,7 @@ export const PublicDashboard: React.FC = () => {
               </a>
 
               <button
-                onClick={() => handleProtectedAction('Advocate Directory', '/directory')}
+                onClick={() => handleProtectedAction('/directory', true)}
                 className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Users size={16} />
@@ -386,7 +389,7 @@ export const PublicDashboard: React.FC = () => {
                     <button
                       onClick={() => {
                         if (item.isProtected) {
-                          handleProtectedAction(item.title, item.path);
+                          handleProtectedAction(item.path, item.isProtected);
                         } else {
                           navigate(item.path);
                         }
@@ -428,36 +431,48 @@ export const PublicDashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-              {/* 1. Court Fee Calculator */}
+              {/* 1. Date Difference Calculator */}
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                    <Scale size={18} className="text-primary dark:text-sky-400" />
-                    State Court Fee Valuation Tool (Public)
+                    <Calendar size={18} className="text-indigo-500" />
+                    Date Difference Calculator (Public)
                   </h3>
                   <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-semibold uppercase">
                     Public Access
                   </span>
                 </div>
 
-                <form onSubmit={handleCalcSubmit} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Suit Claim Valuation (₹ Amount)
-                    </label>
-                    <input
-                      type="number"
-                      value={courtFeeAmount}
-                      onChange={(e) => setCourtFeeAmount(e.target.value)}
-                      placeholder="e.g. 100000"
-                      className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
-                    />
+                <form onSubmit={handleDateCalcSubmit} className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={startDateStr}
+                        onChange={(e) => setStartDateStr(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={endDateStr}
+                        onChange={(e) => setEndDateStr(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <span className="text-xs text-slate-500">Estimated Court Fee:</span>
-                    <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
-                      ₹ {calcResult !== null ? calcResult.toLocaleString('en-IN') : '0'}
+                    <span className="text-xs text-slate-500">Calculated Difference:</span>
+                    <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+                      {dateDiffResult} Days
                     </span>
                   </div>
 
@@ -466,10 +481,10 @@ export const PublicDashboard: React.FC = () => {
                       type="submit"
                       className="flex-1 py-2 bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer"
                     >
-                      Calculate Fee
+                      Calculate Days
                     </button>
                     <Link
-                      to="/calculators"
+                      to="/date-difference-calculator"
                       className="py-2 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1"
                     >
                       Full Calculator <ArrowRight size={12} />
@@ -587,7 +602,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Sign in as a Client to view your case files.', 'Client')}
+                onClick={() => openAuthModal('login', 'Client', 'Sign in as a Client to view your case files.')}
                 className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
               >
                 Client Portal Sign In
@@ -613,7 +628,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Sign in as an Advocate to access practice management.', 'Advocate')}
+                onClick={() => openAuthModal('login', 'Advocate', 'Sign in as an Advocate to access practice management.')}
                 className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Advocate Portal Sign In
@@ -639,7 +654,7 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               <button
-                onClick={() => openAuthModal('login', 'Administrator sign in required to access management controls.', 'Admin')}
+                onClick={() => openAuthModal('login', 'Admin', 'Administrator sign in required to access management controls.')}
                 className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
               >
                 Administrator Sign In
