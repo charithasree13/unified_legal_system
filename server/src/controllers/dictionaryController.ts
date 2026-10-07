@@ -6,6 +6,15 @@ import { AuthenticatedRequest } from '../middleware/auth';
 
 let cachedStaticEntries: any[] | null = null;
 
+function cleanTerm(str: string): string {
+  if (!str) return str;
+  let cleaned = str.replace(/^\d+[\s\.\-\:\)\'\"]*/, '').trim();
+  if (cleaned.length > 0) {
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  }
+  return str;
+}
+
 function loadStaticDictionary(): any[] {
   if (cachedStaticEntries) {
     return cachedStaticEntries;
@@ -68,7 +77,7 @@ export const getDictionaryEntries = async (req: AuthenticatedRequest, res: Respo
 
     const formattedDbEntries = dbEntries.map((item: any) => ({
       id: item.id || item._id?.toString() || `dict_${Date.now()}_${Math.random()}`,
-      term: item.term,
+      term: cleanTerm(item.term),
       definition: item.definition || item.meaning,
       category: item.category,
       additionalInformation: item.additionalInformation || '',
@@ -79,8 +88,13 @@ export const getDictionaryEntries = async (req: AuthenticatedRequest, res: Respo
       createdAt: item.createdAt
     }));
 
+    const formattedStaticEntries = staticEntries.map((item: any) => ({
+      ...item,
+      term: cleanTerm(item.term)
+    }));
+
     // Merge DB entries (at the top) with static entries
-    const combinedEntries = [...formattedDbEntries, ...staticEntries];
+    const combinedEntries = [...formattedDbEntries, ...formattedStaticEntries];
 
     return res.status(200).json(combinedEntries);
   } catch (error: any) {
@@ -109,7 +123,7 @@ export const addDictionaryEntry = async (req: AuthenticatedRequest, res: Respons
 
     const { term, word, definition, meaning, category, additionalInformation, examples, notes, relatedTerms } = req.body;
 
-    const termVal = (term || word || '').trim();
+    const termVal = cleanTerm((term || word || '').trim());
     const definitionVal = (definition || meaning || '').trim();
     const categoryVal = (category || '').trim();
 
