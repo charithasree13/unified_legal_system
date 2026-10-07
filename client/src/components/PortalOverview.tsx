@@ -85,21 +85,6 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-emerald-500/50'
         },
         {
-          id: 'admin-fee-rules',
-          title: 'Court Fee Rule Engine',
-          description: 'Manage state-wise court fee acts, configure ad-valorem percentages, fixed fees, and statutory relief mappings.',
-          tag: 'Fee Rules Engine',
-          icon: Landmark,
-          path: '/dashboard',
-          isAdminInternal: true,
-          targetId: 'admin-section-fee-rules',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
-        },
-        {
           id: 'admin-docs',
           title: 'Judgements & Acts Indexing',
           description: 'Upload, organize, tag, and publish Supreme Court / High Court judgements and central & state Bare Acts.',
