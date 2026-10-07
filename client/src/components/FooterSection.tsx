@@ -3,6 +3,80 @@ import { Link } from 'react-router-dom';
 import { MapPin, Mail, Phone, ShieldCheck, Scale, Award, GraduationCap, Code } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
+interface TeamMember {
+  id: string;
+  name: string;
+  degree: string;
+  designation: string;
+  specialization: string;
+  badge?: string;
+  phone: string;
+  phoneDisplay: string;
+  email?: string;
+}
+
+const ELITE_LEGAL_DESK_TEAM: TeamMember[] = [
+  {
+    id: 'pv-prasad',
+    name: 'Mr. P. V. Prasad',
+    degree: 'B.Com., B.L.',
+    designation: 'Advocate',
+    specialization: 'Title Verification, Property Laws, and All Types of Civil Matters',
+    badge: 'Notary and Bank Panel Advocate',
+    phone: '+919247253096',
+    phoneDisplay: '+91 9247253096',
+    email: 'pvprasadvmpl@gmail.com',
+  },
+  {
+    id: 'm-chaitanya-kumar',
+    name: 'Mr. M. Chaitanya Kumar',
+    degree: 'B.A., B.L.',
+    designation: 'Advocate',
+    specialization: 'Criminal Cases',
+    phone: '+919440046533',
+    phoneDisplay: '+91 9440046533',
+    email: 'kumarchaitanya1970@gmail.com',
+  },
+  {
+    id: 'b-sreenivasulu',
+    name: 'Mr. B. Sreenivasulu',
+    degree: 'B.L.',
+    designation: 'Advocate',
+    specialization: 'MVOP Cases',
+    phone: '+919441135084',
+    phoneDisplay: '+91 9441135084',
+    email: 'bsreenivasadv@gmail.com',
+  },
+  {
+    id: 'j-sailaja-naidu',
+    name: 'Mrs. J. Sailaja Naidu',
+    degree: 'B.Pharm., L.L.B.',
+    designation: 'Advocate',
+    specialization: 'Deals with All Types of Cases',
+    phone: '+919959249779',
+    phoneDisplay: '+91 9959249779',
+    email: 'sailajaadv18@gmail.com',
+  },
+  {
+    id: 'r-shajahan',
+    name: 'Mr. R. Shajahan',
+    degree: 'B.Com., B.L.',
+    designation: 'Advocate',
+    specialization: 'N.I. Act Cases',
+    phone: '+919494740180',
+    phoneDisplay: '9494740180',
+  },
+  {
+    id: 'n-reddinagulu',
+    name: 'Mr. N. Reddinagulu',
+    degree: 'B.Com., B.L.',
+    designation: 'Advocate',
+    specialization: 'Revenue Laws',
+    phone: '+919440958757',
+    phoneDisplay: '9440958757',
+  },
+];
+
 export const FooterSection: React.FC = () => {
   const { user } = useAuthStore();
   const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
@@ -139,148 +213,53 @@ export const FooterSection: React.FC = () => {
             <span className="text-[11px] text-slate-400 font-medium">Legal Professionals</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {ELITE_LEGAL_DESK_TEAM.map((member) => (
+              <div
+                key={member.id}
+                className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors"
+              >
+                <div className="space-y-1.5">
+                  <div>
+                    <h5 className="font-bold text-white text-sm leading-snug">
+                      {member.name},{' '}
+                      <span className="text-slate-300 font-normal text-xs">{member.degree}</span>
+                    </h5>
+                    <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mt-0.5 flex items-center gap-1">
+                      <span>{member.designation}</span>
+                    </p>
+                  </div>
 
-            {/* Team Member 1 */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
-              <div className="space-y-1.5">
-                <div>
-                  <h5 className="font-bold text-white text-sm leading-snug">
-                    Mr. P. V. Prasad, <span className="text-slate-300 font-normal text-xs">B.Com., B.L.</span>
-                  </h5>
-                  <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mt-0.5 flex items-center gap-1">
-                    <span>Advocate</span>
-                  </p>
+                  <div className="text-slate-300 text-xs leading-relaxed">
+                    <span className="text-slate-400 font-medium">Specialization:</span>{' '}
+                    <span>{member.specialization}</span>
+                  </div>
+
+                  {member.badge && (
+                    <div className="inline-block bg-slate-800 text-sky-400 text-[11px] px-2 py-0.5 rounded font-medium border border-slate-700/60">
+                      {member.badge}
+                    </div>
+                  )}
                 </div>
 
-                <div className="text-slate-300 text-xs leading-relaxed">
-                  <span className="text-slate-400 font-medium">Specialization:</span>{' '}
-                  <span>Title Verification, Property Laws, and All Types of Civil Matters</span>
-                </div>
-
-                <div className="inline-block bg-slate-800 text-sky-400 text-[11px] px-2 py-0.5 rounded font-medium border border-slate-700/60">
-                  Notary and Bank Panel Advocate
+                <div className="pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <Phone size={13} className="text-emerald-400 flex-shrink-0" />
+                    <a href={`tel:${member.phone}`} className="hover:text-white transition-colors">
+                      {member.phoneDisplay}
+                    </a>
+                  </div>
+                  {member.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail size={13} className="text-sky-400 flex-shrink-0" />
+                      <a href={`mailto:${member.email}`} className="hover:text-white transition-colors break-all">
+                        {member.email}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              <div className="pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Phone size={13} className="text-emerald-400 flex-shrink-0" />
-                  <a href="tel:+919247253096" className="hover:text-white transition-colors">
-                    +91 9247253096
-                  </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail size={13} className="text-sky-400 flex-shrink-0" />
-                  <a href="mailto:pvprasadvmpl@gmail.com" className="hover:text-white transition-colors break-all">
-                    pvprasadvmpl@gmail.com
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Team Member 2 */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
-              <div className="space-y-1.5">
-                <div>
-                  <h5 className="font-bold text-white text-sm leading-snug">
-                    Mr. M. Chaitanya Kumar, <span className="text-slate-300 font-normal text-xs">B.A., B.L.</span>
-                  </h5>
-                  <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mt-0.5">
-                    Advocate
-                  </p>
-                </div>
-
-                <div className="text-slate-300 text-xs leading-relaxed">
-                  <span className="text-slate-400 font-medium">Specialization:</span>{' '}
-                  <span>Criminal Cases</span>
-                </div>
-              </div>
-
-              <div className="pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Phone size={13} className="text-emerald-400 flex-shrink-0" />
-                  <a href="tel:+919440046533" className="hover:text-white transition-colors">
-                    +91 9440046533
-                  </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail size={13} className="text-sky-400 flex-shrink-0" />
-                  <a href="mailto:kumarchaitanya1970@gmail.com" className="hover:text-white transition-colors break-all">
-                    kumarchaitanya1970@gmail.com
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Team Member 3 */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
-              <div className="space-y-1.5">
-                <div>
-                  <h5 className="font-bold text-white text-sm leading-snug">
-                    Mr. B. Sreenivasulu, <span className="text-slate-300 font-normal text-xs">B.L.</span>
-                  </h5>
-                  <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mt-0.5">
-                    Advocate
-                  </p>
-                </div>
-
-                <div className="text-slate-300 text-xs leading-relaxed">
-                  <span className="text-slate-400 font-medium">Specialization:</span>{' '}
-                  <span>MVOP Cases</span>
-                </div>
-              </div>
-
-              <div className="pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Phone size={13} className="text-emerald-400 flex-shrink-0" />
-                  <a href="tel:+919441135084" className="hover:text-white transition-colors">
-                    +91 9441135084
-                  </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail size={13} className="text-sky-400 flex-shrink-0" />
-                  <a href="mailto:bsreenivasadv@gmail.com" className="hover:text-white transition-colors break-all">
-                    bsreenivasadv@gmail.com
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Team Member 4 */}
-            <div className="bg-slate-800/40 border border-slate-800/90 rounded-lg p-4 space-y-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
-              <div className="space-y-1.5">
-                <div>
-                  <h5 className="font-bold text-white text-sm leading-snug">
-                    Mrs. J. Sailaja Naidu, <span className="text-slate-300 font-normal text-xs">B.Pharm., L.L.B.</span>
-                  </h5>
-                  <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mt-0.5">
-                    Advocate
-                  </p>
-                </div>
-
-                <div className="text-slate-300 text-xs leading-relaxed">
-                  <span className="text-slate-400 font-medium">Specialization:</span>{' '}
-                  <span>Deals with All Types of Cases</span>
-                </div>
-              </div>
-
-              <div className="pt-2.5 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Phone size={13} className="text-emerald-400 flex-shrink-0" />
-                  <a href="tel:+919959249779" className="hover:text-white transition-colors">
-                    +91 9959249779
-                  </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail size={13} className="text-sky-400 flex-shrink-0" />
-                  <a href="mailto:sailajaadv18@gmail.com" className="hover:text-white transition-colors break-all">
-                    sailajaadv18@gmail.com
-                  </a>
-                </div>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
 
