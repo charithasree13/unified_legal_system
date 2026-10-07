@@ -51,27 +51,13 @@ app.use(helmet({
 app.use(cors());
 app.use(express.json());
 
-// Express Middleware: URL Path Normalization & Court Fee Auto-Dispatcher
+// Express Middleware: URL Path Normalization
 app.use((req, res, next) => {
-  // 1. Path normalization
+  // Path normalization for reverse proxies
   const url = req.headers['x-forwarded-uri'] || req.headers['x-original-uri'] || req.originalUrl || req.url;
   if (typeof url === 'string' && url.length > 0 && !url.startsWith('/api') && !req.path.startsWith('/api')) {
     req.url = '/api' + (url.startsWith('/') ? url : '/' + url);
   }
-
-  // 2. Intercept only explicit Court Fee POST calculation requests, avoiding non-court-fee routes like Advocates or Auth
-  const currentPath = req.path || req.url || '';
-  const isExcludedPath = currentPath.includes('/advocates') || currentPath.includes('/auth') || currentPath.includes('/documents') || currentPath.includes('/projects') || currentPath.includes('/notes') || currentPath.includes('/legal-tips');
-  
-  if (!isExcludedPath && req.method === 'POST' && req.body) {
-    const isCourtFeeRoute = currentPath.includes('court-fee');
-    const hasCalculationPayload = (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined || req.body.calculatedFee !== undefined);
-    
-    if (isCourtFeeRoute || hasCalculationPayload) {
-      return courtFeeCtrl.calculateFee(req as any, res);
-    }
-  }
-
   next();
 });
 
@@ -225,26 +211,26 @@ app.post('/legal-dictionary', authenticateToken, requireAdmin, dictionaryCtrl.ad
 
 
 
-// COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER
-app.get('/api/court-fee/districts', courtFeeCtrl.getDistricts);
-app.get('/court-fee/districts', courtFeeCtrl.getDistricts);
-app.get('/api/court-fee/metadata', courtFeeCtrl.getMetadata);
-app.get('/court-fee/metadata', courtFeeCtrl.getMetadata);
+// COURT FEE CALCULATOR MODULE API & AUTO-DISPATCHER (Protected: Enrolled Advocates & Admins only)
+app.get('/api/court-fee/districts', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getDistricts);
+app.get('/court-fee/districts', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getDistricts);
+app.get('/api/court-fee/metadata', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getMetadata);
+app.get('/court-fee/metadata', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getMetadata);
 
-app.get('/api/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
-app.get('/calculators/court-fee/metadata', courtFeeCtrl.getMetadata);
-app.get('/api/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
-app.get('/calculators/court-fee/districts', courtFeeCtrl.getDistricts);
+app.get('/api/calculators/court-fee/metadata', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getMetadata);
+app.get('/calculators/court-fee/metadata', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getMetadata);
+app.get('/api/calculators/court-fee/districts', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getDistricts);
+app.get('/calculators/court-fee/districts', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getDistricts);
 
-app.get('/api/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
-app.get('/calculators/court-fee/history', authenticateToken, courtFeeCtrl.getHistory);
-app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, courtFeeCtrl.getCalculationPdf);
-app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, courtFeeCtrl.getCalculationCsv);
+app.get('/api/calculators/court-fee/history', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getHistory);
+app.get('/calculators/court-fee/history', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getHistory);
+app.get('/api/calculators/court-fee/history/:id/pdf', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getCalculationPdf);
+app.get('/api/calculators/court-fee/history/:id/csv', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.getCalculationCsv);
 
-app.all('/api/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.all('/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.all('/api/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
-app.all('/calculators/court-fee/calculate', optionalAuthToken, courtFeeCtrl.calculateFee);
+app.all('/api/court-fee/calculate', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.calculateFee);
+app.all('/court-fee/calculate', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.calculateFee);
+app.all('/api/calculators/court-fee/calculate', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.calculateFee);
+app.all('/calculators/court-fee/calculate', authenticateToken, requireAdminOrAdvocate, courtFeeCtrl.calculateFee);
 
 // HINDU SUCCESSION CALCULATOR API (Protected: Enrolled Advocates & Admins only)
 app.post('/api/calculators/hindu-succession/calculate', authenticateToken, requireAdminOrAdvocate, hinduSuccessionCtrl.calculateSuccession);
@@ -268,14 +254,14 @@ app.post('/calculators/limitation/calculate', authenticateToken, requireAdminOrA
 app.get('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
 app.post('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
 
-// Auto-dispatch POST /api requests carrying court fee parameters (Vercel rewrite fallback guard)
-app.post('/api', optionalAuthToken, (req, res, next) => {
+// Auto-dispatch POST /api requests carrying court fee parameters (Protected: Advocates & Admins only)
+app.post('/api', authenticateToken, requireAdminOrAdvocate, (req, res, next) => {
   if (req.body && (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined)) {
     return courtFeeCtrl.calculateFee(req as any, res);
   }
   next();
 });
-app.post('/', optionalAuthToken, (req, res, next) => {
+app.post('/', authenticateToken, requireAdminOrAdvocate, (req, res, next) => {
   if (req.body && (req.body.suitValue !== undefined || req.body.claimAmount !== undefined || req.body.suitValuation !== undefined)) {
     return courtFeeCtrl.calculateFee(req as any, res);
   }

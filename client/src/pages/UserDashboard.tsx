@@ -98,7 +98,7 @@ export const UserDashboard: React.FC = () => {
             </h1>
             <p className="text-white/80 text-xs mt-2 max-w-md leading-relaxed">
               {user?.role === 'Client' 
-                ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate state court fees and land conversions.'
+                ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate land measurements, interest rates, and date differences.'
                 : 'Elite Legal Desk gives you secure end-to-end client communications, case management, land converters, and task calendars.'
               }
             </p>
@@ -115,7 +115,7 @@ export const UserDashboard: React.FC = () => {
               to="/calculators"
               className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-lg transition-all border border-white/10"
             >
-              Fee & Land Calculators
+              Legal Calculators
             </Link>
           </div>
         </div>

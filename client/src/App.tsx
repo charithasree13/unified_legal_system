@@ -40,7 +40,7 @@ const ProtectedRoute: React.FC<{
   allowedRoles,
   allowUnapprovedAdvocate = false
 }) => {
-  const { token, user } = useAuthStore();
+  const { token, user, addNotification } = useAuthStore();
   const [authModalOpen, setAuthModalOpen] = useState(true);
 
   if (!token) {
@@ -63,12 +63,18 @@ const ProtectedRoute: React.FC<{
     const isAllowedRole = allowedRoles.some(r => r.toLowerCase() === roleLower);
     
     if (!isAllowedRole) {
-      return <Navigate to="/dashboard" replace />;
+      setTimeout(() => {
+        addNotification('Access Restricted', `Access to ${featureName} is restricted to Advocates and Administrators.`, 'error');
+      }, 0);
+      return <Navigate to="/calculators" replace />;
     }
 
     if (roleLower === 'advocate' && !allowUnapprovedAdvocate) {
       const isApprovedAdvocate = user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED';
       if (!isApprovedAdvocate) {
+        setTimeout(() => {
+          addNotification('Verification Pending', 'Access is restricted until your Advocate account is verified by an Administrator.', 'warning');
+        }, 0);
         return <Navigate to="/dashboard" replace />;
       }
     }
@@ -134,12 +140,33 @@ export const App: React.FC = () => {
             } 
           />
 
-          {/* Publicly Accessible Calculator Modules (No Login Required) */}
+          {/* Calculator Modules Available to All Logged-in Roles */}
           <Route path="calculators" element={<Calculators />} />
+          <Route path="land-calculator" element={<Calculators initialTab="land" />} />
+          <Route path="calculators/land" element={<Calculators initialTab="land" />} />
           <Route path="interest-calculator" element={<InterestCalculatorPage />} />
           <Route path="calculators/interest" element={<InterestCalculatorPage />} />
           <Route path="date-difference-calculator" element={<DateDifferenceCalculatorPage />} />
+          <Route path="date-calculator" element={<DateDifferenceCalculatorPage />} />
           <Route path="calculators/date-difference" element={<DateDifferenceCalculatorPage />} />
+
+          {/* Protected Court Fee Calculator Module (Advocate & Admin Only) */}
+          <Route 
+            path="court-fee-calculator" 
+            element={
+              <ProtectedRoute featureName="Court Fee Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <Calculators initialTab="court" />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="calculators/court-fee" 
+            element={
+              <ProtectedRoute featureName="Court Fee Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <Calculators initialTab="court" />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Protected Hindu Succession Calculator Module (Admin & Advocate Only) */}
           <Route 

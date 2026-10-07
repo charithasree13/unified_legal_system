@@ -2,15 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Calculator, Scale, FileText, ArrowRightLeft, ShieldAlert, ArrowRight,
-  Printer, Download, History, RefreshCw, Copy, FileSpreadsheet, RotateCcw
+  Printer, Download, History, RefreshCw, Copy, FileSpreadsheet, RotateCcw, Calendar
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { LegalTriviaLoader } from '../components/LegalTriviaLoader';
 import { evaluateCourtFee } from '../utils/courtFeeEngine';
+import { InterestCalculatorPage } from './InterestCalculatorPage';
+import { DateDifferenceCalculatorPage } from './DateDifferenceCalculatorPage';
 
-export const Calculators: React.FC = () => {
-  const { token, addNotification } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'land' | 'court' | 'history' | 'future'>('court');
+interface CalculatorsProps {
+  initialTab?: 'land' | 'interest' | 'date' | 'court';
+}
+
+export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
+  const { user, token, addNotification } = useAuthStore();
+  const roleLower = (user?.role || '').toLowerCase();
+  const isAdvocateOrAdmin = roleLower === 'admin' || roleLower === 'advocate';
+
+  const [activeTab, setActiveTab] = useState<'land' | 'interest' | 'date' | 'court'>(() => {
+    if (initialTab === 'court') {
+      if (isAdvocateOrAdmin) return 'court';
+      return 'land';
+    }
+    if (initialTab && ['land', 'interest', 'date'].includes(initialTab)) {
+      return initialTab;
+    }
+    return 'land';
+  });
+
+  useEffect(() => {
+    if (initialTab === 'court') {
+      if (!isAdvocateOrAdmin) {
+        setActiveTab('land');
+        addNotification('Access Restricted', 'The Court Fee Calculator is restricted exclusively to Advocates and Administrators.', 'error');
+      } else {
+        setActiveTab('court');
+      }
+    } else if (initialTab && ['land', 'interest', 'date'].includes(initialTab)) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab, isAdvocateOrAdmin]);
+
+  const handleTabChange = (tab: 'land' | 'interest' | 'date' | 'court') => {
+    if (tab === 'court' && !isAdvocateOrAdmin) {
+      addNotification('Access Restricted', 'The Court Fee Calculator is restricted exclusively to Advocates and Administrators.', 'error');
+      return;
+    }
+    setActiveTab(tab);
+  };
 
   // -------------------------------------------------------------
   // 1. LAND CONVERSION CALCULATOR
@@ -64,7 +103,7 @@ export const Calculators: React.FC = () => {
   };
 
   // -------------------------------------------------------------
-  // 2. DATABASE-DRIVEN COURT FEE CALCULATOR MODULE
+  // 2. DATABASE-DRIVEN COURT FEE CALCULATOR MODULE (Advocate & Admin Only)
   // -------------------------------------------------------------
   const [metadata, setMetadata] = useState<{
     states: any[];
@@ -153,7 +192,6 @@ export const Calculators: React.FC = () => {
     }
   };
 
-
   // Valuation Amount Inputs
   const [suitValue, setSuitValue] = useState('100000');
   const [marketValue, setMarketValue] = useState('0');
@@ -171,9 +209,11 @@ export const Calculators: React.FC = () => {
   const [calcHistory, setCalcHistory] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchMetadata();
-    fetchHistory();
-  }, [token]);
+    if (isAdvocateOrAdmin && token) {
+      fetchMetadata();
+      fetchHistory();
+    }
+  }, [token, isAdvocateOrAdmin]);
 
   // Update district when state changes
   useEffect(() => {
@@ -187,7 +227,9 @@ export const Calculators: React.FC = () => {
 
   const fetchMetadata = async () => {
     try {
-      const res = await fetch('/api/calculators/court-fee/metadata');
+      const res = await fetch('/api/calculators/court-fee/metadata', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       const data = await res.json();
       if (res.ok) {
         setMetadata({
@@ -237,6 +279,11 @@ export const Calculators: React.FC = () => {
 
   const handleCourtFeeCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isAdvocateOrAdmin) {
+      addNotification('Access Restricted', 'The Court Fee Calculator is restricted exclusively to Advocates and Administrators.', 'error');
+      return;
+    }
 
     setCalcLoading(true);
     setCalcErr('');
@@ -319,7 +366,7 @@ export const Calculators: React.FC = () => {
         calculatedSuccess = true;
       }
     } catch (err: any) {
-      console.warn('Backend court fee API unavailable, switching to client statutory engine:', err);
+      console.warn('Backend court fee API error:', err);
     }
 
     // Client-side statutory calculation fallback if backend API returned non-OK or failed
@@ -384,33 +431,102 @@ export const Calculators: React.FC = () => {
       {/* Top Navigation Tabs */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4 flex flex-wrap gap-2">
         <button
-          onClick={() => setActiveTab('court')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-            activeTab === 'court' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-          }`}
-        >
-          <Scale size={14} /> Statutory Court Fee Rule Engine
-        </button>
-        <button
-          onClick={() => setActiveTab('land')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+          onClick={() => handleTabChange('land')}
+          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
             activeTab === 'land' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <ArrowRightLeft size={14} /> Land Measurement Converter
+          <ArrowRightLeft size={14} /> Land Measurement Calculator
         </button>
+
         <button
-          onClick={() => setActiveTab('future')}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-            activeTab === 'future' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+          onClick={() => handleTabChange('interest')}
+          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeTab === 'interest' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <Calculator size={14} /> Legal Utilities
+          <Calculator size={14} /> Interest Calculator
         </button>
+
+        <button
+          onClick={() => handleTabChange('date')}
+          className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+            activeTab === 'date' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <Calendar size={14} /> Date Calculator
+        </button>
+
+        {isAdvocateOrAdmin && (
+          <button
+            onClick={() => handleTabChange('court')}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'court' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            <Scale size={14} /> Court Fee Calculator
+            <span className="ml-1 text-[9px] bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-bold uppercase">Advocate & Admin</span>
+          </button>
+        )}
       </div>
 
-      {/* COURT FEE CALCULATOR MAIN MODULE */}
-      {activeTab === 'court' && (
+      {/* 1. LAND MEASUREMENT CONVERTER TAB */}
+      {activeTab === 'land' && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
+          <div className="mb-6">
+            <h3 className="font-bold text-base text-slate-950 dark:text-white flex items-center gap-2">
+              <ArrowRightLeft className="text-primary dark:text-sky-400" size={20} />
+              Land Measurement Calculator
+            </h3>
+            <p className="text-xs text-slate-400 mt-1">
+              Enter a value in any measurement field below. All standard and regional land units auto-calculate instantly.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { id: 'acre', label: 'Acres (Standard)' },
+              { id: 'hectare', label: 'Hectares (SI)' },
+              { id: 'cent', label: 'Cents (South India)' },
+              { id: 'gunta', label: 'Guntas (Deccan/South)' },
+              { id: 'bigha', label: 'Bighas (North/East)' },
+              { id: 'sqYard', label: 'Square Yards' },
+              { id: 'sqMeter', label: 'Square Meters' },
+              { id: 'sqFeet', label: 'Square Feet' }
+            ].map((unit) => (
+              <div key={unit.id} className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-850 rounded-xl shadow-sm">
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  {unit.label}
+                </label>
+                <input
+                  type="text"
+                  value={(landValues as any)[unit.id]}
+                  onChange={(e) => handleLandConvert(unit.id, e.target.value)}
+                  placeholder="0.00"
+                  className="w-full text-sm font-bold bg-transparent border-b border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary pb-1 font-mono placeholder:text-slate-300"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 2. INTEREST CALCULATOR TAB */}
+      {activeTab === 'interest' && (
+        <div className="animate-slide-up">
+          <InterestCalculatorPage />
+        </div>
+      )}
+
+      {/* 3. DATE CALCULATOR TAB */}
+      {activeTab === 'date' && (
+        <div className="animate-slide-up">
+          <DateDifferenceCalculatorPage />
+        </div>
+      )}
+
+      {/* 4. COURT FEE CALCULATOR MAIN MODULE (Advocate & Admin Only) */}
+      {isAdvocateOrAdmin && activeTab === 'court' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up">
           
           {/* Form Controls */}
@@ -527,7 +643,6 @@ export const Calculators: React.FC = () => {
                 <input
                   type="number"
                   value={suitValue}
-
                   onChange={(e) => setSuitValue(e.target.value)}
                   min={0}
                   placeholder="Enter suit value in Rupees"
@@ -687,108 +802,6 @@ export const Calculators: React.FC = () => {
             </div>
           </div>
 
-        </div>
-      )}
-
-      {/* LAND CONVERSION TAB */}
-      {activeTab === 'land' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
-          <div className="mb-6">
-            <h3 className="font-bold text-base text-slate-950 dark:text-white flex items-center gap-2">
-              <ArrowRightLeft className="text-primary dark:text-sky-400" size={20} />
-              Reactive Land Measurement Converter
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Enter a value in *any* unit field below. All other standard and regional measurements will instantly auto-calculate.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              { id: 'acre', label: 'Acres (Standard)' },
-              { id: 'hectare', label: 'Hectares (SI)' },
-              { id: 'cent', label: 'Cents (South India)' },
-              { id: 'gunta', label: 'Guntas (Deccan/South)' },
-              { id: 'bigha', label: 'Bighas (North/East)' },
-              { id: 'sqYard', label: 'Square Yards' },
-              { id: 'sqMeter', label: 'Square Meters' },
-              { id: 'sqFeet', label: 'Square Feet' }
-            ].map((unit) => (
-              <div key={unit.id} className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-850 rounded-xl shadow-sm">
-                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                  {unit.label}
-                </label>
-                <input
-                  type="text"
-                  value={(landValues as any)[unit.id]}
-                  onChange={(e) => handleLandConvert(unit.id, e.target.value)}
-                  placeholder="0.00"
-                  className="w-full text-sm font-bold bg-transparent border-b border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary pb-1 font-mono placeholder:text-slate-300"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* FUTURE MODULES TAB */}
-      {activeTab === 'future' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
-          {/* Active Public Calculators Bar */}
-          <div className="space-y-4 mb-6">
-            <div className="p-6 bg-gradient-to-r from-sky-900 to-slate-900 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">Public Legal Utility</span>
-                <h3 className="font-extrabold text-lg text-white">Interest Calculator (Simple & Compound)</h3>
-                <p className="text-xs text-slate-300 mt-1">Compute simple and compound interest on litigation awards, court decrees, and financial claims with exact date conventions and step-by-step formulas.</p>
-              </div>
-              <Link
-                to="/interest-calculator"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
-              >
-                Open Interest Calculator <ArrowRight size={14} />
-              </Link>
-            </div>
-
-            <div className="p-6 bg-gradient-to-r from-indigo-950 via-slate-900 to-slate-950 rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 border border-indigo-900/40">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">Public Legal Utility</span>
-                <h3 className="font-extrabold text-lg text-white">Date Difference Calculator</h3>
-                <p className="text-xs text-slate-300 mt-1">Calculate the exact number of days between two dates quickly and accurately with leap year and calendar breakdown support.</p>
-              </div>
-              <Link
-                to="/date-difference-calculator"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl transition shadow-lg whitespace-nowrap"
-              >
-                Open Date Calculator <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="font-bold text-base text-slate-950 dark:text-white mb-1">Future Ready Calculations</h3>
-            <p className="text-xs text-slate-400">The following legal utilities are scheduled for upcoming platform updates.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { title: 'Stamp Duty Calculator', desc: 'Auto calculates stamp duties based on property deeds and local state laws.' },
-              { title: 'Advocate Fee Calculator', desc: 'Estimates advocate service billings based on legal chambers standard time grids.' },
-              { title: 'Property Valuation Calculator', desc: 'Assesses land block rates and guideline values for property disputes.' },
-              { title: 'Compensation Calculator', desc: 'Pre-evaluates damages and payouts under Motor Vehicle and Labour claims.' }
-            ].map((mod, i) => (
-              <div 
-                key={i} 
-                className="p-4 border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 rounded-xl relative overflow-hidden select-none"
-              >
-                <span className="absolute top-2.5 right-2.5 bg-primary/10 text-primary dark:bg-sky-400/20 dark:text-sky-400 text-[8px] px-2 py-0.5 rounded font-bold uppercase">
-                  Coming Soon
-                </span>
-                <h4 className="font-bold text-xs text-slate-400 mt-2">{mod.title}</h4>
-                <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">{mod.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       )}
 

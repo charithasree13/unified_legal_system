@@ -59,12 +59,12 @@ export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: Nex
 
 export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ success: false, message: 'Authentication required. Please sign in to access the Old Acts → New Acts Converter.' });
+    return res.status(401).json({ success: false, message: 'Authentication required. Please sign in to access this feature.' });
   }
 
   const roleLower = (req.user.role || '').toLowerCase();
   if (roleLower !== 'admin' && roleLower !== 'advocate') {
-    return res.status(403).json({ success: false, message: 'Access Denied: The Old Acts → New Acts Converter is reserved exclusively for Administrators and Approved Advocates.' });
+    return res.status(403).json({ success: false, message: 'Access Denied: This feature is restricted exclusively to Administrators and Advocates.' });
   }
 
   if (roleLower === 'advocate') {

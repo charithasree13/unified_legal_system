@@ -7,10 +7,26 @@ import {
 } from '../models/Schemas';
 import { evaluateCourtFee, CourtFeeCalculationInput } from '../engine/courtFeeEngine';
 
+const isAuthorizedUser = (req: AuthenticatedRequest): boolean => {
+  if (!req.user) return false;
+  const roleLower = (req.user.role || '').toLowerCase();
+  return roleLower === 'admin' || roleLower === 'advocate';
+};
+
+const sendUnauthorizedResponse = (res: Response) => {
+  return res.status(403).json({
+    success: false,
+    message: 'Access Denied: The Court Fee Calculator is restricted exclusively to Administrators and Advocates.'
+  });
+};
+
 /**
  * Fetch Court Fee Metadata (States, Courts, Case Types, Reliefs, Acts)
  */
 export const getMetadata = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const [states, courtTypes, caseTypes, reliefTypes, acts, districts] = await Promise.all([
       State.find({ isActive: true }),
@@ -40,6 +56,9 @@ export const getMetadata = async (req: AuthenticatedRequest, res: Response) => {
  * Fetch Districts for selected State
  */
 export const getDistricts = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const { stateName } = req.query;
     const filter: any = { isActive: true };
@@ -57,6 +76,9 @@ export const getDistricts = async (req: AuthenticatedRequest, res: Response) => 
  * Execute Database-Driven Court Fee Calculation with Input Validation
  */
 export const calculateFee = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const payload = { ...(req.query || {}), ...(req.body || {}) };
     const {
@@ -117,9 +139,11 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
     let rules: any[] = [];
     let slabs: any[] = [];
     try {
+      const rulesQuery: any = CourtFeeRule.find({ isActive: true });
+      const slabsQuery: any = CourtFeeSlab.find();
       [rules, slabs] = await Promise.all([
-        CourtFeeRule.find({ isActive: true }).lean(),
-        CourtFeeSlab.find().lean()
+        typeof rulesQuery?.lean === 'function' ? rulesQuery.lean() : rulesQuery,
+        typeof slabsQuery?.lean === 'function' ? slabsQuery.lean() : slabsQuery
       ]);
     } catch (dbErr) {
       console.warn('⚠️ Court Fee DB query warning (using statutory fallback engine):', dbErr);
@@ -202,6 +226,9 @@ export const calculateFee = async (req: AuthenticatedRequest, res: Response) => 
  * Fetch Calculation History for authenticated user
  */
 export const getHistory = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const history = await CalculationHistory.find({ userId: req.user?.id });
     return res.status(200).json({
@@ -218,6 +245,9 @@ export const getHistory = async (req: AuthenticatedRequest, res: Response) => {
  * Export Calculation Receipt to CSV/Excel Format
  */
 export const getCalculationCsv = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const item = await CalculationHistory.findById(req.params.id);
     if (!item) {
@@ -252,6 +282,9 @@ export const getCalculationCsv = async (req: AuthenticatedRequest, res: Response
  * Generate Printable PDF / HTML Receipt Preview for Calculation
  */
 export const getCalculationPdf = async (req: AuthenticatedRequest, res: Response) => {
+  if (!isAuthorizedUser(req)) {
+    return sendUnauthorizedResponse(res);
+  }
   try {
     const item = await CalculationHistory.findById(req.params.id);
     if (!item) {

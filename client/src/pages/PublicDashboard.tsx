@@ -70,19 +70,8 @@ export const PublicDashboard: React.FC = () => {
     else setLandConvertedSqFt((val * 43560).toLocaleString());
   };
 
-  // Comprehensive Module Catalog (ONLY Court Fee Calculator & Land Converter are Public Access)
+  // Comprehensive Module Catalog
   const modulesList = [
-    {
-      id: 'court-fee-calc',
-      title: 'Court Fee Calculator',
-      category: 'Public Access',
-      isProtected: false,
-      icon: Calculator,
-      description: 'Compute state-specific court fees, ad-valorem suit valuation, probate fees, and statutory relief mapping.',
-      actionText: 'Open Court Fee Tool',
-      path: '/calculators',
-      iconBg: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800'
-    },
     {
       id: 'land-calc',
       title: 'Land Area Converter',
@@ -93,6 +82,28 @@ export const PublicDashboard: React.FC = () => {
       actionText: 'Open Land Converter',
       path: '/calculators',
       iconBg: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800'
+    },
+    {
+      id: 'interest-calc',
+      title: 'Interest Calculator',
+      category: 'Public Access',
+      isProtected: false,
+      icon: Calculator,
+      description: 'Compute simple and compound interest on litigation awards, court decrees, and commercial claims.',
+      actionText: 'Open Interest Calculator',
+      path: '/interest-calculator',
+      iconBg: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800'
+    },
+    {
+      id: 'date-calc',
+      title: 'Date Calculator',
+      category: 'Public Access',
+      isProtected: false,
+      icon: Calendar,
+      description: 'Calculate calendar days between two dates with leap year breakdown and inclusive count support.',
+      actionText: 'Open Date Calculator',
+      path: '/date-difference-calculator',
+      iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
     },
     {
       id: 'directory',
@@ -253,12 +264,12 @@ export const PublicDashboard: React.FC = () => {
             </div>
 
             <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-medium">
-              A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, court fee calculators, and litigation tools in one integrated portal.
+              A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, legal calculators, and litigation tools in one integrated portal.
             </p>
 
             <div className="flex flex-wrap justify-center items-center gap-3 text-xs font-medium pt-2">
               <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-emerald-700 dark:text-emerald-400 shadow-xs">
-                <Calculator size={14} />  Court Fee Calculator
+                <Calculator size={14} /> Land & Legal Calculators
               </span>
               <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
                 <ShieldCheck size={14} className="text-amber-600 dark:text-amber-400" /> Verified Advocate Directory
@@ -294,7 +305,7 @@ export const PublicDashboard: React.FC = () => {
                 className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Calculator size={16} />
-                <span>Court Fee Calculator</span>
+                <span>Legal Calculators</span>
               </Link>
 
               {!token && (
@@ -330,7 +341,7 @@ export const PublicDashboard: React.FC = () => {
               Everything You Need for Your Legal Journey
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-              The Court Fee Calculator is publicly available. Click any module to access it — protected features needs sign in/sign up to activate your session.
+              Land Measurement, Interest, and Date Difference calculators are accessible to all users. Professional litigation tools require sign in/sign up.
             </p>
           </div>
 
@@ -405,13 +416,13 @@ export const PublicDashboard: React.FC = () => {
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold uppercase tracking-wider">
                 <Calculator size={14} />
-                <span>Publicly Accessible Legal Utility</span>
+                <span>Publicly Accessible Legal Utilities</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                Court Fee & Land Measurement Calculator
+                Land Measurement & Legal Utility Calculators
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
-                The Court Fee Calculator is publicly available to all visitors without requiring sign-in.
+                Land measurement converters, interest rate calculators, and date difference calculators are available to all users.
               </p>
             </div>
 
