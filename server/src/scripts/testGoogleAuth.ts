@@ -183,11 +183,61 @@ async function testSuite() {
       'Test 8: Google login seamlessly links & logs into existing local email account'
     );
 
+    // -------------------------------------------------------------
+    // Test 9: Advocate Google Login for Pre-registered & Approved Advocate
+    // -------------------------------------------------------------
+    const regAdvReq: any = {
+      body: {
+        name: 'Advocate Rajesh Kumar',
+        phone: '9876500000',
+        email: 'rajesh.advocate@court.org',
+        password: 'Password@123',
+        confirmPassword: 'Password@123',
+        role: 'Advocate',
+        enrollmentNumber: 'BAR/AP/2026/888'
+      },
+      ip: '127.0.0.1'
+    };
+    const regAdvRes = createMockRes();
+    await register(regAdvReq, regAdvRes);
+
+    // Simulate Admin Approval
+    await User.findOneAndUpdate({ email: 'rajesh.advocate@court.org' }, { isVerified: true, verificationStatus: 'APPROVED' });
+    await Advocate.findOneAndUpdate({ email: 'rajesh.advocate@court.org' }, { isVerified: true, verificationStatus: 'APPROVED' });
+
+    // Advocate signs in with Google
+    const advGoogleSub = 'google_sub_rajesh_adv_66666';
+    const advGooglePayload = Buffer.from(JSON.stringify({
+      sub: advGoogleSub,
+      email: 'rajesh.advocate@court.org',
+      email_verified: true,
+      name: 'Advocate Rajesh Kumar'
+    })).toString('base64');
+    const advGoogleToken = `${validHeaderB64}.${advGooglePayload}.mock_signature`;
+
+    const req9: any = { body: { credential: advGoogleToken, accountType: 'Advocate' }, ip: '127.0.0.1' };
+    const res9 = createMockRes();
+    await googleAuth(req9, res9);
+
+    assert(
+      res9.statusCode === 200 &&
+      res9.data?.success === true &&
+      !res9.data?.requiresAdvocateDetails &&
+      res9.data?.user?.role === 'Advocate' &&
+      res9.data?.user?.isVerified === true &&
+      res9.data?.user?.hasCompletedProfile === true,
+      'Test 9: Pre-registered & Approved Advocate signs in with Google directly without onboarding loop'
+    );
+
     // Cleanup mock data created in test
     await User.findByIdAndDelete(dbUser._id);
     await User.findByIdAndDelete(dbAdvUser._id);
     const localUser = await User.findOne({ email: 'local.user@example.com' });
     if (localUser) await User.findByIdAndDelete(localUser._id);
+    const rajeshUser = await User.findOne({ email: 'rajesh.advocate@court.org' });
+    if (rajeshUser) await User.findByIdAndDelete(rajeshUser._id);
+    const rajeshAdv = await Advocate.findOne({ email: 'rajesh.advocate@court.org' });
+    if (rajeshAdv) await Advocate.findByIdAndDelete(rajeshAdv._id);
 
     console.log(`\n📊 Test Results: ${passed} Passed, ${failed} Failed`);
     if (failed === 0) {

@@ -810,5 +810,170 @@
     "_id": "9ig8b3v0",
     "createdAt": "2026-10-02T14:15:21.302Z",
     "updatedAt": "2026-10-02T14:15:21.302Z"
+  },
+  {
+    "userId": "7fi3t3l3",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account registered via Google.",
+    "_id": "adf1yrza",
+    "createdAt": "2026-10-07T17:03:25.734Z",
+    "updatedAt": "2026-10-07T17:03:25.734Z"
+  },
+  {
+    "userId": "7utbhhbb",
+    "userName": "Advocate Jane Doe",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account registered via Google.",
+    "_id": "v233k2vq",
+    "createdAt": "2026-10-07T17:03:25.975Z",
+    "updatedAt": "2026-10-07T17:03:25.975Z"
+  },
+  {
+    "userId": "42u9shbj",
+    "userName": "Local Password User",
+    "role": "Client",
+    "action": "USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account created successfully. ",
+    "_id": "yxvx0co0",
+    "createdAt": "2026-10-07T17:03:26.153Z",
+    "updatedAt": "2026-10-07T17:03:26.153Z"
+  },
+  {
+    "userId": "3q9dlxal",
+    "userName": "John Google User",
+    "role": "Client",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account registered via Google.",
+    "_id": "o8w1roy2",
+    "createdAt": "2026-10-07T17:05:34.029Z",
+    "updatedAt": "2026-10-07T17:05:34.029Z"
+  },
+  {
+    "userId": "qeqwt35k",
+    "userName": "Advocate Jane Doe",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account registered via Google.",
+    "_id": "14aaekez",
+    "createdAt": "2026-10-07T17:05:34.371Z",
+    "updatedAt": "2026-10-07T17:05:34.371Z"
+  },
+  {
+    "userId": "snf6x4n7",
+    "userName": "Local Password User",
+    "role": "Client",
+    "action": "USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account created successfully. ",
+    "_id": "g78u6x08",
+    "createdAt": "2026-10-07T17:05:34.559Z",
+    "updatedAt": "2026-10-07T17:05:34.559Z"
+  },
+  {
+    "userId": "w09y2bca",
+    "userName": "Advocate Rajesh Kumar",
+    "role": "Advocate",
+    "action": "USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account created successfully. Advocate enrollment credentials pending Admin verification.",
+    "_id": "4eoepiv7",
+    "createdAt": "2026-10-07T17:05:34.752Z",
+    "updatedAt": "2026-10-07T17:05:34.752Z"
+  },
+  {
+    "userId": "w09y2bca",
+    "userName": "Advocate Rajesh Kumar",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Sign-in via Google (Advocate Status: APPROVED).",
+    "_id": "4jkj57wq",
+    "createdAt": "2026-10-07T17:05:34.833Z",
+    "updatedAt": "2026-10-07T17:05:34.833Z"
+  },
+  {
+    "userId": "oic54jda",
+    "userName": "Test Client User",
+    "role": "Client",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Client account registered via Google.",
+    "_id": "louhs5m5",
+    "createdAt": "2026-10-07T17:05:49.438Z",
+    "updatedAt": "2026-10-07T17:05:49.438Z"
+  },
+  {
+    "userId": "25w2rddm",
+    "userName": "Advocate Pending Google",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_REGISTERED",
+    "ip": "127.0.0.1",
+    "details": "New Advocate account registered via Google.",
+    "_id": "9qza68bc",
+    "createdAt": "2026-10-07T17:05:49.518Z",
+    "updatedAt": "2026-10-07T17:05:49.518Z"
+  },
+  {
+    "userId": "25w2rddm",
+    "userName": "Advocate Pending Google",
+    "role": "Advocate",
+    "action": "ADVOCATE_ONBOARDING_COMPLETED",
+    "ip": "127.0.0.1",
+    "details": "Advocate submitted directory profile: Advocate Pending Google (Enrollment: AP/999/2024). Awaiting Admin verification.",
+    "_id": "vso299b2",
+    "createdAt": "2026-10-07T17:05:49.528Z",
+    "updatedAt": "2026-10-07T17:05:49.528Z"
+  },
+  {
+    "userId": "25w2rddm",
+    "userName": "Advocate Pending Google",
+    "role": "Advocate",
+    "action": "GOOGLE_USER_LOGIN",
+    "ip": "127.0.0.1",
+    "details": "Sign-in via Google (Advocate Status: PENDING).",
+    "_id": "yqv42wma",
+    "createdAt": "2026-10-07T17:05:49.606Z",
+    "updatedAt": "2026-10-07T17:05:49.606Z"
+  },
+  {
+    "userId": "admin1",
+    "userName": "Admin",
+    "role": "Admin",
+    "action": "ADVOCATE_APPROVED",
+    "ip": "127.0.0.1",
+    "details": "Approved verification for advocate: Advocate Pending Google (Enrollment: AP/999/2024)",
+    "_id": "x0by14dc",
+    "createdAt": "2026-10-07T17:05:49.621Z",
+    "updatedAt": "2026-10-07T17:05:49.621Z"
+  },
+  {
+    "userId": "admin1",
+    "userName": "Admin",
+    "role": "Admin",
+    "action": "ADVOCATE_REJECTED",
+    "ip": "127.0.0.1",
+    "details": "Rejected verification for advocate: Advocate Pending Google (Enrollment: AP/999/2024)",
+    "_id": "izqzbxib",
+    "createdAt": "2026-10-07T17:05:49.629Z",
+    "updatedAt": "2026-10-07T17:05:49.629Z"
+  },
+  {
+    "userId": "admin1",
+    "userName": "Admin",
+    "role": "Admin",
+    "action": "ADVOCATE_DELETED",
+    "ip": "127.0.0.1",
+    "details": "Permanently deleted advocate profile: Advocate Pending Google (Enrollment: AP/999/2024)",
+    "_id": "rktrx8ug",
+    "createdAt": "2026-10-07T17:05:49.713Z",
+    "updatedAt": "2026-10-07T17:05:49.713Z"
   }
 ]

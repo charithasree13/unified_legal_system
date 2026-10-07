@@ -73,6 +73,7 @@ export const register = async (req: Request, res: Response) => {
       password: hashedPassword,
       role: assignedRole,
       enrollmentNumber: isAdvRole ? enrollmentNumber : undefined,
+      hasCompletedProfile: isAdvRole ? true : false,
       isVerified: !isAdvRole,
       verificationStatus: isAdvRole ? 'PENDING' : 'APPROVED'
     });
@@ -526,13 +527,22 @@ export const googleAuth = async (req: Request, res: Response) => {
     // Check if an Advocate profile document exists in Advocate collection
     let existingAdv = await Advocate.findOne({
       $or: [
-        { googleSub },
-        ...(email ? [{ email }] : [])
+        ...(googleSub ? [{ googleSub }] : []),
+        ...(email ? [{ email: email.toLowerCase() }] : []),
+        ...(user.email ? [{ email: user.email.toLowerCase() }] : []),
+        ...(user.phone ? [{ phone: user.phone }] : []),
+        ...((user as any).enrollmentNumber ? [{ enrollmentNumber: (user as any).enrollmentNumber }] : [])
       ]
     });
 
+    const isAdvocateProfileComplete = Boolean(
+      (user as any).hasCompletedProfile === true ||
+      (user as any).enrollmentNumber ||
+      (existingAdv && (existingAdv.enrollmentNumber || (existingAdv as any).barEnrollmentNo))
+    );
+
     // If Advocate profile details have NOT been submitted yet
-    if (!existingAdv || !user.hasCompletedProfile || !existingAdv.enrollmentNumber || !existingAdv.specialization || !existingAdv.court) {
+    if (!isAdvocateProfileComplete) {
       const tokenPayload = {
         id: user._id,
         email: user.email || email,
@@ -570,27 +580,45 @@ export const googleAuth = async (req: Request, res: Response) => {
       });
     }
 
-    // Advocate profile details exist. Check verification status.
-    const isAdvVerified = existingAdv.isVerified === true;
-    const advStatus = existingAdv.verificationStatus || (isAdvVerified ? 'APPROVED' : 'PENDING');
+    // Profile is complete! Update models and check verification status.
+    const cleanEnrollment = (existingAdv?.enrollmentNumber || (user as any).enrollmentNumber || '').trim();
+
+    // Ensure User model has hasCompletedProfile: true, googleSub, and enrollmentNumber
+    const userUpdates: any = {};
+    if (!(user as any).hasCompletedProfile) userUpdates.hasCompletedProfile = true;
+    if (!user.googleSub && googleSub) userUpdates.googleSub = googleSub;
+    if (!(user as any).enrollmentNumber && cleanEnrollment) userUpdates.enrollmentNumber = cleanEnrollment;
+    if (Object.keys(userUpdates).length > 0) {
+      await User.findByIdAndUpdate(user._id, userUpdates);
+      Object.assign(user, userUpdates);
+    }
+
+    // Ensure Advocate model has googleSub if present
+    if (existingAdv && !existingAdv.googleSub && googleSub) {
+      await Advocate.findByIdAndUpdate(existingAdv._id, { googleSub });
+      existingAdv.googleSub = googleSub;
+    }
+
+    const isAdvVerified = (existingAdv && existingAdv.isVerified === true) || user.isVerified === true;
+    const advStatus = (existingAdv?.verificationStatus || user.verificationStatus) || (isAdvVerified ? 'APPROVED' : 'PENDING');
 
     if (advStatus === 'REJECTED') {
       return res.status(403).json({
         success: false,
         rejectedVerification: true,
         verificationStatus: 'REJECTED',
-        message: existingAdv.rejectionReason
-          ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv.rejectionReason}`
+        message: existingAdv?.rejectionReason || (user as any)?.rejectionReason
+          ? `Your advocate registration was rejected by the administrator. Reason: ${existingAdv?.rejectionReason || (user as any)?.rejectionReason}`
           : 'Your advocate registration was not approved by the administrator.'
       });
     }
 
     const tokenPayload = {
       id: user._id,
-      email: user.email,
-      role: user.role,
+      email: user.email || email,
+      role: 'Advocate',
       name: user.name,
-      phone: user.phone
+      phone: user.phone || (existingAdv ? existingAdv.phone : '')
     };
     const accessToken = createToken(tokenPayload, JWT_SECRET, '1h');
     const refreshTokenStr = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
@@ -613,16 +641,16 @@ export const googleAuth = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message: 'Google login successful.',
+      message: advStatus === 'APPROVED' ? 'Google login successful.' : 'Google account authenticated. Advocate profile pending Admin verification.',
       accessToken,
       refreshToken: refreshTokenStr,
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
-        role: user.role,
-        phone: user.phone || '',
-        enrollmentNumber: existingAdv.enrollmentNumber || '',
+        email: user.email || email,
+        role: 'Advocate',
+        phone: user.phone || (existingAdv ? existingAdv.phone : ''),
+        enrollmentNumber: cleanEnrollment,
         profilePhoto: user.profilePhoto || picture,
         hasCompletedProfile: true,
         isVerified: advStatus === 'APPROVED',
