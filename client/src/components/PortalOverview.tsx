@@ -269,12 +269,38 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
           iconColor: 'text-amber-600 dark:text-amber-400',
           gradientBorder: 'hover:border-amber-500/50'
+        },
+        {
+          id: 'legal-dictionary',
+          title: 'Legal Dictionary',
+          description: 'Browse legal terms, definitions by category, and manage legal dictionary entries.',
+          tag: 'Legal Reference',
+          icon: BookOpen,
+          path: '/legal-dictionary',
+          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
+          badgeText: 'text-purple-600 dark:text-purple-400',
+          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
+          iconColor: 'text-purple-600 dark:text-purple-400',
+          gradientBorder: 'hover:border-purple-500/50'
         }
       ];
     }
 
     if (role === 'Advocate') {
       return [
+        {
+          id: 'legal-dictionary',
+          title: 'Legal Dictionary',
+          description: 'Browse comprehensive legal terms, Latin maxims, Islamic terms, and statutory glossaries.',
+          tag: 'Legal Reference',
+          icon: BookOpen,
+          path: '/legal-dictionary',
+          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
+          badgeText: 'text-purple-600 dark:text-purple-400',
+          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
+          iconColor: 'text-purple-600 dark:text-purple-400',
+          gradientBorder: 'hover:border-purple-500/50'
+        },
         {
           id: 'projects',
           title: 'Case Projects & Tracking',

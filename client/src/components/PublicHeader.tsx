@@ -39,10 +39,11 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
 
   const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
   const canAccessConverter = user?.role === 'Admin' || isApprovedAdvocate;
+  const isAdvocateOrAdmin = user?.role === 'Admin' || user?.role === 'Advocate';
 
   const navLinks = [
     { label: 'Home', path: '/dashboard' },
-    { label: 'Legal Dictionary', path: '/legal-dictionary' },
+    ...(isAdvocateOrAdmin ? [{ label: 'Legal Dictionary', path: '/legal-dictionary' }] : []),
     { label: 'Advocates', path: '/directory' },
     { label: 'Calculators', path: '/calculators' },
   ];

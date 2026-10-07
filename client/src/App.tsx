@@ -29,10 +29,16 @@ import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
 
 // Protected Feature Wrapper (Intercepts unauthenticated visitors & checks role authorization)
-const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string; allowedRoles?: string[] }> = ({ 
+const ProtectedRoute: React.FC<{ 
+  children: React.ReactNode; 
+  featureName?: string; 
+  allowedRoles?: string[];
+  allowUnapprovedAdvocate?: boolean;
+}> = ({ 
   children, 
   featureName = 'this protected feature',
-  allowedRoles
+  allowedRoles,
+  allowUnapprovedAdvocate = false
 }) => {
   const { token, user } = useAuthStore();
   const [authModalOpen, setAuthModalOpen] = useState(true);
@@ -60,7 +66,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; featureName?: string
       return <Navigate to="/dashboard" replace />;
     }
 
-    if (roleLower === 'advocate') {
+    if (roleLower === 'advocate' && !allowUnapprovedAdvocate) {
       const isApprovedAdvocate = user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED';
       if (!isApprovedAdvocate) {
         return <Navigate to="/dashboard" replace />;
@@ -118,8 +124,17 @@ export const App: React.FC = () => {
           {/* Main Dashboard Route (Public before login, Role-based after login) */}
           <Route path="dashboard" element={<DashboardSwitcher />} />
 
-          {/* Publicly Accessible Modules (No Login Required) */}
-          <Route path="legal-dictionary" element={<LegalDictionary />} />
+          {/* Protected Legal Dictionary Module (Admin & Advocate Only) */}
+          <Route 
+            path="legal-dictionary" 
+            element={
+              <ProtectedRoute featureName="Legal Dictionary" allowedRoles={['Admin', 'Advocate']} allowUnapprovedAdvocate={true}>
+                <LegalDictionary />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Publicly Accessible Calculator Modules (No Login Required) */}
           <Route path="calculators" element={<Calculators />} />
           <Route path="interest-calculator" element={<InterestCalculatorPage />} />
           <Route path="calculators/interest" element={<InterestCalculatorPage />} />

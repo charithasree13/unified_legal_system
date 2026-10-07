@@ -23,12 +23,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
   };
 
   const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');
+  const isAdvocateOrAdmin = user?.role === 'Admin' || user?.role === 'Advocate';
   const isAuthorized = user?.role === 'Admin' || isApprovedAdvocate;
   const isNormalUser = !isAuthorized;
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Legal Dictionary', path: '/legal-dictionary', icon: BookOpen },
+    { name: 'Legal Dictionary', path: '/legal-dictionary', icon: BookOpen, advocateOrAdminOnly: true },
     { name: 'Advocate Directory', path: '/directory', icon: Users },
     { name: 'Court Fee & Land Calculators', path: '/calculators', icon: Calculator },
     { name: 'Interest Calculator', path: '/interest-calculator', icon: Calculator },
@@ -46,7 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'My Notes', path: '/my-notes', icon: StickyNote, normalUserHide: true },
     { name: 'My Profile', path: '/profile', icon: User },
     { name: 'Settings', path: '/settings', icon: Settings },
-  ].filter(item => !(isNormalUser && item.normalUserHide));
+  ].filter(item => {
+    if (isNormalUser && item.normalUserHide) return false;
+    if (!isAdvocateOrAdmin && item.advocateOrAdminOnly) return false;
+    return true;
+  });
 
   return (
     <>

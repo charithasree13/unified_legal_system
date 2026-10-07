@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, BookOpen, Filter, X, ChevronRight, Scale, Info, FileText, Sparkles, Layers, ArrowLeft } from 'lucide-react';
+import { Search, BookOpen, Filter, X, ChevronRight, Scale, Info, FileText, Sparkles, Layers, ArrowLeft, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { getApiUrl } from '../config/api';
 
 export interface DictionaryEntry {
   id: string;
@@ -11,12 +13,17 @@ export interface DictionaryEntry {
   examples?: string[];
   notes?: string[];
   relatedTerms?: string[];
+  createdBy?: string;
+  createdAt?: string;
 }
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const ITEMS_PER_PAGE = 50;
 
 export const LegalDictionary: React.FC = () => {
+  const { user, token, addNotification } = useAuthStore();
+  const isAdmin = user?.role === 'Admin';
+
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,27 +35,51 @@ export const LegalDictionary: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<DictionaryEntry | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Fetch static dictionary data
+  // Add Term Modal States (Admin Only)
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [newTerm, setNewTerm] = useState<string>('');
+  const [newCategory, setNewCategory] = useState<string>('');
+  const [customCategory, setCustomCategory] = useState<string>('');
+  const [newDefinition, setNewDefinition] = useState<string>('');
+  const [newAdditionalInfo, setNewAdditionalInfo] = useState<string>('');
+  const [newExamples, setNewExamples] = useState<string>('');
+  const [newNotes, setNewNotes] = useState<string>('');
+  const [newRelatedTerms, setNewRelatedTerms] = useState<string>('');
+  const [addLoading, setAddLoading] = useState<boolean>(false);
+  const [addError, setAddError] = useState<string | null>(null);
+  const [addSuccess, setAddSuccess] = useState<string | null>(null);
+
+  // Fetch protected dictionary data from backend API
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    fetch('/data/legal-dictionary.json')
+    setError(null);
+
+    fetch(getApiUrl('/api/dictionary'), {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then(res => {
+        if (res.status === 401 || res.status === 403) {
+          throw new Error("Access Denied: You do not have permission to view the Legal Dictionary.");
+        }
         if (!res.ok) {
           throw new Error(`Failed to load dictionary data: HTTP ${res.status}`);
         }
         return res.json();
       })
-      .then((data: DictionaryEntry[]) => {
+      .then((data: any) => {
         if (isMounted) {
-          setEntries(data);
+          const list = Array.isArray(data) ? data : (data.entries || data.data || []);
+          setEntries(list);
           setLoading(false);
         }
       })
       .catch(err => {
         if (isMounted) {
           console.error("Error loading legal dictionary:", err);
-          setError("Unable to load legal dictionary static data. Please try again later.");
+          setError(err.message || "Unable to load legal dictionary static data. Please try again later.");
           setLoading(false);
         }
       });
@@ -56,7 +87,86 @@ export const LegalDictionary: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [token]);
+
+  const handleAddTermSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddError(null);
+    setAddSuccess(null);
+
+    const termVal = newTerm.trim();
+    const catVal = (newCategory === 'NEW_CATEGORY' ? customCategory : newCategory).trim();
+    const defVal = newDefinition.trim();
+
+    if (!termVal) {
+      setAddError('Word / Legal Term is required.');
+      return;
+    }
+    if (!catVal) {
+      setAddError('Category is required.');
+      return;
+    }
+    if (!defVal) {
+      setAddError('Meaning / Definition is required.');
+      return;
+    }
+
+    setAddLoading(true);
+
+    try {
+      const res = await fetch(getApiUrl('/api/dictionary'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          term: termVal,
+          category: catVal,
+          definition: defVal,
+          additionalInformation: newAdditionalInfo.trim(),
+          examples: newExamples.trim() ? newExamples.split('\n').map(s => s.trim()).filter(Boolean) : [],
+          notes: newNotes.trim() ? newNotes.split('\n').map(s => s.trim()).filter(Boolean) : [],
+          relatedTerms: newRelatedTerms.trim() ? newRelatedTerms.split(',').map(s => s.trim()).filter(Boolean) : []
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to save new legal term.');
+      }
+
+      const addedEntry: DictionaryEntry = data.entry;
+      setEntries(prev => [addedEntry, ...prev]);
+      setAddSuccess('Legal term added successfully!');
+
+      if (addNotification) {
+        addNotification('Success', `Legal term "${addedEntry.term}" added successfully.`, 'success');
+      }
+
+      // Reset form
+      setNewTerm('');
+      setNewCategory('');
+      setCustomCategory('');
+      setNewDefinition('');
+      setNewAdditionalInfo('');
+      setNewExamples('');
+      setNewNotes('');
+      setNewRelatedTerms('');
+
+      setTimeout(() => {
+        setIsAddModalOpen(false);
+        setAddSuccess(null);
+      }, 1000);
+
+    } catch (err: any) {
+      console.error("Add term error:", err);
+      setAddError(err.message || 'Failed to add legal term.');
+    } finally {
+      setAddLoading(false);
+    }
+  };
 
   // Dynamically extract unique categories
   const categories = useMemo(() => {
@@ -154,17 +264,29 @@ export const LegalDictionary: React.FC = () => {
               </p>
             </div>
 
-            {/* Overall Stat Counter */}
-            <div className="flex items-center gap-4 bg-slate-100 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60 flex-shrink-0">
-              <div className="p-3 bg-primary/10 text-primary dark:bg-sky-500/20 dark:text-sky-400 rounded-lg">
-                <Scale size={24} />
-              </div>
-              <div>
-                <div className="text-2xl font-black text-slate-900 dark:text-white">
-                  {entries.length.toLocaleString()}
+            {/* Right side controls: Stat counter & Admin Add Button */}
+            <div className="flex flex-wrap items-center gap-4 flex-shrink-0">
+              {isAdmin && (
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <Plus size={16} />
+                  Add Legal Term
+                </button>
+              )}
+
+              <div className="flex items-center gap-4 bg-slate-100 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60 flex-shrink-0">
+                <div className="p-3 bg-primary/10 text-primary dark:bg-sky-500/20 dark:text-sky-400 rounded-lg">
+                  <Scale size={24} />
                 </div>
-                <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  Total Terms in {categories.length} Categories
+                <div>
+                  <div className="text-2xl font-black text-slate-900 dark:text-white">
+                    {entries.length.toLocaleString()}
+                  </div>
+                  <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    Total Terms in {categories.length} Categories
+                  </div>
                 </div>
               </div>
             </div>
@@ -470,6 +592,161 @@ export const LegalDictionary: React.FC = () => {
                 Close View
               </button>
             </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Admin Add Legal Term Modal */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-5 relative">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white">
+                <BookOpen size={20} className="text-amber-500" />
+                <h3 className="text-lg font-bold">Add New Legal Term</h3>
+              </div>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {addError && (
+              <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-3.5 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-2">
+                <Info size={16} className="flex-shrink-0 text-red-500" />
+                <span>{addError}</span>
+              </div>
+            )}
+
+            {addSuccess && (
+              <div className="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 p-3.5 rounded-xl text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                <Sparkles size={16} className="flex-shrink-0 text-emerald-500" />
+                <span>{addSuccess}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleAddTermSubmit} className="space-y-4 text-xs">
+              {/* Term / Word */}
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Word / Legal Term <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newTerm}
+                  onChange={(e) => setNewTerm(e.target.value)}
+                  placeholder="e.g. Res Judicata, Mandamus, Coparcenary"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Category <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white mb-2"
+                >
+                  <option value="">-- Select Category --</option>
+                  {categories.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                  <option value="NEW_CATEGORY">+ Create New Category...</option>
+                </select>
+
+                {(newCategory === 'NEW_CATEGORY' || categories.length === 0) && (
+                  <input
+                    type="text"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="Enter new category name..."
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                  />
+                )}
+              </div>
+
+              {/* Definition / Meaning */}
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Meaning / Definition <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={newDefinition}
+                  onChange={(e) => setNewDefinition(e.target.value)}
+                  placeholder="Enter full legal definition..."
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Additional Info */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Additional Information / Explanation (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={newAdditionalInfo}
+                  onChange={(e) => setNewAdditionalInfo(e.target.value)}
+                  placeholder="Statutory context, case citations, or notes..."
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Examples */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Examples (Optional, one per line)
+                </label>
+                <textarea
+                  rows={2}
+                  value={newExamples}
+                  onChange={(e) => setNewExamples(e.target.value)}
+                  placeholder="Example 1&#10;Example 2"
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Related Terms */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Related Terms (Optional, comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={newRelatedTerms}
+                  onChange={(e) => setNewRelatedTerms(e.target.value)}
+                  placeholder="e.g. Stare Decisis, Ratio Decidendi"
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-900 dark:text-white"
+                />
+              </div>
+
+              {/* Form Actions */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={addLoading}
+                  className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl disabled:opacity-50 transition-colors"
+                >
+                  {addLoading ? 'Saving...' : 'Save Legal Term'}
+                </button>
+              </div>
+            </form>
 
           </div>
         </div>

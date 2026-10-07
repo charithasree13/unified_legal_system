@@ -25,6 +25,7 @@ import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
 import * as islamicInheritanceCtrl from './controllers/islamicInheritanceController';
 import * as limitationCtrl from './controllers/limitationController';
 import * as noteCtrl from './controllers/noteController';
+import * as dictionaryCtrl from './controllers/dictionaryController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -208,6 +209,19 @@ app.put('/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.update
 
 app.delete('/api/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.deleteNote);
 app.delete('/notes/:id', authenticateToken, requireAdminOrAdvocate, noteCtrl.deleteNote);
+
+// LEGAL DICTIONARY API (Protected: Admin & Enrolled/Pending Advocate for GET, Admin ONLY for POST)
+app.get('/api/dictionary', authenticateToken, dictionaryCtrl.getDictionaryEntries);
+app.get('/api/legal-dictionary', authenticateToken, dictionaryCtrl.getDictionaryEntries);
+app.get('/api/legal/dictionary', authenticateToken, dictionaryCtrl.getDictionaryEntries);
+app.get('/dictionary', authenticateToken, dictionaryCtrl.getDictionaryEntries);
+app.get('/legal-dictionary', authenticateToken, dictionaryCtrl.getDictionaryEntries);
+
+app.post('/api/dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
+app.post('/api/legal-dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
+app.post('/api/legal/dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
+app.post('/dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
+app.post('/legal-dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
 
 
 

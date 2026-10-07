@@ -694,6 +694,19 @@ const ImportLogSchema = new mongoose.Schema({
   errorLog: { type: [String], default: [] }
 }, { timestamps: true });
 
+const DictionaryItemSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  term: { type: String, required: true },
+  definition: { type: String, required: true },
+  category: { type: String, required: true },
+  additionalInformation: { type: String },
+  examples: { type: [String], default: [] },
+  notes: { type: [String], default: [] },
+  relatedTerms: { type: [String], default: [] },
+  createdBy: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -727,6 +740,7 @@ export const HearingReminder: any = createDynamicModel('HearingReminder', Hearin
 export const DailyLegalTip: any = createDynamicModel('DailyLegalTip', DailyLegalTipSchema);
 export const Note: any = createDynamicModel('Note', NoteSchema);
 export const ImportLog: any = createDynamicModel('ImportLog', ImportLogSchema);
+export const DictionaryItem: any = createDynamicModel('DictionaryItem', DictionaryItemSchema);
 
 export const State: any = createDynamicModel('State', StateSchema);
 export const District: any = createDynamicModel('District', DistrictSchema);
@@ -744,5 +758,6 @@ export const CalculationHistory: any = createDynamicModel('CalculationHistory', 
 export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVerificationSchema);
 export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
+
 
 
