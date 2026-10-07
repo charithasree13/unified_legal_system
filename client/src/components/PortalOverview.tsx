@@ -85,21 +85,6 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           gradientBorder: 'hover:border-emerald-500/50'
         },
         {
-          id: 'admin-docs',
-          title: 'Judgements & Acts Indexing',
-          description: 'Upload, organize, tag, and publish Supreme Court / High Court judgements and central & state Bare Acts.',
-          tag: 'Repository Admin',
-          icon: CloudUpload,
-          path: '/dashboard',
-          isAdminInternal: true,
-          targetId: 'admin-section-doc-management',
-          badgeBg: 'bg-blue-500/10 dark:bg-blue-400/10 border-blue-500/30',
-          badgeText: 'text-blue-600 dark:text-blue-400',
-          iconBg: 'bg-blue-500/10 dark:bg-blue-500/20',
-          iconColor: 'text-blue-600 dark:text-blue-400',
-          gradientBorder: 'hover:border-blue-500/50'
-        },
-        {
           id: 'directory',
           title: 'Advocate Directory',
           description: 'Access the complete advocate directory database, manage verified badges and practitioner profiles.',
