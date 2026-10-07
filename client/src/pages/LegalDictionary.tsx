@@ -72,10 +72,14 @@ export const LegalDictionary: React.FC = () => {
       .then((data: any) => {
         if (isMounted) {
           const list: DictionaryEntry[] = Array.isArray(data) ? data : (data.entries || data.data || []);
-          const sanitized = list.map(item => ({
-            ...item,
-            term: item.term ? item.term.replace(/^\d+[\s\.\-\:\)\'\"]*/, '').trim().replace(/^./, c => c.toUpperCase()) : item.term
-          }));
+          const sanitized = list
+            .map(item => {
+              const raw = item.term || '';
+              const cleaned = raw.replace(/^\d+[\s\.\-\:\)\'\"]*/, '').trim();
+              const termStr = cleaned.length > 0 ? (cleaned.charAt(0).toUpperCase() + cleaned.slice(1)) : '';
+              return { ...item, term: termStr };
+            })
+            .filter(item => item.term && item.term.trim().length > 0 && !/^\d+$/.test(item.term.trim()));
           setEntries(sanitized);
           setLoading(false);
         }

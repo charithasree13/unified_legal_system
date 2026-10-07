@@ -9,10 +9,10 @@ let cachedStaticEntries: any[] | null = null;
 function cleanTerm(str: string): string {
   if (!str) return str;
   let cleaned = str.replace(/^\d+[\s\.\-\:\)\'\"]*/, '').trim();
-  if (cleaned.length > 0) {
+  if (cleaned.length > 0 && !/^\d+$/.test(cleaned)) {
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   }
-  return str;
+  return cleaned || str;
 }
 
 function loadStaticDictionary(): any[] {
@@ -75,23 +75,27 @@ export const getDictionaryEntries = async (req: AuthenticatedRequest, res: Respo
       console.error('Error reading dictionary items from database:', err);
     }
 
-    const formattedDbEntries = dbEntries.map((item: any) => ({
-      id: item.id || item._id?.toString() || `dict_${Date.now()}_${Math.random()}`,
-      term: cleanTerm(item.term),
-      definition: item.definition || item.meaning,
-      category: item.category,
-      additionalInformation: item.additionalInformation || '',
-      examples: item.examples || [],
-      notes: item.notes || [],
-      relatedTerms: item.relatedTerms || [],
-      createdBy: item.createdBy,
-      createdAt: item.createdAt
-    }));
+    const formattedDbEntries = dbEntries
+      .map((item: any) => ({
+        id: item.id || item._id?.toString() || `dict_${Date.now()}_${Math.random()}`,
+        term: cleanTerm(item.term),
+        definition: item.definition || item.meaning,
+        category: item.category,
+        additionalInformation: item.additionalInformation || '',
+        examples: item.examples || [],
+        notes: item.notes || [],
+        relatedTerms: item.relatedTerms || [],
+        createdBy: item.createdBy,
+        createdAt: item.createdAt
+      }))
+      .filter((item: any) => item.term && item.term.trim().length > 0 && !/^\d+$/.test(item.term.trim()));
 
-    const formattedStaticEntries = staticEntries.map((item: any) => ({
-      ...item,
-      term: cleanTerm(item.term)
-    }));
+    const formattedStaticEntries = staticEntries
+      .map((item: any) => ({
+        ...item,
+        term: cleanTerm(item.term)
+      }))
+      .filter((item: any) => item.term && item.term.trim().length > 0 && !/^\d+$/.test(item.term.trim()));
 
     // Merge DB entries (at the top) with static entries
     const combinedEntries = [...formattedDbEntries, ...formattedStaticEntries];
