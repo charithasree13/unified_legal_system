@@ -73,7 +73,7 @@ export const PublicDashboard: React.FC = () => {
     else setLandConvertedSqFt((val * 43560).toLocaleString());
   };
 
-  // Comprehensive Module Catalog
+  // Comprehensive Module Catalog with refined legal accents
   const modulesList = [
     {
       id: 'land-calc',
@@ -84,7 +84,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Convert regional land measurements: Square Feet, Acres, Guntas, Ankanams, Cents, Hectares, and Bighas.',
       actionText: 'Open Land Converter',
       path: '/calculators',
-      iconBg: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800'
+      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#D8C49A] border-[#A67C3B]/20'
     },
     {
       id: 'interest-calc',
@@ -95,7 +95,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Compute simple and compound interest on litigation awards, court decrees, and commercial claims.',
       actionText: 'Open Interest Calculator',
       path: '/interest-calculator',
-      iconBg: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800'
+      iconBg: 'bg-[#53634A]/10 text-[#53634A] dark:text-[#8FAF9C] border-[#53634A]/20'
     },
     {
       id: 'date-calc',
@@ -106,7 +106,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Calculate calendar days between two dates with leap year breakdown and inclusive count support.',
       actionText: 'Open Date Calculator',
       path: '/date-difference-calculator',
-      iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
+      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
     },
     {
       id: 'directory',
@@ -117,7 +117,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Search & connect with verified advocates across Madanapalle, Andhra Pradesh, High Courts, and District Courts.',
       actionText: 'Search Advocates',
       path: '/directory',
-      iconBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
     },
     {
       id: 'services',
@@ -128,7 +128,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
       actionText: 'Explore Legal Services',
       path: '/directory',
-      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#D8C49A] border-[#A67C3B]/20'
     },
     {
       id: 'laws',
@@ -139,7 +139,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Access comprehensive Central & State Bare Acts, statutory sections, legislative amendments, and legal rules.',
       actionText: 'Browse Bare Acts',
       path: '/laws',
-      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
     },
     {
       id: 'judgements',
@@ -150,7 +150,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Browse Supreme Court of India and High Court landmark judgements, precedent rulings, and case law transcripts.',
       actionText: 'Search Judgments',
       path: '/judgements',
-      iconBg: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
+      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
     },
     {
       id: 'section-mapping',
@@ -161,7 +161,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Interactive mapping between traditional criminal codes (IPC, CrPC, Evidence Act) and new Bharatiya Nyaya Sanhita (BNS, BNSS, BSA).',
       actionText: 'View Section Map',
       path: '/section-mapping',
-      iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800'
+      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#C7A45A] border-[#A67C3B]/20'
     },
     {
       id: 'projects',
@@ -172,7 +172,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Litigation file management, client case assignments, next hearing dates, task progress, and lawyer notes.',
       actionText: 'Manage Cases',
       path: '/projects',
-      iconBg: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800'
+      iconBg: 'bg-[#71877B]/10 text-[#71877B] dark:text-[#AFC9B7] border-[#71877B]/20'
     },
     {
       id: 'collaboration',
@@ -183,7 +183,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Collaborative legal notice drafting, contract review, versioning, annotation, and shared document vaults.',
       actionText: 'Draft Docs',
       path: '/collaboration',
-      iconBg: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800'
+      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
     },
     {
       id: 'chat',
@@ -194,7 +194,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Direct real-time encrypted communication between clients and assigned legal advocates with document sharing.',
       actionText: 'Start Chat',
       path: '/chat',
-      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
     },
     {
       id: 'notifications',
@@ -205,7 +205,7 @@ export const PublicDashboard: React.FC = () => {
       description: 'Automated hearing date notifications, task deadline reminders, and court schedule updates for active matters.',
       actionText: 'View Reminders',
       path: '/projects',
-      iconBg: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800'
+      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
     },
     {
       id: 'verification',
@@ -216,19 +216,19 @@ export const PublicDashboard: React.FC = () => {
       description: 'Platform verification system for Bar Council enrollment numbers, advocate credentials, and administrator approvals.',
       actionText: 'Admin Console',
       path: '/dashboard',
-      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#C7A45A] border-[#A67C3B]/20'
     }
   ];
 
   return (
-    <div className="w-full font-sans">
+    <div className="w-full font-sans bg-background dark:bg-dark-background text-text-primary dark:text-dark-text-primary">
       {/* Main Content Body */}
       <main className="w-full">
 
         {/* HERO SECTION */}
-        <section className="relative bg-gradient-to-br from-slate-200 via-sky-100/90 to-indigo-100/80 dark:from-slate-800 dark:via-[#1e293b] dark:to-indigo-950 text-slate-900 dark:text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-300 dark:border-slate-800 overflow-hidden transition-colors">
+        <section className="relative bg-[#EFEAE0] dark:bg-[#151815] text-[#242522] dark:text-[#F4F0E7] py-16 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-[#D8D1C5] dark:border-[#3A4038] overflow-hidden transition-colors">
 
-          <div className="absolute inset-0 pointer-events-none opacity-[0.06] dark:opacity-[0.04]">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
             <svg className="w-full h-full" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <pattern id="heroPattern" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -244,8 +244,7 @@ export const PublicDashboard: React.FC = () => {
             {/* Prominent Logo & Suite Badge */}
             <div className="flex flex-col items-center justify-center space-y-4">
               <div className="relative group">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 via-amber-400 to-sky-400 rounded-full blur-lg opacity-80 group-hover:opacity-100 transition duration-500" />
-                <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-white border-4 border-amber-400 p-1.5 shadow-2xl overflow-hidden flex items-center justify-center">
+                <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-[#FFFDF8] border-2 border-[#A67C3B] p-1 shadow-md overflow-hidden flex items-center justify-center">
                   <img
                     src="/logo.jpg"
                     alt="Elite Legal Desk Logo"
@@ -254,34 +253,34 @@ export const PublicDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="inline-flex items-center gap-2 bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-800 dark:text-amber-300 backdrop-blur-md shadow-xs">
-                <Scale size={14} className="text-amber-600 dark:text-amber-400" />
+              <div className="inline-flex items-center gap-2 bg-[#A67C3B]/10 dark:bg-[#C7A45A]/15 border border-[#A67C3B]/30 px-4 py-1.5 rounded-full text-xs font-semibold text-[#183C32] dark:text-[#D8C49A]">
+                <Scale size={14} className="text-[#A67C3B] dark:text-[#C7A45A]" />
                 <span>Digital Legal Technology & Case Collaboration Suite</span>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-sans tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-serif tracking-tight text-[#242522] dark:text-[#F4F0E7] max-w-4xl mx-auto leading-tight">
                 Elite Legal Desk
               </h1>
             </div>
 
-            <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-medium">
+            <p className="text-[#625F58] dark:text-[#C5C0B6] text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-normal">
               A professional digital platform connecting legal services, verified advocates, legal documents, statutory bare acts, legal calculators, and litigation tools in one integrated portal.
             </p>
 
             <div className="flex flex-wrap justify-center items-center gap-3 text-xs font-medium pt-2">
-              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-emerald-700 dark:text-emerald-400 shadow-xs">
-                <Calculator size={14} /> Land & Legal Calculators
+              <span className="flex items-center gap-1.5 bg-[#FFFDF8] dark:bg-[#242822] px-3 py-1.5 rounded-lg border border-[#D8D1C5] dark:border-[#3A4038] text-[#183C32] dark:text-[#8FAF9C] shadow-xs">
+                <Calculator size={14} className="text-[#183C32] dark:text-[#8FAF9C]" /> Land & Legal Calculators
               </span>
-              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
-                <ShieldCheck size={14} className="text-amber-600 dark:text-amber-400" /> Verified Advocate Directory
+              <span className="flex items-center gap-1.5 bg-[#FFFDF8] dark:bg-[#242822] px-3 py-1.5 rounded-lg border border-[#D8D1C5] dark:border-[#3A4038] text-[#242522] dark:text-[#F4F0E7] shadow-xs">
+                <ShieldCheck size={14} className="text-[#A67C3B] dark:text-[#C7A45A]" /> Verified Advocate Directory
               </span>
-              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
-                <BookOpen size={14} className="text-sky-600 dark:text-sky-400" /> Bare Acts & Judgments Library
+              <span className="flex items-center gap-1.5 bg-[#FFFDF8] dark:bg-[#242822] px-3 py-1.5 rounded-lg border border-[#D8D1C5] dark:border-[#3A4038] text-[#242522] dark:text-[#F4F0E7] shadow-xs">
+                <BookOpen size={14} className="text-[#6A5948] dark:text-[#D8C49A]" /> Bare Acts & Judgments Library
               </span>
-              <span className="flex items-center gap-1.5 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 shadow-xs">
-                <Scale size={14} className="text-indigo-600 dark:text-indigo-400" /> Case & Litigation Tracking
+              <span className="flex items-center gap-1.5 bg-[#FFFDF8] dark:bg-[#242822] px-3 py-1.5 rounded-lg border border-[#D8D1C5] dark:border-[#3A4038] text-[#242522] dark:text-[#F4F0E7] shadow-xs">
+                <Scale size={14} className="text-[#71877B] dark:text-[#AFC9B7]" /> Case & Litigation Tracking
               </span>
             </div>
 
@@ -289,7 +288,7 @@ export const PublicDashboard: React.FC = () => {
             <div className="pt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
               <a
                 href="#modules"
-                className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                className="btn-primary flex items-center gap-2 cursor-pointer text-xs sm:text-sm"
               >
                 <BookOpen size={16} />
                 <span>Explore Legal Services</span>
@@ -297,7 +296,7 @@ export const PublicDashboard: React.FC = () => {
 
               <button
                 onClick={() => handleProtectedAction('/directory', true)}
-                className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                className="btn-premium flex items-center gap-2 cursor-pointer text-xs sm:text-sm"
               >
                 <Users size={16} />
                 <span>Find an Advocate</span>
@@ -305,7 +304,7 @@ export const PublicDashboard: React.FC = () => {
 
               <Link
                 to="/calculators"
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                className="btn-secondary flex items-center gap-2 cursor-pointer text-xs sm:text-sm"
               >
                 <Calculator size={16} />
                 <span>Legal Calculators</span>
@@ -315,14 +314,14 @@ export const PublicDashboard: React.FC = () => {
                 <>
                   <button
                     onClick={() => openAuthModal('login')}
-                    className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm rounded-xl border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    className="btn-secondary flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm"
                   >
                     <span>Sign In</span>
                   </button>
 
                   <button
                     onClick={() => openAuthModal('signup')}
-                    className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="btn-primary flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm"
                   >
                     <span>Create Account</span>
                   </button>
@@ -333,17 +332,17 @@ export const PublicDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* MODULE OVERVIEW SECTION ("Everything You Need for Your Legal Journey") */}
+        {/* MODULE OVERVIEW SECTION */}
         <section id="modules" className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
 
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:text-sky-400 border border-primary/20 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32]/10 dark:bg-[#6F9A83]/15 text-[#183C32] dark:text-[#8FAF9C] border border-[#183C32]/20 text-xs font-bold uppercase tracking-wider">
               <span>Platform Modules & Access Policy</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#242522] dark:text-[#F4F0E7] font-serif tracking-tight">
               Everything You Need for Your Legal Journey
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+            <p className="text-[#625F58] dark:text-[#C5C0B6] text-xs sm:text-sm leading-relaxed font-normal">
               Land Measurement, Interest, and Date Difference calculators are accessible to all users. Professional litigation tools require sign in/sign up.
             </p>
           </div>
@@ -355,10 +354,8 @@ export const PublicDashboard: React.FC = () => {
               return (
                 <div
                   key={item.id}
-                  className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden"
+                  className="legal-card p-6 flex flex-col justify-between group relative overflow-hidden"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-800 group-hover:bg-primary transition-colors" />
-
                   <div className="space-y-4">
 
                     <div className="flex items-center justify-between">
@@ -367,25 +364,25 @@ export const PublicDashboard: React.FC = () => {
                       </div>
 
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${item.isProtected
-                        ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'
-                        : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
+                        ? 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#D8C49A] border-[#A67C3B]/20'
+                        : 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
                         }`}>
                         {item.category}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">
+                      <h3 className="text-base font-bold text-[#242522] dark:text-[#F4F0E7] group-hover:text-[#183C32] dark:group-hover:text-[#C7A45A] transition-colors font-serif">
                         {item.title}
                       </h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-xs mt-1.5 leading-relaxed">
+                      <p className="text-[#625F58] dark:text-[#C5C0B6] text-xs mt-1.5 leading-relaxed font-normal">
                         {item.description}
                       </p>
                     </div>
 
                   </div>
 
-                  <div className="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800">
+                  <div className="pt-5 mt-4 border-t border-[#D8D1C5]/60 dark:border-[#3A4038]/60">
                     <button
                       onClick={() => {
                         if (item.isProtected) {
@@ -395,11 +392,11 @@ export const PublicDashboard: React.FC = () => {
                         }
                       }}
                       className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${item.isProtected
-                        ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700'
-                        : 'bg-primary hover:bg-primary-hover text-white shadow-xs'
+                        ? 'btn-secondary'
+                        : 'btn-primary'
                         }`}
                     >
-                      {item.isProtected && <Lock size={14} className="text-amber-500" />}
+                      {item.isProtected && <Lock size={14} className="text-[#A67C3B]" />}
                       <span>{item.actionText}</span>
                       <ArrowRight size={14} />
                     </button>
@@ -413,18 +410,18 @@ export const PublicDashboard: React.FC = () => {
         </section>
 
         {/* PUBLIC COURT FEE CALCULATOR SPOTLIGHT SECTION */}
-        <section className="bg-slate-100 dark:bg-slate-900/60 border-t border-b border-slate-200 dark:border-slate-800 py-14 px-4 sm:px-6 lg:px-8">
+        <section className="bg-[#EFEAE0] dark:bg-[#1E211D] border-t border-b border-[#D8D1C5] dark:border-[#3A4038] py-14 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto space-y-8">
 
             <div className="text-center max-w-3xl mx-auto space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border border-[#183C32]/20 text-xs font-bold uppercase tracking-wider">
                 <Calculator size={14} />
                 <span>Publicly Accessible Legal Utilities</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#242522] dark:text-[#F4F0E7] font-serif">
                 Land Measurement & Legal Utility Calculators
               </h2>
-              <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
+              <p className="text-[#625F58] dark:text-[#C5C0B6] text-xs sm:text-sm">
                 Land measurement converters, interest rate calculators, and date difference calculators are available to all users.
               </p>
             </div>
@@ -432,13 +429,13 @@ export const PublicDashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
               {/* 1. Date Difference Calculator */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                    <Calendar size={18} className="text-indigo-500" />
+              <div className="legal-card p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-[#D8D1C5]/60 dark:border-[#3A4038]/60 pb-3">
+                  <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
+                    <Calendar size={18} className="text-[#183C32] dark:text-[#6F9A83]" />
                     Date Difference Calculator (Public)
                   </h3>
-                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-semibold uppercase">
+                  <span className="badge-verified">
                     Public Access
                   </span>
                 </div>
@@ -446,32 +443,32 @@ export const PublicDashboard: React.FC = () => {
                 <form onSubmit={handleDateCalcSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-medium text-[#625F58] dark:text-[#C5C0B6] mb-1">
                         Start Date
                       </label>
                       <input
                         type="date"
                         value={startDateStr}
                         onChange={(e) => setStartDateStr(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="legal-input"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-medium text-[#625F58] dark:text-[#C5C0B6] mb-1">
                         End Date
                       </label>
                       <input
                         type="date"
                         value={endDateStr}
                         onChange={(e) => setEndDateStr(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="legal-input"
                       />
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <span className="text-xs text-slate-500">Calculated Difference:</span>
-                    <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+                  <div className="flex justify-between items-center bg-[#EFEAE0] dark:bg-[#1E211D] p-3 rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
+                    <span className="text-xs text-[#625F58] dark:text-[#C5C0B6]">Calculated Difference:</span>
+                    <span className="text-base font-extrabold text-[#183C32] dark:text-[#C7A45A] font-mono">
                       {dateDiffResult} Days
                     </span>
                   </div>
@@ -479,13 +476,13 @@ export const PublicDashboard: React.FC = () => {
                   <div className="flex gap-2 pt-1">
                     <button
                       type="submit"
-                      className="flex-1 py-2 bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer"
+                      className="btn-primary flex-1 text-xs"
                     >
                       Calculate Days
                     </button>
                     <Link
                       to="/date-difference-calculator"
-                      className="py-2 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1"
+                      className="btn-secondary text-xs flex items-center gap-1"
                     >
                       Full Calculator <ArrowRight size={12} />
                     </Link>
@@ -494,13 +491,13 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               {/* 2. Land Area Converter */}
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                    <Landmark size={18} className="text-amber-500" />
+              <div className="legal-card p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-[#D8D1C5]/60 dark:border-[#3A4038]/60 pb-3">
+                  <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
+                    <Landmark size={18} className="text-[#A67C3B] dark:text-[#C7A45A]" />
                     Regional Land Area Converter (Public)
                   </h3>
-                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-semibold uppercase">
+                  <span className="badge-verified">
                     Public Access
                   </span>
                 </div>
@@ -508,7 +505,7 @@ export const PublicDashboard: React.FC = () => {
                 <form onSubmit={handleLandCalcSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-medium text-[#625F58] dark:text-[#C5C0B6] mb-1">
                         Land Area Quantity
                       </label>
                       <input
@@ -516,18 +513,18 @@ export const PublicDashboard: React.FC = () => {
                         step="any"
                         value={landValue}
                         onChange={(e) => setLandValue(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
+                        className="legal-input font-mono"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-medium text-[#625F58] dark:text-[#C5C0B6] mb-1">
                         Select Input Unit
                       </label>
                       <select
                         value={landUnitFrom}
                         onChange={(e) => setLandUnitFrom(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                        className="legal-input"
                       >
                         <option value="Acres">Acres</option>
                         <option value="Guntas">Guntas (Guntha)</option>
@@ -537,9 +534,9 @@ export const PublicDashboard: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <span className="text-xs text-slate-500">Converted Area (Sq. Ft):</span>
-                    <span className="text-base font-extrabold text-amber-600 dark:text-amber-400 font-mono">
+                  <div className="flex justify-between items-center bg-[#EFEAE0] dark:bg-[#1E211D] p-3 rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
+                    <span className="text-xs text-[#625F58] dark:text-[#C5C0B6]">Converted Area (Sq. Ft):</span>
+                    <span className="text-base font-extrabold text-[#A67C3B] dark:text-[#C7A45A] font-mono">
                       {landConvertedSqFt} Sq. Ft
                     </span>
                   </div>
@@ -547,13 +544,13 @@ export const PublicDashboard: React.FC = () => {
                   <div className="flex gap-2 pt-1">
                     <button
                       type="submit"
-                      className="flex-1 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer"
+                      className="btn-premium flex-1 text-xs"
                     >
                       Convert Measurement
                     </button>
                     <Link
                       to="/calculators"
-                      className="py-2 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1"
+                      className="btn-secondary text-xs flex items-center gap-1"
                     >
                       All Units <ArrowRight size={12} />
                     </Link>
@@ -570,31 +567,31 @@ export const PublicDashboard: React.FC = () => {
         <section id="roles" className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
 
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border border-[#183C32]/20 text-xs font-bold uppercase tracking-wider">
               <span>Role-Based Functionality</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#242522] dark:text-[#F4F0E7] font-serif">
               Sign in to access specialized tools and insights customized for your specific role
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">
+            <p className="text-[#625F58] dark:text-[#C5C0B6] text-xs sm:text-sm">
               Elite Legal Desk maintains strict security boundaries and role authorization to protect private litigation data.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="legal-card p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 flex items-center justify-center font-bold">
+                <div className="h-10 w-10 rounded-xl bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border border-[#183C32]/20 flex items-center justify-center font-bold">
                   <Users size={20} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[#242522] dark:text-[#F4F0E7] font-serif">
                   Clients & Litigants
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] leading-relaxed">
                   Litigants can search verified advocates in the directory, track ongoing case progress, calculate court fees, and communicate securely with their legal counsel after signing in.
                 </p>
-                <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
+                <ul className="text-xs text-[#625F58] dark:text-[#C5C0B6] space-y-1.5 pt-1">
                   <li className="flex items-center gap-1.5">• View personal case status</li>
                   <li className="flex items-center gap-1.5">• Encrypted advocate messenger</li>
                   <li className="flex items-center gap-1.5">• Court fee & land calculators</li>
@@ -603,24 +600,24 @@ export const PublicDashboard: React.FC = () => {
 
               <button
                 onClick={() => openAuthModal('login', 'Client', 'Sign in as a Client to view your case files.')}
-                className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                className="btn-secondary w-full text-xs"
               >
                 Client Portal Sign In
               </button>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="legal-card p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center justify-center font-bold">
+                <div className="h-10 w-10 rounded-xl bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#C7A45A] border border-[#A67C3B]/20 flex items-center justify-center font-bold">
                   <Scale size={20} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[#242522] dark:text-[#F4F0E7] font-serif">
                   Legal Advocates & Notaries
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] leading-relaxed">
                   Advocates can manage active cases, track hearing dates, draft collaborative legal notices, communicate with clients, and list their Bar credentials in the directory after signing in.
                 </p>
-                <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
+                <ul className="text-xs text-[#625F58] dark:text-[#C5C0B6] space-y-1.5 pt-1">
                   <li className="flex items-center gap-1.5">• Case tracking & hearing calendar</li>
                   <li className="flex items-center gap-1.5">• Document drafting & collaboration</li>
                   <li className="flex items-center gap-1.5">• Bar Council directory profile</li>
@@ -629,24 +626,24 @@ export const PublicDashboard: React.FC = () => {
 
               <button
                 onClick={() => openAuthModal('login', 'Advocate', 'Sign in as an Advocate to access practice management.')}
-                className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+                className="btn-premium w-full text-xs"
               >
                 Advocate Portal Sign In
               </button>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="legal-card p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center font-bold">
+                <div className="h-10 w-10 rounded-xl bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border border-[#6A5948]/20 flex items-center justify-center font-bold">
                   <ShieldCheck size={20} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-[#242522] dark:text-[#F4F0E7] font-serif">
                   Legal Administrators
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] leading-relaxed">
                   Administrators manage platform verification, review Bar Council enrollment credentials, maintain state court fee rule engines, and upload landmark laws & judgements.
                 </p>
-                <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
+                <ul className="text-xs text-[#625F58] dark:text-[#C5C0B6] space-y-1.5 pt-1">
                   <li className="flex items-center gap-1.5">• Advocate verification approvals</li>
                   <li className="flex items-center gap-1.5">• Court fee rule engine admin</li>
                   <li className="flex items-center gap-1.5">• Bare Acts & document indexing</li>
@@ -655,7 +652,7 @@ export const PublicDashboard: React.FC = () => {
 
               <button
                 onClick={() => openAuthModal('login', 'Admin', 'Administrator sign in required to access management controls.')}
-                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                className="btn-primary w-full text-xs"
               >
                 Administrator Sign In
               </button>

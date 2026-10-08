@@ -10,12 +10,12 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden animate-slide-up">
-      <div className="h-24 bg-primary flex items-center justify-between px-6 text-white">
-        <h3 className="font-bold text-sm flex items-center gap-2">
-          <SettingsIcon size={16} /> Console Settings & Security
+    <div className="max-w-xl mx-auto legal-card overflow-hidden animate-slide-up">
+      <div className="h-20 bg-[#183C32] dark:bg-[#151815] border-b border-[#A67C3B]/30 flex items-center justify-between px-6 text-[#F7F3EA]">
+        <h3 className="font-bold text-sm font-serif flex items-center gap-2">
+          <SettingsIcon size={16} className="text-[#A67C3B]" /> Platform Settings & Security
         </h3>
-        <span className="text-[10px] bg-secondary/25 text-[#1e293b] dark:text-sky-400 px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">
+        <span className="text-[10px] bg-[#A67C3B]/20 text-[#D8C49A] border border-[#A67C3B]/30 px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">
           Configuration
         </span>
       </div>
@@ -24,18 +24,18 @@ export const Settings: React.FC = () => {
         
         {/* Visual appearance */}
         <div className="space-y-4">
-          <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-850 pb-2">
-            Appearance
+          <h4 className="font-bold text-[10px] text-text-muted dark:text-dark-text-muted uppercase tracking-wider border-b border-border dark:border-dark-border pb-2 font-sans">
+            Appearance & Theme
           </h4>
           <div className="flex items-center justify-between">
             <div>
-              <h5 className="font-bold text-slate-850 dark:text-slate-150">Dark Mode Interface</h5>
-              <p className="text-[10px] text-slate-400 mt-0.5">Toggle interface stylesheet theme between light and dark.</p>
+              <h5 className="font-bold text-text-primary dark:text-dark-text-primary font-serif">Dark Mode Interface</h5>
+              <p className="text-[10px] text-text-secondary dark:text-dark-text-secondary mt-0.5">Toggle interface theme between Warm Ivory (Light) and Charcoal/Forest (Dark).</p>
             </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 focus:outline-none cursor-pointer ${
-                darkMode ? 'bg-primary' : 'bg-slate-300'
+                darkMode ? 'bg-[#6F9A83]' : 'bg-[#D8D1C5]'
               }`}
             >
               <div
@@ -49,24 +49,23 @@ export const Settings: React.FC = () => {
 
         {/* Inactivity parameters */}
         <div className="space-y-4">
-          <h4 className="font-bold text-[10px] text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-850 pb-2">
+          <h4 className="font-bold text-[10px] text-text-muted dark:text-dark-text-muted uppercase tracking-wider border-b border-border dark:border-dark-border pb-2 font-sans">
             Security Control
           </h4>
           
           <div className="flex items-center justify-between">
             <div>
-              <h5 className="font-bold text-slate-850 dark:text-slate-150">Inactivity Timeout Session</h5>
-              <p className="text-[10px] text-slate-400 mt-0.5">Define maximum idle session thresholds before auto-logout.</p>
+              <h5 className="font-bold text-text-primary dark:text-dark-text-primary font-serif">Inactivity Timeout Session</h5>
+              <p className="text-[10px] text-text-secondary dark:text-dark-text-secondary mt-0.5">Define maximum idle session thresholds before auto-logout.</p>
             </div>
             <select
               onChange={handleTimeoutChange}
-              defaultValue="15"
-              className="border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none text-slate-700 dark:text-slate-200 cursor-pointer"
+              className="legal-input w-auto text-xs py-1"
             >
-              <option value="5">5 Minutes</option>
-              <option value="15">15 Minutes</option>
-              <option value="30">30 Minutes</option>
-              <option value="60">1 Hour</option>
+              <option>15 Minutes</option>
+              <option>30 Minutes</option>
+              <option>1 Hour</option>
+              <option>Never</option>
             </select>
           </div>
         </div>

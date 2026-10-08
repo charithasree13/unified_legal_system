@@ -191,10 +191,10 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
           type="button"
           onClick={handleTriggerGooglePrompt}
           disabled={loading}
-          className="w-full py-2.5 px-4 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full py-2.5 px-4 bg-[#FFFDF8] dark:bg-[#1E211D] border border-[#D8D1C5] dark:border-[#3A4038] hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] text-[#242522] dark:text-[#F4F0E7] rounded-lg text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <div className="w-4 h-4 border-2 border-slate-400 border-t-primary rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#71877B] border-t-[#183C32] rounded-full animate-spin" />
           ) : (
             <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
               <path

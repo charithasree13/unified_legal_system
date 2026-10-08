@@ -71,11 +71,11 @@ export const UserDashboard: React.FC = () => {
 
       {/* Pending Advocate Verification Notice */}
       {user?.role === 'Advocate' && user?.isVerified === false && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-3 text-amber-600 dark:text-amber-400 text-xs font-semibold animate-slide-up">
-          <ShieldAlert size={20} className="flex-shrink-0 text-amber-500" />
+        <div className="bg-[#A67C3B]/10 border border-[#A67C3B]/30 rounded-xl p-4 flex items-center gap-3 text-[#A67C3B] dark:text-[#D8C49A] text-xs font-semibold animate-slide-up">
+          <ShieldAlert size={20} className="flex-shrink-0 text-[#A67C3B]" />
           <div>
-            <p className="font-bold text-sm">Bar Council Enrollment Verification Pending</p>
-            <p className="text-[11px] font-normal text-amber-700 dark:text-amber-300 mt-0.5">
+            <p className="font-bold text-sm font-serif">Bar Council Enrollment Verification Pending</p>
+            <p className="text-[11px] font-normal text-[#625F58] dark:text-[#C5C0B6] mt-0.5">
               Your Advocate enrollment credentials have been submitted and are undergoing review by the Legal Administrator. Full verified status and directory badges will be activated upon Admin approval.
             </p>
           </div>
@@ -85,18 +85,18 @@ export const UserDashboard: React.FC = () => {
       {/* Welcome Card & Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Welcome Vibrant Card */}
-        <div className="lg:col-span-2 bg-gradient-to-r from-primary to-[#1E40AF] rounded-2xl shadow-md p-6 text-white flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-sky-400/10 rounded-full blur-3xl" />
+        {/* Welcome Vibrant Card - Luxury Deep Forest / Charcoal */}
+        <div className="lg:col-span-2 bg-[#1E2420] dark:bg-[#171916] border border-[#A67C3B]/30 rounded-2xl shadow-md p-6 text-[#F7F3EA] flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#A67C3B]/10 rounded-full blur-3xl pointer-events-none" />
           
           <div className="z-10">
-            <span className="bg-secondary/20 border border-secondary/30 px-3 py-1 rounded-full text-xs font-semibold text-secondary tracking-wide uppercase">
+            <span className="bg-[#A67C3B]/20 border border-[#A67C3B]/40 px-3 py-1 rounded-full text-xs font-semibold text-[#D8C49A] tracking-wide uppercase">
               {user?.role === 'Client' ? 'Client Portal Active' : 'Advocate Portal Active'}
             </span>
-            <h1 className="text-3xl font-bold font-sans mt-4">
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-serif mt-4 text-[#F7F3EA]">
               Welcome back, {user?.name || 'User'}!
             </h1>
-            <p className="text-white/80 text-xs mt-2 max-w-md leading-relaxed">
+            <p className="text-[#D8D1C5] text-xs mt-2 max-w-md leading-relaxed font-normal">
               {user?.role === 'Client' 
                 ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate land measurements, interest rates, and date differences.'
                 : 'Elite Legal Desk gives you secure end-to-end client communications, case management, land converters, and task calendars.'
@@ -104,16 +104,16 @@ export const UserDashboard: React.FC = () => {
             </p>
           </div>
 
-          <div className="mt-8 flex gap-4 z-10 flex-wrap">
+          <div className="mt-8 flex gap-3 z-10 flex-wrap">
             <Link 
               to="/directory"
-              className="px-4 py-2 bg-secondary hover:bg-secondary-hover text-primary font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 shadow-md"
+              className="btn-premium flex items-center gap-1.5 text-xs"
             >
               Search Advocates <ArrowRight size={14} />
             </Link>
             <Link 
               to="/calculators"
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-lg transition-all border border-white/10"
+              className="btn-secondary text-[#F7F3EA] border-[#D8D1C5]/30 hover:bg-white/10 text-xs"
             >
               Legal Calculators
             </Link>
@@ -123,20 +123,20 @@ export const UserDashboard: React.FC = () => {
         {/* Stats Column */}
         <div className="grid grid-cols-3 lg:grid-cols-1 gap-4">
           {[
-            { label: isNormalUser ? 'My Case Files' : 'Assigned Cases', count: stats.activeCases, icon: Scale, color: 'text-primary dark:text-sky-400', bg: 'bg-primary/5 dark:bg-sky-400/5' },
-            { label: isNormalUser ? 'Saved Advocates' : 'Saved Documents', count: isNormalUser ? favoriteAdvocates.length : stats.savedDocuments, icon: isNormalUser ? Users : FileText, color: 'text-emerald-500', bg: 'bg-emerald-500/5' },
-            { label: 'Active Tasks', count: recentCases.reduce((acc, c) => acc + (c.tasks?.filter((t: any) => t.status !== 'Done').length || 0), 0), icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/5' }
+            { label: isNormalUser ? 'My Case Files' : 'Assigned Cases', count: stats.activeCases, icon: Scale, color: 'text-[#183C32] dark:text-[#6F9A83]', bg: 'bg-[#183C32]/10 dark:bg-[#6F9A83]/15' },
+            { label: isNormalUser ? 'Saved Advocates' : 'Saved Documents', count: isNormalUser ? favoriteAdvocates.length : stats.savedDocuments, icon: isNormalUser ? Users : FileText, color: 'text-[#3F6B50] dark:text-[#8FAF9C]', bg: 'bg-[#3F6B50]/10 dark:bg-[#8FAF9C]/15' },
+            { label: 'Active Tasks', count: recentCases.reduce((acc, c) => acc + (c.tasks?.filter((t: any) => t.status !== 'Done').length || 0), 0), icon: Calendar, color: 'text-[#A67C3B] dark:text-[#C7A45A]', bg: 'bg-[#A67C3B]/10 dark:bg-[#C7A45A]/15' }
           ].map((item, idx) => (
-            <div key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
+            <div key={idx} className="legal-card p-4 flex items-center justify-between">
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                <span className="text-[10px] uppercase font-bold text-[#858078] dark:text-[#969188] tracking-wider">
                   {item.label}
                 </span>
-                <h3 className="text-xl font-bold font-sans mt-1">
+                <h3 className="text-xl font-bold font-serif text-[#242522] dark:text-[#F4F0E7] mt-1">
                   {item.count}
                 </h3>
               </div>
-              <div className={`p-2 rounded-lg ${item.bg}`}>
+              <div className={`p-2.5 rounded-xl ${item.bg}`}>
                 <item.icon size={20} className={item.color} />
               </div>
             </div>
@@ -147,26 +147,26 @@ export const UserDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Active Collaboration Projects */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5">
+        <div className="lg:col-span-2 legal-card p-5">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <Scale size={18} className="text-primary dark:text-sky-400" />
+            <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
+              <Scale size={18} className="text-[#183C32] dark:text-[#6F9A83]" />
               {user?.role === 'Client' ? 'My Related Cases' : 'Active Cases & Collaborations'}
             </h3>
-            <Link to="/projects" className="text-xs text-primary dark:text-sky-400 font-semibold hover:underline flex items-center gap-0.5">
+            <Link to="/projects" className="text-xs text-[#183C32] dark:text-[#C7A45A] font-semibold hover:underline flex items-center gap-0.5">
               All Cases <ArrowRight size={12} />
             </Link>
           </div>
 
           <div className="space-y-3">
             {recentCases.length === 0 ? (
-              <div className="text-center py-10 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-400">
+              <div className="text-center py-10 border border-dashed border-[#D8D1C5] dark:border-[#3A4038] rounded-xl text-xs text-[#858078] dark:text-[#969188]">
                 {user?.role === 'Client' ? (
                   <span>No active legal cases are linked to your phone number ({user?.phone || 'N/A'}). When your advocate adds a case associated with your phone number, it will automatically appear here.</span>
                 ) : (
                   <>
                     You are not currently assigned to any collaboration case. 
-                    <Link to="/projects" className="text-primary dark:text-sky-400 font-semibold hover:underline block mt-1.5">
+                    <Link to="/projects" className="text-[#183C32] dark:text-[#C7A45A] font-semibold hover:underline block mt-1.5">
                       + Create New Project
                     </Link>
                   </>
@@ -176,28 +176,28 @@ export const UserDashboard: React.FC = () => {
               recentCases.map((proj: any) => {
                 const todoTasks = proj.tasks?.filter((t: any) => t.status !== 'Done') || [];
                 return (
-                  <div key={proj._id} className="p-4 border border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/30 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div key={proj._id} className="p-4 border border-[#D8D1C5]/70 dark:border-[#3A4038]/70 bg-[#EFEAE0]/50 dark:bg-[#1E211D]/50 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <span className={`text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider ${
-                        proj.priority === 'High' ? 'bg-red-500/10 text-red-500' : 'bg-primary/10 text-primary dark:text-sky-400'
+                        proj.priority === 'High' ? 'bg-[#914F45]/10 text-[#914F45]' : 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C]'
                       }`}>
                         {proj.priority} Priority
                       </span>
-                      <h4 className="font-semibold text-sm text-slate-900 dark:text-white mt-1.5">{proj.name}</h4>
-                      <p className="text-[11px] text-slate-400 mt-0.5">Case No: {proj.caseNo || 'N/A'} | Next Hearing: {proj.nextHearingDate || 'Flexible'}</p>
+                      <h4 className="font-semibold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif mt-1.5">{proj.name}</h4>
+                      <p className="text-[11px] text-[#625F58] dark:text-[#C5C0B6] mt-0.5">Case No: {proj.caseNo || 'N/A'} | Next Hearing: {proj.nextHearingDate || 'Flexible'}</p>
                     </div>
 
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-xs font-semibold">{proj.progress}% Done</p>
-                        <div className="h-1.5 w-24 bg-slate-200 dark:bg-slate-800 rounded-full mt-1.5 overflow-hidden">
-                          <div className="h-full bg-primary dark:bg-sky-400 rounded-full" style={{ width: `${proj.progress}%` }} />
+                        <p className="text-xs font-semibold text-[#242522] dark:text-[#F4F0E7]">{proj.progress}% Done</p>
+                        <div className="h-1.5 w-24 bg-[#D8D1C5] dark:bg-[#3A4038] rounded-full mt-1.5 overflow-hidden">
+                          <div className="h-full bg-[#183C32] dark:bg-[#6F9A83] rounded-full" style={{ width: `${proj.progress}%` }} />
                         </div>
                       </div>
                       
                       <Link 
                         to={`/projects?id=${proj._id}`}
-                        className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-950 dark:hover:text-white transition-colors"
+                        className="p-2 hover:bg-[#EFEAE0] dark:hover:bg-[#1E211D] rounded-lg text-[#625F58] dark:text-[#C5C0B6] transition-colors"
                       >
                         <ArrowRight size={16} />
                       </Link>
@@ -210,36 +210,36 @@ export const UserDashboard: React.FC = () => {
         </div>
 
         {/* Favorite Advocates Directory Shortlist */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-5 flex flex-col justify-between">
+        <div className="legal-card p-5 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Star size={18} className="text-amber-400 fill-amber-400" />
+            <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif mb-4 flex items-center gap-2">
+              <Star size={18} className="text-[#A67C3B] fill-[#A67C3B]" />
               Favorite Advocates
             </h3>
 
             <div className="space-y-3.5">
               {favoriteAdvocates.length === 0 ? (
-                <div className="text-center py-10 text-xs text-slate-400">
+                <div className="text-center py-10 text-xs text-[#858078] dark:text-[#969188]">
                   Shortlist professional contacts to display here.
-                  <Link to="/directory" className="text-primary dark:text-sky-400 font-semibold hover:underline block mt-1.5">
+                  <Link to="/directory" className="text-[#183C32] dark:text-[#C7A45A] font-semibold hover:underline block mt-1.5">
                     Browse Directory
                   </Link>
                 </div>
               ) : (
                 favoriteAdvocates.map((fav: any) => (
-                  <div key={fav._id} className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-850">
+                  <div key={fav._id} className="flex items-center justify-between p-2 bg-[#EFEAE0]/60 dark:bg-[#1E211D]/60 rounded-lg border border-[#D8D1C5]/60 dark:border-[#3A4038]/60">
                     <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+                      <div className="h-8 w-8 rounded-full bg-[#183C32] text-white flex items-center justify-center font-bold text-xs">
                         {fav.name.charAt(0)}
                       </div>
                       <div>
-                        <h4 className="font-semibold text-xs text-slate-900 dark:text-white">{fav.name}</h4>
-                        <p className="text-[10px] text-slate-400">{fav.specialization} | {fav.city}</p>
+                        <h4 className="font-semibold text-xs text-[#242522] dark:text-[#F4F0E7] font-serif">{fav.name}</h4>
+                        <p className="text-[10px] text-[#625F58] dark:text-[#C5C0B6]">{fav.specialization} | {fav.city}</p>
                       </div>
                     </div>
                     <Link
                       to={`/chat?user=${fav._id}`}
-                      className="p-1.5 hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 rounded text-slate-400 hover:text-slate-850 dark:hover:text-white transition-all"
+                      className="p-1.5 hover:bg-[#FFFDF8] dark:hover:bg-[#242822] border border-transparent hover:border-[#D8D1C5] dark:hover:border-[#3A4038] rounded text-[#625F58] dark:text-[#C5C0B6] transition-all"
                     >
                       <MessageSquare size={14} />
                     </Link>
@@ -251,13 +251,13 @@ export const UserDashboard: React.FC = () => {
 
           {/* Legal Resources Quick Panel */}
           {!isNormalUser && (
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
-              <h4 className="font-semibold text-xs text-slate-400 mb-2.5 uppercase tracking-wider">Quick Legal Resources</h4>
+            <div className="pt-4 border-t border-[#D8D1C5]/60 dark:border-[#3A4038]/60 mt-4">
+              <h4 className="font-semibold text-xs text-[#858078] dark:text-[#969188] mb-2.5 uppercase tracking-wider">Quick Legal Resources</h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <Link to="/judgements" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
+                <Link to="/judgements" className="p-2 border border-[#D8D1C5] dark:border-[#3A4038] rounded hover:bg-[#EFEAE0] dark:hover:bg-[#1E211D] font-semibold text-[#242522] dark:text-[#F4F0E7] flex items-center gap-1.5 transition-colors">
                   <Scale size={14} /> Judgements
                 </Link>
-                <Link to="/laws" className="p-2 border border-slate-150 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-950 font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition-colors">
+                <Link to="/laws" className="p-2 border border-[#D8D1C5] dark:border-[#3A4038] rounded hover:bg-[#EFEAE0] dark:hover:bg-[#1E211D] font-semibold text-[#242522] dark:text-[#F4F0E7] flex items-center gap-1.5 transition-colors">
                   <BookOpen size={14} /> Bare Acts
                 </Link>
               </div>

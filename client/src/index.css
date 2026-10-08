@@ -3,17 +3,225 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Centralized Design Tokens for Elite Legal Desk */
+:root {
+  /* Core Palette Tokens */
+  --brand-ivory: #F7F3EA;
+  --brand-charcoal: #242522;
+  --brand-forest: #183C32;
+  --brand-sage: #71877B;
+  --brand-bronze: #A67C3B;
+  --brand-champagne: #D8C49A;
+  --brand-stone: #D8D1C5;
+  --brand-brown: #46382C;
+  --brand-olive: #53634A;
+
+  /* Light Theme System */
+  --bg-main: #F7F3EA;
+  --bg-sec: #EFEAE0;
+  --bg-card: #FFFDF8;
+  --bg-card-hover: #F1F4EE;
+  --bg-elevated: #FFFDF8;
+
+  --text-main: #242522;
+  --text-sec: #625F58;
+  --text-muted: #858078;
+  --heading-sec: #46382C;
+
+  --accent-primary: #183C32;
+  --accent-primary-hover: #245445;
+  --accent-sec: #71877B;
+  --accent-premium: #A67C3B;
+  --accent-premium-hover: #C19A59;
+  --accent-soft: #D8C49A;
+
+  --border-main: #D8D1C5;
+  --border-hover: #71877B;
+
+  /* Input Fields */
+  --input-bg: #FFFDF8;
+  --input-border: #D8D1C5;
+  --input-text: #242522;
+  --input-placeholder: #858078;
+  --input-focus-border: #183C32;
+  --input-focus-ring: rgba(24, 60, 50, 0.14);
+
+  /* Navigation */
+  --nav-bg: #FFFDF8;
+  --nav-text: #625F58;
+  --nav-active: #183C32;
+  --nav-active-indicator: #A67C3B;
+  --nav-border: #D8D1C5;
+
+  /* Buttons */
+  --btn-primary-bg: #183C32;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #245445;
+  --btn-premium-bg: #A67C3B;
+  --btn-premium-text: #FFFFFF;
+  --btn-premium-hover: #C19A59;
+  --btn-sec-border: #71877B;
+  --btn-sec-text: #183C32;
+  --btn-sec-hover: #E7ECE5;
+
+  /* Icons */
+  --icon-primary: #183C32;
+  --icon-sec: #71877B;
+  --icon-premium: #A67C3B;
+
+  /* Status Colors */
+  --status-success: #3F6B50;
+  --status-warning: #9A7435;
+  --status-error: #914F45;
+  --status-info: #65766D;
+
+  /* Badges */
+  --badge-verified-bg: #E5EEE7;
+  --badge-verified-text: #315A43;
+  --badge-pending-bg: #F1E9D8;
+  --badge-pending-text: #80632E;
+  --badge-rejected-bg: #F1E2DF;
+  --badge-rejected-text: #7A423B;
+
+  /* Tables */
+  --table-header: #EFEAE0;
+  --table-body: #FFFDF8;
+  --table-border: #D8D1C5;
+  --table-hover: #F1F4EE;
+
+  /* Module Accents */
+  --module-dictionary: #183C32;
+  --module-dictionary-hover: #2A5A4B;
+  --module-court-fee: #A67C3B;
+  --module-court-fee-hover: #C19A59;
+  --module-land: #71877B;
+  --module-land-hover: #5E7468;
+  --module-interest: #53634A;
+  --module-interest-hover: #687A5D;
+  --module-date: #6A5948;
+  --module-date-hover: #806C58;
+  --module-advocate: #183C32;
+  --module-case: #242522;
+  --module-documents: #6A5948;
+  --module-comm: #183C32;
+  --module-admin: #A67C3B;
+
+  --card-shadow: 0 8px 25px rgba(36, 37, 34, 0.10);
+}
+
+.dark {
+  /* Dark Theme */
+  --bg-main: #171916;
+  --bg-sec: #1E211D;
+  --bg-card: #242822;
+  --bg-card-hover: #2B3029;
+  --bg-elevated: #2B3029;
+
+  --text-main: #F4F0E7;
+  --text-sec: #C5C0B6;
+  --text-muted: #969188;
+  --heading-sec: #D8C49A;
+
+  --accent-primary: #6F9A83;
+  --accent-primary-hover: #89AA98;
+  --accent-sec: #8FAF9C;
+  --accent-premium: #C7A45A;
+  --accent-premium-hover: #D8C49A;
+  --accent-soft: #D8C49A;
+
+  --border-main: #3A4038;
+  --border-hover: #6F9A83;
+
+  /* Input Fields */
+  --input-bg: #1E211D;
+  --input-border: #3A4038;
+  --input-text: #F4F0E7;
+  --input-placeholder: #969188;
+  --input-focus-border: #6F9A83;
+  --input-focus-ring: rgba(111, 154, 131, 0.15);
+
+  /* Navigation */
+  --nav-bg: #171916;
+  --nav-text: #C5C0B6;
+  --nav-active: #F4F0E7;
+  --nav-active-indicator: #C7A45A;
+  --nav-border: #30352F;
+
+  /* Buttons */
+  --btn-primary-bg: #6F9A83;
+  --btn-primary-text: #151815;
+  --btn-primary-hover: #89AA98;
+  --btn-premium-bg: #A67C3B;
+  --btn-premium-text: #FFFFFF;
+  --btn-premium-hover: #C19A59;
+  --btn-sec-border: #6F9A83;
+  --btn-sec-text: #BFD4C7;
+  --btn-sec-hover: #303930;
+
+  /* Icons */
+  --icon-primary: #D4DED7;
+  --icon-sec: #8FAF9C;
+  --icon-premium: #D8C49A;
+
+  /* Status Colors */
+  --status-success: #7CB895;
+  --status-warning: #D8C49A;
+  --status-error: #E5A8A0;
+  --status-info: #8FAF9C;
+
+  /* Badges */
+  --badge-verified-bg: #1F3327;
+  --badge-verified-text: #7CB895;
+  --badge-pending-bg: #332A19;
+  --badge-pending-text: #D8C49A;
+  --badge-rejected-bg: #38201D;
+  --badge-rejected-text: #E5A8A0;
+
+  /* Tables */
+  --table-header: #2B3029;
+  --table-body: #242822;
+  --table-border: #3A4038;
+  --table-hover: #303730;
+
+  /* Module Accents */
+  --module-dictionary: #6F9A83;
+  --module-dictionary-hover: #89AA98;
+  --module-court-fee: #C7A45A;
+  --module-court-fee-hover: #D8C49A;
+  --module-land: #8FAF9C;
+  --module-land-hover: #A5C2B1;
+  --module-interest: #687A5D;
+  --module-interest-hover: #7E9272;
+  --module-date: #806C58;
+  --module-date-hover: #98836E;
+  --module-advocate: #6F9A83;
+  --module-case: #C5C5C0;
+  --module-documents: #806C58;
+  --module-comm: #6F9A83;
+  --module-admin: #C7A45A;
+
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
 @theme {
   --font-sans: 'Inter', 'Poppins', sans-serif;
-  
-  --color-primary: #0F3D91;
-  --color-primary-hover: #0a2d6e;
-  --color-secondary: #4FC3F7;
-  --color-secondary-hover: #29b6f6;
-  --color-glass: rgba(255, 255, 255, 0.7);
-  --color-card-light: #F8FAFC;
-  --color-card-dark: #1E293B;
-  
+  --font-serif: 'Playfair Display', serif;
+
+  --color-primary: var(--accent-primary);
+  --color-primary-hover: var(--accent-primary-hover);
+  --color-secondary: var(--accent-sec);
+  --color-premium: var(--accent-premium);
+  --color-premium-hover: var(--accent-premium-hover);
+
+  --color-brand-ivory: #F7F3EA;
+  --color-brand-charcoal: #242522;
+  --color-brand-forest: #183C32;
+  --color-brand-sage: #71877B;
+  --color-brand-bronze: #A67C3B;
+  --color-brand-champagne: #D8C49A;
+  --color-brand-stone: #D8D1C5;
+  --color-brand-brown: #46382C;
+
   --animate-fade-in: fade-in 0.3s ease-out;
   --animate-slide-up: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -45,7 +253,7 @@
   animation-play-state: paused;
 }
 
-/* Custom scrollbars */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -54,30 +262,158 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--border-main);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--accent-sec);
 }
 
-/* Glassmorphism Classes */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.dark .glass {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Basic utility overrides */
+/* Base Body Styles */
 body {
   font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
   overflow-x: hidden;
+  transition: background-color 200ms ease, color 200ms ease;
 }
+
+/* Sophisticated Legal Card Utilities */
+.legal-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-main);
+  border-radius: 0.75rem;
+  transition: background-color 220ms ease, border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.legal-card:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+/* Button Classes */
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  transition: background-color 200ms ease, transform 150ms ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.btn-premium {
+  background-color: var(--btn-premium-bg);
+  color: var(--btn-premium-text);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  transition: background-color 200ms ease, transform 150ms ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-premium:hover {
+  background-color: var(--btn-premium-hover);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--btn-sec-border);
+  color: var(--btn-sec-text);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  transition: background-color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-secondary:hover {
+  background-color: var(--btn-sec-hover);
+}
+
+/* Form Input Field Classes */
+.legal-input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.legal-input::placeholder {
+  color: var(--input-placeholder);
+}
+.legal-input:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px var(--input-focus-ring);
+}
+
+/* Table Utilities */
+.legal-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.legal-table th {
+  background-color: var(--table-header);
+  color: var(--text-main);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--table-border);
+}
+.legal-table td {
+  background-color: var(--table-body);
+  color: var(--text-main);
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--table-border);
+  transition: background-color 150ms ease;
+}
+.legal-table tr:hover td {
+  background-color: var(--table-hover);
+}
+
+/* Badge Utilities */
+.badge-verified {
+  background-color: var(--badge-verified-bg);
+  color: var(--badge-verified-text);
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+.badge-pending {
+  background-color: var(--badge-pending-bg);
+  color: var(--badge-pending-text);
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+.badge-rejected {
+  background-color: var(--badge-rejected-bg);
+  color: var(--badge-rejected-text);
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+

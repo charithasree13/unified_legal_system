@@ -88,14 +88,14 @@ export const DailyLegalTipsSection: React.FC = () => {
   // Restrict access for normal users / unauthenticated
   if (!token || (!isAdmin && !isAdvocate)) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 text-center space-y-3">
-        <div className="h-10 w-10 mx-auto rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+      <div className="bg-[#FFFDF8] dark:bg-[#242822] border border-[#D8D1C5] dark:border-[#3A4038] rounded-2xl shadow-xs p-6 text-center space-y-3">
+        <div className="h-10 w-10 mx-auto rounded-full bg-[#F1E9D8] dark:bg-[#332A19] text-[#A67C3B] dark:text-[#C7A45A] flex items-center justify-center font-bold">
           <ShieldAlert size={20} />
         </div>
-        <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+        <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7]">
           Advocate & Admin Feature Restricted
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+        <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] max-w-sm mx-auto">
           Daily Legal Tips & Updates are reserved exclusively for enrolled Advocates and Administrators.
         </p>
       </div>
@@ -107,26 +107,26 @@ export const DailyLegalTipsSection: React.FC = () => {
   return (
     <div
       onClick={() => navigate('/daily-legal-tips')}
-      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 dark:hover:border-amber-500/40 rounded-2xl shadow-sm hover:shadow-md p-6 transition-all duration-200 cursor-pointer group space-y-4"
+      className="bg-[#FFFDF8] dark:bg-[#242822] border border-[#D8D1C5] dark:border-[#3A4038] hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] hover:border-[#71877B] dark:hover:border-[#6F9A83] rounded-2xl shadow-xs hover:shadow-md p-6 transition-all duration-200 cursor-pointer group space-y-4"
     >
       {/* Header Row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 group-hover:scale-105 transition-transform">
+          <div className="p-2.5 rounded-xl bg-[#F1E9D8] dark:bg-[#332A19] text-[#A67C3B] dark:text-[#C7A45A] border border-[#D8D1C5] dark:border-[#3A4038] group-hover:scale-105 transition-transform">
             <BookOpen size={20} />
           </div>
           <div>
-            <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center gap-2">
+            <h3 className="font-bold text-base text-[#242522] dark:text-[#F4F0E7] group-hover:text-[#183C32] dark:group-hover:text-[#6F9A83] transition-colors flex items-center gap-2">
               Daily Legal Tips / Updates
-              <Sparkles size={14} className="text-amber-500 opacity-80" />
+              <Sparkles size={14} className="text-[#A67C3B] dark:text-[#C7A45A] opacity-80" />
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-[#625F58] dark:text-[#C5C0B6]">
               Stay updated with daily legal practice tips and updates.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-[#A67C3B] dark:text-[#C7A45A] group-hover:translate-x-1 transition-transform">
           <span>{isAdmin ? 'Manage Tips' : 'View All Tips'}</span>
           <ArrowRight size={16} />
         </div>
@@ -134,30 +134,30 @@ export const DailyLegalTipsSection: React.FC = () => {
 
       {/* Content Preview */}
       {loading ? (
-        <div className="text-center py-6 text-xs text-slate-400">
+        <div className="text-center py-6 text-xs text-[#858078] dark:text-[#969188]">
           Loading Daily Legal Tips...
         </div>
       ) : errorMsg ? (
-        <div className="text-xs text-amber-600 dark:text-amber-400 p-3 bg-amber-500/10 rounded-xl">
+        <div className="text-xs text-[#80632E] dark:text-[#D8C49A] p-3 bg-[#F1E9D8] dark:bg-[#332A19] rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
           {errorMsg}
         </div>
       ) : latestTip ? (
-        <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/70 dark:border-slate-800/80 space-y-2">
+        <div className="p-4 bg-[#EFEAE0]/60 dark:bg-[#1E211D] rounded-xl border border-[#D8D1C5] dark:border-[#3A4038] space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+            <span className="font-bold text-[#A67C3B] dark:text-[#C7A45A] flex items-center gap-1.5">
               <Calendar size={13} />
               {formatDateDisplay(latestTip.date)}
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300">
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#F1E9D8] dark:bg-[#332A19] text-[#80632E] dark:text-[#D8C49A]">
               Latest Tip
             </span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-[#242522] dark:text-[#F4F0E7] line-clamp-2 leading-relaxed">
             {latestTip.tipText}
           </p>
         </div>
       ) : (
-        <div className="p-4 text-center text-xs text-slate-400 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800">
+        <div className="p-4 text-center text-xs text-[#858078] dark:text-[#969188] bg-[#EFEAE0]/60 dark:bg-[#1E211D] rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
           No legal tips have been published yet. Click to manage and view all legal tips.
         </div>
       )}

@@ -59,7 +59,7 @@ export const Layout: React.FC = () => {
   // If user is NOT logged in:
   if (!token) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors font-sans">
+      <div className="min-h-screen flex flex-col bg-[#F7F3EA] dark:bg-[#171916] text-[#242522] dark:text-[#F4F0E7] transition-colors font-sans">
         <PublicHeader onOpenAuthModal={handleOpenAuthModal} />
 
         <main className="flex-1 w-full">
@@ -80,7 +80,7 @@ export const Layout: React.FC = () => {
 
   // If user IS logged in (authenticated experience):
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <div className="flex h-screen bg-[#F7F3EA] dark:bg-[#171916] text-[#242522] dark:text-[#F4F0E7] transition-colors duration-200">
       {/* Sidebar - Visible on internal module pages, Hidden on Dashboard */}
       {!isDashboard && (
         <Sidebar
@@ -94,7 +94,7 @@ export const Layout: React.FC = () => {
       {/* Main Content Area - Full Width on Dashboard */}
       <div className="flex-1 flex flex-col overflow-hidden w-full">
         {/* Top Navbar */}
-        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-10 shadow-xs transition-colors duration-200">
+        <header className="h-16 bg-[#FFFDF8] dark:bg-[#171916] border-b border-[#D8D1C5] dark:border-[#30352F] flex items-center justify-between px-6 z-10 shadow-xs transition-colors duration-200">
 
           {/* Left: Branding & Global Search */}
           <div className="flex items-center gap-4 flex-1">
@@ -105,10 +105,10 @@ export const Layout: React.FC = () => {
               <img
                 src="/logo.jpg"
                 alt="Elite Legal Desk Logo"
-                className="h-10 w-10 object-contain rounded-full shadow-md border border-amber-500/40 bg-white group-hover:scale-105 transition-transform flex-shrink-0"
+                className="h-10 w-10 object-contain rounded-full shadow-sm border border-[#A67C3B]/50 bg-[#FFFDF8] group-hover:scale-105 transition-transform flex-shrink-0"
               />
               <div className="flex flex-col">
-                <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-slate-900 dark:text-white uppercase leading-none group-hover:text-primary dark:group-hover:text-sky-400 transition-colors whitespace-nowrap">
+                <span className="font-extrabold text-sm sm:text-base tracking-wider font-sans text-[#242522] dark:text-[#F4F0E7] uppercase leading-none group-hover:text-[#183C32] dark:group-hover:text-[#6F9A83] transition-colors whitespace-nowrap">
                   ELITE LEGAL DESK
                 </span>
               </div>
@@ -117,7 +117,7 @@ export const Layout: React.FC = () => {
             {!isDashboard && (
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer"
+                className="md:hidden p-2 rounded-lg hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] text-[#625F58] dark:text-[#C5C0B6] cursor-pointer"
                 title="Toggle Navigation Menu"
               >
                 <Menu size={22} />
@@ -126,7 +126,7 @@ export const Layout: React.FC = () => {
 
             {/* Global Search Bar */}
             <form onSubmit={handleGlobalSearch} className="max-w-md w-full relative hidden sm:block">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-[#858078] dark:text-[#969188]">
                 <Search size={16} />
               </span>
               <input
@@ -134,7 +134,7 @@ export const Layout: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Global Search (Advocates, Laws, Judgements...)"
-                className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 dark:bg-slate-800 border border-transparent rounded-lg focus:outline-none focus:bg-white focus:border-primary dark:focus:bg-slate-950 transition-all placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-[#EFEAE0] dark:bg-[#1E211D] border border-[#D8D1C5] dark:border-[#3A4038] rounded-lg focus:outline-none focus:bg-[#FFFDF8] focus:border-[#183C32] dark:focus:bg-[#242822] dark:focus:border-[#6F9A83] transition-all text-[#242522] dark:text-[#F4F0E7] placeholder:text-[#858078] dark:placeholder:text-[#969188]"
               />
             </form>
           </div>
@@ -145,26 +145,26 @@ export const Layout: React.FC = () => {
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-[#625F58] dark:text-[#C5C0B6] hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] transition-colors cursor-pointer"
               title="Toggle Dark Mode"
             >
-              {darkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
+              {darkMode ? <Sun size={20} className="text-[#C7A45A]" /> : <Moon size={20} />}
             </button>
 
             {/* Profile Avatar Quick View */}
             {user && (
-              <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3 pl-3 border-l border-[#D8D1C5] dark:border-[#3A4038]">
                 <button
                   onClick={() => navigate('/profile')}
-                  className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer text-left group"
+                  className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] transition-colors cursor-pointer text-left group"
                   title="View Profile Details"
                 >
-                  <div className="h-8 w-8 rounded-full bg-primary dark:bg-slate-700 text-white flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
+                  <div className="h-8 w-8 rounded-full bg-[#183C32] dark:bg-[#6F9A83] text-[#FFFFFF] dark:text-[#151815] flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
                     {user.name.charAt(0)}
                   </div>
                   <div className="hidden lg:block">
-                    <p className="text-xs font-semibold leading-none text-slate-900 dark:text-slate-100 group-hover:text-primary dark:group-hover:text-sky-400 transition-colors">{user.name}</p>
-                    <span className="text-[10px] text-slate-400 capitalize">{user.role}</span>
+                    <p className="text-xs font-semibold leading-none text-[#242522] dark:text-[#F4F0E7] group-hover:text-[#183C32] dark:group-hover:text-[#6F9A83] transition-colors">{user.name}</p>
+                    <span className="text-[10px] text-[#A67C3B] dark:text-[#C7A45A] uppercase font-bold tracking-wider">{user.role}</span>
                   </div>
                 </button>
               </div>

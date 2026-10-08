@@ -35,7 +35,6 @@ interface FieldCard {
   badgeText: string;
   iconBg: string;
   iconColor: string;
-  gradientBorder: string;
 }
 
 export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingStats }) => {
@@ -65,7 +64,42 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
     }
   };
 
-  // Define role-specific cards
+  // Define role-specific cards with mature non-AI styling
+  const forestBadge = {
+    badgeBg: 'bg-[#183C32]/10 dark:bg-[#6F9A83]/15 border-[#183C32]/20 dark:border-[#6F9A83]/30',
+    badgeText: 'text-[#183C32] dark:text-[#8FAF9C]',
+    iconBg: 'bg-[#183C32]/10 dark:bg-[#6F9A83]/20',
+    iconColor: 'text-[#183C32] dark:text-[#8FAF9C]'
+  };
+
+  const bronzeBadge = {
+    badgeBg: 'bg-[#A67C3B]/10 dark:bg-[#C7A45A]/15 border-[#A67C3B]/20 dark:border-[#C7A45A]/30',
+    badgeText: 'text-[#A67C3B] dark:text-[#D8C49A]',
+    iconBg: 'bg-[#A67C3B]/10 dark:bg-[#C7A45A]/20',
+    iconColor: 'text-[#A67C3B] dark:text-[#D8C49A]'
+  };
+
+  const sageBadge = {
+    badgeBg: 'bg-[#71877B]/10 dark:bg-[#71877B]/20 border-[#71877B]/20 dark:border-[#71877B]/30',
+    badgeText: 'text-[#5E7468] dark:text-[#AFC9B7]',
+    iconBg: 'bg-[#71877B]/10 dark:bg-[#71877B]/20',
+    iconColor: 'text-[#183C32] dark:text-[#AFC9B7]'
+  };
+
+  const brownBadge = {
+    badgeBg: 'bg-[#6A5948]/10 dark:bg-[#6A5948]/20 border-[#6A5948]/20 dark:border-[#6A5948]/30',
+    badgeText: 'text-[#6A5948] dark:text-[#D8C49A]',
+    iconBg: 'bg-[#6A5948]/10 dark:bg-[#6A5948]/20',
+    iconColor: 'text-[#6A5948] dark:text-[#D8C49A]'
+  };
+
+  const oliveBadge = {
+    badgeBg: 'bg-[#53634A]/10 dark:bg-[#53634A]/20 border-[#53634A]/20 dark:border-[#53634A]/30',
+    badgeText: 'text-[#53634A] dark:text-[#8FAF9C]',
+    iconBg: 'bg-[#53634A]/10 dark:bg-[#53634A]/20',
+    iconColor: 'text-[#53634A] dark:text-[#8FAF9C]'
+  };
+
   const getCardsForRole = (): FieldCard[] => {
     if (role === 'Admin') {
       return [
@@ -78,11 +112,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           path: '/dashboard',
           isAdminInternal: true,
           targetId: 'admin-section-verifications',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...bronzeBadge
         },
         {
           id: 'directory',
@@ -91,11 +121,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Directory Hub',
           icon: Users,
           path: '/directory',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...forestBadge
         },
         {
           id: 'judgements',
@@ -104,11 +130,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Legal Library',
           icon: Gavel,
           path: '/judgements',
-          badgeBg: 'bg-indigo-500/10 dark:bg-indigo-400/10 border-indigo-500/30',
-          badgeText: 'text-indigo-600 dark:text-indigo-400',
-          iconBg: 'bg-indigo-500/10 dark:bg-indigo-500/20',
-          iconColor: 'text-indigo-600 dark:text-indigo-400',
-          gradientBorder: 'hover:border-indigo-500/50'
+          ...brownBadge
         },
         {
           id: 'projects',
@@ -117,11 +139,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'System Cases',
           icon: Scale,
           path: '/projects',
-          badgeBg: 'bg-teal-500/10 dark:bg-teal-400/10 border-teal-500/30',
-          badgeText: 'text-teal-600 dark:text-teal-400',
-          iconBg: 'bg-teal-500/10 dark:bg-teal-500/20',
-          iconColor: 'text-teal-600 dark:text-teal-400',
-          gradientBorder: 'hover:border-teal-500/50'
+          ...sageBadge
         },
         {
           id: 'calculators',
@@ -130,11 +148,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Utility Engine',
           icon: Calculator,
           path: '/calculators',
-          badgeBg: 'bg-cyan-500/10 dark:bg-cyan-400/10 border-cyan-500/30',
-          badgeText: 'text-cyan-600 dark:text-cyan-400',
-          iconBg: 'bg-cyan-500/10 dark:bg-cyan-500/20',
-          iconColor: 'text-cyan-600 dark:text-cyan-400',
-          gradientBorder: 'hover:border-cyan-500/50'
+          ...bronzeBadge
         },
         {
           id: 'interest-calculator',
@@ -143,11 +157,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'LEGAL UTILITY',
           icon: Calculator,
           path: '/interest-calculator',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...oliveBadge
         },
         {
           id: 'date-difference-calculator',
@@ -156,11 +166,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'DATE UTILITY',
           icon: Calendar,
           path: '/date-difference-calculator',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...brownBadge
         },
         {
           id: 'hindu-succession',
@@ -169,11 +175,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Personal Law Engine',
           icon: Scale,
           path: '/hindu-succession-calculator',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
+          ...bronzeBadge
         },
         {
           id: 'islamic-inheritance',
@@ -182,11 +184,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Fara\'id Personal Law',
           icon: Scale,
           path: '/islamic-inheritance-calculator',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...forestBadge
         },
         {
           id: 'limitation-calculator',
@@ -195,11 +193,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Statutory Limitation',
           icon: Scale,
           path: '/limitation-calculator',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...sageBadge
         },
         {
           id: 'section-mapping',
@@ -208,11 +202,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'LEGAL CONVERSION',
           icon: Compass,
           path: '/section-mapping',
-          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
-          badgeText: 'text-purple-600 dark:text-purple-400',
-          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-          iconColor: 'text-purple-600 dark:text-purple-400',
-          gradientBorder: 'hover:border-purple-500/50'
+          ...bronzeBadge
         },
         {
           id: 'chat',
@@ -221,11 +211,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Communications',
           icon: MessageSquare,
           path: '/chat',
-          badgeBg: 'bg-rose-500/10 dark:bg-rose-400/10 border-rose-500/30',
-          badgeText: 'text-rose-600 dark:text-rose-400',
-          iconBg: 'bg-rose-500/10 dark:bg-rose-500/20',
-          iconColor: 'text-rose-600 dark:text-rose-400',
-          gradientBorder: 'hover:border-rose-500/50'
+          ...forestBadge
         },
         {
           id: 'my-notes',
@@ -234,11 +220,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Private Workspace',
           icon: StickyNote,
           path: '/my-notes',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
+          ...brownBadge
         },
         {
           id: 'legal-dictionary',
@@ -247,11 +229,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Legal Reference',
           icon: BookOpen,
           path: '/legal-dictionary',
-          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
-          badgeText: 'text-purple-600 dark:text-purple-400',
-          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-          iconColor: 'text-purple-600 dark:text-purple-400',
-          gradientBorder: 'hover:border-purple-500/50'
+          ...forestBadge
         }
       ];
     }
@@ -265,11 +243,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Legal Reference',
           icon: BookOpen,
           path: '/legal-dictionary',
-          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
-          badgeText: 'text-purple-600 dark:text-purple-400',
-          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-          iconColor: 'text-purple-600 dark:text-purple-400',
-          gradientBorder: 'hover:border-purple-500/50'
+          ...forestBadge
         },
         {
           id: 'projects',
@@ -278,11 +252,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Active Practice',
           icon: Scale,
           path: '/projects',
-          badgeBg: 'bg-indigo-500/10 dark:bg-indigo-400/10 border-indigo-500/30',
-          badgeText: 'text-indigo-600 dark:text-indigo-400',
-          iconBg: 'bg-indigo-500/10 dark:bg-indigo-500/20',
-          iconColor: 'text-indigo-600 dark:text-indigo-400',
-          gradientBorder: 'hover:border-indigo-500/50'
+          ...bronzeBadge
         },
         {
           id: 'directory',
@@ -291,11 +261,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Public Directory',
           icon: Users,
           path: '/directory',
-          badgeBg: 'bg-blue-500/10 dark:bg-blue-400/10 border-blue-500/30',
-          badgeText: 'text-blue-600 dark:text-blue-400',
-          iconBg: 'bg-blue-500/10 dark:bg-blue-500/20',
-          iconColor: 'text-blue-600 dark:text-blue-400',
-          gradientBorder: 'hover:border-blue-500/50'
+          ...forestBadge
         },
         {
           id: 'judgements',
@@ -304,11 +270,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Case Law Research',
           icon: Gavel,
           path: '/judgements',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
+          ...brownBadge
         },
         {
           id: 'laws',
@@ -317,11 +279,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Statutory Library',
           icon: BookOpen,
           path: '/laws',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...forestBadge
         },
         ...((user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED') ? [{
           id: 'section-mapping',
@@ -330,11 +288,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'LEGAL CONVERSION',
           icon: Compass,
           path: '/section-mapping',
-          badgeBg: 'bg-purple-500/10 dark:bg-purple-400/10 border-purple-500/30',
-          badgeText: 'text-purple-600 dark:text-purple-400',
-          iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-          iconColor: 'text-purple-600 dark:text-purple-400',
-          gradientBorder: 'hover:border-purple-500/50'
+          ...bronzeBadge
         }] : []),
         {
           id: 'calculators',
@@ -343,11 +297,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Valuation Tools',
           icon: Calculator,
           path: '/calculators',
-          badgeBg: 'bg-teal-500/10 dark:bg-teal-400/10 border-teal-500/30',
-          badgeText: 'text-teal-600 dark:text-teal-400',
-          iconBg: 'bg-teal-500/10 dark:bg-teal-500/20',
-          iconColor: 'text-teal-600 dark:text-teal-400',
-          gradientBorder: 'hover:border-teal-500/50'
+          ...bronzeBadge
         },
         {
           id: 'interest-calculator',
@@ -356,11 +306,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'LEGAL UTILITY',
           icon: Calculator,
           path: '/interest-calculator',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...oliveBadge
         },
         {
           id: 'date-difference-calculator',
@@ -369,11 +315,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'DATE UTILITY',
           icon: Calendar,
           path: '/date-difference-calculator',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...brownBadge
         },
         {
           id: 'hindu-succession',
@@ -382,11 +324,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Personal Law Engine',
           icon: Scale,
           path: '/hindu-succession-calculator',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
+          ...bronzeBadge
         },
         {
           id: 'islamic-inheritance',
@@ -395,11 +333,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Fara\'id Personal Law',
           icon: Scale,
           path: '/islamic-inheritance-calculator',
-          badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-          badgeText: 'text-emerald-600 dark:text-emerald-400',
-          iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-          iconColor: 'text-emerald-600 dark:text-emerald-400',
-          gradientBorder: 'hover:border-emerald-500/50'
+          ...forestBadge
         },
         {
           id: 'limitation-calculator',
@@ -408,11 +342,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Statutory Limitation',
           icon: Scale,
           path: '/limitation-calculator',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...sageBadge
         },
         {
           id: 'chat',
@@ -421,11 +351,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Client Messenger',
           icon: MessageSquare,
           path: '/chat',
-          badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-          badgeText: 'text-sky-600 dark:text-sky-400',
-          iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-          iconColor: 'text-sky-600 dark:text-sky-400',
-          gradientBorder: 'hover:border-sky-500/50'
+          ...forestBadge
         },
         {
           id: 'collaboration',
@@ -434,11 +360,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Legal Drafting',
           icon: FileText,
           path: '/collaboration',
-          badgeBg: 'bg-rose-500/10 dark:bg-rose-400/10 border-rose-500/30',
-          badgeText: 'text-rose-600 dark:text-rose-400',
-          iconBg: 'bg-rose-500/10 dark:bg-rose-500/20',
-          iconColor: 'text-rose-600 dark:text-rose-400',
-          gradientBorder: 'hover:border-rose-500/50'
+          ...brownBadge
         },
         {
           id: 'profile',
@@ -447,11 +369,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Professional Profile',
           icon: User,
           path: '/profile',
-          badgeBg: 'bg-fuchsia-500/10 dark:bg-fuchsia-400/10 border-fuchsia-500/30',
-          badgeText: 'text-fuchsia-600 dark:text-fuchsia-400',
-          iconBg: 'bg-fuchsia-500/10 dark:bg-fuchsia-500/20',
-          iconColor: 'text-fuchsia-600 dark:text-fuchsia-400',
-          gradientBorder: 'hover:border-fuchsia-500/50'
+          ...sageBadge
         },
         {
           id: 'my-notes',
@@ -460,11 +378,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           tag: 'Private Workspace',
           icon: StickyNote,
           path: '/my-notes',
-          badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-          badgeText: 'text-amber-600 dark:text-amber-400',
-          iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-          iconColor: 'text-amber-600 dark:text-amber-400',
-          gradientBorder: 'hover:border-amber-500/50'
+          ...brownBadge
         }
       ];
     }
@@ -478,11 +392,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Find Legal Experts',
         icon: Users,
         path: '/directory',
-        badgeBg: 'bg-blue-500/10 dark:bg-blue-400/10 border-blue-500/30',
-        badgeText: 'text-blue-600 dark:text-blue-400',
-        iconBg: 'bg-blue-500/10 dark:bg-blue-500/20',
-        iconColor: 'text-blue-600 dark:text-blue-400',
-        gradientBorder: 'hover:border-blue-500/50'
+        ...forestBadge
       },
       {
         id: 'projects',
@@ -491,11 +401,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'My Litigation Files',
         icon: Scale,
         path: '/projects',
-        badgeBg: 'bg-indigo-500/10 dark:bg-indigo-400/10 border-indigo-500/30',
-        badgeText: 'text-indigo-600 dark:text-indigo-400',
-        iconBg: 'bg-indigo-500/10 dark:bg-indigo-500/20',
-        iconColor: 'text-indigo-600 dark:text-indigo-400',
-        gradientBorder: 'hover:border-indigo-500/50'
+        ...bronzeBadge
       },
       {
         id: 'calculators',
@@ -504,11 +410,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Legal Calculators',
         icon: Calculator,
         path: '/calculators',
-        badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-        badgeText: 'text-emerald-600 dark:text-emerald-400',
-        iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-        iconColor: 'text-emerald-600 dark:text-emerald-400',
-        gradientBorder: 'hover:border-emerald-500/50'
+        ...bronzeBadge
       },
       {
         id: 'interest-calculator',
@@ -517,11 +419,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'LEGAL UTILITY',
         icon: Calculator,
         path: '/interest-calculator',
-        badgeBg: 'bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/30',
-        badgeText: 'text-sky-600 dark:text-sky-400',
-        iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-        iconColor: 'text-sky-600 dark:text-sky-400',
-        gradientBorder: 'hover:border-sky-500/50'
+        ...oliveBadge
       },
       {
         id: 'date-difference-calculator',
@@ -530,11 +428,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'DATE UTILITY',
         icon: Calendar,
         path: '/date-difference-calculator',
-        badgeBg: 'bg-emerald-500/10 dark:bg-emerald-400/10 border-emerald-500/30',
-        badgeText: 'text-emerald-600 dark:text-emerald-400',
-        iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-        iconColor: 'text-emerald-600 dark:text-emerald-400',
-        gradientBorder: 'hover:border-emerald-500/50'
+        ...brownBadge
       },
       {
         id: 'chat',
@@ -543,11 +437,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Encrypted Chat',
         icon: MessageSquare,
         path: '/chat',
-        badgeBg: 'bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/30',
-        badgeText: 'text-amber-600 dark:text-amber-400',
-        iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-        iconColor: 'text-amber-600 dark:text-amber-400',
-        gradientBorder: 'hover:border-amber-500/50'
+        ...forestBadge
       },
       {
         id: 'collaboration',
@@ -556,11 +446,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Shared Drafts',
         icon: FileText,
         path: '/collaboration',
-        badgeBg: 'bg-rose-500/10 dark:bg-rose-400/10 border-rose-500/30',
-        badgeText: 'text-rose-600 dark:text-rose-400',
-        iconBg: 'bg-rose-500/10 dark:bg-rose-500/20',
-        iconColor: 'text-rose-600 dark:text-rose-400',
-        gradientBorder: 'hover:border-rose-500/50'
+        ...brownBadge
       },
       {
         id: 'profile',
@@ -569,11 +455,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Personal Profile',
         icon: User,
         path: '/profile',
-        badgeBg: 'bg-cyan-500/10 dark:bg-cyan-400/10 border-cyan-500/30',
-        badgeText: 'text-cyan-600 dark:text-cyan-400',
-        iconBg: 'bg-cyan-500/10 dark:bg-cyan-500/20',
-        iconColor: 'text-cyan-600 dark:text-cyan-400',
-        gradientBorder: 'hover:border-cyan-500/50'
+        ...sageBadge
       },
       {
         id: 'settings',
@@ -582,11 +464,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         tag: 'Settings & Security',
         icon: Settings,
         path: '/settings',
-        badgeBg: 'bg-slate-500/10 dark:bg-slate-400/10 border-slate-500/30',
-        badgeText: 'text-slate-600 dark:text-slate-400',
-        iconBg: 'bg-slate-500/10 dark:bg-slate-500/20',
-        iconColor: 'text-slate-600 dark:text-slate-400',
-        gradientBorder: 'hover:border-slate-500/50'
+        ...brownBadge
       }
     ];
   };
@@ -597,10 +475,10 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
     <div className="space-y-6">
       
       {/* Ultra-Compact Premium Legal-Tech Hero Banner */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-b from-[#091122] via-[#0C182F] to-[#070E1C] text-white py-4 sm:py-5 px-4 sm:px-6 shadow-md border border-white/[0.08] animate-slide-up">
+      <div className="relative overflow-hidden rounded-xl bg-[#1E2420] dark:bg-[#151815] text-[#F7F3EA] py-5 px-4 sm:px-6 shadow-md border border-[#A67C3B]/25">
         
-        {/* Fine Architectural Line Background Overlay */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] overflow-hidden">
+        {/* Subtle watermark / pattern */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04] overflow-hidden">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
             <defs>
               <pattern id="archGrid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -614,18 +492,18 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-3">
           
           {/* Official Logo & Portal Title Badge */}
-          <div className="flex items-center gap-3 bg-white/[0.04] p-2.5 px-4 rounded-2xl border border-white/10 backdrop-blur-md shadow-md">
+          <div className="flex items-center gap-3 bg-[#171916]/60 p-2.5 px-4 rounded-xl border border-[#A67C3B]/30 backdrop-blur-md shadow-md">
             <img 
               src="/logo.jpg" 
               alt="Elite Legal Desk Logo" 
-              className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full border-2 border-amber-400 shadow-lg bg-white" 
+              className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full border-2 border-[#A67C3B] shadow-lg bg-[#FFFDF8]" 
             />
             <div className="text-left">
-              <h1 className="text-base sm:text-lg font-extrabold font-sans text-white tracking-wider leading-none">
+              <h1 className="text-base sm:text-lg font-extrabold font-serif text-[#F7F3EA] tracking-wider leading-none">
                 ELITE LEGAL DESK
               </h1>
-              <div className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                <Sparkles size={10} className="text-sky-400" />
+              <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full bg-[#A67C3B]/20 text-[#D8C49A] border border-[#A67C3B]/30">
+                <Sparkles size={10} className="text-[#C7A45A]" />
                 <span className="text-[9px] font-bold uppercase tracking-wider">
                   {role} PORTAL
                 </span>
@@ -634,20 +512,20 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           </div>
 
           {/* Low-Profile Sleek Quotation Panel */}
-          <div className="relative w-full max-w-[950px] mx-auto py-3.5 px-4 sm:py-4 sm:px-8 rounded-xl bg-[#0E1A30]/50 border border-white/[0.09] backdrop-blur-md shadow-sm flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-[950px] mx-auto py-3.5 px-4 sm:py-4 sm:px-8 rounded-xl bg-[#171916]/80 border border-[#A67C3B]/20 backdrop-blur-md shadow-sm flex flex-col items-center justify-center">
             
             {/* Subtle Watermark Quotes */}
-            <span className="absolute top-2 left-3 text-2xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute top-2 left-3 text-2xl font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
               “
             </span>
-            <span className="absolute bottom-2 right-3 text-2xl font-serif text-sky-200/10 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute bottom-2 right-3 text-2xl font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
               ”
             </span>
 
-            {/* Quotation Text (Flows horizontally in 2 compact lines on desktop) */}
-            <blockquote className="relative z-10 font-['Playfair_Display',serif] italic text-base sm:text-lg md:text-xl lg:text-[22px] text-slate-100 font-normal leading-relaxed text-center tracking-wide px-2 sm:px-4">
-              “All of us do not have equal talent.... But, all of us have an <span className="text-[#38bdf8] font-medium not-italic border-b border-[#38bdf8]/40 pb-0.5">equal opportunity</span> to develop our talent”
-              <span className="font-sans not-italic text-xs sm:text-sm md:text-base text-amber-300/90 font-medium ml-2.5 inline-block">
+            {/* Quotation Text */}
+            <blockquote className="relative z-10 font-serif italic text-base sm:text-lg md:text-xl text-[#F7F3EA] font-normal leading-relaxed text-center tracking-wide px-2 sm:px-4">
+              “All of us do not have equal talent.... But, all of us have an <span className="text-[#C7A45A] font-medium not-italic border-b border-[#C7A45A]/40 pb-0.5">equal opportunity</span> to develop our talent”
+              <span className="font-sans not-italic text-xs sm:text-sm text-[#D8C49A] font-medium ml-2.5 inline-block">
                 ... Dr. A. P. J. Abdul Kalam
               </span>
             </blockquote>
@@ -660,21 +538,21 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       {role === 'Admin' && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
-            { label: 'ADVOCATES', val: displayStats.totalAdvocates, icon: Users, color: 'text-indigo-600 dark:text-indigo-400' },
-            { label: 'ACTIVE USERS', val: displayStats.activeUsers, icon: CheckCircle, color: 'text-emerald-500 dark:text-emerald-400' },
-            { label: 'PENDING VERIFY', val: displayStats.pendingVerification, icon: Clock, color: 'text-amber-500 dark:text-amber-400' },
-            { label: 'JUDGEMENTS', val: displayStats.uploadedJudgements, icon: FileText, color: 'text-sky-500 dark:text-sky-400' },
-            { label: 'ACTS/LAWS', val: displayStats.uploadedLaws, icon: BookOpen, color: 'text-indigo-500 dark:text-indigo-400' },
-            { label: 'COLLAB ACTIONS', val: displayStats.collaborationActivities, icon: Activity, color: 'text-purple-500 dark:text-purple-400' }
+            { label: 'ADVOCATES', val: displayStats.totalAdvocates, icon: Users, color: 'text-[#183C32] dark:text-[#8FAF9C]' },
+            { label: 'ACTIVE USERS', val: displayStats.activeUsers, icon: CheckCircle, color: 'text-[#3F6B50] dark:text-[#6F9A83]' },
+            { label: 'PENDING VERIFY', val: displayStats.pendingVerification, icon: Clock, color: 'text-[#A67C3B] dark:text-[#C7A45A]' },
+            { label: 'JUDGEMENTS', val: displayStats.uploadedJudgements, icon: FileText, color: 'text-[#6A5948] dark:text-[#D8C49A]' },
+            { label: 'ACTS/LAWS', val: displayStats.uploadedLaws, icon: BookOpen, color: 'text-[#183C32] dark:text-[#6F9A83]' },
+            { label: 'COLLAB ACTIONS', val: displayStats.collaborationActivities, icon: Activity, color: 'text-[#71877B] dark:text-[#AFC9B7]' }
           ].map((c, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col justify-between transition-all hover:shadow-md">
+            <div key={i} className="legal-card p-4 sm:p-5 flex flex-col justify-between">
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-sans">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted dark:text-dark-text-muted font-sans">
                   {c.label}
                 </span>
                 <c.icon size={18} className={c.color} />
               </div>
-              <h3 className="text-2xl font-bold font-sans text-slate-900 dark:text-white mt-1">
+              <h3 className="text-2xl font-bold font-serif text-[#242522] dark:text-[#F4F0E7] mt-1">
                 {loadingStats ? '...' : (c.val ?? 0)}
               </h3>
             </div>
@@ -683,18 +561,18 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       )}
 
       {/* Portal Fields Section Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-b border-border dark:border-dark-border pb-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 font-sans">
-            <Compass size={20} className="text-primary dark:text-sky-400" />
+          <h2 className="text-lg font-bold text-text-primary dark:text-dark-text-primary flex items-center gap-2 font-serif">
+            <Compass size={20} className="text-[#183C32] dark:text-[#6F9A83]" />
             Portal Fields & Available Services
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Select any card below to immediately navigate to the corresponding portal section. Tailored for <strong className="text-primary dark:text-sky-400">{role}</strong> users.
+          <p className="text-xs text-text-secondary dark:text-dark-text-secondary">
+            Select any card below to immediately navigate to the corresponding portal section. Tailored for <strong className="text-[#183C32] dark:text-[#C7A45A]">{role}</strong> users.
           </p>
         </div>
 
-        <div className="text-xs font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full self-start sm:self-auto">
+        <div className="text-xs font-semibold text-text-muted dark:text-dark-text-muted bg-surface-secondary dark:bg-dark-surface-secondary px-3 py-1 rounded-full border border-border dark:border-dark-border self-start sm:self-auto">
           {cards.length} Active Modules
         </div>
       </div>
@@ -707,13 +585,13 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
             <div
               key={card.id}
               onClick={() => handleCardClick(card)}
-              className={`group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between relative overflow-hidden ${card.gradientBorder}`}
+              className="legal-card p-5 cursor-pointer flex flex-col justify-between relative overflow-hidden group"
             >
               {/* Card Top Header */}
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className={`p-3 rounded-xl ${card.iconBg} ${card.iconColor} transition-transform duration-300 group-hover:scale-110`}>
-                    <CardIcon size={22} className="stroke-[2.2]" />
+                  <div className={`p-3 rounded-xl ${card.iconBg} ${card.iconColor} transition-transform duration-300 group-hover:scale-105`}>
+                    <CardIcon size={22} className="stroke-[2]" />
                   </div>
                   
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${card.badgeBg} ${card.badgeText} uppercase tracking-wider`}>
@@ -722,20 +600,20 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
                 </div>
 
                 {/* Card Title */}
-                <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-sky-400 transition-colors font-sans flex items-center justify-between">
+                <h3 className="font-bold text-base text-text-primary dark:text-dark-text-primary group-hover:text-[#183C32] dark:group-hover:text-[#C7A45A] transition-colors font-serif flex items-center justify-between">
                   <span>{card.title}</span>
                 </h3>
 
                 {/* Card Description */}
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-normal">
+                <p className="text-xs text-text-secondary dark:text-dark-text-secondary mt-2 leading-relaxed font-normal">
                   {card.description}
                 </p>
               </div>
 
               {/* Card Footer Redirection Action */}
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-primary dark:text-sky-400 group-hover:underline">
+              <div className="mt-5 pt-3 border-t border-border/60 dark:border-dark-border/60 flex items-center justify-between text-xs font-semibold text-[#183C32] dark:text-[#6F9A83] group-hover:text-[#A67C3B] dark:group-hover:text-[#C7A45A]">
                 <span>Access Module</span>
-                <div className="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary group-hover:text-white dark:group-hover:bg-sky-400 dark:group-hover:text-slate-950 flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
+                <div className="h-7 w-7 rounded-full bg-surface-secondary dark:bg-dark-surface-secondary group-hover:bg-[#183C32] group-hover:text-white dark:group-hover:bg-[#C7A45A] dark:group-hover:text-[#171916] flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
                   <ArrowRight size={14} />
                 </div>
               </div>

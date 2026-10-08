@@ -60,28 +60,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
       {mobileOpen && (
         <div 
           onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-[#171916]/70 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
         />
       )}
 
       {/* Sidebar Container */}
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 bg-primary dark:bg-slate-900 text-white flex flex-col justify-between transition-all duration-300 shadow-2xl md:static md:z-20 h-screen top-0 ${
+        className={`fixed inset-y-0 left-0 z-50 bg-[#FFFDF8] dark:bg-[#171916] text-[#625F58] dark:text-[#C5C0B6] border-r border-[#D8D1C5] dark:border-[#30352F] flex flex-col justify-between transition-all duration-300 shadow-lg md:static md:z-20 h-screen top-0 ${
           mobileOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'
         } ${collapsed ? 'md:w-20' : 'md:w-64'}`}
       >
         {/* Top Brand Logo & Mobile Close */}
         <div>
-          <div className="p-4 flex items-center justify-between border-b border-white/10">
+          <div className="p-4 flex items-center justify-between border-b border-[#D8D1C5] dark:border-[#30352F]">
             <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => navigate('/dashboard')}>
               <img 
                 src="/logo.jpg" 
                 alt="Elite Legal Desk Logo" 
-                className="h-9 w-9 object-contain rounded-full shadow-md border border-amber-400 bg-white flex-shrink-0" 
+                className="h-9 w-9 object-contain rounded-full shadow-xs border border-[#A67C3B]/50 bg-[#FFFDF8] flex-shrink-0" 
               />
               {(!collapsed || mobileOpen) && (
                 <div className="flex flex-col overflow-hidden">
-                  <span className="font-extrabold text-sm tracking-wider font-sans whitespace-nowrap text-white leading-none">
+                  <span className="font-extrabold text-sm tracking-wider font-sans whitespace-nowrap text-[#242522] dark:text-[#F4F0E7] leading-none">
                     ELITE LEGAL DESK
                   </span>
                 </div>
@@ -91,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
             {/* Desktop Collapse Toggle */}
             <button 
               onClick={() => setCollapsed(!collapsed)}
-              className="p-1 rounded bg-white/10 hover:bg-white/20 transition-colors hidden md:block"
+              className="p-1.5 rounded-lg bg-[#EFEAE0] dark:bg-[#242822] hover:bg-[#D8D1C5] dark:hover:bg-[#2B3029] text-[#242522] dark:text-[#F4F0E7] transition-colors hidden md:block cursor-pointer"
               title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
             >
               {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
             {/* Mobile Close Button */}
             <button
               onClick={() => setMobileOpen(false)}
-              className="p-1.5 rounded bg-white/10 hover:bg-white/20 text-white transition-colors md:hidden"
+              className="p-1.5 rounded-lg bg-[#EFEAE0] dark:bg-[#242822] hover:bg-[#D8D1C5] dark:hover:bg-[#2B3029] text-[#242522] dark:text-[#F4F0E7] transition-colors md:hidden cursor-pointer"
               title="Close Menu"
             >
               <X size={18} />
@@ -109,13 +109,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
 
           {/* User Card */}
           {(!collapsed || mobileOpen) && user && (
-            <div className="p-4 bg-white/5 border-b border-white/10 flex items-center gap-3 animate-fade-in">
-              <div className="h-10 w-10 rounded-full bg-secondary text-primary flex items-center justify-center font-bold text-lg flex-shrink-0">
+            <div className="p-4 bg-[#EFEAE0]/60 dark:bg-[#1E211D] border-b border-[#D8D1C5] dark:border-[#30352F] flex items-center gap-3 animate-fade-in">
+              <div className="h-10 w-10 rounded-full bg-[#183C32] dark:bg-[#6F9A83] text-[#FFFFFF] dark:text-[#151815] flex items-center justify-center font-bold text-lg flex-shrink-0">
                 {user.name.charAt(0)}
               </div>
               <div className="overflow-hidden">
-                <h4 className="font-medium text-sm truncate">{user.name}</h4>
-                <span className="text-xs text-secondary tracking-wide uppercase font-semibold">
+                <h4 className="font-semibold text-sm text-[#242522] dark:text-[#F4F0E7] truncate">{user.name}</h4>
+                <span className="text-xs text-[#A67C3B] dark:text-[#C7A45A] tracking-wide uppercase font-bold">
                   {user.role}
                 </span>
               </div>
@@ -132,14 +132,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
                   to={item.path}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-4 px-4 py-3 rounded-lg text-sm transition-all duration-200 ${
+                    `flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                       isActive 
-                        ? 'bg-secondary text-primary font-semibold shadow-md translate-x-1' 
-                        : 'text-white/70 hover:bg-white/5 hover:text-white'
+                        ? 'bg-[#EFEAE0] dark:bg-[#242822] text-[#183C32] dark:text-[#F4F0E7] border-l-4 border-[#A67C3B] dark:border-[#C7A45A] shadow-xs translate-x-1' 
+                        : 'text-[#625F58] dark:text-[#C5C0B6] hover:bg-[#F1F4EE] dark:hover:bg-[#2B3029] hover:text-[#183C32] dark:hover:text-[#F4F0E7]'
                     }`
                   }
                 >
-                  <Icon size={18} className="flex-shrink-0" />
+                  <Icon size={18} className="flex-shrink-0 text-[#183C32] dark:text-[#D4DED7]" />
                   {(!collapsed || mobileOpen) && <span className="whitespace-nowrap">{item.name}</span>}
                 </NavLink>
               );
@@ -148,10 +148,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
         </div>
 
         {/* Logout button */}
-        <div className="p-3 border-t border-white/10">
+        <div className="p-3 border-t border-[#D8D1C5] dark:border-[#30352F]">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-sm text-red-300 hover:bg-red-500/10 hover:text-red-200 transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-lg text-xs font-semibold text-[#914F45] dark:text-[#E5A8A0] hover:bg-[#F1E2DF] dark:hover:bg-[#38201D] transition-colors cursor-pointer"
           >
             <LogOut size={18} className="flex-shrink-0" />
             {(!collapsed || mobileOpen) && <span className="whitespace-nowrap font-medium">Sign Out</span>}

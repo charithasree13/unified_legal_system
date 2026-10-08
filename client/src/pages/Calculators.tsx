@@ -429,11 +429,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
     <div className="space-y-6">
       
       {/* Top Navigation Tabs */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-4 flex flex-wrap gap-2">
+      <div className="legal-card p-4 flex flex-wrap gap-2">
         <button
           onClick={() => handleTabChange('land')}
           className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'land' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+            activeTab === 'land' ? 'btn-primary' : 'btn-secondary'
           }`}
         >
           <ArrowRightLeft size={14} /> Land Measurement Calculator
@@ -442,7 +442,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
         <button
           onClick={() => handleTabChange('interest')}
           className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'interest' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+            activeTab === 'interest' ? 'btn-primary' : 'btn-secondary'
           }`}
         >
           <Calculator size={14} /> Interest Calculator
@@ -451,7 +451,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
         <button
           onClick={() => handleTabChange('date')}
           className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-            activeTab === 'date' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+            activeTab === 'date' ? 'btn-primary' : 'btn-secondary'
           }`}
         >
           <Calendar size={14} /> Date Calculator
@@ -461,24 +461,24 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
           <button
             onClick={() => handleTabChange('court')}
             className={`px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              activeTab === 'court' ? 'bg-primary text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
+              activeTab === 'court' ? 'btn-premium' : 'btn-secondary'
             }`}
           >
             <Scale size={14} /> Court Fee Calculator
-            <span className="ml-1 text-[9px] bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded font-bold uppercase">Advocate & Admin</span>
+            <span className="ml-1 text-[9px] bg-[#A67C3B]/20 text-[#A67C3B] dark:text-[#D8C49A] border border-[#A67C3B]/30 px-1.5 py-0.5 rounded font-bold uppercase">Advocate & Admin</span>
           </button>
         )}
       </div>
 
       {/* 1. LAND MEASUREMENT CONVERTER TAB */}
       {activeTab === 'land' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 animate-slide-up">
+        <div className="legal-card p-6 animate-slide-up">
           <div className="mb-6">
-            <h3 className="font-bold text-base text-slate-950 dark:text-white flex items-center gap-2">
-              <ArrowRightLeft className="text-primary dark:text-sky-400" size={20} />
+            <h3 className="font-bold text-base text-[#242522] dark:text-[#F4F0E7] flex items-center gap-2 font-serif">
+              <ArrowRightLeft className="text-[#183C32] dark:text-[#6F9A83]" size={20} />
               Land Measurement Calculator
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] mt-1">
               Enter a value in any measurement field below. All standard and regional land units auto-calculate instantly.
             </p>
           </div>
@@ -494,8 +494,8 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
               { id: 'sqMeter', label: 'Square Meters' },
               { id: 'sqFeet', label: 'Square Feet' }
             ].map((unit) => (
-              <div key={unit.id} className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-850 rounded-xl shadow-sm">
-                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <div key={unit.id} className="p-4 bg-[#EFEAE0] dark:bg-[#1E211D] border border-[#D8D1C5] dark:border-[#3A4038] rounded-xl shadow-xs">
+                <label className="block text-[10px] font-bold text-[#858078] dark:text-[#969188] uppercase tracking-wider mb-2">
                   {unit.label}
                 </label>
                 <input
@@ -503,7 +503,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   value={(landValues as any)[unit.id]}
                   onChange={(e) => handleLandConvert(unit.id, e.target.value)}
                   placeholder="0.00"
-                  className="w-full text-sm font-bold bg-transparent border-b border-slate-200 dark:border-slate-800 focus:outline-none focus:border-primary pb-1 font-mono placeholder:text-slate-300"
+                  className="w-full text-sm font-bold bg-transparent border-b border-[#D8D1C5] dark:border-[#3A4038] focus:outline-none focus:border-[#183C32] dark:focus:border-[#6F9A83] pb-1 font-mono text-[#242522] dark:text-[#F4F0E7] placeholder:text-[#858078]"
                 />
               </div>
             ))}
@@ -530,15 +530,15 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up">
           
           {/* Form Controls */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-5">
+          <div className="lg:col-span-2 legal-card p-6 space-y-5">
             <div>
               <div className="flex justify-between items-center">
-                <h3 className="font-bold text-base text-slate-950 dark:text-white flex items-center gap-2">
-                  <Scale className="text-primary dark:text-sky-400" size={20} />
+                <h3 className="font-bold text-base text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
+                  <Scale className="text-[#A67C3B] dark:text-[#C7A45A]" size={20} />
                   Enterprise Court Fee Rule Engine
                 </h3>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] mt-1">
                 Computes exact statutory court fees from configured database rules across all 28 States and 8 Union Territories.
               </p>
             </div>
@@ -548,11 +548,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
               {/* State, District, Court Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">State / Union Territory</label>
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">State / Union Territory</label>
                   <select
                     value={selectedState}
                     onChange={(e) => setSelectedState(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                    className="legal-input mt-1"
                   >
                     <optgroup label="States">
                       {[
@@ -573,11 +573,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">District Jurisdiction</label>
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">District Jurisdiction</label>
                   <select
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none"
+                    className="legal-input mt-1"
                   >
                     {(STATE_DISTRICTS[selectedState] || ['Central District', 'North District', 'South District']).map(d => (
                       <option key={d} value={d}>{d}</option>
@@ -586,11 +586,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Court Forum</label>
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Court Forum</label>
                   <select
                     value={selectedCourt}
                     onChange={(e) => setSelectedCourt(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                    className="legal-input mt-1"
                   >
                     {[
                       'District Court',
@@ -611,11 +611,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
               {/* Proceeding Case Type & Relief Type Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Proceeding / Case Type</label>
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Proceeding / Case Type</label>
                   <select
                     value={selectedCaseType}
                     onChange={(e) => handleCaseTypeChange(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                    className="legal-input mt-1"
                   >
                     {(metadata.caseTypes.length > 0 ? metadata.caseTypes.map((ct: any) => ct.name) : ALL_CASE_TYPES).map((c: string) => (
                       <option key={c} value={c}>{c}</option>
@@ -624,11 +624,11 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase">Relief Requested</label>
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Relief Requested</label>
                   <select
                     value={selectedRelief}
                     onChange={(e) => setSelectedRelief(e.target.value)}
-                    className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs bg-slate-50 dark:bg-slate-950 focus:outline-none font-semibold text-slate-800 dark:text-slate-200"
+                    className="legal-input mt-1"
                   >
                     {(CASE_RELIEF_MAP[selectedCaseType] || ['Money Claim Recovery', 'Property Market Valuation Possession', 'Fixed Title Declaration', 'Fixed Injunction Relief']).map((r: string) => (
                       <option key={r} value={r}>{r}</option>
@@ -639,19 +639,19 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
 
               {/* Value of Suit (in Rupees) Input */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase">Value of Suit (in Rupees) *</label>
+                <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Value of Suit (in Rupees) *</label>
                 <input
                   type="number"
                   value={suitValue}
                   onChange={(e) => setSuitValue(e.target.value)}
                   min={0}
                   placeholder="Enter suit value in Rupees"
-                  className="w-full mt-1 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2.5 text-sm bg-slate-50 dark:bg-slate-950 font-mono font-bold focus:outline-none focus:border-primary text-slate-900 dark:text-white"
+                  className="legal-input font-mono font-bold mt-1"
                 />
               </div>
 
               {calcErr && (
-                <div className="p-3 bg-red-50 text-red-600 rounded-lg text-xs flex gap-2 font-medium">
+                <div className="p-3 bg-[#F1E2DF] text-[#914F45] rounded-lg text-xs flex gap-2 font-medium">
                   <ShieldAlert size={16} />
                   <span>{calcErr}</span>
                 </div>
@@ -662,7 +662,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 <button
                   type="submit"
                   disabled={calcLoading}
-                  className="flex-1 py-3 bg-primary dark:bg-sky-500 hover:bg-primary-hover dark:hover:bg-sky-400 text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 py-3 text-xs flex items-center justify-center gap-2"
                 >
                   {calcLoading ? <RefreshCw className="animate-spin" size={16} /> : <Scale size={16} />}
                   <span>{calcLoading ? 'Evaluating Rules...' : 'Calculate Court Fee'}</span>
@@ -671,7 +671,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition-all cursor-pointer border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
+                  className="btn-secondary px-4 py-3 text-xs flex items-center gap-1.5"
                 >
                   <RotateCcw size={14} /> Reset
                 </button>
@@ -680,10 +680,10 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
           </div>
 
           {/* Right Side: Comprehensive Result Panel */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 flex flex-col justify-between">
+          <div className="legal-card p-6 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-sm text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="font-bold text-xs text-[#858078] dark:text-[#969188] uppercase tracking-wider flex items-center gap-1.5">
                   <FileText size={16} /> Assessment Result Panel
                 </h3>
 
@@ -691,28 +691,28 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   <div className="flex gap-1">
                     <button
                       onClick={handleCopyCitation}
-                      className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded text-xs"
+                      className="p-1.5 bg-[#EFEAE0] hover:bg-[#D8D1C5] dark:bg-[#1E211D] text-[#242522] dark:text-[#F4F0E7] rounded text-xs"
                       title="Copy Legal Citation"
                     >
                       <Copy size={13} />
                     </button>
                     <button
                       onClick={() => handleDownloadCsv()}
-                      className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded text-xs"
+                      className="p-1.5 bg-[#EFEAE0] hover:bg-[#D8D1C5] dark:bg-[#1E211D] text-[#242522] dark:text-[#F4F0E7] rounded text-xs"
                       title="Export Excel/CSV"
                     >
                       <FileSpreadsheet size={13} />
                     </button>
                     <button
                       onClick={handlePrintReceipt}
-                      className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded text-xs"
+                      className="p-1.5 bg-[#EFEAE0] hover:bg-[#D8D1C5] dark:bg-[#1E211D] text-[#242522] dark:text-[#F4F0E7] rounded text-xs"
                       title="Print Assessment"
                     >
                       <Printer size={13} />
                     </button>
                     <button
                       onClick={() => handleDownloadPdf()}
-                      className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded text-xs"
+                      className="p-1.5 bg-[#EFEAE0] hover:bg-[#D8D1C5] dark:bg-[#1E211D] text-[#242522] dark:text-[#F4F0E7] rounded text-xs"
                       title="Download PDF"
                     >
                       <Download size={13} />
@@ -726,76 +726,76 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   <LegalTriviaLoader loadingText="Evaluating Statutory Rules & Fee Schedules..." />
                 </div>
               ) : calcResult === null ? (
-                <div className="text-center py-16 text-xs text-slate-400 space-y-2">
-                  <Scale size={36} className="mx-auto text-slate-300 dark:text-slate-700" />
+                <div className="text-center py-16 text-xs text-[#858078] dark:text-[#969188] space-y-2">
+                  <Scale size={36} className="mx-auto text-[#71877B]" />
                   <p>Select litigation parameters and hit calculate to evaluate statutory database rules.</p>
                 </div>
               ) : (
-                <div className="space-y-3 text-xs font-mono bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-850">
-                  <div className="text-center border-b border-dashed border-slate-350 dark:border-slate-700 pb-2">
-                    <p className="font-bold uppercase text-slate-900 dark:text-white">Court Fee Valuation Result</p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">Last Updated Date: {calcResult.lastUpdatedDate || new Date().toISOString().split('T')[0]}</p>
+                <div className="space-y-3 text-xs font-mono bg-[#EFEAE0] dark:bg-[#1E211D] p-4 rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
+                  <div className="text-center border-b border-dashed border-[#D8D1C5] dark:border-[#3A4038] pb-2">
+                    <p className="font-bold uppercase text-[#242522] dark:text-[#F4F0E7] font-serif">Court Fee Valuation Result</p>
+                    <p className="text-[9px] text-[#858078] dark:text-[#969188] mt-0.5">Last Updated Date: {calcResult.lastUpdatedDate || new Date().toISOString().split('T')[0]}</p>
                   </div>
                   
                   <div className="space-y-1.5 text-[11px]">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">State:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{selectedState}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">State:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{selectedState}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Court:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{selectedCourt}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Court:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{selectedCourt}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Case Type:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{selectedCaseType}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Case Type:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{selectedCaseType}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Applicable Act:</span>
-                      <span className="font-semibold text-sky-600 dark:text-sky-400">{calcResult.actName}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Applicable Act:</span>
+                      <span className="font-semibold text-[#183C32] dark:text-[#6F9A83]">{calcResult.actName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Section / Provision:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{calcResult.section}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Section / Provision:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{calcResult.section}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Schedule & Article:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{calcResult.schedule} {calcResult.article}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Schedule & Article:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{calcResult.schedule} {calcResult.article}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Formula Type:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{calcResult.feeType}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Formula Type:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">{calcResult.feeType}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Suit Valuation:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">₹{calcResult.suitValuation.toLocaleString('en-IN')}</span>
+                      <span className="text-[#625F58] dark:text-[#C5C0B6]">Suit Valuation:</span>
+                      <span className="font-semibold text-[#242522] dark:text-[#F4F0E7]">₹{calcResult.suitValuation.toLocaleString('en-IN')}</span>
                     </div>
 
-                    <div className="flex justify-between border-t border-dashed border-slate-350 dark:border-slate-700 pt-2 text-sm font-bold">
-                      <span className="text-slate-900 dark:text-white">FINAL COURT FEE:</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">₹{calcResult.calculatedFee.toLocaleString('en-IN')}</span>
+                    <div className="flex justify-between border-t border-dashed border-[#D8D1C5] dark:border-[#3A4038] pt-2 text-sm font-bold">
+                      <span className="text-[#242522] dark:text-[#F4F0E7]">FINAL COURT FEE:</span>
+                      <span className="text-[#3F6B50] dark:text-[#6F9A83] font-extrabold">₹{calcResult.calculatedFee.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
 
                   {calcResult.warning && (
-                    <div className="p-2 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 rounded border border-amber-200 text-[10px] font-sans">
+                    <div className="p-2 bg-[#F1E9D8] text-[#80632E] rounded border border-[#A67C3B]/30 text-[10px] font-sans">
                       ⚠️ {calcResult.warning}
                     </div>
                   )}
 
                   {calcResult.breakdown && calcResult.breakdown.length > 0 && (
-                    <div className="border-t border-dashed border-slate-350 dark:border-slate-700 pt-2 text-[10px] space-y-1 font-sans">
-                      <p className="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[9px] mb-0.5">Intermediate Calculation Steps:</p>
+                    <div className="border-t border-dashed border-[#D8D1C5] dark:border-[#3A4038] pt-2 text-[10px] space-y-1 font-sans">
+                      <p className="font-bold text-[#858078] dark:text-[#969188] uppercase tracking-wider text-[9px] mb-0.5">Intermediate Calculation Steps:</p>
                       {calcResult.breakdown.map((step: string, idx: number) => (
-                        <p key={idx} className="text-slate-600 dark:text-slate-300 leading-tight">• {step}</p>
+                        <p key={idx} className="text-[#625F58] dark:text-[#C5C0B6] leading-tight">• {step}</p>
                       ))}
                     </div>
                   )}
 
-                  <div className="border-t border-slate-200 dark:border-slate-800 pt-3 text-[10px] font-sans text-slate-500 space-y-1 bg-slate-100/50 dark:bg-slate-900/50 p-2.5 rounded-lg mt-2">
-                    <p className="font-bold text-slate-600 dark:text-slate-300 text-[10px]">Legal Source Reference:</p>
-                    <p className="text-slate-500 text-[10px]">Source: {calcResult.sourceName || 'State Court Fees Act'} ({calcResult.sourceType || 'statute'})</p>
-                    <p className="text-slate-400 italic text-[9.5px]">"Calculated using configured legal rules. Please verify the applicable fee with the relevant court/official legal source before filing."</p>
+                  <div className="border-t border-[#D8D1C5] dark:border-[#3A4038] pt-3 text-[10px] font-sans text-[#625F58] dark:text-[#C5C0B6] space-y-1 bg-[#FFFDF8] dark:bg-[#242822] p-2.5 rounded-lg mt-2">
+                    <p className="font-bold text-[#242522] dark:text-[#F4F0E7] text-[10px]">Legal Source Reference:</p>
+                    <p className="text-[#625F58] dark:text-[#C5C0B6] text-[10px]">Source: {calcResult.sourceName || 'State Court Fees Act'} ({calcResult.sourceType || 'statute'})</p>
+                    <p className="text-[#858078] dark:text-[#969188] italic text-[9.5px]">"Calculated using configured legal rules. Please verify the applicable fee with the relevant court/official legal source before filing."</p>
                   </div>
                 </div>
               )}
