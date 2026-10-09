@@ -247,28 +247,28 @@ export const MyNotesPage: React.FC = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
       
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+      {/* Header Banner - Medium-Light Soft Amber-Cream Design */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#FFFBF4] via-[#FBF4E8] to-[#FDF8EF] dark:from-slate-900 dark:via-[#261d12] dark:to-slate-900 border border-[#EADFCB] dark:border-slate-800 border-l-[6px] border-l-[#A67C3B] dark:border-l-amber-500 rounded-[1.5rem] p-6 shadow-md">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-              <StickyNote className="w-6 h-6" />
+            <div className="p-2 rounded-lg bg-[#A67C3B] dark:bg-slate-800 text-[#FFFDF8] dark:text-amber-400 shadow-sm">
+              <StickyNote className="w-5 h-5" />
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl font-extrabold text-[#35271D] dark:text-white tracking-tight font-serif">
               My Notes
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1">
-              <Lock size={10} className="text-emerald-500" /> Private
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md bg-[#A67C3B]/10 dark:bg-slate-800 text-[#6B4E1B] dark:text-amber-300 border border-[#A67C3B]/30 dark:border-slate-700 flex items-center gap-1">
+              <Lock size={10} className="text-[#059669] dark:text-emerald-400" /> Private
             </span>
           </div>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
-            Keep your private legal and work-related notes organized.
+          <p className="text-[#645648] dark:text-slate-300 text-sm font-normal">
+            Keep your private legal research, case notes, and work drafting securely organized.
           </p>
         </div>
 
         <button
           onClick={handleOpenCreateModal}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-lg shadow-md hover:shadow-lg transition-all transform active:scale-95 cursor-pointer flex-shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#183C32] hover:bg-[#245445] dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 font-bold text-sm rounded-xl shadow-md transition-all cursor-pointer flex-shrink-0"
         >
           <Plus size={18} />
           <span>New Note</span>

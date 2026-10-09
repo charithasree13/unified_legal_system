@@ -276,18 +276,18 @@ export const DailyLegalTipsPage: React.FC = () => {
         </span>
       </div>
 
-      {/* Main Header Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      {/* Main Header Banner - Medium-Light Soft Sage-Ivory Design */}
+      <div className="bg-gradient-to-r from-[#F4F8F5] via-[#E9F2ED] to-[#F1F6F3] dark:from-slate-900 dark:via-[#102920] dark:to-slate-900 border border-[#D0E2D8] dark:border-slate-800 border-l-[6px] border-l-[#183C32] dark:border-l-emerald-500 rounded-[1.5rem] p-6 sm:p-8 shadow-md relative overflow-hidden">
         <div className="flex items-start gap-4">
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 shrink-0">
+          <div className="p-3.5 rounded-xl bg-[#183C32] dark:bg-slate-800 text-[#D8C49A] dark:text-emerald-400 shrink-0 shadow-md">
             <BookOpen size={28} />
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl font-black text-[#14332B] dark:text-white tracking-tight font-serif">
               Daily Legal Tips / Updates
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-              Daily legal practice updates and tips for enrolled advocates.
+            <p className="text-xs sm:text-sm text-[#455A52] dark:text-slate-300 max-w-2xl leading-relaxed font-normal">
+              Daily legal practice updates, statutory insights, and case law digests curated exclusively for enrolled advocates and legal administrators.
             </p>
           </div>
         </div>

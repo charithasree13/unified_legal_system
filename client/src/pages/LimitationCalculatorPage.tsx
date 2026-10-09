@@ -294,29 +294,25 @@ export const LimitationCalculatorPage: React.FC = () => {
   return (
     <div ref={pageTopRef} className="space-y-6 animate-fade-in max-w-7xl mx-auto pb-12">
       
-      {/* Header Banner - Bespoke Handcrafted Executive Slate Design */}
-      <div className="bg-gradient-to-r from-[#09152a] via-[#10203d] to-[#0a172c] text-white p-6 sm:p-8 rounded-[1.75rem] shadow-2xl border border-slate-700/80 border-l-[6px] border-l-amber-500 ring-1 ring-white/10 relative overflow-hidden">
-        {/* Subtle geometric line pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        
+      {/* Header Banner - Bespoke Handcrafted Medium-Light Executive Slate Design */}
+      <div className="bg-gradient-to-r from-[#F3F6FA] via-[#E9EFF7] to-[#F1F5FA] dark:from-slate-900 dark:via-[#142036] dark:to-slate-900 text-[#0F172A] dark:text-white p-6 sm:p-8 rounded-[1.5rem] shadow-lg border border-[#CBD5E1] dark:border-slate-800 border-l-[6px] border-l-[#1E3A8A] dark:border-l-amber-500 relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-black/40 flex-shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-[#1E3A8A] dark:bg-slate-800 text-amber-300 dark:text-amber-400 flex items-center justify-center shadow-md flex-shrink-0">
                 <Scale size={26} />
               </div>
               <div>
-                <span className="text-[10px] font-mono font-bold tracking-widest bg-amber-500/15 text-amber-300 px-3 py-1 rounded-md border border-amber-500/40 uppercase">
+                <span className="text-[10px] font-mono font-bold tracking-widest bg-[#1E3A8A]/10 dark:bg-amber-500/15 text-[#1E3A8A] dark:text-amber-300 px-3 py-1 rounded-md border border-[#1E3A8A]/30 dark:border-amber-500/40 uppercase">
                   STATUTORY ADVOCATE TOOL
                 </span>
-                <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-white tracking-tight mt-1">
+                <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-[#0F172A] dark:text-white tracking-tight mt-1">
                   Limitation Act Calculator
                 </h1>
               </div>
             </div>
-            <p className="text-xs sm:text-sm text-slate-300 mt-3 max-w-2xl leading-relaxed font-normal">
-              Calculate indicative statutory limitation periods, excludable time under Sections 4–19, fresh acknowledgement periods, and filing deadlines under the <strong className="text-amber-300 font-semibold border-b border-amber-500/40 pb-0.5">Limitation Act, 1963</strong> (India Code).
+            <p className="text-xs sm:text-sm text-[#475569] dark:text-slate-300 mt-3 max-w-2xl leading-relaxed font-normal">
+              Calculate indicative statutory limitation periods, excludable time under Sections 4–19, fresh acknowledgement periods, and filing deadlines under the <strong className="text-[#1E3A8A] dark:text-amber-300 font-semibold border-b border-[#1E3A8A]/30 dark:border-amber-500/40 pb-0.5">Limitation Act, 1963</strong> (India Code).
             </p>
           </div>
 
@@ -324,21 +320,21 @@ export const LimitationCalculatorPage: React.FC = () => {
             <button
               onClick={handleRunValidationTest}
               disabled={validating}
-              className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-extrabold border border-amber-400/50 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+              className="px-4 py-2.5 bg-[#183C32] hover:bg-[#245445] dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 rounded-xl text-xs font-extrabold border border-[#183C32]/40 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
             >
-              <Sparkles size={15} className="text-slate-950" />
+              <Sparkles size={15} className="text-white dark:text-slate-950" />
               {validating ? 'Running Audit...' : 'Run Dataset Coverage Test'}
             </button>
           </div>
         </div>
 
         {/* Source Disclaimer Bar */}
-        <div className="mt-6 pt-4 border-t border-slate-700/80 flex flex-wrap items-center justify-between text-[11px] text-slate-300 gap-2">
+        <div className="mt-6 pt-4 border-t border-[#CBD5E1] dark:border-slate-700/80 flex flex-wrap items-center justify-between text-[11px] text-[#475569] dark:text-slate-300 gap-2">
           <div className="flex items-center gap-2">
-            <BookOpen size={14} className="text-amber-400" />
-            <span>Official Legal Source: <strong className="text-amber-200 font-semibold">The Limitation Act, 1963 (Schedule) — India Code</strong></span>
+            <BookOpen size={14} className="text-[#183C32] dark:text-amber-400" />
+            <span>Official Legal Source: <strong className="text-[#0F172A] dark:text-amber-200 font-semibold">The Limitation Act, 1963 (Schedule) — India Code</strong></span>
           </div>
-          <span className="text-slate-400 font-mono">152 Schedule Entries | 100% Duplicate-Free Canonical Dataset</span>
+          <span className="text-[#64748B] dark:text-slate-400 font-mono">152 Schedule Entries | 100% Duplicate-Free Canonical Dataset</span>
         </div>
       </div>
 

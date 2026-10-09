@@ -254,20 +254,18 @@ export const LegalDictionary: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
 
-        {/* Page Header */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
-          <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 dark:bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
-          
+        {/* Page Header - Bespoke Medium-Light Parchment Design */}
+        <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F4EFE6] to-[#F8F4EC] dark:from-slate-900 dark:via-[#1a2333] dark:to-slate-900 border border-[#E2DCD0] dark:border-slate-800 border-l-[6px] border-l-[#183C32] dark:border-l-amber-500 rounded-[1.5rem] p-6 sm:p-8 shadow-md relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary dark:bg-sky-500/20 dark:text-sky-300 text-xs font-semibold uppercase tracking-wider">
-                <BookOpen size={14} />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#183C32]/10 dark:bg-sky-500/20 text-[#183C32] dark:text-sky-300 border border-[#183C32]/30 text-xs font-mono font-bold uppercase tracking-wider">
+                <BookOpen size={14} className="text-[#183C32] dark:text-sky-400" />
                 LEGAL REFERENCE
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#242522] dark:text-white tracking-tight font-serif">
                 LEGAL DICTIONARY
               </h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+              <p className="text-sm text-[#524E48] dark:text-slate-400 max-w-2xl leading-relaxed">
                 Browse legal terminology, Latin maxims, Islamic legal terms, land revenue records, and domain glossaries by category and alphabetical order.
               </p>
             </div>

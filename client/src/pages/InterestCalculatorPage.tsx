@@ -113,27 +113,23 @@ ${result.legalReferenceNotice}`;
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
 
-      {/* Header Banner - Bespoke Handcrafted Sapphire Design */}
-      <div className="bg-gradient-to-r from-[#071728] via-[#0d263f] to-[#07192b] text-white rounded-[1.75rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800 border-l-[6px] border-l-cyan-500 ring-1 ring-white/10">
-        {/* Subtle geometric line pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
-        <div className="absolute -right-10 -top-10 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-        
+      {/* Header Banner - Bespoke Handcrafted Medium-Light Sapphire Design */}
+      <div className="bg-gradient-to-r from-[#F0F7FB] via-[#E5F2F9] to-[#EEF6FC] dark:from-slate-900 dark:via-[#0e2438] dark:to-slate-900 text-[#242522] dark:text-white rounded-[1.5rem] p-6 sm:p-10 shadow-lg relative overflow-hidden border border-[#BAE6FD] dark:border-slate-800 border-l-[6px] border-l-[#0284C7] dark:border-l-cyan-500">
         <div className="relative z-10 space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-13 h-13 p-3 rounded-xl bg-slate-900/90 border border-cyan-500/40 text-cyan-400 flex items-center justify-center shadow-lg shadow-black/40 flex-shrink-0">
+            <div className="w-13 h-13 p-3 rounded-xl bg-[#0369A1] dark:bg-slate-800 text-white dark:text-cyan-400 flex items-center justify-center shadow-md flex-shrink-0">
               <Calculator size={28} />
             </div>
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-1">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0284C7]/10 dark:bg-cyan-500/15 border border-[#0284C7]/30 dark:border-cyan-500/30 text-[#0369A1] dark:text-cyan-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-1">
                 Public Legal Utility Engine
               </span>
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white font-serif">
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#0C4A6E] dark:text-white font-serif">
                 Interest Calculator
               </h1>
             </div>
           </div>
-          <p className="text-sm sm:text-base text-slate-300 max-w-4xl leading-relaxed font-normal">
+          <p className="text-sm sm:text-base text-[#475569] dark:text-slate-300 max-w-4xl leading-relaxed font-normal">
             Calculate simple and compound interest with transparent mathematical accuracy for litigation awards, court decrees, contractual claims, and general financial reference.
           </p>
         </div>

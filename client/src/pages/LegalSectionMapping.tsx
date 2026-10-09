@@ -315,24 +315,20 @@ export const LegalSectionMapping: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       
-      {/* Header Banner - Bespoke Handcrafted Legal Design */}
-      <div className="bg-gradient-to-r from-[#0c1427] via-[#121f3d] to-[#0c172d] text-white rounded-[1.75rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800/90 border-l-[6px] border-l-amber-500 ring-1 ring-white/10">
-        {/* Subtle geometric line pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
-        <div className="absolute -right-12 -top-12 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        
+      {/* Header Banner - Bespoke Handcrafted Medium-Light Elegant Design */}
+      <div className="bg-gradient-to-r from-[#FAF7F2] via-[#F4EFE6] to-[#F8F4EC] dark:from-slate-900 dark:via-[#1a2333] dark:to-slate-900 text-[#242522] dark:text-white rounded-[1.5rem] p-6 sm:p-10 shadow-lg relative overflow-hidden border border-[#E2DCD0] dark:border-slate-800 border-l-[6px] border-l-[#183C32] dark:border-l-amber-500">
         <div className="relative z-10 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-13 h-13 p-3 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-black/40 flex-shrink-0">
+              <div className="w-13 h-13 p-3 rounded-xl bg-[#183C32] dark:bg-slate-800 text-[#D8C49A] dark:text-amber-400 flex items-center justify-center shadow-md flex-shrink-0">
                 <BookOpen size={28} />
               </div>
               <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-1">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#183C32]/10 dark:bg-amber-500/15 border border-[#183C32]/30 dark:border-amber-500/30 text-[#183C32] dark:text-amber-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-1">
                   Official Legal Research Tool
                 </span>
-                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white font-serif">
-                  Old Acts <span className="text-amber-400 font-sans mx-1">→</span> New Acts Converter
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#242522] dark:text-white font-serif">
+                  Old Acts <span className="text-[#A67C3B] dark:text-amber-400 font-sans mx-1">→</span> New Acts Converter
                 </h1>
               </div>
             </div>
@@ -341,13 +337,13 @@ export const LegalSectionMapping: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setShowHealthReport(true); fetchHealthReport(); }}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-amber-200 text-xs font-bold border border-amber-500/30 transition shadow-md"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-[#F4EFE6] dark:hover:bg-slate-700 text-[#183C32] dark:text-amber-300 text-xs font-bold border border-[#D8D1C5] dark:border-slate-700 transition shadow-sm"
                 >
-                  <Activity size={15} className="text-amber-400" /> Data Quality Report
+                  <Activity size={15} className="text-[#183C32] dark:text-amber-400" /> Data Quality Report
                 </button>
                 <button
                   onClick={() => handleOpenAdminModal()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold border border-amber-400/50 transition shadow-lg"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#183C32] hover:bg-[#245445] dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-extrabold transition shadow-md"
                 >
                   <Plus size={15} /> Add Mapping
                 </button>
@@ -355,7 +351,7 @@ export const LegalSectionMapping: React.FC = () => {
             )}
           </div>
 
-          <p className="text-sm sm:text-base text-slate-300 max-w-4xl leading-relaxed font-normal">
+          <p className="text-sm sm:text-base text-[#524E48] dark:text-slate-300 max-w-4xl leading-relaxed font-normal">
             Find corresponding provisions under India's new criminal laws with statutory section mappings, detailed legal notes, and authoritative source references.
           </p>
         </div>
