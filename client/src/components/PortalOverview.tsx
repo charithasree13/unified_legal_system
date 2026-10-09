@@ -475,7 +475,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
     <div className="space-y-6">
       
       {/* Ultra-Compact Premium Legal-Tech Hero Banner */}
-      <div className="relative overflow-hidden rounded-xl bg-[#1E2420] dark:bg-[#151815] text-[#F7F3EA] py-5 px-4 sm:px-6 shadow-md border border-[#A67C3B]/25">
+      <div className="relative overflow-hidden rounded-2xl bg-[#1E2420] dark:bg-[#151815] text-[#F7F3EA] py-6 px-4 sm:px-8 shadow-md border border-[#A67C3B]/25">
         
         {/* Subtle watermark / pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.04] overflow-hidden">
@@ -489,43 +489,47 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           </svg>
         </div>
 
-        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-3">
+        <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-4">
           
-          {/* Official Logo & Portal Title Badge */}
-          <div className="flex items-center gap-3 bg-[#171916]/60 p-2.5 px-4 rounded-xl border border-[#A67C3B]/30 backdrop-blur-md shadow-md">
-            <img 
-              src="/logo.jpg" 
-              alt="Elite Legal Desk Logo" 
-              className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full border-2 border-[#A67C3B] shadow-lg bg-[#FFFDF8]" 
-            />
-            <div className="text-left">
-              <h1 className="text-base sm:text-lg font-extrabold font-serif text-[#F7F3EA] tracking-wider leading-none">
+          {/* Official Logo & Portal Title Badge — Primary Branding Focus */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 bg-[#171916]/70 py-4 px-6 sm:px-8 rounded-2xl border border-[#A67C3B]/35 backdrop-blur-md shadow-lg w-full max-w-[850px]">
+            <div className="relative flex-shrink-0">
+              <img 
+                src="/logo.jpg" 
+                alt="Elite Legal Desk Logo" 
+                className="w-24 h-24 sm:w-28 sm:h-28 object-contain rounded-full border-2 border-[#A67C3B] shadow-xl bg-[#FFFDF8]" 
+              />
+            </div>
+            <div className="text-center sm:text-left space-y-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold font-serif text-[#F7F3EA] tracking-wide leading-tight">
                 ELITE LEGAL DESK
               </h1>
-              <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full bg-[#A67C3B]/20 text-[#D8C49A] border border-[#A67C3B]/30">
-                <Sparkles size={10} className="text-[#C7A45A]" />
-                <span className="text-[9px] font-bold uppercase tracking-wider">
-                  {role} PORTAL
-                </span>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A67C3B]/20 text-[#D8C49A] border border-[#A67C3B]/35 shadow-xs">
+                  <Sparkles size={12} className="text-[#C7A45A]" />
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    {role} PORTAL
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Low-Profile Sleek Quotation Panel */}
-          <div className="relative w-full max-w-[950px] mx-auto py-3.5 px-4 sm:py-4 sm:px-8 rounded-xl bg-[#171916]/80 border border-[#A67C3B]/20 backdrop-blur-md shadow-sm flex flex-col items-center justify-center">
+          {/* Supporting Quotation Panel — Reduced Prominence */}
+          <div className="relative w-full max-w-[850px] mx-auto py-2.5 px-4 sm:py-3 sm:px-6 rounded-xl bg-[#171916]/50 border border-[#A67C3B]/15 backdrop-blur-sm shadow-xs flex flex-col items-center justify-center">
             
             {/* Subtle Watermark Quotes */}
-            <span className="absolute top-2 left-3 text-2xl font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute top-1 left-3 text-lg font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
               “
             </span>
-            <span className="absolute bottom-2 right-3 text-2xl font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute bottom-1 right-3 text-lg font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
               ”
             </span>
 
             {/* Quotation Text */}
-            <blockquote className="relative z-10 font-serif italic text-base sm:text-lg md:text-xl text-[#F7F3EA] font-normal leading-relaxed text-center tracking-wide px-2 sm:px-4">
+            <blockquote className="relative z-10 font-serif italic text-sm sm:text-base md:text-lg text-[#F7F3EA]/90 font-normal leading-snug text-center tracking-wide px-2">
               “All of us do not have equal talent.... But, all of us have an <span className="text-[#C7A45A] font-medium not-italic border-b border-[#C7A45A]/40 pb-0.5">equal opportunity</span> to develop our talent”
-              <span className="font-sans not-italic text-xs sm:text-sm text-[#D8C49A] font-medium ml-2.5 inline-block">
+              <span className="font-sans not-italic text-xs sm:text-sm text-[#D8C49A]/90 font-medium ml-2 inline-block">
                 ... Dr. A. P. J. Abdul Kalam
               </span>
             </blockquote>
