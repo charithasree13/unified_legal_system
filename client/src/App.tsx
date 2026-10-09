@@ -41,20 +41,9 @@ const ProtectedRoute: React.FC<{
   allowUnapprovedAdvocate = false
 }) => {
   const { token, user, addNotification } = useAuthStore();
-  const [authModalOpen, setAuthModalOpen] = useState(true);
 
   if (!token) {
-    return (
-      <div className="relative min-h-screen">
-        <PublicDashboard />
-        <AuthModal 
-          isOpen={authModalOpen} 
-          onClose={() => setAuthModalOpen(false)}
-          initialMode="login"
-          actionPrompt={`Please sign in or create an account to access ${featureName}.`}
-        />
-      </div>
-    );
+    return <Navigate to="/login" replace />;
   }
 
   // Role Access Control Enforcement & Advocate Verification Status Enforcement
@@ -112,9 +101,6 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Direct Auth Route */}
-        <Route path="/login" element={<Login />} />
-
         {/* Public Legal Documentation Routes */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
@@ -127,8 +113,10 @@ export const App: React.FC = () => {
           {/* Default entry point */}
           <Route index element={<Navigate to="/dashboard" replace />} />
           
-          {/* Main Dashboard Route (Public before login, Role-based after login) */}
+          {/* Main Dashboard & Auth Routes */}
           <Route path="dashboard" element={<DashboardSwitcher />} />
+          <Route path="login" element={<DashboardSwitcher />} />
+          <Route path="signup" element={<DashboardSwitcher />} />
 
           {/* Protected Legal Dictionary Module (Admin & Advocate Only) */}
           <Route 

@@ -33,7 +33,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
     if (onOpenAuthModal) {
       onOpenAuthModal('signup', 'Create a free Elite Legal Desk account to start using legal tools and case features.');
     } else {
-      navigate('/login');
+      navigate('/signup');
     }
   };
 

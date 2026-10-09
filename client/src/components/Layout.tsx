@@ -18,7 +18,9 @@ export const Layout: React.FC = () => {
   const [authPromptMsg, setAuthPromptMsg] = useState('Please sign in or create an account to continue.');
 
   const location = useLocation();
-  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
+  const navigate = useNavigate();
+
+  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup';
 
   const {
     token,
@@ -28,7 +30,25 @@ export const Layout: React.FC = () => {
     updateActivity
   } = useAuthStore();
 
-  const navigate = useNavigate();
+  // Sync auth modal visibility and mode with URL routes (/login, /signup)
+  useEffect(() => {
+    if (!token) {
+      if (location.pathname === '/login') {
+        setAuthModalMode('login');
+        setAuthModalOpen(true);
+      } else if (location.pathname === '/signup') {
+        setAuthModalMode('signup');
+        setAuthModalOpen(true);
+      } else {
+        setAuthModalOpen(false);
+      }
+    } else {
+      setAuthModalOpen(false);
+      if (location.pathname === '/login' || location.pathname === '/signup') {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [location.pathname, token, navigate]);
 
   // Monitor user activity for session timeout
   useEffect(() => {
@@ -54,6 +74,18 @@ export const Layout: React.FC = () => {
     if (prompt) setAuthPromptMsg(prompt);
     else setAuthPromptMsg('Please sign in or create an account to continue.');
     setAuthModalOpen(true);
+    if (mode === 'login' && location.pathname !== '/login') {
+      navigate('/login');
+    } else if (mode === 'signup' && location.pathname !== '/signup') {
+      navigate('/signup');
+    }
+  };
+
+  const handleCloseAuthModal = () => {
+    setAuthModalOpen(false);
+    if (location.pathname === '/login' || location.pathname === '/signup') {
+      navigate('/dashboard');
+    }
   };
 
   // If user is NOT logged in:
@@ -70,7 +102,7 @@ export const Layout: React.FC = () => {
 
         <AuthModal
           isOpen={authModalOpen}
-          onClose={() => setAuthModalOpen(false)}
+          onClose={handleCloseAuthModal}
           initialMode={authModalMode}
           actionPrompt={authPromptMsg}
         />
