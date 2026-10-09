@@ -210,18 +210,20 @@ export const IslamicInheritanceCalculator: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-16">
       
-      {/* Top Professional Module Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-xl border border-emerald-500/30 relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-12 -translate-y-12 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-4xl">
-          <div className="flex items-center gap-3 text-emerald-400 font-semibold text-xs uppercase tracking-widest mb-2">
-            <Scale size={18} />
+      {/* Top Banner Header - Bespoke Handcrafted Sacred Jade Design */}
+      <div className="bg-gradient-to-r from-[#021f17] via-[#063326] to-[#011a13] text-white p-6 md:p-8 rounded-[1.75rem] shadow-2xl border border-emerald-900/40 border-l-[6px] border-l-emerald-500 ring-1 ring-white/10 relative overflow-hidden">
+        {/* Subtle geometric line pattern overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+        <div className="absolute -right-8 -top-8 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 max-w-4xl space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-semibold text-[11px] uppercase tracking-widest">
+            <Scale size={15} className="text-emerald-400" />
             <span>Elite Legal Desk — Personal Law Module</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-2 font-sans">
+          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-emerald-50 font-serif mb-2">
             Islamic Inheritance Calculator
           </h1>
-          <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+          <p className="text-slate-300 text-sm md:text-base leading-relaxed font-normal">
             Calculate indicative Islamic inheritance shares (Fara'id) based on the selected succession framework, fixed Qur'anic shares (Fard), residuary rules ('Asabah), heir blocking (Hajb), proportional adjustment ('Awl), and residue redistribution (Radd).
           </p>
         </div>

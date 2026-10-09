@@ -315,20 +315,24 @@ export const LegalSectionMapping: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-primary text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800">
-        <div className="relative z-10 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="bg-sky-500/20 text-sky-300 p-2.5 rounded-2xl backdrop-blur-md border border-sky-400/30">
+      {/* Header Banner - Bespoke Handcrafted Legal Design */}
+      <div className="bg-gradient-to-r from-[#0c1427] via-[#121f3d] to-[#0c172d] text-white rounded-[1.75rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800/90 border-l-[6px] border-l-amber-500 ring-1 ring-white/10">
+        {/* Subtle geometric line pattern overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+        <div className="absolute -right-12 -top-12 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 p-3 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-black/40 flex-shrink-0">
                 <BookOpen size={28} />
-              </span>
+              </div>
               <div>
-                <span className="text-xs uppercase font-extrabold tracking-widest text-sky-300 font-sans">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono font-bold tracking-widest uppercase mb-1">
                   Official Legal Research Tool
                 </span>
-                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-                  Old Acts → New Acts Converter
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white font-serif">
+                  Old Acts <span className="text-amber-400 font-sans mx-1">→</span> New Acts Converter
                 </h1>
               </div>
             </div>
@@ -337,13 +341,13 @@ export const LegalSectionMapping: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setShowHealthReport(true); fetchHealthReport(); }}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-bold border border-slate-700 transition shadow"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-amber-200 text-xs font-bold border border-amber-500/30 transition shadow-md"
                 >
-                  <Activity size={15} /> Data Quality Report
+                  <Activity size={15} className="text-amber-400" /> Data Quality Report
                 </button>
                 <button
                   onClick={() => handleOpenAdminModal()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-extrabold transition shadow"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-extrabold border border-amber-400/50 transition shadow-lg"
                 >
                   <Plus size={15} /> Add Mapping
                 </button>
@@ -351,7 +355,7 @@ export const LegalSectionMapping: React.FC = () => {
             )}
           </div>
 
-          <p className="text-sm sm:text-base text-slate-300 max-w-4xl leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-300 max-w-4xl leading-relaxed font-normal">
             Find corresponding provisions under India's new criminal laws with statutory section mappings, detailed legal notes, and authoritative source references.
           </p>
         </div>

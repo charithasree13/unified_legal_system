@@ -238,19 +238,21 @@ export const HinduSuccessionCalculator: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-12">
-      {/* Top Banner Header */}
-      <div className="bg-gradient-to-r from-primary via-slate-900 to-primary text-white p-6 md:p-8 rounded-2xl shadow-xl border border-amber-500/20 relative overflow-hidden">
-        <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-4xl">
-          <div className="flex items-center gap-3 text-amber-400 font-semibold text-xs uppercase tracking-widest mb-2">
-            <Scale size={18} />
+      {/* Top Banner Header - Bespoke Handcrafted Heritage Design */}
+      <div className="bg-gradient-to-r from-[#1b0b14] via-[#2a121e] to-[#170912] text-white p-6 md:p-8 rounded-[1.75rem] shadow-2xl border border-amber-900/40 border-l-[6px] border-l-amber-500 ring-1 ring-white/10 relative overflow-hidden">
+        {/* Subtle geometric line pattern overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+        <div className="absolute -right-8 -top-8 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 max-w-4xl space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 font-semibold text-[11px] uppercase tracking-widest">
+            <Scale size={15} className="text-amber-400" />
             <span>Elite Legal Desk — Personal Law Module</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-2 font-sans">
+          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-amber-50 font-serif mb-2">
             Hindu Succession Calculator
           </h1>
-          <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-            Calculate indicative succession shares based on entered family and property details under the applicable statutory provisions of the <strong className="text-amber-300 font-semibold">Hindu Succession Act, 1956</strong> (including the 2005 Amendment Act and authoritative Supreme Court precedents).
+          <p className="text-slate-300 text-sm md:text-base leading-relaxed font-normal">
+            Calculate indicative succession shares based on entered family and property details under the applicable statutory provisions of the <strong className="text-amber-300 font-semibold border-b border-amber-500/40 pb-0.5">Hindu Succession Act, 1956</strong> (including the 2005 Amendment Act and authoritative Supreme Court precedents).
           </p>
         </div>
       </div>

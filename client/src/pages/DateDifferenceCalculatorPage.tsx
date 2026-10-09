@@ -83,25 +83,27 @@ Calculated via Elite Legal Desk Public Legal Utility`;
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-slide-up">
       
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 text-white p-6 sm:p-8 rounded-2xl shadow-lg relative overflow-hidden">
+      {/* Header Banner - Bespoke Handcrafted Executive Indigo Design */}
+      <div className="bg-gradient-to-r from-[#0d122b] via-[#161c42] to-[#0c1027] border border-slate-800 border-l-[6px] border-l-indigo-500 ring-1 ring-white/10 text-white p-6 sm:p-8 rounded-[1.75rem] shadow-2xl relative overflow-hidden">
+        {/* Subtle geometric line pattern overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 text-[11px] font-bold uppercase tracking-wider mb-3">
-              <Calendar size={13} className="text-sky-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
+              <Calendar size={13} className="text-indigo-400" />
               <span>Public Legal Utility</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-sans">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-serif">
               Date Difference Calculator
             </h1>
-            <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl font-normal">
+            <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl font-normal leading-relaxed">
               Calculate the exact number of calendar days between two dates quickly, accurately, and with precise leap-year handling.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-            <span className="px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5">
-              <ShieldCheck size={14} /> 100% Free & Open Access
+            <span className="px-3.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm font-mono">
+              <ShieldCheck size={14} className="text-emerald-400" /> 100% Free & Open Access
             </span>
           </div>
         </div>
