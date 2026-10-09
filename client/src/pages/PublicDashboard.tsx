@@ -73,7 +73,7 @@ export const PublicDashboard: React.FC = () => {
     else setLandConvertedSqFt((val * 43560).toLocaleString());
   };
 
-  // Comprehensive Module Catalog with refined legal accents
+  // Comprehensive Module Catalog with refined legal accents & module-specific card themes
   const modulesList = [
     {
       id: 'land-calc',
@@ -84,7 +84,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Convert regional land measurements: Square Feet, Acres, Guntas, Ankanams, Cents, Hectares, and Bighas.',
       actionText: 'Open Land Converter',
       path: '/calculators',
-      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#D8C49A] border-[#A67C3B]/20'
+      iconBg: 'bg-[#B85232]/15 text-[#B85232] dark:text-[#E88C74] border-[#B85232]/30',
+      cardClass: 'card-land'
     },
     {
       id: 'interest-calc',
@@ -95,7 +96,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Compute simple and compound interest on litigation awards, court decrees, and commercial claims.',
       actionText: 'Open Interest Calculator',
       path: '/interest-calculator',
-      iconBg: 'bg-[#53634A]/10 text-[#53634A] dark:text-[#8FAF9C] border-[#53634A]/20'
+      iconBg: 'bg-[#52633C]/15 text-[#52633C] dark:text-[#A3BA88] border-[#52633C]/30',
+      cardClass: 'card-interest'
     },
     {
       id: 'date-calc',
@@ -106,7 +108,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Calculate calendar days between two dates with leap year breakdown and inclusive count support.',
       actionText: 'Open Date Calculator',
       path: '/date-difference-calculator',
-      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
+      iconBg: 'bg-[#61564C]/15 text-[#61564C] dark:text-[#C4B9AF] border-[#61564C]/30',
+      cardClass: 'card-date'
     },
     {
       id: 'directory',
@@ -117,7 +120,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Search & connect with verified advocates across Madanapalle, Andhra Pradesh, High Courts, and District Courts.',
       actionText: 'Search Advocates',
       path: '/directory',
-      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
+      iconBg: 'bg-[#39665B]/15 text-[#39665B] dark:text-[#81B8AB] border-[#39665B]/30',
+      cardClass: 'card-directory'
     },
     {
       id: 'services',
@@ -128,7 +132,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
       actionText: 'Explore Legal Services',
       path: '/directory',
-      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#D8C49A] border-[#A67C3B]/20'
+      iconBg: 'bg-[#8C6927]/15 text-[#8C6927] dark:text-[#E3C27D] border-[#8C6927]/30',
+      cardClass: 'card-services'
     },
     {
       id: 'laws',
@@ -139,7 +144,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Access comprehensive Central & State Bare Acts, statutory sections, legislative amendments, and legal rules.',
       actionText: 'Browse Bare Acts',
       path: '/laws',
-      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
+      iconBg: 'bg-[#704262]/15 text-[#704262] dark:text-[#C99BBF] border-[#704262]/30',
+      cardClass: 'card-laws'
     },
     {
       id: 'judgements',
@@ -150,7 +156,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Browse Supreme Court of India and High Court landmark judgements, precedent rulings, and case law transcripts.',
       actionText: 'Search Judgments',
       path: '/judgements',
-      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
+      iconBg: 'bg-[#704262]/15 text-[#704262] dark:text-[#C99BBF] border-[#704262]/30',
+      cardClass: 'card-laws'
     },
     {
       id: 'section-mapping',
@@ -161,7 +168,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Interactive mapping between traditional criminal codes (IPC, CrPC, Evidence Act) and new Bharatiya Nyaya Sanhita (BNS, BNSS, BSA).',
       actionText: 'View Section Map',
       path: '/section-mapping',
-      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#C7A45A] border-[#A67C3B]/20'
+      iconBg: 'bg-[#704262]/15 text-[#704262] dark:text-[#C99BBF] border-[#704262]/30',
+      cardClass: 'card-laws'
     },
     {
       id: 'projects',
@@ -172,7 +180,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Litigation file management, client case assignments, next hearing dates, task progress, and lawyer notes.',
       actionText: 'Manage Cases',
       path: '/projects',
-      iconBg: 'bg-[#71877B]/10 text-[#71877B] dark:text-[#AFC9B7] border-[#71877B]/20'
+      iconBg: 'bg-[#945133]/15 text-[#945133] dark:text-[#E09A7E] border-[#945133]/30',
+      cardClass: 'card-case'
     },
     {
       id: 'collaboration',
@@ -183,7 +192,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Collaborative legal notice drafting, contract review, versioning, annotation, and shared document vaults.',
       actionText: 'Draft Docs',
       path: '/collaboration',
-      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
+      iconBg: 'bg-[#6A4E70]/15 text-[#6A4E70] dark:text-[#BFA5C4] border-[#6A4E70]/30',
+      cardClass: 'card-documents'
     },
     {
       id: 'chat',
@@ -194,7 +204,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Direct real-time encrypted communication between clients and assigned legal advocates with document sharing.',
       actionText: 'Start Chat',
       path: '/chat',
-      iconBg: 'bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border-[#183C32]/20'
+      iconBg: 'bg-[#39665B]/15 text-[#39665B] dark:text-[#81B8AB] border-[#39665B]/30',
+      cardClass: 'card-directory'
     },
     {
       id: 'notifications',
@@ -205,7 +216,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Automated hearing date notifications, task deadline reminders, and court schedule updates for active matters.',
       actionText: 'View Reminders',
       path: '/projects',
-      iconBg: 'bg-[#6A5948]/10 text-[#6A5948] dark:text-[#D8C49A] border-[#6A5948]/20'
+      iconBg: 'bg-[#945133]/15 text-[#945133] dark:text-[#E09A7E] border-[#945133]/30',
+      cardClass: 'card-case'
     },
     {
       id: 'verification',
@@ -216,7 +228,8 @@ export const PublicDashboard: React.FC = () => {
       description: 'Platform verification system for Bar Council enrollment numbers, advocate credentials, and administrator approvals.',
       actionText: 'Admin Console',
       path: '/dashboard',
-      iconBg: 'bg-[#A67C3B]/10 text-[#A67C3B] dark:text-[#C7A45A] border-[#A67C3B]/20'
+      iconBg: 'bg-[#39665B]/15 text-[#39665B] dark:text-[#81B8AB] border-[#39665B]/30',
+      cardClass: 'card-directory'
     }
   ];
 
@@ -354,7 +367,7 @@ export const PublicDashboard: React.FC = () => {
               return (
                 <div
                   key={item.id}
-                  className="legal-card p-6 flex flex-col justify-between group relative overflow-hidden"
+                  className={`${item.cardClass} p-6 flex flex-col justify-between group relative overflow-hidden`}
                 >
                   <div className="space-y-4">
 
@@ -429,10 +442,10 @@ export const PublicDashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
               {/* 1. Date Difference Calculator */}
-              <div className="legal-card p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-[#D8D1C5]/60 dark:border-[#3A4038]/60 pb-3">
+              <div className="card-date p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-[#DBD5CD]/60 dark:border-[#47423D]/60 pb-3">
                   <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
-                    <Calendar size={18} className="text-[#183C32] dark:text-[#6F9A83]" />
+                    <Calendar size={18} className="text-[#61564C] dark:text-[#C4B9AF]" />
                     Date Difference Calculator (Public)
                   </h3>
                   <span className="badge-verified">
@@ -468,7 +481,7 @@ export const PublicDashboard: React.FC = () => {
 
                   <div className="flex justify-between items-center bg-[#EFEAE0] dark:bg-[#1E211D] p-3 rounded-xl border border-[#D8D1C5] dark:border-[#3A4038]">
                     <span className="text-xs text-[#625F58] dark:text-[#C5C0B6]">Calculated Difference:</span>
-                    <span className="text-base font-extrabold text-[#183C32] dark:text-[#C7A45A] font-mono">
+                    <span className="text-base font-extrabold text-[#61564C] dark:text-[#C4B9AF] font-mono">
                       {dateDiffResult} Days
                     </span>
                   </div>
@@ -491,10 +504,10 @@ export const PublicDashboard: React.FC = () => {
               </div>
 
               {/* 2. Land Area Converter */}
-              <div className="legal-card p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-[#D8D1C5]/60 dark:border-[#3A4038]/60 pb-3">
+              <div className="card-land p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-[#E8C8BC]/60 dark:border-[#522E23]/60 pb-3">
                   <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
-                    <Landmark size={18} className="text-[#A67C3B] dark:text-[#C7A45A]" />
+                    <Landmark size={18} className="text-[#B85232] dark:text-[#E88C74]" />
                     Regional Land Area Converter (Public)
                   </h3>
                   <span className="badge-verified">

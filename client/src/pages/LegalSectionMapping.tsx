@@ -409,7 +409,7 @@ export const LegalSectionMapping: React.FC = () => {
       </div>
 
       {/* Converter Interactive Controls Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
+      <div className="card-laws p-6 sm:p-8 space-y-6">
         
         {/* Act Selector & Direction Switcher Bar */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">

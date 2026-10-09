@@ -472,10 +472,10 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
 
       {/* 1. LAND MEASUREMENT CONVERTER TAB */}
       {activeTab === 'land' && (
-        <div className="legal-card p-6 animate-slide-up">
+        <div className="card-land p-6 animate-slide-up">
           <div className="mb-6">
             <h3 className="font-bold text-base text-[#242522] dark:text-[#F4F0E7] flex items-center gap-2 font-serif">
-              <ArrowRightLeft className="text-[#183C32] dark:text-[#6F9A83]" size={20} />
+              <ArrowRightLeft className="text-[#B85232] dark:text-[#E88C74]" size={20} />
               Land Measurement Calculator
             </h3>
             <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] mt-1">

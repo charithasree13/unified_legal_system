@@ -581,11 +581,22 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {cards.map((card) => {
           const CardIcon = card.icon;
+          const cardClass = card.id.includes('land') ? 'card-land' :
+            card.id.includes('interest') ? 'card-interest' :
+            card.id.includes('date') ? 'card-date' :
+            card.id.includes('directory') ? 'card-directory' :
+            card.id.includes('services') ? 'card-services' :
+            (card.id.includes('laws') || card.id.includes('judgements') || card.id.includes('section')) ? 'card-laws' :
+            (card.id.includes('fee') || card.id.includes('calculator') || card.id.includes('hindu') || card.id.includes('islamic') || card.id.includes('limitation')) ? 'card-court-fee' :
+            card.id.includes('dictionary') ? 'card-dictionary' :
+            (card.id.includes('projects') || card.id.includes('case') || card.id.includes('verify')) ? 'card-case' :
+            'card-documents';
+
           return (
             <div
               key={card.id}
               onClick={() => handleCardClick(card)}
-              className="legal-card p-5 cursor-pointer flex flex-col justify-between relative overflow-hidden group"
+              className={`${cardClass} p-5 cursor-pointer flex flex-col justify-between relative overflow-hidden group`}
             >
               {/* Card Top Header */}
               <div>

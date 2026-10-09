@@ -958,7 +958,7 @@ export const Documents: React.FC = () => {
                     return (
                       <div 
                         key={doc._id}
-                        className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group"
+                        className="card-laws rounded-xl p-6 border shadow-lg flex flex-col justify-between space-y-4 group"
                       >
                         <div className="space-y-3">
                           <div className="flex items-start justify-between gap-3">
@@ -1048,7 +1048,7 @@ export const Documents: React.FC = () => {
                   return (
                     <div 
                       key={doc._id}
-                      className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-lg hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group"
+                      className="card-laws rounded-xl p-6 border shadow-lg flex flex-col justify-between space-y-4 group"
                     >
                       <div className="space-y-3">
                         <div className="flex items-start justify-between gap-3">

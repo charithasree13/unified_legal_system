@@ -147,13 +147,13 @@ export const UserDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Active Collaboration Projects */}
-        <div className="lg:col-span-2 legal-card p-5">
+        <div className="lg:col-span-2 card-case p-5">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
-              <Scale size={18} className="text-[#183C32] dark:text-[#6F9A83]" />
+              <Scale size={18} className="text-[#945133] dark:text-[#E09A7E]" />
               {user?.role === 'Client' ? 'My Related Cases' : 'Active Cases & Collaborations'}
             </h3>
-            <Link to="/projects" className="text-xs text-[#183C32] dark:text-[#C7A45A] font-semibold hover:underline flex items-center gap-0.5">
+            <Link to="/projects" className="text-xs text-[#945133] dark:text-[#E09A7E] font-semibold hover:underline flex items-center gap-0.5">
               All Cases <ArrowRight size={12} />
             </Link>
           </div>
@@ -210,10 +210,10 @@ export const UserDashboard: React.FC = () => {
         </div>
 
         {/* Favorite Advocates Directory Shortlist */}
-        <div className="legal-card p-5 flex flex-col justify-between">
+        <div className="card-directory p-5 flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif mb-4 flex items-center gap-2">
-              <Star size={18} className="text-[#A67C3B] fill-[#A67C3B]" />
+              <Star size={18} className="text-[#39665B] dark:text-[#81B8AB] fill-current" />
               Favorite Advocates
             </h3>
 

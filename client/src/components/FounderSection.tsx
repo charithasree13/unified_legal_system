@@ -21,7 +21,7 @@ export const FounderSection: React.FC = () => {
         </div>
 
         {/* Founder Detail Card */}
-        <div className="bg-[#EFEAE0]/50 dark:bg-[#1E211D] border border-[#D8D1C5] dark:border-[#3A4038] rounded-2xl p-6 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
+        <div className="card-directory p-6 sm:p-8 lg:p-10 relative overflow-hidden">
 
           {/* Subtle Accent Stripe */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#183C32] via-[#A67C3B] to-[#183C32] dark:from-[#6F9A83] dark:via-[#C7A45A] dark:to-[#6F9A83]" />

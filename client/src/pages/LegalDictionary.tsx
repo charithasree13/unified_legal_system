@@ -455,7 +455,7 @@ export const LegalDictionary: React.FC = () => {
               <div
                 key={entry.id}
                 onClick={() => setSelectedEntry(entry)}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 dark:hover:border-sky-500/50 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                className="card-dictionary p-5 cursor-pointer flex flex-col justify-between group"
               >
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">

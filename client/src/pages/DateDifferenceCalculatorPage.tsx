@@ -110,7 +110,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Form Controls */}
-        <form onSubmit={handleCalculate} className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 space-y-6">
+        <form onSubmit={handleCalculate} className="lg:col-span-6 card-date p-6 space-y-6">
           
           <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -233,7 +233,7 @@ Calculated via Elite Legal Desk Public Legal Utility`;
         </form>
 
         {/* Right Column: Result Section */}
-        <div className="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-6 card-date p-6 flex flex-col justify-between space-y-6">
           
           <div>
             {/* Result Header & Actions */}

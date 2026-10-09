@@ -140,7 +140,7 @@ ${result.legalReferenceNotice}`;
 
         {/* Input Panel */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
+          <div className="card-interest p-6 sm:p-8 space-y-6">
 
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
               <h2 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
@@ -359,7 +359,7 @@ ${result.legalReferenceNotice}`;
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border-2 border-sky-400 dark:border-sky-800 shadow-xl space-y-6">
+            <div className="card-interest p-6 sm:p-8 space-y-6">
 
               {/* Top Result Header & Actions */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">

@@ -276,7 +276,7 @@ export const HinduSuccessionCalculator: React.FC = () => {
         <form onSubmit={handleCalculate} className="lg:col-span-7 space-y-6">
           
           {/* SECTION 1: DECEASED PERSON & GENERAL PARAMETERS */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 space-y-5">
+          <div className="card-court-fee p-6 space-y-5">
             <h2 className="text-base font-bold text-primary dark:text-amber-400 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
               <Users size={18} className="text-amber-500" />
               <span>Section 1 — Deceased Person Details</span>

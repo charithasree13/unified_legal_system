@@ -704,10 +704,10 @@ export const Directory: React.FC = () => {
             return (
               <div 
                 key={adv._id} 
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md hover:border-slate-300/80 dark:hover:border-slate-700 transition-all duration-200"
+                className="card-directory p-5 overflow-hidden flex flex-col justify-between"
               >
                 {/* Header card info */}
-                <div className="p-5">
+                <div>
                   <div className="flex justify-between items-start gap-4">
                     
                     {/* Bio avatar */}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -89,33 +89,109 @@
   --table-border: #D8D1C5;
   --table-hover: #F1F4EE;
 
-  /* Module Accents */
-  --module-dictionary: #183C32;
-  --module-dictionary-hover: #2A5A4B;
-  --module-court-fee: #A67C3B;
-  --module-court-fee-hover: #C19A59;
-  --module-land: #71877B;
-  --module-land-hover: #5E7468;
-  --module-interest: #53634A;
-  --module-interest-hover: #687A5D;
-  --module-date: #6A5948;
-  --module-date-hover: #806C58;
-  --module-advocate: #183C32;
-  --module-case: #242522;
-  --module-documents: #6A5948;
-  --module-comm: #183C32;
-  --module-admin: #A67C3B;
+  /* ---------------------------------------------------- */
+  /* Earthy Module-Specific Color Identities (Light Theme) */
+  /* ---------------------------------------------------- */
+  /* 1. Land Area Converter (Muted Terracotta) */
+  --card-land-bg: #FAF2EE;
+  --card-land-border: #E8C8BC;
+  --card-land-hover-bg: #F4E5DD;
+  --card-land-hover-border: #C87D65;
+  --card-land-accent: #B85232;
+  --card-land-text: #3D1C13;
+  --card-land-shadow: 0 10px 25px rgba(184, 82, 50, 0.12);
+
+  /* 2. Interest Calculator (Soft Olive Green) */
+  --card-interest-bg: #F3F6F1;
+  --card-interest-border: #CFDBC6;
+  --card-interest-hover-bg: #E7EFE3;
+  --card-interest-hover-border: #789262;
+  --card-interest-accent: #52633C;
+  --card-interest-text: #222B19;
+  --card-interest-shadow: 0 10px 25px rgba(82, 99, 60, 0.12);
+
+  /* 3. Date Calculator (Warm Stone & Taupe) */
+  --card-date-bg: #F5F3F0;
+  --card-date-border: #DBD5CD;
+  --card-date-hover-bg: #EAE6E0;
+  --card-date-hover-border: #968A7E;
+  --card-date-accent: #61564C;
+  --card-date-text: #2D2722;
+  --card-date-shadow: 0 10px 25px rgba(97, 86, 76, 0.12);
+
+  /* 4. Advocate Directory (Muted Eucalyptus) */
+  --card-directory-bg: #F0F5F3;
+  --card-directory-border: #C6D8D2;
+  --card-directory-hover-bg: #E3EEEA;
+  --card-directory-hover-border: #5A8B7E;
+  --card-directory-accent: #39665B;
+  --card-directory-text: #182C27;
+  --card-directory-shadow: 0 10px 25px rgba(57, 102, 91, 0.12);
+
+  /* 5. Legal Services & Notary (Antique Ochre) */
+  --card-services-bg: #FAF5EB;
+  --card-services-border: #EBD7B6;
+  --card-services-hover-bg: #F4EBD9;
+  --card-services-hover-border: #C2994B;
+  --card-services-accent: #8C6927;
+  --card-services-text: #3D2D10;
+  --card-services-shadow: 0 10px 25px rgba(140, 105, 39, 0.12);
+
+  /* 6. Bare Acts & Laws (Soft Plum) */
+  --card-laws-bg: #F8F2F6;
+  --card-laws-border: #E4CCE0;
+  --card-laws-hover-bg: #F2E5EF;
+  --card-laws-hover-border: #A6659A;
+  --card-laws-accent: #704262;
+  --card-laws-text: #361B30;
+  --card-laws-shadow: 0 10px 25px rgba(112, 66, 98, 0.12);
+
+  /* 7. Court Fee Calculator (Dusty Rose) */
+  --card-court-fee-bg: #FBF2F4;
+  --card-court-fee-border: #EFCBCE;
+  --card-court-fee-hover-bg: #F6E5E8;
+  --card-court-fee-hover-border: #BC6374;
+  --card-court-fee-accent: #8C4352;
+  --card-court-fee-text: #3D1920;
+  --card-court-fee-shadow: 0 10px 25px rgba(140, 67, 82, 0.12);
+
+  /* 8. Legal Dictionary (Muted Moss) */
+  --card-dictionary-bg: #F2F6F2;
+  --card-dictionary-border: #CBDCCB;
+  --card-dictionary-hover-bg: #E5EFE5;
+  --card-dictionary-hover-border: #658E62;
+  --card-dictionary-accent: #456342;
+  --card-dictionary-text: #1C2D1B;
+  --card-dictionary-shadow: 0 10px 25px rgba(69, 99, 66, 0.12);
+
+  /* 9. Case & Litigation Tracking (Warm Clay) */
+  --card-case-bg: #FAF3EF;
+  --card-case-border: #E8CDC1;
+  --card-case-hover-bg: #F4E8E2;
+  --card-case-hover-border: #C67856;
+  --card-case-accent: #945133;
+  --card-case-text: #3D2014;
+  --card-case-shadow: 0 10px 25px rgba(148, 81, 51, 0.12);
+
+  /* 10. Documents & Notes (Soft Mauve) */
+  --card-documents-bg: #F6F3F7;
+  --card-documents-border: #DCCEE0;
+  --card-documents-hover-bg: #EEE6F0;
+  --card-documents-hover-border: #96719E;
+  --card-documents-accent: #6A4E70;
+  --card-documents-text: #2E1E31;
+  --card-documents-shadow: 0 10px 25px rgba(106, 78, 112, 0.12);
 
   --card-shadow: 0 8px 25px rgba(36, 37, 34, 0.10);
 }
 
 .dark {
   /* Dark Theme */
-  --bg-main: #171916;
-  --bg-sec: #1E211D;
-  --bg-card: #242822;
-  --bg-card-hover: #2B3029;
-  --bg-elevated: #2B3029;
+  --bg-main: #141715;
+  --bg-sec: #1A1F1C;
+  --bg-card: #202622;
+  --bg-card-hover: #272F2A;
+  --bg-elevated: #272F2A;
 
   --text-main: #F4F0E7;
   --text-sec: #C5C0B6;
@@ -129,23 +205,23 @@
   --accent-premium-hover: #D8C49A;
   --accent-soft: #D8C49A;
 
-  --border-main: #3A4038;
+  --border-main: #343C37;
   --border-hover: #6F9A83;
 
   /* Input Fields */
-  --input-bg: #1E211D;
-  --input-border: #3A4038;
+  --input-bg: #1A1F1C;
+  --input-border: #343C37;
   --input-text: #F4F0E7;
   --input-placeholder: #969188;
   --input-focus-border: #6F9A83;
   --input-focus-ring: rgba(111, 154, 131, 0.15);
 
   /* Navigation */
-  --nav-bg: #171916;
+  --nav-bg: #141715;
   --nav-text: #C5C0B6;
   --nav-active: #F4F0E7;
   --nav-active-indicator: #C7A45A;
-  --nav-border: #30352F;
+  --nav-border: #2B322D;
 
   /* Buttons */
   --btn-primary-bg: #6F9A83;
@@ -156,7 +232,7 @@
   --btn-premium-hover: #C19A59;
   --btn-sec-border: #6F9A83;
   --btn-sec-text: #BFD4C7;
-  --btn-sec-hover: #303930;
+  --btn-sec-hover: #2B342C;
 
   /* Icons */
   --icon-primary: #D4DED7;
@@ -178,34 +254,110 @@
   --badge-rejected-text: #E5A8A0;
 
   /* Tables */
-  --table-header: #2B3029;
-  --table-body: #242822;
-  --table-border: #3A4038;
-  --table-hover: #303730;
+  --table-header: #272F2A;
+  --table-body: #202622;
+  --table-border: #343C37;
+  --table-hover: #2B342C;
 
-  /* Module Accents */
-  --module-dictionary: #6F9A83;
-  --module-dictionary-hover: #89AA98;
-  --module-court-fee: #C7A45A;
-  --module-court-fee-hover: #D8C49A;
-  --module-land: #8FAF9C;
-  --module-land-hover: #A5C2B1;
-  --module-interest: #687A5D;
-  --module-interest-hover: #7E9272;
-  --module-date: #806C58;
-  --module-date-hover: #98836E;
-  --module-advocate: #6F9A83;
-  --module-case: #C5C5C0;
-  --module-documents: #806C58;
-  --module-comm: #6F9A83;
-  --module-admin: #C7A45A;
+  /* --------------------------------------------------- */
+  /* Earthy Module-Specific Color Identities (Dark Theme) */
+  /* --------------------------------------------------- */
+  /* 1. Land Area Converter (Deep Burnt Clay) */
+  --card-land-bg: #281915;
+  --card-land-border: #522E23;
+  --card-land-hover-bg: #33201B;
+  --card-land-hover-border: #E88C74;
+  --card-land-accent: #E88C74;
+  --card-land-text: #FCEBE6;
+  --card-land-shadow: 0 12px 28px rgba(232, 140, 116, 0.15);
+
+  /* 2. Interest Calculator (Forest Olive) */
+  --card-interest-bg: #1A2217;
+  --card-interest-border: #3B4A33;
+  --card-interest-hover-bg: #222C1E;
+  --card-interest-hover-border: #A3BA88;
+  --card-interest-accent: #A3BA88;
+  --card-interest-text: #F0F5EE;
+  --card-interest-shadow: 0 12px 28px rgba(163, 186, 136, 0.15);
+
+  /* 3. Date Calculator (Dark Warm Graphite) */
+  --card-date-bg: #211F1D;
+  --card-date-border: #47423D;
+  --card-date-hover-bg: #2A2724;
+  --card-date-hover-border: #C4B9AF;
+  --card-date-accent: #C4B9AF;
+  --card-date-text: #F7F4F0;
+  --card-date-shadow: 0 12px 28px rgba(196, 185, 175, 0.15);
+
+  /* 4. Advocate Directory (Deep Sage) */
+  --card-directory-bg: #15221F;
+  --card-directory-border: #2C4841;
+  --card-directory-hover-bg: #1B2B28;
+  --card-directory-hover-border: #81B8AB;
+  --card-directory-accent: #81B8AB;
+  --card-directory-text: #EAF5F2;
+  --card-directory-shadow: 0 12px 28px rgba(129, 184, 171, 0.15);
+
+  /* 5. Legal Services & Notary (Deep Bronze) */
+  --card-services-bg: #261F12;
+  --card-services-border: #524022;
+  --card-services-hover-bg: #302717;
+  --card-services-hover-border: #E3C27D;
+  --card-services-accent: #E3C27D;
+  --card-services-text: #FAF3E6;
+  --card-services-shadow: 0 12px 28px rgba(227, 194, 125, 0.15);
+
+  /* 6. Bare Acts & Laws (Muted Aubergine) */
+  --card-laws-bg: #241722;
+  --card-laws-border: #4E3048;
+  --card-laws-hover-bg: #2D1D2B;
+  --card-laws-hover-border: #C99BBF;
+  --card-laws-accent: #C99BBF;
+  --card-laws-text: #F9EEF7;
+  --card-laws-shadow: 0 12px 28px rgba(201, 155, 191, 0.15);
+
+  /* 7. Court Fee Calculator (Deep Burgundy) */
+  --card-court-fee-bg: #261519;
+  --card-court-fee-border: #522A33;
+  --card-court-fee-hover-bg: #301B20;
+  --card-court-fee-hover-border: #DB909F;
+  --card-court-fee-accent: #DB909F;
+  --card-court-fee-text: #FCECF0;
+  --card-court-fee-shadow: 0 12px 28px rgba(219, 144, 159, 0.15);
+
+  /* 8. Legal Dictionary (Dark Woodland Green) */
+  --card-dictionary-bg: #172416;
+  --card-dictionary-border: #324D30;
+  --card-dictionary-hover-bg: #1E2D1C;
+  --card-dictionary-hover-border: #8CB888;
+  --card-dictionary-accent: #8CB888;
+  --card-dictionary-text: #EDF7EC;
+  --card-dictionary-shadow: 0 12px 28px rgba(140, 184, 136, 0.15);
+
+  /* 9. Case & Litigation Tracking (Dark Copper) */
+  --card-case-bg: #281914;
+  --card-case-border: #523125;
+  --card-case-hover-bg: #33201A;
+  --card-case-hover-border: #E09A7E;
+  --card-case-accent: #E09A7E;
+  --card-case-text: #FCEEE8;
+  --card-case-shadow: 0 12px 28px rgba(224, 154, 126, 0.15);
+
+  /* 10. Documents & Notes (Deep Muted Plum) */
+  --card-documents-bg: #211723;
+  --card-documents-border: #443049;
+  --card-documents-hover-bg: #291D2C;
+  --card-documents-hover-border: #BFA5C4;
+  --card-documents-accent: #BFA5C4;
+  --card-documents-text: #F7EFF9;
+  --card-documents-shadow: 0 12px 28px rgba(191, 165, 196, 0.15);
 
   --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 
 @theme {
-  --font-sans: 'Inter', 'Poppins', sans-serif;
-  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Source Sans 3', sans-serif;
+  --font-serif: 'Lora', serif;
 
   --color-primary: var(--accent-primary);
   --color-primary-hover: var(--accent-primary-hover);
@@ -278,19 +430,179 @@ body {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* Sophisticated Legal Card Utilities */
+/* Base Typography Standardizing */
+h1, h2, h3, h4, h5, h6, .font-heading, .font-serif {
+  font-family: var(--font-serif);
+}
+
+body, p, span, button, input, select, textarea, label, table, .font-sans, .font-body {
+  font-family: var(--font-sans);
+}
+
+/* Sophisticated Architectural Legal Card Utilities */
 .legal-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-main);
-  border-radius: 0.75rem;
-  transition: background-color 220ms ease, border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+  position: relative;
 }
 
 .legal-card:hover {
   background-color: var(--bg-card-hover);
   border-color: var(--border-hover);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--card-shadow);
+}
+
+/* 1. Land Area Converter Card */
+.card-land {
+  background-color: var(--card-land-bg);
+  border: 1px solid var(--card-land-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-land:hover {
+  background-color: var(--card-land-hover-bg);
+  border-color: var(--card-land-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-land-shadow);
+}
+
+/* 2. Interest Calculator Card */
+.card-interest {
+  background-color: var(--card-interest-bg);
+  border: 1px solid var(--card-interest-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-interest:hover {
+  background-color: var(--card-interest-hover-bg);
+  border-color: var(--card-interest-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-interest-shadow);
+}
+
+/* 3. Date Calculator Card */
+.card-date {
+  background-color: var(--card-date-bg);
+  border: 1px solid var(--card-date-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-date:hover {
+  background-color: var(--card-date-hover-bg);
+  border-color: var(--card-date-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-date-shadow);
+}
+
+/* 4. Advocate Directory Card */
+.card-directory {
+  background-color: var(--card-directory-bg);
+  border: 1px solid var(--card-directory-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-directory:hover {
+  background-color: var(--card-directory-hover-bg);
+  border-color: var(--card-directory-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-directory-shadow);
+}
+
+/* 5. Legal Services & Notary Card */
+.card-services {
+  background-color: var(--card-services-bg);
+  border: 1px solid var(--card-services-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-services:hover {
+  background-color: var(--card-services-hover-bg);
+  border-color: var(--card-services-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-services-shadow);
+}
+
+/* 6. Bare Acts & Laws Card */
+.card-laws {
+  background-color: var(--card-laws-bg);
+  border: 1px solid var(--card-laws-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-laws:hover {
+  background-color: var(--card-laws-hover-bg);
+  border-color: var(--card-laws-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-laws-shadow);
+}
+
+/* 7. Court Fee Calculator Card */
+.card-court-fee {
+  background-color: var(--card-court-fee-bg);
+  border: 1px solid var(--card-court-fee-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-court-fee:hover {
+  background-color: var(--card-court-fee-hover-bg);
+  border-color: var(--card-court-fee-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-court-fee-shadow);
+}
+
+/* 8. Legal Dictionary Card */
+.card-dictionary {
+  background-color: var(--card-dictionary-bg);
+  border: 1px solid var(--card-dictionary-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-dictionary:hover {
+  background-color: var(--card-dictionary-hover-bg);
+  border-color: var(--card-dictionary-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-dictionary-shadow);
+}
+
+/* 9. Case & Litigation Tracking Card */
+.card-case {
+  background-color: var(--card-case-bg);
+  border: 1px solid var(--card-case-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-case:hover {
+  background-color: var(--card-case-hover-bg);
+  border-color: var(--card-case-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-case-shadow);
+}
+
+/* 10. Documents & Notes Card */
+.card-documents {
+  background-color: var(--card-documents-bg);
+  border: 1px solid var(--card-documents-border);
+  color: var(--text-main);
+  border-radius: 1.25rem 0.35rem 1.25rem 0.35rem;
+  transition: background-color 250ms ease, border-color 250ms ease, transform 250ms ease, box-shadow 250ms ease;
+}
+.card-documents:hover {
+  background-color: var(--card-documents-hover-bg);
+  border-color: var(--card-documents-hover-border);
+  transform: translateY(-4px);
+  box-shadow: var(--card-documents-shadow);
 }
 
 /* Button Classes */

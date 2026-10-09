@@ -445,7 +445,7 @@ export const LimitationCalculatorPage: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
             
             {/* STEP 1: Select Type of Proceeding */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="card-court-fee p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                   <span className="h-6 w-6 rounded-full bg-primary/10 text-primary dark:text-sky-400 text-xs flex items-center justify-center font-bold">1</span>

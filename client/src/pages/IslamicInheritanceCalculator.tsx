@@ -249,7 +249,7 @@ export const IslamicInheritanceCalculator: React.FC = () => {
         <form onSubmit={handleCalculate} className="lg:col-span-7 space-y-6">
           
           {/* STEP 1: DECEASED INFORMATION */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-800 space-y-5">
+          <div className="card-court-fee p-6 space-y-5">
             <h2 className="text-base font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
               <Users size={18} className="text-emerald-600" />
               <span>Step 1 — Deceased Information & Framework</span>

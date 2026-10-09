@@ -376,7 +376,7 @@ export const Projects: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 animate-slide-up">
           
           {/* Main Visual Board View */}
-          <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm p-6 min-h-[500px] flex flex-col justify-between">
+          <div className="lg:col-span-3 card-case p-6 min-h-[500px] flex flex-col justify-between">
             
             {/* View Headers */}
             <div>
