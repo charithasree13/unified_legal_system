@@ -221,13 +221,14 @@ export const Directory: React.FC = () => {
   const DEFAULT_ADVOCATE_FALLBACKS = [
     {
       _id: "6a6347b9c99cd4bf3bc1dcf7",
-      name: "P V Prasad",
-      phone: "9247253096",
+      name: "Mr. P. V. Prasad",
+      designation: "Advocate, Notary and Bank Panel Advocate",
+      phone: "+91 9247253096",
       email: "pvprasadvmpl@gmail.com",
       enrollmentNumber: "AP/298/1998",
       enrollmentDate: "1998-03-05",
-      specialization: "Civil Litigation, Notary, Bank legal advisors",
-      court: "Senior civil judges court, Junior civil Judges court, Judicial magistrate of 1st class",
+      specialization: "Title Verification, Property Laws, Civil Matters",
+      court: "Senior civil judges court, High Court",
       city: "Madanapalle",
       state: "Andhra Pradesh",
       experience: 28,
@@ -238,20 +239,135 @@ export const Directory: React.FC = () => {
       isVerified: true
     },
     {
+      _id: "6a829b5a896aca0a6a210778",
+      name: "Mr. M. Chaitanya Kumar",
+      designation: "Advocate",
+      phone: "+91 9440046533",
+      email: "kumarchaitanya1970@gmail.com",
+      enrollmentNumber: "AP/142/1995",
+      enrollmentDate: "1995-06-12",
+      specialization: "Criminal Cases",
+      court: "Senior civil judges court, High Court",
+      city: "Madanapalle",
+      state: "Andhra Pradesh",
+      experience: 31,
+      photo: "",
+      bio: "Criminal Defense Advocate",
+      address: "Madanapalle",
+      availability: "Available",
+      isVerified: true
+    },
+    {
       _id: "6a829b5a896aca0a6a210779",
-      name: "Bestha Sreenivasulu  Advocate",
-      phone: "9441135084",
+      name: "Mr. B. Sreenivasulu",
+      designation: "Advocate",
+      phone: "+91 9441135084",
       email: "bsreenivasadv@gmail.com",
       enrollmentNumber: "AP/32/2008",
       enrollmentDate: "2008-01-24",
-      specialization: "Civil Litigation",
+      specialization: "MVOP Cases, Civil Litigation",
       court: "Senior civil judges court",
+      city: "Madanapalle",
+      state: "Andhra Pradesh",
+      experience: 18,
+      photo: "",
+      bio: "Verified legal practitioner registered with Bar Council.",
+      address: "2-245-8-B-7, Madanapalle",
+      availability: "Available",
+      isVerified: true
+    },
+    {
+      _id: "6a829b5a896aca0a6a210780",
+      name: "Mrs. J. Sailaja Naidu",
+      designation: "Advocate",
+      phone: "+91 9959249779",
+      email: "sailajaadv18@gmail.com",
+      enrollmentNumber: "AP/518/2018",
+      enrollmentDate: "2018-05-15",
+      specialization: "Deals with All Types of Cases",
+      court: "Senior civil judges court",
+      city: "Madanapalle",
+      state: "Andhra Pradesh",
+      experience: 8,
+      photo: "",
+      bio: "Civil and Commercial Litigation Advocate",
+      address: "Madanapalle",
+      availability: "Available",
+      isVerified: true
+    },
+    {
+      _id: "6a829b5a896aca0a6a210781",
+      name: "Mr. R. Shajahan",
+      designation: "Advocate",
+      phone: "+91 9494740180",
+      email: "shajahanadv@gmail.com",
+      enrollmentNumber: "AP/812/2010",
+      enrollmentDate: "2010-08-20",
+      specialization: "N.I. Act Cases",
+      court: "Judicial magistrate of 1st class",
       city: "Madanapalle",
       state: "Andhra Pradesh",
       experience: 16,
       photo: "",
-      bio: "Verified legal practitioner registered with Bar Council.",
-      address: "2-245-8-B-7, Madanapalle",
+      bio: "N.I. Act and Commercial Litigation Practitioner",
+      address: "Madanapalle",
+      availability: "Available",
+      isVerified: true
+    },
+    {
+      _id: "6a829b5a896aca0a6a210782",
+      name: "Mr. N. Reddinagulu",
+      designation: "Advocate",
+      phone: "+91 9440958757",
+      email: "reddinaguluadv@gmail.com",
+      enrollmentNumber: "AP/405/2005",
+      enrollmentDate: "2005-11-10",
+      specialization: "Revenue Laws",
+      court: "Senior civil judges court",
+      city: "Madanapalle",
+      state: "Andhra Pradesh",
+      experience: 21,
+      photo: "",
+      bio: "Revenue Laws and Land Disputes Advocate",
+      address: "Madanapalle",
+      availability: "Available",
+      isVerified: true
+    },
+    {
+      _id: "6a829b5a896aca0a6a210783",
+      name: "Advocate Jane Doe",
+      designation: "Advocate",
+      phone: "+91 98765 43210",
+      email: "jane.advocate@court.org",
+      enrollmentNumber: "TS/888/2012",
+      enrollmentDate: "2012-04-10",
+      specialization: "Civil & Constitutional Law",
+      court: "High Court",
+      city: "Hyderabad",
+      state: "Telangana",
+      experience: 14,
+      photo: "",
+      bio: "High Court Legal Practitioner",
+      address: "Hyderabad",
+      availability: "Available",
+      isVerified: true
+    },
+    {
+      _id: "6a829b5a896aca0a6a210784",
+      name: "Mr. CVLN Murthy",
+      designation: "Advocate, High Court of Telangana, Hyderabad",
+      phone: "+91 98480 55798",
+      email: "cvlnassociates@gmail.com",
+      enrollmentNumber: "TS/1042/2004",
+      enrollmentDate: "2004-06-15",
+      specialization: "Digital Evidence, Cyber Laws",
+      court: "High Court of Telangana",
+      city: "Hyderabad",
+      state: "Telangana",
+      experience: 22,
+      photo: "",
+      bio: "Advocate, High Court of Telangana, Hyderabad specializing in Digital Evidence and Cyber Laws.",
+      address: "High Court Premises, Hyderabad, Telangana",
       availability: "Available",
       isVerified: true
     }
@@ -528,6 +644,7 @@ export const Directory: React.FC = () => {
               <option value="">Specialization (All)</option>
               <option>Civil Litigation</option>
               <option>Criminal Defense</option>
+              <option>Digital Evidence, Cyber Laws</option>
               <option>Corporate Law</option>
               <option>Taxation Law</option>
               <option>Intellectual Property</option>
@@ -622,15 +739,44 @@ export const Directory: React.FC = () => {
                   </div>
 
                   {/* Body information */}
-                  <div className="mt-4">
-                    <h3 className="font-bold text-sm text-slate-950 dark:text-white">{adv.name}</h3>
-                    <p className="text-xs text-primary dark:text-sky-400 font-semibold mt-0.5">{adv.specialization}</p>
-                    <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-1">
-                      <Landmark size={12} /> {adv.court}
+                  <div className="mt-4 space-y-1">
+                    <h3 className="font-bold text-sm text-slate-950 dark:text-white leading-snug">{adv.name}</h3>
+                    {adv.designation && (
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-tight">{adv.designation}</p>
+                    )}
+                    <p className="text-xs text-primary dark:text-sky-400 font-semibold pt-0.5">{adv.specialization}</p>
+                    <p className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-0.5">
+                      <Landmark size={12} className="flex-shrink-0 text-slate-400" /> <span>{adv.court}</span>
                     </p>
-                    <p className="text-[11px] text-slate-400 flex items-center gap-1">
-                      <MapPin size={12} /> {adv.city}, {adv.state}
+                    <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                      <MapPin size={12} className="flex-shrink-0 text-slate-400" /> <span>{adv.city}, {adv.state}</span>
                     </p>
+
+                    {/* Functional Phone & Email links */}
+                    <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800 space-y-1 text-xs">
+                      {adv.phone && (
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-350">
+                          <Phone size={12} className="text-primary dark:text-sky-400 flex-shrink-0" />
+                          <a
+                            href={`tel:${String(adv.phone).replace(/\s+/g, '')}`}
+                            className="hover:text-primary dark:hover:text-sky-400 font-medium transition-colors"
+                          >
+                            {adv.phone}
+                          </a>
+                        </div>
+                      )}
+                      {adv.email && (
+                        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-350">
+                          <Mail size={12} className="text-primary dark:text-sky-400 flex-shrink-0" />
+                          <a
+                            href={`mailto:${adv.email}`}
+                            className="hover:text-primary dark:hover:text-sky-400 font-medium transition-colors truncate"
+                          >
+                            {adv.email}
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

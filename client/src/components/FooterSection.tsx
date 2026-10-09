@@ -75,6 +75,16 @@ const ELITE_LEGAL_DESK_TEAM: TeamMember[] = [
     phone: '+919440958757',
     phoneDisplay: '9440958757',
   },
+  {
+    id: 'cvln-murthy',
+    name: 'Mr. CVLN Murthy',
+    degree: 'B.A., L.L.B.',
+    designation: 'Advocate, High Court of Telangana, Hyderabad',
+    specialization: 'Digital Evidence, Cyber Laws',
+    phone: '+919848055798',
+    phoneDisplay: '+91 98480 55798',
+    email: 'cvlnassociates@gmail.com',
+  },
 ];
 
 export const FooterSection: React.FC = () => {
