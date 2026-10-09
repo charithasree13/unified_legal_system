@@ -529,8 +529,8 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
       {isAdvocateOrAdmin && activeTab === 'court' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up">
           
-          {/* Form Controls */}
-          <div className="lg:col-span-2 legal-card p-6 space-y-5">
+          {/* Form Controls - Medium-Light Clean Architecture */}
+          <div className="lg:col-span-2 legal-card p-6 sm:p-8 space-y-6 overflow-hidden bg-[#FFFDF8] dark:bg-slate-900 border border-[#E4DCCF] dark:border-slate-800 rounded-2xl shadow-sm">
             <div>
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-base text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
@@ -538,21 +538,21 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   Enterprise Court Fee Rule Engine
                 </h3>
               </div>
-              <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] mt-1">
+              <p className="text-xs text-[#625F58] dark:text-[#C5C0B6] mt-1 leading-relaxed">
                 Computes exact statutory court fees from configured database rules across all 28 States and 8 Union Territories.
               </p>
             </div>
 
-            <form onSubmit={handleCourtFeeCalculate} className="space-y-4">
+            <form onSubmit={handleCourtFeeCalculate} className="space-y-5">
               
               {/* State, District, Court Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">State / Union Territory</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="min-w-0">
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">State / Union Territory</label>
                   <select
                     value={selectedState}
                     onChange={(e) => setSelectedState(e.target.value)}
-                    className="legal-input mt-1"
+                    className="legal-input w-full block text-xs sm:text-sm font-medium"
                   >
                     <optgroup label="States">
                       {[
@@ -572,12 +572,12 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">District Jurisdiction</label>
+                <div className="min-w-0">
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">District Jurisdiction</label>
                   <select
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="legal-input mt-1"
+                    className="legal-input w-full block text-xs sm:text-sm font-medium"
                   >
                     {(STATE_DISTRICTS[selectedState] || ['Central District', 'North District', 'South District']).map(d => (
                       <option key={d} value={d}>{d}</option>
@@ -585,12 +585,12 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Court Forum</label>
+                <div className="min-w-0 sm:col-span-2 lg:col-span-1">
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">Court Forum</label>
                   <select
                     value={selectedCourt}
                     onChange={(e) => setSelectedCourt(e.target.value)}
-                    className="legal-input mt-1"
+                    className="legal-input w-full block text-xs sm:text-sm font-medium"
                   >
                     {[
                       'District Court',
@@ -609,13 +609,13 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
               </div>
 
               {/* Proceeding Case Type & Relief Type Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Proceeding / Case Type</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="min-w-0">
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">Proceeding / Case Type</label>
                   <select
                     value={selectedCaseType}
                     onChange={(e) => handleCaseTypeChange(e.target.value)}
-                    className="legal-input mt-1"
+                    className="legal-input w-full block text-xs sm:text-sm font-medium"
                   >
                     {(metadata.caseTypes.length > 0 ? metadata.caseTypes.map((ct: any) => ct.name) : ALL_CASE_TYPES).map((c: string) => (
                       <option key={c} value={c}>{c}</option>
@@ -623,12 +623,12 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Relief Requested</label>
+                <div className="min-w-0">
+                  <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">Relief Requested</label>
                   <select
                     value={selectedRelief}
                     onChange={(e) => setSelectedRelief(e.target.value)}
-                    className="legal-input mt-1"
+                    className="legal-input w-full block text-xs sm:text-sm font-medium"
                   >
                     {(CASE_RELIEF_MAP[selectedCaseType] || ['Money Claim Recovery', 'Property Market Valuation Possession', 'Fixed Title Declaration', 'Fixed Injunction Relief']).map((r: string) => (
                       <option key={r} value={r}>{r}</option>
@@ -638,31 +638,31 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
               </div>
 
               {/* Value of Suit (in Rupees) Input */}
-              <div>
-                <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase">Value of Suit (in Rupees) *</label>
+              <div className="min-w-0">
+                <label className="block text-xs font-semibold text-[#625F58] dark:text-[#C5C0B6] uppercase tracking-wider mb-1">Value of Suit (in Rupees) *</label>
                 <input
                   type="number"
                   value={suitValue}
                   onChange={(e) => setSuitValue(e.target.value)}
                   min={0}
                   placeholder="Enter suit value in Rupees"
-                  className="legal-input font-mono font-bold mt-1"
+                  className="legal-input w-full font-mono font-bold text-sm"
                 />
               </div>
 
               {calcErr && (
-                <div className="p-3 bg-[#F1E2DF] text-[#914F45] rounded-lg text-xs flex gap-2 font-medium">
-                  <ShieldAlert size={16} />
+                <div className="p-3.5 bg-[#F1E2DF] text-[#914F45] dark:bg-red-950/40 dark:text-red-300 rounded-xl text-xs flex gap-2 font-medium border border-red-200 dark:border-red-900/50">
+                  <ShieldAlert size={16} className="shrink-0 mt-0.5" />
                   <span>{calcErr}</span>
                 </div>
               )}
 
               {/* Action Buttons: Calculate & Reset */}
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={calcLoading}
-                  className="btn-primary flex-1 py-3 text-xs flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-5 rounded-xl bg-[#183C32] hover:bg-[#245445] text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {calcLoading ? <RefreshCw className="animate-spin" size={16} /> : <Scale size={16} />}
                   <span>{calcLoading ? 'Evaluating Rules...' : 'Calculate Court Fee'}</span>
@@ -671,7 +671,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="btn-secondary px-4 py-3 text-xs flex items-center gap-1.5"
+                  className="px-5 py-3 rounded-xl border border-[#71877B] text-[#183C32] hover:bg-[#EFEAE0] dark:text-[#C5C0B6] dark:hover:bg-slate-800 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <RotateCcw size={14} /> Reset
                 </button>
