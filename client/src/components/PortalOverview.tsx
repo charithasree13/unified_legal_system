@@ -540,14 +540,13 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
 
       {/* KPI Stats Cards - Positioned BEFORE Modules (Admin Only) */}
       {role === 'Admin' && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {[
             { label: 'ADVOCATES', val: displayStats.totalAdvocates, icon: Users, color: 'text-[#183C32] dark:text-[#8FAF9C]' },
             { label: 'ACTIVE USERS', val: displayStats.activeUsers, icon: CheckCircle, color: 'text-[#3F6B50] dark:text-[#6F9A83]' },
             { label: 'PENDING VERIFY', val: displayStats.pendingVerification, icon: Clock, color: 'text-[#A67C3B] dark:text-[#C7A45A]' },
             { label: 'JUDGEMENTS', val: displayStats.uploadedJudgements, icon: FileText, color: 'text-[#6A5948] dark:text-[#D8C49A]' },
-            { label: 'ACTS/LAWS', val: displayStats.uploadedLaws, icon: BookOpen, color: 'text-[#183C32] dark:text-[#6F9A83]' },
-            { label: 'COLLAB ACTIONS', val: displayStats.collaborationActivities, icon: Activity, color: 'text-[#71877B] dark:text-[#AFC9B7]' }
+            { label: 'ACTS/LAWS', val: displayStats.uploadedLaws, icon: BookOpen, color: 'text-[#183C32] dark:text-[#6F9A83]' }
           ].map((c, i) => (
             <div key={i} className="legal-card p-4 sm:p-5 flex flex-col justify-between">
               <div className="flex items-center justify-between gap-2 mb-2">
