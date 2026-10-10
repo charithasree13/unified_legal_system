@@ -190,7 +190,7 @@ export const App: React.FC = () => {
           <Route 
             path="directory" 
             element={
-              <ProtectedRoute featureName="Advocate Directory">
+              <ProtectedRoute featureName="Advocate Details">
                 <Directory />
               </ProtectedRoute>
             } 
@@ -327,7 +327,7 @@ export const App: React.FC = () => {
           <Route 
             path="projects" 
             element={
-              <ProtectedRoute featureName="Case & Project Management">
+              <ProtectedRoute featureName="Case Details">
                 <Projects />
               </ProtectedRoute>
             } 

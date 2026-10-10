@@ -115,7 +115,7 @@ export const UserDashboard: React.FC = () => {
               to="/calculators"
               className="btn-secondary text-[#F7F3EA] border-[#D8D1C5]/30 hover:bg-white/10 text-xs"
             >
-              Legal Calculators
+              Calculators
             </Link>
           </div>
         </div>

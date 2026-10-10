@@ -116,7 +116,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'directory',
-          title: 'Advocate Directory',
+          title: 'Advocate Details',
           description: 'Access the complete advocate directory database, manage verified badges and practitioner profiles.',
           tag: 'Directory Hub',
           icon: Users,
@@ -125,7 +125,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'judgements',
-          title: 'Judgements & Bare Acts Repository',
+          title: 'Judgements & Bare Acts',
           description: 'Browse, search, and audit all indexed landmark judgements, case laws, central & state acts.',
           tag: 'Legal Library',
           icon: Gavel,
@@ -134,7 +134,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'projects',
-          title: 'Case Projects Management',
+          title: 'Case Details',
           description: 'Overview of platform-wide litigation projects, active client-advocate mappings, and task progress.',
           tag: 'System Cases',
           icon: Scale,
@@ -143,7 +143,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'calculators',
-          title: 'Calculators Engine',
+          title: 'Calculators',
           description: 'Audit and test state court fee calculators, ad-valorem suit formulas, and land conversion utilities.',
           tag: 'Utility Engine',
           icon: Calculator,
@@ -247,7 +247,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'projects',
-          title: 'Case Projects & Tracking',
+          title: 'Case Details',
           description: 'Manage active cases, client assignments, hearing calendars, task milestones, and litigation notes.',
           tag: 'Active Practice',
           icon: Scale,
@@ -256,7 +256,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'directory',
-          title: 'Advocate Directory & Peer Network',
+          title: 'Advocate Details',
           description: 'Network with legal peers, view public practitioner profiles, and manage your directory listing.',
           tag: 'Public Directory',
           icon: Users,
@@ -265,7 +265,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         },
         {
           id: 'judgements',
-          title: 'Judgements Repository',
+          title: 'Judgements & Bare Acts',
           description: 'Search Supreme Court & High Court landmark judgements, precedent rulings, and case transcripts.',
           tag: 'Case Law Research',
           icon: Gavel,
@@ -292,7 +292,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         }] : []),
         {
           id: 'calculators',
-          title: 'Court Fee & Land Calculators',
+          title: 'Calculators',
           description: 'Compute state court fees, ad-valorem suit values, probate fees, stamp duty, and land area conversions.',
           tag: 'Valuation Tools',
           icon: Calculator,
@@ -387,7 +387,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
     return [
       {
         id: 'directory',
-        title: 'Advocate Directory',
+        title: 'Advocate Details',
         description: 'Search & connect with verified legal advocates across specializations, cities, High Courts, and District Courts.',
         tag: 'Find Legal Experts',
         icon: Users,
@@ -396,7 +396,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       },
       {
         id: 'projects',
-        title: 'Case Projects & File Tracking',
+        title: 'Case Details',
         description: 'Track your active court cases, next hearing dates, lawyer notes, case progress, and task updates.',
         tag: 'My Litigation Files',
         icon: Scale,
@@ -405,7 +405,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       },
       {
         id: 'calculators',
-        title: 'Court Fee & Land Calculators',
+        title: 'Calculators',
         description: 'Calculate state court fees, stamp duty, ad-valorem suit valuation, and land measurement conversions.',
         tag: 'Legal Calculators',
         icon: Calculator,

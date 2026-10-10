@@ -131,12 +131,12 @@ export const FooterSection: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <Link to="/directory" className="hover:text-[#C7A45A] transition-colors flex items-center gap-1">
-                  <span>Advocate Directory</span>
+                  <span>Advocate Details</span>
                 </Link>
               </li>
               <li>
                 <Link to="/calculators" className="hover:text-[#C7A45A] transition-colors flex items-center gap-1">
-                  <span>Court Fee & Land Calculators</span>
+                  <span>Calculators</span>
                 </Link>
               </li>
               <li>
@@ -156,7 +156,7 @@ export const FooterSection: React.FC = () => {
               </li>
               <li>
                 <Link to="/judgements" className="hover:text-[#C7A45A] transition-colors flex items-center gap-1">
-                  <span>Supreme & High Court Judgments</span>
+                  <span>Judgements & Bare Acts</span>
                 </Link>
               </li>
               {canAccessConverter && (

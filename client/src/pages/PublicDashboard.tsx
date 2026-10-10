@@ -113,7 +113,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'directory',
-      title: 'Advocate Directory',
+      title: 'Advocate Details',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: Users,
@@ -149,7 +149,7 @@ export const PublicDashboard: React.FC = () => {
     },
     {
       id: 'judgements',
-      title: 'Judgments',
+      title: 'Judgements & Bare Acts',
       category: 'Protected (Sign In)',
       isProtected: true,
       icon: Gavel,
@@ -320,7 +320,7 @@ export const PublicDashboard: React.FC = () => {
                 className="btn-secondary flex items-center gap-2 cursor-pointer text-xs sm:text-sm"
               >
                 <Calculator size={16} />
-                <span>Legal Calculators</span>
+                <span>Calculators</span>
               </Link>
 
               {!token && (
