@@ -115,7 +115,7 @@ export const FooterSection: React.FC = () => {
               </div>
             </div>
             <p className="text-[#C5C0B6] text-xs leading-relaxed">
-              A comprehensive digital platform connecting legal services, verified advocates, bare acts, judgments, court fee tools, and case management for Madanapalle and beyond.
+              A comprehensive digital platform connecting legal services, verified advocates, bare acts, judgments, court fee tools, and case management.
             </p>
             <div className="pt-2 text-[11px] text-[#C5C0B6] flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-[#6F9A83] flex-shrink-0" />

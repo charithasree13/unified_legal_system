@@ -7,6 +7,7 @@ import {
   CheckCircle, Clock, Calendar
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { ModuleCardVisual } from './ModuleCardVisuals';
 
 export interface PortalOverviewStats {
   totalAdvocates?: number;
@@ -604,13 +605,18 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
               {/* Card Top Header */}
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className={`p-3 rounded-xl ${card.iconBg} ${card.iconColor} transition-transform duration-300 group-hover:scale-105`}>
-                    <CardIcon size={22} className="stroke-[2]" />
+                  <div className={`p-2.5 rounded-xl ${card.iconBg} ${card.iconColor} transition-transform duration-300 group-hover:scale-105`}>
+                    <CardIcon size={20} className="stroke-[2]" />
                   </div>
                   
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${card.badgeBg} ${card.badgeText} uppercase tracking-wider`}>
                     {card.tag}
                   </span>
+                </div>
+
+                {/* Module Visual Header Artwork (Matches User Reference Images) */}
+                <div className="mb-3.5 transition-transform duration-300 group-hover:scale-[1.02]">
+                  <ModuleCardVisual id={card.id} className="h-28 w-full" />
                 </div>
 
                 {/* Card Title */}
