@@ -475,14 +475,14 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
     <div className="space-y-6">
       
       {/* Ultra-Compact Premium Legal-Tech Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#1E2420] dark:bg-[#151815] text-[#F7F3EA] py-6 px-4 sm:px-8 shadow-md border border-[#A67C3B]/25">
+      <div className="relative overflow-hidden rounded-2xl bg-[#A8B09A] dark:bg-[#9FA791] text-[#1C2B20] dark:text-[#17251B] py-6 px-4 sm:px-8 shadow-sm border border-[#7C6A4E]/35">
         
         {/* Subtle watermark / pattern */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.04] overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05] overflow-hidden">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
             <defs>
               <pattern id="archGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.75" />
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2B20" strokeWidth="0.75" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#archGrid)" />
@@ -492,21 +492,21 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
         <div className="relative z-10 w-full mx-auto flex flex-col items-center text-center space-y-4">
           
           {/* Official Logo & Portal Title Badge — Primary Branding Focus */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 bg-[#171916]/70 py-4 px-6 sm:px-8 rounded-2xl border border-[#A67C3B]/35 backdrop-blur-md shadow-lg w-full max-w-[850px]">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 bg-[#979F89]/50 dark:bg-[#8D957F]/50 py-4 px-6 sm:px-8 rounded-2xl border border-[#7C6A4E]/30 shadow-xs w-full max-w-[850px]">
             <div className="relative flex-shrink-0">
               <img 
                 src="/logo.jpg" 
                 alt="Elite Legal Desk Logo" 
-                className="w-24 h-24 sm:w-28 sm:h-28 object-contain rounded-full border-2 border-[#A67C3B] shadow-xl bg-[#FFFDF8]" 
+                className="w-24 h-24 sm:w-28 sm:h-28 object-contain rounded-full border-2 border-[#8C6D2D] shadow-md bg-[#FFFDF8]" 
               />
             </div>
             <div className="text-center sm:text-left space-y-2">
-              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold font-serif text-[#F7F3EA] tracking-wide leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold font-serif text-[#1C2B20] dark:text-[#17251B] tracking-wide leading-tight">
                 ELITE LEGAL DESK
               </h1>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A67C3B]/20 text-[#D8C49A] border border-[#A67C3B]/35 shadow-xs">
-                  <Sparkles size={12} className="text-[#C7A45A]" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7C6A4E]/15 text-[#5C430B] dark:text-[#523C08] border border-[#7C6A4E]/35 shadow-2xs">
+                  <Sparkles size={12} className="text-[#7E5B10] dark:text-[#74530B]" />
                   <span className="text-xs font-bold uppercase tracking-wider">
                     {role} PORTAL
                   </span>
@@ -516,20 +516,20 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           </div>
 
           {/* Supporting Quotation Panel — Reduced Prominence */}
-          <div className="relative w-full max-w-[850px] mx-auto py-2.5 px-4 sm:py-3 sm:px-6 rounded-xl bg-[#171916]/50 border border-[#A67C3B]/15 backdrop-blur-sm shadow-xs flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-[850px] mx-auto py-2.5 px-4 sm:py-3 sm:px-6 rounded-xl bg-[#979F89]/40 dark:bg-[#8D957F]/40 border border-[#7C6A4E]/20 shadow-2xs flex flex-col items-center justify-center">
             
             {/* Subtle Watermark Quotes */}
-            <span className="absolute top-1 left-3 text-lg font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute top-1 left-3 text-lg font-serif text-[#5C4C34]/25 select-none pointer-events-none font-bold leading-none">
               “
             </span>
-            <span className="absolute bottom-1 right-3 text-lg font-serif text-[#D8C49A]/15 select-none pointer-events-none font-bold leading-none">
+            <span className="absolute bottom-1 right-3 text-lg font-serif text-[#5C4C34]/25 select-none pointer-events-none font-bold leading-none">
               ”
             </span>
 
             {/* Quotation Text */}
-            <blockquote className="relative z-10 font-serif italic text-sm sm:text-base md:text-lg text-[#F7F3EA]/90 font-normal leading-snug text-center tracking-wide px-2">
-              “All of us do not have equal talent.... But, all of us have an <span className="text-[#C7A45A] font-medium not-italic border-b border-[#C7A45A]/40 pb-0.5">equal opportunity</span> to develop our talent”
-              <span className="font-sans not-italic text-xs sm:text-sm text-[#D8C49A]/90 font-medium ml-2 inline-block">
+            <blockquote className="relative z-10 font-serif italic text-sm sm:text-base md:text-lg text-[#1C2B20] dark:text-[#17251B] font-normal leading-snug text-center tracking-wide px-2">
+              “All of us do not have equal talent.... But, all of us have an <span className="text-[#7E5B10] dark:text-[#74530B] font-semibold not-italic border-b border-[#7E5B10]/40 pb-0.5">equal opportunity</span> to develop our talent”
+              <span className="font-sans not-italic text-xs sm:text-sm text-[#38463B] dark:text-[#2D3930] font-medium ml-2 inline-block">
                 ... Dr. A. P. J. Abdul Kalam
               </span>
             </blockquote>
