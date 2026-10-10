@@ -607,7 +607,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
                 <div className="flex items-start justify-between gap-3 mb-4">
                   {/* Module Logo Emblem placed in Top-Left position (Matches 2nd reference image) */}
                   <div className="transition-transform duration-300 group-hover:scale-105 flex-shrink-0">
-                    <ModuleCardVisual id={card.id} className="w-14 h-14 sm:w-16 sm:h-16" />
+                    <ModuleCardVisual id={card.id} className="w-12 h-12 sm:w-13 sm:h-13" />
                   </div>
                   
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${card.badgeBg} ${card.badgeText} uppercase tracking-wider self-start mt-0.5`}>

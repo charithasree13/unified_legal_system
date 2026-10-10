@@ -8,6 +8,7 @@ import {
 import { useAuthStore } from '../store/authStore';
 import { FounderSection } from '../components/FounderSection';
 import { AuthModal } from '../components/AuthModal';
+import { ModuleCardVisual } from '../components/ModuleCardVisuals';
 
 export const PublicDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -371,9 +372,9 @@ export const PublicDashboard: React.FC = () => {
                 >
                   <div className="space-y-4">
 
-                    <div className="flex items-center justify-between">
-                      <div className={`p-3 rounded-xl border ${item.iconBg}`}>
-                        <Icon size={22} />
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="transition-transform duration-300 group-hover:scale-105 flex-shrink-0">
+                        <ModuleCardVisual id={item.id} className="w-12 h-12 sm:w-13 sm:h-13" />
                       </div>
 
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${item.isProtected
