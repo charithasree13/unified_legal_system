@@ -374,7 +374,7 @@ export const PublicDashboard: React.FC = () => {
 
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="transition-transform duration-300 group-hover:scale-105 flex-shrink-0">
-                        <ModuleCardVisual id={item.id} className="w-12 h-12 sm:w-13 sm:h-13" />
+                        <ModuleCardVisual id={item.id} className="w-10 h-10 sm:w-11 sm:h-11" />
                       </div>
 
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${item.isProtected
