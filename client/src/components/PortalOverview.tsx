@@ -4,7 +4,7 @@ import {
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
   Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote,
-  CheckCircle, Clock, Calendar
+  CheckCircle, Clock, Calendar, Car
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { ModuleCardVisual } from './ModuleCardVisuals';
@@ -201,7 +201,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           title: 'Motor Accident Compensation Calculator',
           description: 'Calculate structured MACT compensation under MVA 1988, Section 164/166, Sarla Verma multipliers, Pranay Sethi future prospects, and Raj Kumar disability.',
           tag: 'MACT Claims Engine',
-          icon: Scale,
+          icon: Car,
           path: '/motor-accident-calculator',
           ...brownBadge
         },
@@ -377,7 +377,7 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           title: 'Motor Accident Compensation Calculator',
           description: 'Calculate structured MACT compensation under MVA 1988, Section 164/166, Sarla Verma multipliers, Pranay Sethi future prospects, and Raj Kumar disability.',
           tag: 'MACT Claims Engine',
-          icon: Scale,
+          icon: Car,
           path: '/motor-accident-calculator',
           ...brownBadge
         },

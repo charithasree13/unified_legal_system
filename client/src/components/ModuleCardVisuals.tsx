@@ -485,7 +485,68 @@ export const ModuleCardVisual: React.FC<ModuleVisualProps> = ({ id, className = 
     );
   }
 
-  // 19. DEFAULT FALLBACK MODULE VISUAL
+  // 19. MOTOR ACCIDENT COMPENSATION CALCULATOR (MACT / Vehicle Icon)
+  if (id.includes('motor') || id.includes('accident') || id.includes('mact') || id.includes('vehicle')) {
+    return (
+      <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#FFFDF8] to-[#F5EEE0] dark:from-[#241E17] dark:to-[#171410] border border-[#A67C3B]/40 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
+          {/* Subtle Outer Legal Seal Circle */}
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#183C32" strokeWidth="1.75" />
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#A67C3B" strokeWidth="1.2" strokeDasharray="3 1.5" />
+          
+          {/* Upper Cabin Roof & Windows */}
+          <path
+            d="M 28 47 L 37 32 C 39 29 42 27 46 27 L 66 27 C 70 27 73 29 75 32 L 83 47 Z"
+            fill="#183C32"
+            stroke="#A67C3B"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+          />
+          
+          {/* Windshield & Windows */}
+          <path d="M 66 31 L 74 44 L 52 44 L 52 31 Z" fill="#F7F3EA" />
+          <path d="M 48 31 L 48 44 L 33 44 L 39 31 Z" fill="#F7F3EA" />
+          
+          {/* Car Lower Body */}
+          <path
+            d="M 14 47 C 14 45 16 44 19 44 L 86 44 C 90 44 93 47 93 51 L 91 60 C 91 63 88 65 85 65 L 81 65 C 79 58 73 53 66 53 C 59 53 53 58 51 65 L 37 65 C 35 58 29 53 22 53 C 15 53 9 58 7 65 L 5 65 C 2 65 1 63 1 60 L 3 52 C 5 48 9 47 14 47 Z"
+            fill="#183C32"
+            stroke="#A67C3B"
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+            transform="translate(3, 0)"
+          />
+
+          {/* Golden Headlight */}
+          <path d="M 92 49 C 93 49 94 50 94 52 L 94 55 C 94 56 93 57 92 57 Z" fill="#D8C49A" />
+          
+          {/* Rear Light */}
+          <path d="M 19 49 L 17 49 C 16 49 16 50 16 52 L 16 55 C 16 56 16 57 17 57 L 19 57 Z" fill="#914F45" />
+
+          {/* Left Wheel */}
+          <circle cx="25" cy="65" r="9" fill="#242522" stroke="#A67C3B" strokeWidth="1.5" />
+          <circle cx="25" cy="65" r="5" fill="#D8D1C5" />
+          <circle cx="25" cy="65" r="2.5" fill="#183C32" />
+
+          {/* Right Wheel */}
+          <circle cx="69" cy="65" r="9" fill="#242522" stroke="#A67C3B" strokeWidth="1.5" />
+          <circle cx="69" cy="65" r="5" fill="#D8D1C5" />
+          <circle cx="69" cy="65" r="2.5" fill="#183C32" />
+
+          {/* Road Baseline */}
+          <line x1="8" y1="76" x2="92" y2="76" stroke="#A67C3B" strokeWidth="1.5" strokeLinecap="round" />
+          
+          {/* MVA 1988 Mini Banner */}
+          <rect x="34" y="14" width="32" height="9" rx="2" fill="#A67C3B" />
+          <text x="50" y="20.5" textAnchor="middle" className="text-[5.5px] font-extrabold fill-[#FFFDF8] font-sans tracking-widest uppercase">
+            MVA 1988
+          </text>
+        </svg>
+      </div>
+    );
+  }
+
+  // 20. DEFAULT FALLBACK MODULE VISUAL
   return (
     <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#F4F8F5] to-[#E2EBE5] dark:from-[#1E2420] dark:to-[#121614] border border-[#A67C3B]/35 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
       <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
