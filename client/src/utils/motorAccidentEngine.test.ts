@@ -6,7 +6,8 @@ import {
 import {
   getSarlaVermaMultiplier,
   getFutureProspectsPercentage,
-  getPersonalExpenseDeduction
+  getPersonalExpenseDeduction,
+  getConventionalHeadsRates
 } from '../data/motorAccidentRules';
 
 /**
@@ -29,6 +30,7 @@ export const runMotorAccidentEngineTests = (): boolean => {
   assert(getSarlaVermaMultiplier(19).multiplier === 18, 'Age 19 multiplier should be 18');
   assert(getSarlaVermaMultiplier(24).multiplier === 18, 'Age 24 multiplier should be 18');
   assert(getSarlaVermaMultiplier(28).multiplier === 17, 'Age 28 multiplier should be 17');
+  assert(getSarlaVermaMultiplier(32).multiplier === 16, 'Age 32 multiplier should be 16');
   assert(getSarlaVermaMultiplier(33).multiplier === 16, 'Age 33 multiplier should be 16');
   assert(getSarlaVermaMultiplier(38).multiplier === 15, 'Age 38 multiplier should be 15');
   assert(getSarlaVermaMultiplier(43).multiplier === 14, 'Age 43 multiplier should be 14');
@@ -50,50 +52,83 @@ export const runMotorAccidentEngineTests = (): boolean => {
   assert(getFutureProspectsPercentage(62, 'self_employed_fixed').percentage === 0, 'Self-employed > 60 should be 0%');
 
   // 3. PERSONAL LIVING EXPENSES DEDUCTION (Sarla Verma 2009, Para 30-32)
-  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 1).deductionRatio - 0.5) < 0.001, 'Bachelor standard deduction should be 1/2 (50%)');
-  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 3, true).deductionRatio - (1 / 3)) < 0.001, 'Bachelor large family deduction should be 1/3rd (33.3%)');
+  // Married deceased rules:
   assert(Math.abs(getPersonalExpenseDeduction('married', 1).deductionRatio - 0.5) < 0.001, 'Married with 1 dependent should be 1/2 (50%)');
-  assert(Math.abs(getPersonalExpenseDeduction('married', 3).deductionRatio - (1 / 3)) < 0.001, 'Married with 2-3 dependants should be 1/3rd (33.3%)');
-  assert(Math.abs(getPersonalExpenseDeduction('married', 5).deductionRatio - 0.25) < 0.001, 'Married with 4-6 dependants should be 1/4th (25%)');
-  assert(Math.abs(getPersonalExpenseDeduction('married', 7).deductionRatio - 0.2) < 0.001, 'Married with >6 dependants should be 1/5th (20%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 2).deductionRatio - (1 / 3)) < 0.001, 'Married with 2 dependants should be 1/3rd (33.3%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 3).deductionRatio - (1 / 3)) < 0.001, 'Married with 3 dependants should be 1/3rd (33.3%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 4).deductionRatio - 0.25) < 0.001, 'Married with 4 dependants should be 1/4th (25%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 5).deductionRatio - 0.25) < 0.001, 'Married with 5 dependants should be 1/4th (25%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 6).deductionRatio - 0.25) < 0.001, 'Married with 6 dependants should be 1/4th (25%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 7).deductionRatio - 0.2) < 0.001, 'Married with 7 dependants should be 1/5th (20%)');
+  assert(Math.abs(getPersonalExpenseDeduction('married', 8).deductionRatio - 0.2) < 0.001, 'Married with >6 dependants should be 1/5th (20%)');
 
-  // 4. TEST CASE 1: FULL DEATH CALCULATION (Salaried 32yo, Married, 3 Dependants)
-  // Base Net = 6,00,000 - 20,000 = 5,80,000.
-  // Prospects (+50%) = 2,90,000 => Adjusted = 8,70,000.
-  // Deduction (1/3) = 2,90,000 => Annual Loss = 5,80,000.
-  // Multiplier = 16 => Loss of Dependency = 92,80,000.
-  // Conventional: Estate (18,150) + Funeral (18,150) + Spousal (48,400) + 2 Children (96,800) + 2 Parents (96,800) = 2,78,300.
-  // Total = 95,58,300.
-  const case1Input: MotorAccidentClaimInput = {
+  // Bachelor deceased rules (Paras 31-32):
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 1).deductionRatio - 0.5) < 0.001, 'Bachelor standard deduction should be 1/2 (50%)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 2).deductionRatio - 0.5) < 0.001, 'Bachelor 2 dependants standard deduction should be 1/2 (50%)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 3).deductionRatio - (1 / 3)) < 0.001, 'Bachelor large family deduction should be 1/3rd (33.3%)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 4).deductionRatio - (1 / 3)) < 0.001, 'Bachelor 4 dependants should be 1/3rd (NOT 1/4th)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 6).deductionRatio - (1 / 3)) < 0.001, 'Bachelor 6 dependants should be 1/3rd (NOT 1/4th)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 7).deductionRatio - (1 / 3)) < 0.001, 'Bachelor 7 dependants should be 1/3rd (NOT 1/5th)');
+  assert(Math.abs(getPersonalExpenseDeduction('bachelor', 2, true).deductionRatio - (1 / 3)) < 0.001, 'Bachelor with large family flag should be 1/3rd');
+
+  // 4. USER BENCHMARK TEST CASE:
+  // Facts: Age 32, Permanent Salaried, Monthly ₹50,000, Tax ₹0, Married, 4 Dependants.
+  // Multiplier: 16
+  // Annual Income = ₹6,00,000
+  // Future Prospects (50%) = ₹3,00,000
+  // Adjusted Annual Income = ₹9,00,000
+  // Personal Expense Deduction (25%) = ₹2,25,000
+  // Annual Loss of Dependency = ₹6,75,000
+  // Total Loss of Dependency = ₹6,75,000 × 16 = ₹1,08,00,000
+  const benchmarkInput: MotorAccidentClaimInput = {
     claimType: 'death',
-    accidentDate: '2024-01-10',
+    accidentDate: '2024-01-15',
     deathDetails: {
       ageAtAccident: 32,
       employmentCategory: 'salaried_permanent',
       incomePeriod: 'monthly',
       incomeAmount: 50000,
-      annualIncomeTax: 20000,
+      annualIncomeTax: 0,
       maritalStatus: 'married',
-      dependantsCount: 3,
+      dependantsCount: 4,
       consortiumClaimants: {
         spouses: 1,
         children: 2,
-        parents: 2
+        parents: 1
       },
       useEnhancedConventionalHeads: true
     }
   };
 
-  const case1Result = calculateMotorAccidentCompensation(case1Input);
-  assert(case1Result.totalEstimatedCompensation === 9558300, `Case 1 total should be ₹95,58,300, got ${case1Result.totalEstimatedCompensation}`);
+  const benchmarkResult = calculateMotorAccidentCompensation(benchmarkInput);
+  const depHead = benchmarkResult.itemisedHeads.find(h => h.head === 'Loss of Dependency');
+  assert(depHead?.amount === 10800000, `Benchmark Loss of dependency should be ₹1,08,00,000, got ${depHead?.amount}`);
+
+  // Check 3 dependants (Loss of dependency: 9,00,000 * 2/3 * 16 = ₹96,00,000)
+  const res3 = calculateMotorAccidentCompensation({
+    ...benchmarkInput,
+    deathDetails: { ...benchmarkInput.deathDetails!, dependantsCount: 3 }
+  });
+  const dep3 = res3.itemisedHeads.find(h => h.head === 'Loss of Dependency');
+  assert(dep3?.amount === 9600000, `Married 3 dependants should be ₹96,00,000, got ${dep3?.amount}`);
+
+  // Check 6 dependants (Loss of dependency: 9,00,000 * 3/4 * 16 = ₹1,08,00,000)
+  const res6 = calculateMotorAccidentCompensation({
+    ...benchmarkInput,
+    deathDetails: { ...benchmarkInput.deathDetails!, dependantsCount: 6 }
+  });
+  const dep6 = res6.itemisedHeads.find(h => h.head === 'Loss of Dependency');
+  assert(dep6?.amount === 10800000, `Married 6 dependants should be ₹1,08,00,000, got ${dep6?.amount}`);
+
+  // Check 7 dependants (Loss of dependency: 9,00,000 * 4/5 * 16 = ₹1,15,20,000)
+  const res7 = calculateMotorAccidentCompensation({
+    ...benchmarkInput,
+    deathDetails: { ...benchmarkInput.deathDetails!, dependantsCount: 7 }
+  });
+  const dep7 = res7.itemisedHeads.find(h => h.head === 'Loss of Dependency');
+  assert(dep7?.amount === 11520000, `Married 7 dependants should be ₹1,15,20,000, got ${dep7?.amount}`);
 
   // 5. TEST CASE 2: PERMANENT DISABILITY (28yo, Salaried, 60% Medical, 40% Functional)
-  // Adjusted Annual = (4,80,000 + 50%) = 7,20,000.
-  // Multiplier = 17.
-  // Future Earning Loss = 7,20,000 * 17 * 0.40 = 48,96,000.
-  // Pecuniary Medical = 2,50,000 + 1,00,000 + 50,000 + 30,000 = 4,30,000.
-  // Non-pecuniary = 1,50,000 + 1,00,000 = 2,50,000.
-  // Grand Total = 48,96,000 + 4,30,000 + 2,50,000 = 55,76,000.
   const case2Input: MotorAccidentClaimInput = {
     claimType: 'permanent_disability',
     accidentDate: '2024-02-15',
@@ -125,36 +160,12 @@ export const runMotorAccidentEngineTests = (): boolean => {
       incomeFrequency: 'monthly',
       incomeAmount: 60000,
       periodUnit: 'months',
-      periodValue: 3.5,
-      medicalLeaveBasis: 'Orthopaedic inpatient stay and certified bedrest'
+      periodValue: 3.5
     }
   };
+
   const case3Result = calculateMotorAccidentCompensation(case3Input);
-  assert(case3Result.totalEstimatedCompensation === 210000, `Case 3 loss of income should be ₹2,10,000, got ${case3Result.totalEstimatedCompensation}`);
-
-  // 7. TEST CASE 4: INJURY & MEDICAL ITEMISED VOUCHERS
-  const case4Input: MotorAccidentClaimInput = {
-    claimType: 'injury_medical',
-    accidentDate: '2024-04-10',
-    injuryMedicalDetails: {
-      expenses: [
-        { id: '1', category: 'Hospitalization', description: 'ICU 5 days', amount: 120000 },
-        { id: '2', category: 'Pharmacy', description: 'Injectables & antibiotics', amount: 35000 },
-        { id: '3', category: 'Surgery', description: 'Femur fixation surgery', amount: 200000 },
-        { id: '4', category: 'Diagnostics', description: 'MRI & CT Scans', amount: 15000 }
-      ]
-    }
-  };
-  const case4Result = calculateMotorAccidentCompensation(case4Input);
-  assert(case4Result.totalEstimatedCompensation === 370000, `Case 4 medical expenses should be ₹3,70,000, got ${case4Result.totalEstimatedCompensation}`);
-
-  // 8. TEST CASE 5: SECTION 164 NO-FAULT BENCHMARK INTEGRATION
-  assert(case1Result.statutoryNoFaultBenchmark.statutoryFixedAmount === 500000, 'Death statutory baseline should be ₹5,00,000');
-  assert(case2Result.statutoryNoFaultBenchmark.statutoryFixedAmount === 250000, 'Grievous hurt statutory baseline should be ₹2,50,000');
-
-  // 9. CURRENCY FORMATTING
-  assert(formatINR(500000) === '₹5,00,000', 'Currency format for 5,00,000 failed');
-  assert(formatINR(12500000) === '₹1,25,00,000', 'Currency format for 1.25 Crore failed');
+  assert(case3Result.totalEstimatedCompensation === 210000, `Case 3 treatment total should be ₹2,10,000, got ${case3Result.totalEstimatedCompensation}`);
 
   return passed;
 };

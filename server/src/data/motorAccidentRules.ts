@@ -269,52 +269,145 @@ export function getFutureProspectsPercentage(
 
 /**
  * Helper to compute personal living expense deduction fraction
+ * Follows Sarla Verma (2009) 6 SCC 121 (Paras 30-32) reaffirmed in Pranay Sethi (2017) 16 SCC 680
+ *
+ * Married Deceased (Para 30):
+ * - 1 dependant: 50% (1/2)
+ * - 2 to 3 dependants: 33.33% (1/3rd)
+ * - 4 to 6 dependants: 25.00% (1/4th)
+ * - >6 dependants: 20.00% (1/5th)
+ *
+ * Bachelor Deceased (Paras 31-32):
+ * - Default: 50% (1/2)
+ * - Large dependent family (widowed mother & dependent younger siblings / >=3 dependants): 33.33% (1/3rd)
+ * - Note: Married rules (1/4th or 1/5th) do NOT apply indiscriminately to bachelors.
  */
 export function getPersonalExpenseDeduction(
-  maritalStatus: 'bachelor' | 'married',
-  dependantsCount: number,
+  maritalStatus: 'bachelor' | 'married' | string,
+  dependantsCount: number | string,
   isBachelorWithLargeFamily: boolean = false
 ): { deductionRatio: number; deductionLabel: string; legalReference: string } {
-  if (maritalStatus === 'bachelor') {
-    if (isBachelorWithLargeFamily || dependantsCount >= 3) {
+  const count = Math.max(0, Math.floor(Number(dependantsCount) || 0));
+  const normalizedStatus = String(maritalStatus || '').trim().toLowerCase();
+  const isBachelor = normalizedStatus === 'bachelor' || normalizedStatus === 'single';
+
+  if (isBachelor) {
+    if (isBachelorWithLargeFamily || count >= 3) {
       return {
         deductionRatio: 1 / 3,
-        deductionLabel: '1/3rd (33.33%) — Bachelor with large dependent family (widowed mother & dependent siblings)',
+        deductionLabel: '1/3rd (33.33%) — Bachelor deceased with large dependent family (widowed mother & dependent siblings, Sarla Verma Para 32)',
         legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 32)'
       };
     }
     return {
       deductionRatio: 1 / 2,
-      deductionLabel: '1/2 (50.00%) — Bachelor deceased standard deduction',
+      deductionLabel: '1/2 (50.00%) — Bachelor deceased standard deduction (Sarla Verma Para 31)',
       legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 31)'
     };
   }
 
-  // Married
-  if (dependantsCount <= 1) {
+  // Married Deceased (Sarla Verma Para 30)
+  if (count <= 1) {
     return {
       deductionRatio: 1 / 2,
-      deductionLabel: '1/2 (50.00%) — Married deceased with 1 dependent',
+      deductionLabel: '1/2 (50.00%) — Married deceased with 1 dependent (Sarla Verma Para 30)',
       legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 30)'
     };
   }
-  if (dependantsCount >= 2 && dependantsCount <= 3) {
+  if (count === 2 || count === 3) {
     return {
       deductionRatio: 1 / 3,
-      deductionLabel: '1/3rd (33.33%) — Married deceased with 2 to 3 dependants',
+      deductionLabel: '1/3rd (33.33%) — Married deceased with 2 to 3 dependants (Sarla Verma Para 30)',
       legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 30)'
     };
   }
-  if (dependantsCount >= 4 && dependantsCount <= 6) {
+  if (count >= 4 && count <= 6) {
     return {
       deductionRatio: 1 / 4,
-      deductionLabel: '1/4th (25.00%) — Married deceased with 4 to 6 dependants',
+      deductionLabel: '1/4th (25.00%) — Married deceased with 4 to 6 dependants (Sarla Verma Para 30)',
       legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 30)'
     };
   }
   return {
     deductionRatio: 1 / 5,
-    deductionLabel: '1/5th (20.00%) — Married deceased with more than 6 dependants',
+    deductionLabel: '1/5th (20.00%) — Married deceased with more than 6 dependants (Sarla Verma Para 30)',
     legalReference: 'Sarla Verma (2009) 6 SCC 121 (Para 30)'
+  };
+}
+
+/**
+ * Helper to determine conventional heads rates based on accident date and indexation rules
+ * Pranay Sethi (2017) Para 52, 59.8: Base ₹15,000 / ₹40,000 with 10% enhancement every 3 years.
+ */
+export function getConventionalHeadsRates(
+  accidentDate?: string,
+  userEnhancedOverride?: boolean
+): {
+  lossOfEstate: number;
+  funeralExpenses: number;
+  consortiumPerPerson: number;
+  indexationLabel: string;
+  isIndexed: boolean;
+} {
+  if (userEnhancedOverride === false) {
+    return {
+      lossOfEstate: 15000,
+      funeralExpenses: 15000,
+      consortiumPerPerson: 40000,
+      indexationLabel: 'Base statutory rates (Pranay Sethi 2017 baseline: Estate ₹15,000, Funeral ₹15,000, Consortium ₹40,000)',
+      isIndexed: false
+    };
+  }
+
+  if (userEnhancedOverride === true) {
+    return {
+      lossOfEstate: 18150,
+      funeralExpenses: 18150,
+      consortiumPerPerson: 48400,
+      indexationLabel: 'Triennial indexation applied (Pranay Sethi Para 59.8: +21% / Estate ₹18,150, Funeral ₹18,150, Consortium ₹48,400)',
+      isIndexed: true
+    };
+  }
+
+  if (accidentDate) {
+    const accDate = new Date(accidentDate);
+    if (!isNaN(accDate.getTime())) {
+      const triennial2Date = new Date('2023-10-31');
+      const triennial1Date = new Date('2020-10-31');
+
+      if (accDate >= triennial2Date) {
+        return {
+          lossOfEstate: 18150,
+          funeralExpenses: 18150,
+          consortiumPerPerson: 48400,
+          indexationLabel: 'Second triennial indexation (Accident on/after 31.10.2023: +21% as per Pranay Sethi Para 59.8)',
+          isIndexed: true
+        };
+      } else if (accDate >= triennial1Date) {
+        return {
+          lossOfEstate: 16500,
+          funeralExpenses: 16500,
+          consortiumPerPerson: 44000,
+          indexationLabel: 'First triennial indexation (Accident between 31.10.2020 and 30.10.2023: +10% as per Pranay Sethi Para 59.8)',
+          isIndexed: true
+        };
+      } else {
+        return {
+          lossOfEstate: 15000,
+          funeralExpenses: 15000,
+          consortiumPerPerson: 40000,
+          indexationLabel: 'Base rates applicable for pre-31.10.2020 accident date (Pranay Sethi 2017 Para 52)',
+          isIndexed: false
+        };
+      }
+    }
+  }
+
+  return {
+    lossOfEstate: 18150,
+    funeralExpenses: 18150,
+    consortiumPerPerson: 48400,
+    indexationLabel: 'Enhanced conventional heads with 10% triennial inflation indexation (Pranay Sethi Para 59.8)',
+    isIndexed: true
   };
 }

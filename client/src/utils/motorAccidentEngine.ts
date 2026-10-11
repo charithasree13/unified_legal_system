@@ -4,6 +4,7 @@ import {
   getSarlaVermaMultiplier,
   getFutureProspectsPercentage,
   getPersonalExpenseDeduction,
+  getConventionalHeadsRates,
   type LegalRuleDefinition
 } from '../data/motorAccidentRules';
 
@@ -229,14 +230,17 @@ export function calculateMotorAccidentCompensation(
     const multiplier = multiplierInfo.multiplier;
     const totalLossOfDependency = Math.round(annualLossOfDependency * multiplier);
 
-    const useEnhanced = details.useEnhancedConventionalHeads !== false;
-    const lossOfEstate = useEnhanced ? 18150 : 15000;
-    const funeralExpenses = useEnhanced ? 18150 : 15000;
-    const consortiumRatePerPerson = useEnhanced ? 48400 : 40000;
+    // 5. Conventional Heads (Pranay Sethi 2017 Para 52, 59.8 & Magma 2018)
+    const convRates = getConventionalHeadsRates(input.accidentDate, details.useEnhancedConventionalHeads);
+    const lossOfEstate = convRates.lossOfEstate;
+    const funeralExpenses = convRates.funeralExpenses;
+    const consortiumRatePerPerson = convRates.consortiumPerPerson;
 
-    const spouses = Math.max(0, details.consortiumClaimants?.spouses ?? (details.maritalStatus === 'married' ? 1 : 0));
+    const isBachelor = String(details.maritalStatus || '').trim().toLowerCase() === 'bachelor';
+    // Spousal consortium only for married deceased
+    const spouses = isBachelor ? 0 : Math.max(0, details.consortiumClaimants?.spouses ?? 1);
     const children = Math.max(0, details.consortiumClaimants?.children ?? 0);
-    const parents = Math.max(0, details.consortiumClaimants?.parents ?? (details.maritalStatus === 'bachelor' ? 2 : 0));
+    const parents = Math.max(0, details.consortiumClaimants?.parents ?? (isBachelor ? 2 : 0));
 
     const spousalConsortium = spouses * consortiumRatePerPerson;
     const parentalConsortium = children * consortiumRatePerPerson;
@@ -278,14 +282,14 @@ export function calculateMotorAccidentCompensation(
         amount: lossOfEstate,
         category: 'statutory_conventional',
         legalCitation: 'Pranay Sethi (2017) 16 SCC 680 (Para 52, 59.8)',
-        notes: useEnhanced ? 'Base ₹15,000 + 10% triennial inflation indexation' : 'Base statutory sum'
+        notes: convRates.indexationLabel
       },
       {
         head: 'Funeral Expenses',
         amount: funeralExpenses,
         category: 'statutory_conventional',
         legalCitation: 'Pranay Sethi (2017) 16 SCC 680 (Para 52, 59.8)',
-        notes: useEnhanced ? 'Base ₹15,000 + 10% triennial inflation indexation' : 'Base statutory sum'
+        notes: convRates.indexationLabel
       }
     ];
 

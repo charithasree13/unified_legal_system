@@ -51,13 +51,13 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
   const [deathEmployment, setDeathEmployment] = useState<EmploymentCategory>('salaried_permanent');
   const [deathIncomePeriod, setDeathIncomePeriod] = useState<IncomePeriod>('monthly');
   const [deathIncomeAmount, setDeathIncomeAmount] = useState<number>(50000);
-  const [deathAnnualTax, setDeathAnnualTax] = useState<number>(20000);
+  const [deathAnnualTax, setDeathAnnualTax] = useState<number>(0);
   const [deathMaritalStatus, setDeathMaritalStatus] = useState<'bachelor' | 'married'>('married');
-  const [deathDependantsCount, setDeathDependantsCount] = useState<number>(3);
+  const [deathDependantsCount, setDeathDependantsCount] = useState<number>(4);
   const [deathIsBachelorLargeFamily, setDeathIsBachelorLargeFamily] = useState<boolean>(false);
   const [deathSpouses, setDeathSpouses] = useState<number>(1);
   const [deathChildren, setDeathChildren] = useState<number>(2);
-  const [deathParents, setDeathParents] = useState<number>(2);
+  const [deathParents, setDeathParents] = useState<number>(1);
   const [deathEnhancedConventional, setDeathEnhancedConventional] = useState<boolean>(true);
   const [deathExtraHeads, setDeathExtraHeads] = useState<CustomCompensationHead[]>([]);
 
@@ -124,10 +124,48 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
     }
   }, []);
 
-  // Run initial calculation once on mount
+  // Real-time calculation effect: automatically updates calculation breakdown whenever inputs change
   useEffect(() => {
     handleExecuteCalculation();
-  }, [claimType]);
+  }, [
+    claimType,
+    accidentDate,
+    deathAge,
+    deathEmployment,
+    deathIncomePeriod,
+    deathIncomeAmount,
+    deathAnnualTax,
+    deathMaritalStatus,
+    deathDependantsCount,
+    deathIsBachelorLargeFamily,
+    deathSpouses,
+    deathChildren,
+    deathParents,
+    deathEnhancedConventional,
+    deathExtraHeads,
+    disabilityAge,
+    disabilityEmployment,
+    disabilityIncomePeriod,
+    disabilityIncomeAmount,
+    disabilityAnnualTax,
+    medicalDisabilityPercent,
+    functionalDisabilityPercent,
+    occupationDetails,
+    medicalExpensesIncurred,
+    futureMedicalExpenses,
+    rehabAndAttendant,
+    dietAndConveyance,
+    painAndSuffering,
+    lossOfAmenities,
+    disabilityExtraHeads,
+    medicalExpensesList,
+    treatmentIncomeFreq,
+    treatmentIncomeAmount,
+    treatmentPeriodUnit,
+    treatmentPeriodValue,
+    treatmentLeaveBasis,
+    otherHeadsList
+  ]);
 
   // Load saved history if switched to history tab
   useEffect(() => {
@@ -297,12 +335,14 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
       setDeathEmployment('salaried_permanent');
       setDeathIncomePeriod('monthly');
       setDeathIncomeAmount(50000);
-      setDeathAnnualTax(20000);
+      setDeathAnnualTax(0);
       setDeathMaritalStatus('married');
-      setDeathDependantsCount(3);
+      setDeathDependantsCount(4);
+      setDeathIsBachelorLargeFamily(false);
       setDeathSpouses(1);
       setDeathChildren(2);
-      setDeathParents(2);
+      setDeathParents(1);
+      setDeathEnhancedConventional(true);
       setDeathExtraHeads([]);
     } else if (claimType === 'permanent_disability') {
       setDisabilityAge(28);
@@ -938,9 +978,22 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-[#D8D1C5] dark:border-[#30352F] bg-[#FAF8F2] dark:bg-[#1E211D] space-y-3">
-                    <h4 className="text-xs font-bold text-[#242522] dark:text-[#F4F0E7] uppercase tracking-wide">
-                      Marital Status & Dependant Deductions (Sarla Verma Paras 30-32)
-                    </h4>
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-[#242522] dark:text-[#F4F0E7] uppercase tracking-wide">
+                        Marital Status & Dependant Deductions (Sarla Verma Paras 30-32)
+                      </h4>
+                      <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-[#183C32]/10 dark:bg-[#6F9A83]/20 text-[#183C32] dark:text-[#8FAF9C]">
+                        {deathMaritalStatus === 'bachelor'
+                          ? (deathIsBachelorLargeFamily || deathDependantsCount >= 3 ? '33.33% (1/3rd) Deduction' : '50.00% (1/2) Deduction')
+                          : (deathDependantsCount <= 1
+                              ? '50.00% (1/2) Deduction'
+                              : deathDependantsCount <= 3
+                              ? '33.33% (1/3rd) Deduction'
+                              : deathDependantsCount <= 6
+                              ? '25.00% (1/4th) Deduction'
+                              : '20.00% (1/5th) Deduction')}
+                      </span>
+                    </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
@@ -949,11 +1002,19 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                         </label>
                         <select
                           value={deathMaritalStatus}
-                          onChange={(e) => setDeathMaritalStatus(e.target.value as 'bachelor' | 'married')}
+                          onChange={(e) => {
+                            const val = e.target.value as 'bachelor' | 'married';
+                            setDeathMaritalStatus(val);
+                            if (val === 'bachelor') {
+                              setDeathSpouses(0);
+                            } else if (deathSpouses === 0) {
+                              setDeathSpouses(1);
+                            }
+                          }}
                           className="w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7]"
                         >
-                          <option value="married">Married Deceased</option>
-                          <option value="bachelor">Bachelor / Single Deceased</option>
+                          <option value="married">Married Deceased (Sarla Verma Para 30 rules apply)</option>
+                          <option value="bachelor">Bachelor / Single Deceased (Sarla Verma Paras 31-32 apply)</option>
                         </select>
                       </div>
 
@@ -966,14 +1027,44 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                           min="0"
                           max="20"
                           value={deathDependantsCount}
-                          onChange={(e) => setDeathDependantsCount(Number(e.target.value))}
+                          onChange={(e) => setDeathDependantsCount(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
                           className="w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7]"
                         />
                       </div>
                     </div>
 
+                    <div className="text-[11px] p-2.5 rounded-lg bg-white/70 dark:bg-[#242822]/70 border border-[#D8D1C5]/60 dark:border-[#30352F] space-y-1">
+                      {deathMaritalStatus === 'married' ? (
+                        <>
+                          <p className="font-semibold text-[#183C32] dark:text-[#8FAF9C]">
+                            Sarla Verma (2009) 6 SCC 121 (Para 30) Married Deceased Schedule:
+                          </p>
+                          <p className="text-[#625F58] dark:text-[#C5C0B6]">
+                            • 1 dependant: 50% (1/2) | • <strong>2–3 dependants: 33.33% (1/3rd)</strong> | • <strong>4–6 dependants: 25% (1/4th)</strong> | • <strong>&gt;6 dependants: 20% (1/5th)</strong>
+                          </p>
+                          <p className="text-[#858078] dark:text-[#969188] italic">
+                            Currently applying: <strong className="text-[#242522] dark:text-[#F4F0E7]">{deathDependantsCount <= 1 ? '50% (1/2)' : deathDependantsCount <= 3 ? '33.33% (1/3rd)' : deathDependantsCount <= 6 ? '25% (1/4th)' : '20% (1/5th)'}</strong> deduction for {deathDependantsCount} dependent family member(s).
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-semibold text-[#183C32] dark:text-[#8FAF9C]">
+                            Sarla Verma (2009) 6 SCC 121 (Paras 31–32) Bachelor Deceased Standard:
+                          </p>
+                          <p className="text-[#625F58] dark:text-[#C5C0B6]">
+                            • Default: <strong>50% (1/2)</strong> deduction.
+                            <br />
+                            • Large dependent family (widowed mother & dependent younger siblings, or ≥3 dependants): <strong>33.33% (1/3rd)</strong>.
+                          </p>
+                          <p className="text-[#A67C3B] dark:text-[#C7A45A] font-medium text-[10.5px]">
+                            Judicial Note: Supreme Court precedents establish that married-deceased deduction scales (1/4th or 1/5th) do not apply to bachelors.
+                          </p>
+                        </>
+                      )}
+                    </div>
+
                     {deathMaritalStatus === 'bachelor' && (
-                      <label className="flex items-center gap-2 text-xs text-[#242522] dark:text-[#F4F0E7] cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs text-[#242522] dark:text-[#F4F0E7] cursor-pointer pt-1">
                         <input
                           type="checkbox"
                           checked={deathIsBachelorLargeFamily}
@@ -988,9 +1079,23 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-[#D8D1C5] dark:border-[#30352F] bg-[#FAF8F2] dark:bg-[#1E211D] space-y-3">
-                    <h4 className="text-xs font-bold text-[#242522] dark:text-[#F4F0E7] uppercase tracking-wide">
-                      Consortium Claimants (Magma General Insurance & Satinder Kaur)
-                    </h4>
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-[#242522] dark:text-[#F4F0E7] uppercase tracking-wide">
+                        Consortium Claimants (Magma General Insurance & Satinder Kaur)
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const totalClaimants = (deathMaritalStatus === 'married' ? deathSpouses : 0) + deathChildren + deathParents;
+                          setDeathDependantsCount(totalClaimants);
+                        }}
+                        className="text-[10.5px] px-2 py-0.5 rounded border border-[#183C32]/30 text-[#183C32] dark:text-[#8FAF9C] hover:bg-[#183C32]/10 transition-colors cursor-pointer"
+                        title="Sync number of dependants with eligible family claimants count"
+                      >
+                        Sync Dependants ({ (deathMaritalStatus === 'married' ? deathSpouses : 0) + deathChildren + deathParents })
+                      </button>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div>
                         <label className="block text-[11px] font-bold text-[#625F58] dark:text-[#C5C0B6] mb-1">
@@ -1000,11 +1105,16 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                           type="number"
                           min="0"
                           max="5"
-                          value={deathSpouses}
-                          onChange={(e) => setDeathSpouses(Number(e.target.value))}
-                          className="w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7]"
+                          disabled={deathMaritalStatus === 'bachelor'}
+                          value={deathMaritalStatus === 'bachelor' ? 0 : deathSpouses}
+                          onChange={(e) => setDeathSpouses(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
+                          className={`w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7] ${
+                            deathMaritalStatus === 'bachelor' ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800' : ''
+                          }`}
                         />
-                        <span className="text-[10px] text-[#858078] dark:text-[#969188]">Spousal Consortium</span>
+                        <span className="text-[10px] text-[#858078] dark:text-[#969188]">
+                          {deathMaritalStatus === 'bachelor' ? 'N/A for bachelor' : 'Spousal Consortium'}
+                        </span>
                       </div>
 
                       <div>
@@ -1016,7 +1126,7 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                           min="0"
                           max="15"
                           value={deathChildren}
-                          onChange={(e) => setDeathChildren(Number(e.target.value))}
+                          onChange={(e) => setDeathChildren(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
                           className="w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7]"
                         />
                         <span className="text-[10px] text-[#858078] dark:text-[#969188]">Parental Consortium</span>
@@ -1031,7 +1141,7 @@ export const MotorAccidentCalculatorPage: React.FC = () => {
                           min="0"
                           max="2"
                           value={deathParents}
-                          onChange={(e) => setDeathParents(Number(e.target.value))}
+                          onChange={(e) => setDeathParents(Math.max(0, Math.floor(Number(e.target.value) || 0)))}
                           className="w-full text-xs p-2 rounded-lg border border-[#D8D1C5] dark:border-[#30352F] bg-white dark:bg-[#242822] text-[#242522] dark:text-[#F4F0E7]"
                         />
                         <span className="text-[10px] text-[#858078] dark:text-[#969188]">Filial Consortium</span>

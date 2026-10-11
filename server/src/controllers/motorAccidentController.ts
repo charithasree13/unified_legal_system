@@ -91,14 +91,14 @@ export const calculateCompensation = async (req: AuthenticatedRequest, res: Resp
       if (!d) {
         return res.status(400).json({ success: false, message: 'Death compensation parameters are required.' });
       }
-      if (typeof d.ageAtAccident !== 'number' || d.ageAtAccident < 0 || d.ageAtAccident > 120) {
+      d.ageAtAccident = Number(d.ageAtAccident);
+      d.incomeAmount = Number(d.incomeAmount);
+      d.dependantsCount = Math.max(0, Math.floor(Number(d.dependantsCount) || 0));
+      if (isNaN(d.ageAtAccident) || d.ageAtAccident < 0 || d.ageAtAccident > 120) {
         return res.status(400).json({ success: false, message: 'Valid age at accident (0 - 120) is required.' });
       }
-      if (typeof d.incomeAmount !== 'number' || d.incomeAmount < 0) {
+      if (isNaN(d.incomeAmount) || d.incomeAmount < 0) {
         return res.status(400).json({ success: false, message: 'Valid non-negative established income is required.' });
-      }
-      if (typeof d.dependantsCount !== 'number' || d.dependantsCount < 0) {
-        return res.status(400).json({ success: false, message: 'Valid non-negative dependants count is required.' });
       }
     } else if (inputData.claimType === 'permanent_disability') {
       const d = inputData.disabilityDetails;
