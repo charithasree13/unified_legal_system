@@ -29,6 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Principles of Law', path: '/principles-of-law', icon: BookOpen, advocateOrAdminOnly: true },
     { name: 'Legal Dictionary', path: '/legal-dictionary', icon: BookOpen, advocateOrAdminOnly: true },
     { name: 'Advocate Details', path: '/directory', icon: Users },
     { name: 'Calculators', path: '/calculators', icon: Calculator },

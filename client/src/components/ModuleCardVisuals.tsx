@@ -450,7 +450,42 @@ export const ModuleCardVisual: React.FC<ModuleVisualProps> = ({ id, className = 
     );
   }
 
-  // 18. DEFAULT FALLBACK MODULE VISUAL
+  // 18. PRINCIPLES OF LAW (Traditional Law Tome & Constitutional Doctrine)
+  if (id.includes('principles')) {
+    return (
+      <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#FFFDF8] to-[#F3EBDA] dark:from-[#24211A] dark:to-[#161410] border border-[#A67C3B]/45 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
+          {/* Outer Gold Law Book Cover */}
+          <rect x="14" y="14" width="72" height="72" rx="5" fill="#183C32" stroke="#A67C3B" strokeWidth="2" />
+          <rect x="18" y="18" width="64" height="64" rx="3" fill="none" stroke="#D8C49A" strokeWidth="0.8" strokeDasharray="3 1.5" />
+          
+          {/* Spine Accent / Book Ribbon */}
+          <path d="M 24 14 L 24 86" stroke="#A67C3B" strokeWidth="2" />
+          <path d="M 50 14 L 50 36 L 54 32 L 58 36 L 58 14 Z" fill="#A67C3B" />
+          
+          {/* Classical Temple Pediment / Legal Doctrine Roof */}
+          <polygon points="34,42 50,32 66,42" fill="#D8C49A" stroke="#A67C3B" strokeWidth="0.8" />
+          
+          {/* Classical Columns */}
+          <rect x="36" y="44" width="3.5" height="18" fill="#FFFDF8" rx="0.5" />
+          <rect x="43" y="44" width="3.5" height="18" fill="#FFFDF8" rx="0.5" />
+          <rect x="53" y="44" width="3.5" height="18" fill="#FFFDF8" rx="0.5" />
+          <rect x="60" y="44" width="3.5" height="18" fill="#FFFDF8" rx="0.5" />
+          
+          {/* Temple Base */}
+          <rect x="32" y="63" width="36" height="4" fill="#D8C49A" rx="1" />
+          
+          {/* Label Banner: PRINCIPLES */}
+          <rect x="22" y="71" width="56" height="10" rx="2" fill="#A67C3B" />
+          <text x="50" y="78.5" textAnchor="middle" className="text-[5.5px] font-extrabold fill-[#FFFDF8] font-serif uppercase tracking-widest">
+            DOCTRINE
+          </text>
+        </svg>
+      </div>
+    );
+  }
+
+  // 19. DEFAULT FALLBACK MODULE VISUAL
   return (
     <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#F4F8F5] to-[#E2EBE5] dark:from-[#1E2420] dark:to-[#121614] border border-[#A67C3B]/35 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
       <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">

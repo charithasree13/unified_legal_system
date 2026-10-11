@@ -115,3 +115,19 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction) 
   }
   next();
 };
+
+export const requireAdminOrAdvocateRole = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required. Please sign in to access this feature.' });
+  }
+
+  const roleLower = (req.user.role || '').toLowerCase();
+  if (roleLower !== 'admin' && roleLower !== 'advocate') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: Principles of Law is restricted exclusively to Administrators and Advocates.'
+    });
+  }
+
+  next();
+};

@@ -24,6 +24,7 @@ import { MotorAccidentCalculatorPage } from './pages/MotorAccidentCalculatorPage
 import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
 import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPage';
 import { LegalDictionary } from './pages/LegalDictionary';
+import { PrinciplesOfLaw } from './pages/PrinciplesOfLaw';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 
 import { TermsAndConditions } from './pages/TermsAndConditions';
@@ -118,6 +119,20 @@ export const App: React.FC = () => {
           <Route path="dashboard" element={<DashboardSwitcher />} />
           <Route path="login" element={<DashboardSwitcher />} />
           <Route path="signup" element={<DashboardSwitcher />} />
+
+          {/* Protected Principles of Law Module (Admin & Advocate Only) */}
+          <Route 
+            path="principles-of-law" 
+            element={
+              <ProtectedRoute featureName="Principles of Law" allowedRoles={['Admin', 'Advocate']} allowUnapprovedAdvocate={true}>
+                <PrinciplesOfLaw />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="principles" 
+            element={<Navigate to="/principles-of-law" replace />} 
+          />
 
           {/* Protected Legal Dictionary Module (Admin & Advocate Only) */}
           <Route 

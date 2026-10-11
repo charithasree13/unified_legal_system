@@ -240,12 +240,30 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           icon: BookOpen,
           path: '/legal-dictionary',
           ...forestBadge
+        },
+        {
+          id: 'principles-of-law',
+          title: 'Principles of Law',
+          description: 'Establish, curate, and maintain foundational legal doctrines, constitutional tenets, and maxims of jurisprudence.',
+          tag: 'Legal Doctrine',
+          icon: BookOpen,
+          path: '/principles-of-law',
+          ...bronzeBadge
         }
       ];
     }
 
     if (role === 'Advocate') {
       return [
+        {
+          id: 'principles-of-law',
+          title: 'Principles of Law',
+          description: 'Explore and study foundational legal doctrines, constitutional tenets, and maxims of jurisprudence published by the administration.',
+          tag: 'Legal Doctrine',
+          icon: BookOpen,
+          path: '/principles-of-law',
+          ...bronzeBadge
+        },
         {
           id: 'legal-dictionary',
           title: 'Legal Dictionary',

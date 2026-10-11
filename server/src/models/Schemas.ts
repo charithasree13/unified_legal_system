@@ -721,6 +721,14 @@ const MotorAccidentCalculationRecordSchema = new mongoose.Schema({
   resultPayload: { type: mongoose.Schema.Types.Mixed }
 }, { timestamps: true });
 
+const PrincipleOfLawSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true, trim: true },
+  createdBy: { type: String, default: 'System Admin' },
+  createdById: { type: String },
+  updatedBy: { type: String }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -773,6 +781,7 @@ export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVer
 export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
 export const MotorAccidentCalculationRecord: any = createDynamicModel('MotorAccidentCalculationRecord', MotorAccidentCalculationRecordSchema);
+export const PrincipleOfLaw: any = createDynamicModel('PrincipleOfLaw', PrincipleOfLawSchema);
 
 
 

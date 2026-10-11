@@ -12,7 +12,7 @@ dotenv.config();
 
 import { connectDB } from './config/db';
 import { handleSockets } from './sockets/chat';
-import { authenticateToken, optionalAuthToken, requireAdmin, requireAdminOrAdvocate, csrfProtection, AuthenticatedRequest } from './middleware/auth';
+import { authenticateToken, optionalAuthToken, requireAdmin, requireAdminOrAdvocate, requireAdminOrAdvocateRole, csrfProtection, AuthenticatedRequest } from './middleware/auth';
 import * as authCtrl from './controllers/authController';
 import * as advCtrl from './controllers/advocateController';
 import * as docCtrl from './controllers/documentController';
@@ -27,6 +27,7 @@ import * as limitationCtrl from './controllers/limitationController';
 import * as motorAccidentCtrl from './controllers/motorAccidentController';
 import * as noteCtrl from './controllers/noteController';
 import * as dictionaryCtrl from './controllers/dictionaryController';
+import * as principleOfLawCtrl from './controllers/principleOfLawController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -209,6 +210,19 @@ app.post('/api/legal-dictionary', authenticateToken, requireAdmin, dictionaryCtr
 app.post('/api/legal/dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
 app.post('/dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
 app.post('/legal-dictionary', authenticateToken, requireAdmin, dictionaryCtrl.addDictionaryEntry);
+
+// PRINCIPLES OF LAW API (Access: Admin & Advocate for Read; Admin ONLY for Write)
+app.get('/api/principles-of-law', authenticateToken, requireAdminOrAdvocateRole, principleOfLawCtrl.getPrinciples);
+app.get('/principles-of-law', authenticateToken, requireAdminOrAdvocateRole, principleOfLawCtrl.getPrinciples);
+app.get('/api/principles-of-law/:id', authenticateToken, requireAdminOrAdvocateRole, principleOfLawCtrl.getPrincipleById);
+app.get('/principles-of-law/:id', authenticateToken, requireAdminOrAdvocateRole, principleOfLawCtrl.getPrincipleById);
+
+app.post('/api/principles-of-law', authenticateToken, requireAdmin, principleOfLawCtrl.createPrinciple);
+app.post('/principles-of-law', authenticateToken, requireAdmin, principleOfLawCtrl.createPrinciple);
+app.put('/api/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.updatePrinciple);
+app.put('/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.updatePrinciple);
+app.delete('/api/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.deletePrinciple);
+app.delete('/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.deletePrinciple);
 
 
 
