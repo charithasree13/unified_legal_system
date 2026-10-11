@@ -197,6 +197,15 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           ...sageBadge
         },
         {
+          id: 'motor-accident-calculator',
+          title: 'Motor Accident Compensation Calculator',
+          description: 'Calculate structured MACT compensation under MVA 1988, Section 164/166, Sarla Verma multipliers, Pranay Sethi future prospects, and Raj Kumar disability.',
+          tag: 'MACT Claims Engine',
+          icon: Scale,
+          path: '/motor-accident-calculator',
+          ...brownBadge
+        },
+        {
           id: 'section-mapping',
           title: 'Old Acts → New Acts Converter',
           description: 'Convert and cross-reference provisions from the Indian Penal Code, Code of Criminal Procedure and Indian Evidence Act with the corresponding provisions under BNS, BNSS and BSA.',
@@ -344,6 +353,15 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           icon: Scale,
           path: '/limitation-calculator',
           ...sageBadge
+        },
+        {
+          id: 'motor-accident-calculator',
+          title: 'Motor Accident Compensation Calculator',
+          description: 'Calculate structured MACT compensation under MVA 1988, Section 164/166, Sarla Verma multipliers, Pranay Sethi future prospects, and Raj Kumar disability.',
+          tag: 'MACT Claims Engine',
+          icon: Scale,
+          path: '/motor-accident-calculator',
+          ...brownBadge
         },
         {
           id: 'chat',

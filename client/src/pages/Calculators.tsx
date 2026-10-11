@@ -468,6 +468,16 @@ export const Calculators: React.FC<CalculatorsProps> = ({ initialTab }) => {
             <span className="ml-1 text-[9px] bg-[#A67C3B]/20 text-[#A67C3B] dark:text-[#D8C49A] border border-[#A67C3B]/30 px-1.5 py-0.5 rounded font-bold uppercase">Advocate & Admin</span>
           </button>
         )}
+
+        {isAdvocateOrAdmin && (
+          <Link
+            to="/motor-accident-calculator"
+            className="px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer btn-secondary hover:border-[#183C32]"
+          >
+            <Scale size={14} /> MACT Calculator
+            <span className="ml-1 text-[9px] bg-[#183C32]/10 text-[#183C32] dark:text-[#8FAF9C] border border-[#183C32]/20 px-1.5 py-0.5 rounded font-bold uppercase">Advocate & Admin</span>
+          </Link>
+        )}
       </div>
 
       {/* 1. LAND MEASUREMENT CONVERTER TAB */}

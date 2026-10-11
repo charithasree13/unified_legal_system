@@ -24,6 +24,7 @@ import * as legalTipCtrl from './controllers/legalTipController';
 import * as hinduSuccessionCtrl from './controllers/hinduSuccessionController';
 import * as islamicInheritanceCtrl from './controllers/islamicInheritanceController';
 import * as limitationCtrl from './controllers/limitationController';
+import * as motorAccidentCtrl from './controllers/motorAccidentController';
 import * as noteCtrl from './controllers/noteController';
 import * as dictionaryCtrl from './controllers/dictionaryController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
@@ -253,6 +254,24 @@ app.post('/api/calculators/limitation/calculate', authenticateToken, requireAdmi
 app.post('/calculators/limitation/calculate', authenticateToken, requireAdminOrAdvocate, limitationCtrl.calculate);
 app.get('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
 app.post('/api/calculators/limitation/validate-dataset', authenticateToken, requireAdminOrAdvocate, limitationCtrl.validateDataset);
+
+// MOTOR ACCIDENT COMPENSATION CALCULATOR API (MACT) (Protected: Enrolled Advocates & Admins only)
+app.post('/api/calculators/motor-accident/calculate', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.calculateCompensation);
+app.post('/calculators/motor-accident/calculate', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.calculateCompensation);
+app.post('/api/motor-accident/calculate', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.calculateCompensation);
+app.post('/motor-accident/calculate', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.calculateCompensation);
+
+app.get('/api/calculators/motor-accident/rules', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getLegalRules);
+app.get('/calculators/motor-accident/rules', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getLegalRules);
+app.get('/api/motor-accident/rules', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getLegalRules);
+app.get('/motor-accident/rules', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getLegalRules);
+
+app.post('/api/calculators/motor-accident/history', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.saveCalculationHistory);
+app.post('/calculators/motor-accident/history', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.saveCalculationHistory);
+app.get('/api/calculators/motor-accident/history', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getCalculationHistory);
+app.get('/calculators/motor-accident/history', authenticateToken, requireAdminOrAdvocate, motorAccidentCtrl.getCalculationHistory);
+
+app.put('/api/admin/motor-accident/rules/:id', authenticateToken, requireAdmin, motorAccidentCtrl.updateAdminRule);
 
 // Auto-dispatch POST /api requests carrying court fee parameters (Protected: Advocates & Admins only)
 app.post('/api', authenticateToken, requireAdminOrAdvocate, (req, res, next) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calculator, FileText, Gavel, 
-  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote, Calendar
+  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote, Calendar, Car
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -38,6 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Hindu Succession Calculator', path: '/hindu-succession-calculator', icon: Scale, normalUserHide: true },
     { name: 'Islamic Inheritance Calculator', path: '/islamic-inheritance-calculator', icon: Scale, normalUserHide: true },
     { name: 'Limitation Act Calculator', path: '/limitation-calculator', icon: Scale, normalUserHide: true },
+    { name: 'MACT Calculator', path: '/motor-accident-calculator', icon: Car, normalUserHide: true, advocateOrAdminOnly: true },
     { name: 'Judgements & Bare Acts', path: '/judgements', icon: Gavel, normalUserHide: true },
     { name: 'Laws & Acts', path: '/laws', icon: BookOpen, normalUserHide: true },
     { name: 'Secure Chat', path: '/chat', icon: MessageSquare },

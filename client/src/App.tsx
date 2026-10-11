@@ -20,6 +20,7 @@ import { MyNotesPage } from './pages/MyNotesPage';
 import { HinduSuccessionCalculator } from './pages/HinduSuccessionCalculator';
 import { IslamicInheritanceCalculator } from './pages/IslamicInheritanceCalculator';
 import { LimitationCalculatorPage } from './pages/LimitationCalculatorPage';
+import { MotorAccidentCalculatorPage } from './pages/MotorAccidentCalculatorPage';
 import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
 import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPage';
 import { LegalDictionary } from './pages/LegalDictionary';
@@ -182,6 +183,32 @@ export const App: React.FC = () => {
             element={
               <ProtectedRoute featureName="Limitation Act Calculator" allowedRoles={['Admin', 'Advocate']}>
                 <LimitationCalculatorPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Protected Motor Accident Compensation Calculator Module (Admin & Advocate Only) */}
+          <Route 
+            path="motor-accident-calculator" 
+            element={
+              <ProtectedRoute featureName="Motor Accident Compensation Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <MotorAccidentCalculatorPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="calculators/motor-accident" 
+            element={
+              <ProtectedRoute featureName="Motor Accident Compensation Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <MotorAccidentCalculatorPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="mact-calculator" 
+            element={
+              <ProtectedRoute featureName="Motor Accident Compensation Calculator" allowedRoles={['Admin', 'Advocate']}>
+                <MotorAccidentCalculatorPage />
               </ProtectedRoute>
             } 
           />

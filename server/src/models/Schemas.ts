@@ -707,6 +707,20 @@ const DictionaryItemSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
+const MotorAccidentCalculationRecordSchema = new mongoose.Schema({
+  userId: { type: String, required: true, index: true },
+  userName: { type: String, required: true },
+  userRole: { type: String, required: true },
+  caseReferenceNumber: { type: String },
+  claimType: { type: String, required: true },
+  accidentDate: { type: String, required: true },
+  claimantName: { type: String },
+  victimName: { type: String },
+  totalEstimatedCompensation: { type: Number, required: true },
+  inputPayload: { type: mongoose.Schema.Types.Mixed },
+  resultPayload: { type: mongoose.Schema.Types.Mixed }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -758,6 +772,8 @@ export const CalculationHistory: any = createDynamicModel('CalculationHistory', 
 export const OTPVerification: any = createDynamicModel('OTPVerification', OTPVerificationSchema);
 export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshTokenSchema);
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
+export const MotorAccidentCalculationRecord: any = createDynamicModel('MotorAccidentCalculationRecord', MotorAccidentCalculationRecordSchema);
+
 
 
 

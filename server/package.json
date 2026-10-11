@@ -11,7 +11,8 @@
     "seed:admin": "tsnd --transpile-only src/scripts/seedAdmin.ts",
     "reminders:check": "ts-node --transpile-only src/scripts/runReminders.ts",
     "reminders:test": "ts-node --transpile-only src/scripts/runReminders.ts --test",
-    "smtp:test": "ts-node --transpile-only src/scripts/testSmtp.ts"
+    "smtp:test": "ts-node --transpile-only src/scripts/testSmtp.ts",
+    "mact:test": "ts-node --transpile-only src/scripts/testMotorAccident.ts && ts-node --transpile-only src/scripts/testMactAccessControl.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
