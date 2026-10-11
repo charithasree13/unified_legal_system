@@ -546,7 +546,39 @@ export const ModuleCardVisual: React.FC<ModuleVisualProps> = ({ id, className = 
     );
   }
 
-  // 20. DEFAULT FALLBACK MODULE VISUAL
+  // 20. USEFUL LINKS MODULE EMBLEM (Interconnected legal hyperlinks chain emblem)
+  if (id.includes('useful') || id.includes('links') || id.includes('link')) {
+    return (
+      <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#F4F8F5] to-[#E3ECE7] dark:from-[#192720] dark:to-[#121A15] border border-[#A67C3B]/40 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
+          {/* Subtle Outer Legal Seal Circle */}
+          <circle cx="50" cy="50" r="44" fill="none" stroke="#A67C3B" strokeWidth="1.2" strokeDasharray="3 2" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#183C32" strokeWidth="1" opacity="0.6" />
+          
+          {/* Interlocked Hyperlink Chain Vector */}
+          <g transform="rotate(-45 50 50)">
+            {/* Top-Left Link Loop */}
+            <rect x="23" y="38" width="30" height="24" rx="12" fill="none" stroke="#183C32" strokeWidth="5.5" strokeLinecap="round" />
+            <rect x="24" y="39" width="28" height="22" rx="11" fill="none" stroke="#A67C3B" strokeWidth="1.5" />
+            
+            {/* Connecting Central Bridge Bar */}
+            <line x1="40" y1="50" x2="60" y2="50" stroke="#A67C3B" strokeWidth="4.5" strokeLinecap="round" />
+            
+            {/* Bottom-Right Link Loop */}
+            <rect x="47" y="38" width="30" height="24" rx="12" fill="none" stroke="#183C32" strokeWidth="5.5" strokeLinecap="round" />
+            <rect x="48" y="39" width="28" height="22" rx="11" fill="none" stroke="#A67C3B" strokeWidth="1.5" />
+          </g>
+
+          {/* Golden Corner Accents */}
+          <circle cx="28" cy="28" r="2.5" fill="#A67C3B" />
+          <circle cx="72" cy="72" r="2.5" fill="#A67C3B" />
+          <polygon points="50,16 52,20 56,20 53,23 54,27 50,24 46,27 47,23 44,20 48,20" fill="#A67C3B" />
+        </svg>
+      </div>
+    );
+  }
+
+  // 21. DEFAULT FALLBACK MODULE VISUAL
   return (
     <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#F4F8F5] to-[#E2EBE5] dark:from-[#1E2420] dark:to-[#121614] border border-[#A67C3B]/35 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
       <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">

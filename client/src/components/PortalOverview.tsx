@@ -4,7 +4,7 @@ import {
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
   Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote,
-  CheckCircle, Clock, Calendar, Car
+  CheckCircle, Clock, Calendar, Car, Link2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { ModuleCardVisual } from './ModuleCardVisuals';
@@ -249,12 +249,30 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           icon: BookOpen,
           path: '/principles-of-law',
           ...bronzeBadge
+        },
+        {
+          id: 'useful-links',
+          title: 'Useful Links',
+          description: 'Curate, manage, and publish categorized legal bookmarks, statutory portals, and judicial web resources.',
+          tag: 'Legal Resources',
+          icon: Link2,
+          path: '/useful-links',
+          ...forestBadge
         }
       ];
     }
 
     if (role === 'Advocate') {
       return [
+        {
+          id: 'useful-links',
+          title: 'Useful Links',
+          description: 'Browse verified legal portals, judicial registries, government statutory databases, and legal research sites.',
+          tag: 'Legal Resources',
+          icon: Link2,
+          path: '/useful-links',
+          ...forestBadge
+        },
         {
           id: 'principles-of-law',
           title: 'Principles of Law',

@@ -28,6 +28,7 @@ import * as motorAccidentCtrl from './controllers/motorAccidentController';
 import * as noteCtrl from './controllers/noteController';
 import * as dictionaryCtrl from './controllers/dictionaryController';
 import * as principleOfLawCtrl from './controllers/principleOfLawController';
+import * as usefulLinksCtrl from './controllers/usefulLinksController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -223,6 +224,26 @@ app.put('/api/principles-of-law/:id', authenticateToken, requireAdmin, principle
 app.put('/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.updatePrinciple);
 app.delete('/api/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.deletePrinciple);
 app.delete('/principles-of-law/:id', authenticateToken, requireAdmin, principleOfLawCtrl.deletePrinciple);
+
+// USEFUL LINKS API (Access: Admin & Advocate for Read; Admin ONLY for Write)
+app.get('/api/useful-links', authenticateToken, requireAdminOrAdvocateRole, usefulLinksCtrl.getCategories);
+app.get('/useful-links', authenticateToken, requireAdminOrAdvocateRole, usefulLinksCtrl.getCategories);
+app.get('/api/useful-links/:id', authenticateToken, requireAdminOrAdvocateRole, usefulLinksCtrl.getCategoryById);
+app.get('/useful-links/:id', authenticateToken, requireAdminOrAdvocateRole, usefulLinksCtrl.getCategoryById);
+
+app.post('/api/useful-links', authenticateToken, requireAdmin, usefulLinksCtrl.createCategory);
+app.post('/useful-links', authenticateToken, requireAdmin, usefulLinksCtrl.createCategory);
+app.put('/api/useful-links/:id', authenticateToken, requireAdmin, usefulLinksCtrl.updateCategory);
+app.put('/useful-links/:id', authenticateToken, requireAdmin, usefulLinksCtrl.updateCategory);
+app.delete('/api/useful-links/:id', authenticateToken, requireAdmin, usefulLinksCtrl.deleteCategory);
+app.delete('/useful-links/:id', authenticateToken, requireAdmin, usefulLinksCtrl.deleteCategory);
+
+app.post('/api/useful-links/:categoryId/links', authenticateToken, requireAdmin, usefulLinksCtrl.addLinkToCategory);
+app.post('/useful-links/:categoryId/links', authenticateToken, requireAdmin, usefulLinksCtrl.addLinkToCategory);
+app.put('/api/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.updateLinkInCategory);
+app.put('/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.updateLinkInCategory);
+app.delete('/api/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.deleteLinkFromCategory);
+app.delete('/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.deleteLinkFromCategory);
 
 
 

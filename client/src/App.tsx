@@ -25,6 +25,7 @@ import { InterestCalculatorPage } from './pages/InterestCalculatorPage';
 import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPage';
 import { LegalDictionary } from './pages/LegalDictionary';
 import { PrinciplesOfLaw } from './pages/PrinciplesOfLaw';
+import { UsefulLinks } from './pages/UsefulLinks';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 
 import { TermsAndConditions } from './pages/TermsAndConditions';
@@ -142,6 +143,20 @@ export const App: React.FC = () => {
                 <LegalDictionary />
               </ProtectedRoute>
             } 
+          />
+
+          {/* Protected Useful Links Module (Admin & Advocate Only) */}
+          <Route 
+            path="useful-links" 
+            element={
+              <ProtectedRoute featureName="Useful Links" allowedRoles={['Admin', 'Advocate']} allowUnapprovedAdvocate={true}>
+                <UsefulLinks />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="links" 
+            element={<Navigate to="/useful-links" replace />} 
           />
 
           {/* Calculator Modules Available to All Logged-in Roles */}

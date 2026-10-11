@@ -729,6 +729,21 @@ const PrincipleOfLawSchema = new mongoose.Schema({
   updatedBy: { type: String }
 }, { timestamps: true });
 
+const UsefulLinkItemSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  url: { type: String, required: true, trim: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const UsefulLinkCategorySchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  links: { type: [UsefulLinkItemSchema], default: [] },
+  createdBy: { type: String, default: 'System Admin' },
+  createdById: { type: String },
+  updatedBy: { type: String }
+}, { timestamps: true });
+
 // -------------------------------------------------------------
 // 3. UNIFIED DYNAMIC EXPORTS (Mongoose with automatic Mock fallback)
 // -------------------------------------------------------------
@@ -782,6 +797,7 @@ export const RefreshToken: any = createDynamicModel('RefreshToken', RefreshToken
 export const LegalSectionMapping: any = createDynamicModel('LegalSectionMapping', LegalSectionMappingSchema);
 export const MotorAccidentCalculationRecord: any = createDynamicModel('MotorAccidentCalculationRecord', MotorAccidentCalculationRecordSchema);
 export const PrincipleOfLaw: any = createDynamicModel('PrincipleOfLaw', PrincipleOfLawSchema);
+export const UsefulLinkCategory: any = createDynamicModel('UsefulLinkCategory', UsefulLinkCategorySchema);
 
 
 

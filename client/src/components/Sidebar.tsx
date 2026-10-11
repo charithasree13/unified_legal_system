@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calculator, FileText, Gavel, 
-  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote, Calendar, Car
+  MessageSquare, BookOpen, User, Settings, LogOut, ChevronLeft, ChevronRight, Scale, X, StickyNote, Calendar, Car, Link2
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
@@ -31,6 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Principles of Law', path: '/principles-of-law', icon: BookOpen, advocateOrAdminOnly: true },
     { name: 'Legal Dictionary', path: '/legal-dictionary', icon: BookOpen, advocateOrAdminOnly: true },
+    { name: 'Useful Links', path: '/useful-links', icon: Link2, advocateOrAdminOnly: true },
     { name: 'Advocate Details', path: '/directory', icon: Users },
     { name: 'Calculators', path: '/calculators', icon: Calculator },
     { name: 'Interest Calculator', path: '/interest-calculator', icon: Calculator },
