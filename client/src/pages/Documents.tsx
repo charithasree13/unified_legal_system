@@ -760,18 +760,11 @@ export const Documents: React.FC = () => {
             {isAdmin && (
               <div className="flex items-center gap-3 flex-shrink-0 flex-wrap">
                 <button
-                  onClick={() => { setShowHealthModal(true); fetchDataHealth(); }}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-sm border border-amber-500/30 shadow-md transition-all cursor-pointer"
-                >
-                  <ShieldAlert size={18} />
-                  Data Health & Ingestion
-                </button>
-                <button
                   onClick={() => { setShowUploadModal(true); setUploadType(tab); }}
                   className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
                 >
                   <CloudUpload size={18} />
-                  + Catalog {tab === 'judgement' ? 'Judgment' : 'Bare Act'}
+                  + {tab === 'judgement' ? 'Add Judgement' : 'Add Bare Act'}
                 </button>
               </div>
             )}
@@ -1349,7 +1342,7 @@ export const Documents: React.FC = () => {
             <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                 <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                  <CloudUpload size={20} className="text-amber-500" /> Catalog {uploadType === 'judgement' ? 'Judgment' : 'Bare Act'}
+                  <CloudUpload size={20} className="text-amber-500" /> Add {uploadType === 'judgement' ? 'Judgement' : 'Bare Act'}
                 </h3>
                 <button onClick={() => setShowUploadModal(false)} className="text-slate-400 hover:text-white">
                   <X size={20} />
