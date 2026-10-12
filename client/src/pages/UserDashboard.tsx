@@ -43,14 +43,16 @@ export const UserDashboard: React.FC = () => {
         setStats(prev => ({ ...prev, activeCases: caseData.projects.length }));
       }
 
-      // 2. Fetch bookmarks/judgements
-      const docsRes = await fetch(getApiUrl('/api/documents/judgements'), {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const docsData = await docsRes.json();
-      if (docsRes.ok && Array.isArray(docsData.judgements)) {
-        setSavedDocs(docsData.judgements.slice(0, 3));
-        setStats(prev => ({ ...prev, savedDocuments: docsData.judgements.length }));
+      // 2. Fetch bookmarks/judgements (Advocates and Admins only)
+      if (!isNormalUser) {
+        const docsRes = await fetch(getApiUrl('/api/documents/judgements'), {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const docsData = await docsRes.json();
+        if (docsRes.ok && Array.isArray(docsData.judgements)) {
+          setSavedDocs(docsData.judgements.slice(0, 3));
+          setStats(prev => ({ ...prev, savedDocuments: docsData.judgements.length }));
+        }
       }
 
       // 3. Fetch favorite advocates (simulation from local storage)
@@ -91,13 +93,13 @@ export const UserDashboard: React.FC = () => {
           
           <div className="z-10">
             <span className="bg-[#A67C3B]/20 border border-[#A67C3B]/40 px-3 py-1 rounded-full text-xs font-semibold text-[#D8C49A] tracking-wide uppercase">
-              {user?.role === 'Client' ? 'Client Portal Active' : 'Advocate Portal Active'}
+              {isNormalUser ? 'Client Portal Active' : 'Advocate Portal Active'}
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold font-serif mt-4 text-[#F7F3EA]">
               Welcome back, {user?.name || 'User'}!
             </h1>
             <p className="text-[#D8D1C5] text-xs mt-2 max-w-md leading-relaxed font-normal">
-              {user?.role === 'Client' 
+              {isNormalUser 
                 ? 'Track your ongoing litigation cases, search verified advocates in the directory, and calculate land measurements, interest rates, and date differences.'
                 : 'Elite Legal Desk gives you secure end-to-end client communications, case management, land converters, and task calendars.'
               }
@@ -151,7 +153,7 @@ export const UserDashboard: React.FC = () => {
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-sm text-[#242522] dark:text-[#F4F0E7] font-serif flex items-center gap-2">
               <Scale size={18} className="text-[#945133] dark:text-[#E09A7E]" />
-              {user?.role === 'Client' ? 'My Related Cases' : 'Active Cases & Collaborations'}
+              {isNormalUser ? 'My Related Cases' : 'Active Cases & Collaborations'}
             </h3>
             <Link to="/projects" className="text-xs text-[#945133] dark:text-[#E09A7E] font-semibold hover:underline flex items-center gap-0.5">
               All Cases <ArrowRight size={12} />
@@ -161,7 +163,7 @@ export const UserDashboard: React.FC = () => {
           <div className="space-y-3">
             {recentCases.length === 0 ? (
               <div className="text-center py-10 border border-dashed border-[#D8D1C5] dark:border-[#3A4038] rounded-xl text-xs text-[#858078] dark:text-[#969188]">
-                {user?.role === 'Client' ? (
+                {isNormalUser ? (
                   <span>No active legal cases are linked to your phone number ({user?.phone || 'N/A'}). When your advocate adds a case associated with your phone number, it will automatically appear here.</span>
                 ) : (
                   <>

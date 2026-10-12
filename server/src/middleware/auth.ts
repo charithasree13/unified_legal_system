@@ -30,7 +30,7 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
     next();
   } catch (error: any) {
     console.error('🛡️ JWT Verification Failure:', error.message);
-    return res.status(403).json({ success: false, message: 'Invalid or expired session token.' });
+    return res.status(401).json({ success: false, message: 'Invalid or expired session token.' });
   }
 };
 

@@ -8,7 +8,7 @@ import { useAuthStore } from './store/authStore'
 const { fetch: originalFetch } = window;
 window.fetch = async (...args) => {
   const response = await originalFetch(...args);
-  if (response.status === 401 || response.status === 403) {
+  if (response.status === 401) {
     const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request).url;
     if (
       url && 

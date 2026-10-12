@@ -478,9 +478,9 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
       },
       {
         id: 'calculators',
-        title: 'Calculators',
-        description: 'Calculate state court fees, stamp duty, ad-valorem suit valuation, and land measurement conversions.',
-        tag: 'Legal Calculators',
+        title: 'Land Area Converter',
+        description: 'Convert land measurements across units including Acres, Cents, Gunta, Sq Yards, and Hectares.',
+        tag: 'Land Converter',
         icon: Calculator,
         path: '/calculators',
         ...bronzeBadge

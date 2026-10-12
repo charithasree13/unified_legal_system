@@ -19,7 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed, mobil
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/dashboard');
   };
 
   const isApprovedAdvocate = user?.role === 'Advocate' && (user?.isVerified === true || (user as any)?.verificationStatus === 'APPROVED');

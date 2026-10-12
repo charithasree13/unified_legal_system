@@ -59,7 +59,7 @@ const ProtectedRoute: React.FC<{
       setTimeout(() => {
         addNotification('Access Restricted', `Access to ${featureName} is restricted to Advocates and Administrators.`, 'error');
       }, 0);
-      return <Navigate to="/calculators" replace />;
+      return <Navigate to="/dashboard" replace />;
     }
 
     if (roleLower === 'advocate' && !allowUnapprovedAdvocate) {
@@ -359,7 +359,7 @@ export const App: React.FC = () => {
           <Route 
             path="daily-legal-tips" 
             element={
-              <ProtectedRoute featureName="Daily Legal Tips / Updates">
+              <ProtectedRoute featureName="Daily Legal Tips / Updates" allowedRoles={['Admin', 'Advocate']}>
                 <DailyLegalTipsPage />
               </ProtectedRoute>
             } 

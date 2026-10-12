@@ -53,7 +53,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   actionPrompt = 'Please sign in or create an account to continue.' 
 }) => {
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { login, addNotification } = useAuthStore();
 
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'advocate-details'>(initialMode);
   const [authRole, setAuthRole] = useState<'Advocate' | 'Client' | 'Admin'>(initialRole);
@@ -185,19 +185,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (signupRole === 'Advocate') {
-      if (!name || !phone || !email || !password || !confirmPassword || !enrollmentNumber) {
-        setErrorMsg('Please fill in all required advocate fields.');
+      if (!name.trim() || !phone.trim() || !email.trim() || !password || !confirmPassword || !enrollmentNumber.trim()) {
+        setErrorMsg('Please fill in all required advocate fields including Bar Council Enrollment Number.');
         return;
       }
     } else {
-      if (!name || !phone || !password || !confirmPassword) {
-        setErrorMsg('Please fill in all required fields (Name, Phone, Password).');
+      if (!name.trim() || !phone.trim() || !password || !confirmPassword) {
+        setErrorMsg('Please fill in all required fields (Name, Mobile Phone, Password).');
         return;
       }
     }
 
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      setErrorMsg('Please provide a valid 10-digit mobile number.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setErrorMsg('Passwords do not match.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMsg('Password must be at least 6 characters long.');
       return;
     }
 
@@ -210,30 +221,41 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name,
-          phone,
-          email,
+          name: name.trim(),
+          phone: cleanPhone,
+          email: email.trim() || undefined,
           password,
           confirmPassword,
-          enrollmentNumber: signupRole === 'Advocate' ? enrollmentNumber : undefined,
+          enrollmentNumber: signupRole === 'Advocate' ? enrollmentNumber.trim() : undefined,
           role: signupRole
         })
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || !data.success) {
         setErrorMsg(data.message || 'Registration failed.');
       } else {
         if (signupRole === 'Advocate') {
           setRegistrationSubmitted(true);
           setSuccessMsg(data.message || 'Your advocate registration has been submitted successfully and is pending verification by the administrator.');
         } else {
-          setSuccessMsg(data.message || 'Registration successful! You can now log in.');
-          setTimeout(() => {
-            setMode('login');
-            clearForm();
-          }, 1200);
+          if (data.accessToken && data.user) {
+            setSuccessMsg('Registration successful! Redirecting to your dashboard...');
+            login(data.user, data.accessToken, data.refreshToken);
+            addNotification('Account Created', 'Welcome to Elite Legal Desk! Your account is active.', 'success');
+            setTimeout(() => {
+              onClose();
+              navigate('/dashboard');
+              clearForm();
+            }, 600);
+          } else {
+            setSuccessMsg(data.message || 'Registration successful! You can now log in.');
+            setTimeout(() => {
+              setMode('login');
+              clearForm();
+            }, 1200);
+          }
         }
       }
     } catch (err) {

@@ -25,7 +25,8 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    const assignedRole = role === 'Advocate' ? 'Advocate' : 'Client';
+    const normalizedRole = (role || '').trim().toLowerCase();
+    const assignedRole = normalizedRole === 'advocate' ? 'Advocate' : (normalizedRole === 'user' ? 'User' : 'Client');
 
     // Basic input validations
     if (assignedRole === 'Advocate') {
@@ -67,13 +68,13 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const isAdvRole = assignedRole === 'Advocate';
     const newUser = await User.create({
-      name,
+      name: name.trim(),
       phone: cleanPhone,
       email: email ? email.trim().toLowerCase() : undefined,
       password: hashedPassword,
       role: assignedRole,
       enrollmentNumber: isAdvRole ? enrollmentNumber : undefined,
-      hasCompletedProfile: isAdvRole ? true : false,
+      hasCompletedProfile: true,
       isVerified: !isAdvRole,
       verificationStatus: isAdvRole ? 'PENDING' : 'APPROVED'
     });
@@ -135,14 +136,51 @@ export const register = async (req: Request, res: Response) => {
       details: `New ${assignedRole} account created successfully. ${assignedRole === 'Advocate' ? 'Advocate enrollment credentials pending Admin verification.' : ''}`
     });
 
+    if (isAdvRole) {
+      return res.status(201).json({
+        success: true,
+        message: 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.',
+        userId: newUser._id,
+        email: newUser.email,
+        phone: newUser.phone,
+        role: newUser.role
+      });
+    }
+
+    // For User / Client role: Create authenticated session and tokens immediately
+    const tokenPayload = {
+      id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+      name: newUser.name,
+      phone: newUser.phone
+    };
+    const accessToken = createToken(tokenPayload, JWT_SECRET, '1h');
+    const refreshTokenStr = createToken(tokenPayload, JWT_REFRESH_SECRET, '30d');
+
+    await RefreshToken.create({
+      userId: newUser._id,
+      token: refreshTokenStr,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      revoked: false
+    });
+
     return res.status(201).json({
       success: true,
-      message: assignedRole === 'Advocate' 
-        ? 'Your Advocate registration has been submitted successfully and is pending verification by the Admin.'
-        : 'Registration successful! You can now sign in with your credentials.',
-      userId: newUser._id,
-      email: newUser.email,
-      phone: newUser.phone
+      message: 'Account created successfully! Welcome to Elite Legal Desk.',
+      accessToken,
+      refreshToken: refreshTokenStr,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        phone: newUser.phone,
+        profilePhoto: newUser.profilePhoto,
+        hasCompletedProfile: true,
+        isVerified: true,
+        verificationStatus: 'APPROVED'
+      }
     });
   } catch (error: any) {
     console.error('Registration error:', error);
@@ -172,7 +210,7 @@ export const login = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials.' });
+      return res.status(400).json({ success: false, message: 'Invalid email or password.' });
     }
 
     if (!user.password) {
@@ -184,7 +222,7 @@ export const login = async (req: Request, res: Response) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials.' });
+      return res.status(400).json({ success: false, message: 'Invalid email or password.' });
     }
 
     const tokenPayload = { id: user._id, email: user.email, role: user.role, name: user.name, phone: user.phone };
