@@ -26,6 +26,7 @@ import { DateDifferenceCalculatorPage } from './pages/DateDifferenceCalculatorPa
 import { LegalDictionary } from './pages/LegalDictionary';
 import { PrinciplesOfLaw } from './pages/PrinciplesOfLaw';
 import { UsefulLinks } from './pages/UsefulLinks';
+import { JudiciaryNotes } from './pages/JudiciaryNotes';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 
 import { TermsAndConditions } from './pages/TermsAndConditions';
@@ -157,6 +158,20 @@ export const App: React.FC = () => {
           <Route 
             path="links" 
             element={<Navigate to="/useful-links" replace />} 
+          />
+
+          {/* Protected Judiciary Notes Module (Admin & Advocate Only) */}
+          <Route 
+            path="judiciary-notes" 
+            element={
+              <ProtectedRoute featureName="Judiciary Notes" allowedRoles={['Admin', 'Advocate']} allowUnapprovedAdvocate={true}>
+                <JudiciaryNotes />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="judiciary" 
+            element={<Navigate to="/judiciary-notes" replace />} 
           />
 
           {/* Calculator Modules Available to All Logged-in Roles */}

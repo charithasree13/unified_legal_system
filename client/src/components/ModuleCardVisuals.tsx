@@ -578,7 +578,47 @@ export const ModuleCardVisual: React.FC<ModuleVisualProps> = ({ id, className = 
     );
   }
 
-  // 21. DEFAULT FALLBACK MODULE VISUAL
+  // 21. JUDICIARY NOTES MODULE EMBLEM (Judicial notes scroll with seal of justice)
+  if (id.includes('judiciary') || id.includes('judiciary-notes')) {
+    return (
+      <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#FFFDF8] to-[#F5EEE0] dark:from-[#1E2420] dark:to-[#171916] border border-[#A67C3B]/40 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
+          {/* Subtle Outer Legal Seal Circle */}
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#A67C3B" strokeWidth="1.2" strokeDasharray="3 2" />
+          <circle cx="50" cy="50" r="41" fill="none" stroke="#183C32" strokeWidth="1" opacity="0.6" />
+          
+          {/* Parchment Document Page Background */}
+          <rect x="22" y="16" width="56" height="68" rx="4" fill="#FFFDF8" stroke="#183C32" strokeWidth="1.75" />
+          {/* Document Folded Corner */}
+          <polygon points="66,16 78,28 66,28" fill="#EFEAE0" stroke="#183C32" strokeWidth="1" />
+          <polyline points="66,16 66,28 78,28" fill="none" stroke="#A67C3B" strokeWidth="1" />
+
+          {/* Top Judicial Header Bar */}
+          <rect x="28" y="22" width="34" height="6" rx="2" fill="#183C32" />
+          <text x="45" y="26.8" textAnchor="middle" className="text-[4.5px] font-bold fill-[#FFFDF8] tracking-widest uppercase font-serif">
+            JUDICIARY
+          </text>
+
+          {/* Document Text Lines */}
+          <line x1="30" y1="34" x2="70" y2="34" stroke="#A67C3B" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="30" y1="41" x2="68" y2="41" stroke="#53634A" strokeWidth="1.4" strokeLinecap="round" opacity="0.8" />
+          <line x1="30" y1="47" x2="64" y2="47" stroke="#53634A" strokeWidth="1.4" strokeLinecap="round" opacity="0.8" />
+          <line x1="30" y1="53" x2="55" y2="53" stroke="#53634A" strokeWidth="1.4" strokeLinecap="round" opacity="0.8" />
+
+          {/* Golden Seal of Justice with mini Scales */}
+          <circle cx="50" cy="67" r="10.5" fill="#A67C3B" stroke="#183C32" strokeWidth="1.2" />
+          <circle cx="50" cy="67" r="8.5" fill="#183C32" />
+          {/* Mini Scales on Seal */}
+          <line x1="45" y1="65" x2="55" y2="65" stroke="#D8C49A" strokeWidth="1" strokeLinecap="round" />
+          <line x1="50" y1="62" x2="50" y2="71" stroke="#D8C49A" strokeWidth="1" />
+          <circle cx="45" cy="68" r="1.5" fill="#D8C49A" />
+          <circle cx="55" cy="68" r="1.5" fill="#D8C49A" />
+        </svg>
+      </div>
+    );
+  }
+
+  // 22. DEFAULT FALLBACK MODULE VISUAL
   return (
     <div className={`relative overflow-hidden rounded-xl bg-gradient-to-br from-[#F4F8F5] to-[#E2EBE5] dark:from-[#1E2420] dark:to-[#121614] border border-[#A67C3B]/35 flex items-center justify-center p-1 shadow-sm flex-shrink-0 ${className}`}>
       <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">

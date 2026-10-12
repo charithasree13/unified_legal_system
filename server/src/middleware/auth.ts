@@ -125,7 +125,7 @@ export const requireAdminOrAdvocateRole = (req: AuthenticatedRequest, res: Respo
   if (roleLower !== 'admin' && roleLower !== 'advocate') {
     return res.status(403).json({
       success: false,
-      message: 'Access Denied: Principles of Law is restricted exclusively to Administrators and Advocates.'
+      message: 'Access Denied: This feature is restricted exclusively to Administrators and Advocates.'
     });
   }
 

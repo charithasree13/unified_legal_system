@@ -29,6 +29,7 @@ import * as noteCtrl from './controllers/noteController';
 import * as dictionaryCtrl from './controllers/dictionaryController';
 import * as principleOfLawCtrl from './controllers/principleOfLawController';
 import * as usefulLinksCtrl from './controllers/usefulLinksController';
+import * as judiciaryNoteCtrl from './controllers/judiciaryNoteController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -244,6 +245,17 @@ app.put('/api/useful-links/:categoryId/links/:linkId', authenticateToken, requir
 app.put('/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.updateLinkInCategory);
 app.delete('/api/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.deleteLinkFromCategory);
 app.delete('/useful-links/:categoryId/links/:linkId', authenticateToken, requireAdmin, usefulLinksCtrl.deleteLinkFromCategory);
+
+// JUDICIARY NOTES API (Access: Admin & Advocate for Read; Admin ONLY for Add & Delete)
+app.get('/api/judiciary-notes', authenticateToken, requireAdminOrAdvocateRole, judiciaryNoteCtrl.getJudiciaryNotes);
+app.get('/judiciary-notes', authenticateToken, requireAdminOrAdvocateRole, judiciaryNoteCtrl.getJudiciaryNotes);
+
+app.post('/api/judiciary-notes', authenticateToken, requireAdmin, judiciaryNoteCtrl.createJudiciaryNote);
+app.post('/judiciary-notes', authenticateToken, requireAdmin, judiciaryNoteCtrl.createJudiciaryNote);
+
+app.delete('/api/judiciary-notes/:id', authenticateToken, requireAdmin, judiciaryNoteCtrl.deleteJudiciaryNote);
+app.delete('/judiciary-notes/:id', authenticateToken, requireAdmin, judiciaryNoteCtrl.deleteJudiciaryNote);
+
 
 
 

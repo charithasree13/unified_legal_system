@@ -4,7 +4,7 @@ import {
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare, 
   FileText, User, Settings, ShieldCheck, Landmark, CloudUpload, 
   Activity, ArrowRight, Sparkles, Shield, Compass, Quote, StickyNote,
-  CheckCircle, Clock, Calendar, Car, Link2
+  CheckCircle, Clock, Calendar, Car, Link2, ScrollText
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { ModuleCardVisual } from './ModuleCardVisuals';
@@ -258,12 +258,30 @@ export const PortalOverview: React.FC<PortalOverviewProps> = ({ stats, loadingSt
           icon: Link2,
           path: '/useful-links',
           ...forestBadge
+        },
+        {
+          id: 'judiciary-notes',
+          title: 'Judiciary Notes',
+          description: 'Manage and publish judicial reference notes, high court portals, and landmark precedent links for legal practitioners.',
+          tag: 'Judicial Resources',
+          icon: ScrollText,
+          path: '/judiciary-notes',
+          ...forestBadge
         }
       ];
     }
 
     if (role === 'Advocate') {
       return [
+        {
+          id: 'judiciary-notes',
+          title: 'Judiciary Notes',
+          description: 'Access official judiciary portals, high court updates, and verified judicial reference links published by the administration.',
+          tag: 'Judicial Resources',
+          icon: ScrollText,
+          path: '/judiciary-notes',
+          ...forestBadge
+        },
         {
           id: 'useful-links',
           title: 'Useful Links',
