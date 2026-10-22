@@ -119,6 +119,14 @@ app.get('/api/legal/health', authenticateToken, requireAdminOrAdvocate, docCtrl.
 app.post('/api/documents/ingest', authenticateToken, requireAdmin, docCtrl.triggerLegalLibraryImport);
 app.post('/api/legal/ingest', authenticateToken, requireAdmin, docCtrl.triggerLegalLibraryImport);
 
+// Dynamic On-Demand Content Retrieval (Zero Full-Doc Persistent DB Storage)
+app.get('/api/documents/dynamic-content', authenticateToken, requireAdminOrAdvocate, docCtrl.getDynamicDocumentContent);
+app.get('/api/legal/dynamic-content', authenticateToken, requireAdminOrAdvocate, docCtrl.getDynamicDocumentContent);
+
+// Official Sources & Copyright Compliance Register
+app.get('/api/documents/sources-compliance', authenticateToken, requireAdminOrAdvocate, docCtrl.getSourcesComplianceRegister);
+app.get('/api/legal/sources-compliance', authenticateToken, requireAdminOrAdvocate, docCtrl.getSourcesComplianceRegister);
+
 app.post('/api/documents/judgements', authenticateToken, requireAdmin, docCtrl.upload.single('file'), docCtrl.uploadJudgement);
 app.get('/api/documents/judgements', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgements);
 app.get('/api/documents/judgements/:id', authenticateToken, requireAdminOrAdvocate, docCtrl.getJudgementById);

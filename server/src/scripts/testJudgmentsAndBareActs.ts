@@ -106,6 +106,85 @@ async function runTests() {
   };
   await testReq('Prevent Duplicate Bare Act Cataloging', '/api/documents/laws', 'POST', adminToken, dupActPayload, 409);
 
+  console.log('\n⚡ 4. DYNAMIC ON-DEMAND RETRIEVAL & COMPLIANCE TESTS (Zero Persistent Full-Doc DB Storage):');
+  
+  // Test Bare Act Dynamic Section Fetching
+  const dynamicBnsRes = await testReq(
+    'Dynamic On-Demand Retrieval: BNS Section 103 (Punishment for Murder)',
+    '/api/documents/dynamic-content?type=law&actId=act_bns_2023&sectionNumber=103',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (dynamicBnsRes.data?.provision) {
+    console.log(`   ℹ️ Retrieved Section: "${dynamicBnsRes.data.provision.sectionNumber} - ${dynamicBnsRes.data.provision.title}"`);
+    console.log(`   ℹ️ Content preview: ${dynamicBnsRes.data.provision.content.substring(0, 75)}...`);
+  }
+
+  const dynamicNiRes = await testReq(
+    'Dynamic On-Demand Retrieval: NI Act Section 138 (Cheque Dishonour)',
+    '/api/documents/dynamic-content?type=law&actId=act_ni_1881&sectionNumber=138',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (dynamicNiRes.data?.provision) {
+    console.log(`   ℹ️ Retrieved Section: "${dynamicNiRes.data.provision.sectionNumber} - ${dynamicNiRes.data.provision.title}"`);
+  }
+
+  const dynamicLimitationRes = await testReq(
+    'Dynamic On-Demand Retrieval: Limitation Act Section 5 (Condonation of Delay)',
+    '/api/documents/dynamic-content?type=law&actId=act_limitation_1963&sectionNumber=5',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (dynamicLimitationRes.data?.provision) {
+    console.log(`   ℹ️ Retrieved Section: "${dynamicLimitationRes.data.provision.sectionNumber} - ${dynamicLimitationRes.data.provision.title}"`);
+  }
+
+  // Test In-Memory Caching on subsequent request
+  const cachedRes = await testReq(
+    'In-Memory RAM Cache Verification (isCached: true)',
+    '/api/documents/dynamic-content?type=law&actId=act_bns_2023&sectionNumber=103',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (cachedRes.data?.provision?.isCached) {
+    console.log(`   ℹ️ RAM Cache Hit Verified (isCached: ${cachedRes.data.provision.isCached})`);
+  }
+
+  // Test Dynamic Judgment Access Resolution
+  const dynamicJudRes = await testReq(
+    'Dynamic Judicial Access Resolution (Supreme Court e-SCR / SCI)',
+    '/api/documents/dynamic-content?type=judgement&judgmentId=jud_sc_2026_01&sourceUrl=https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf&neutralCitation=2026%20INSC%20412',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (dynamicJudRes.data?.access) {
+    console.log(`   ℹ️ Portal: ${dynamicJudRes.data.access.officialPortal}, InlineAllowed: ${dynamicJudRes.data.access.inlineAllowed}`);
+  }
+
+  // Test Legal Sources & Copyright Compliance Register
+  const complianceRes = await testReq(
+    'Sources & Copyright Compliance Register (Sec 52(1)(q) Copyright Act)',
+    '/api/documents/sources-compliance',
+    'GET',
+    approvedAdvToken,
+    undefined,
+    200
+  );
+  if (complianceRes.data?.sources) {
+    console.log(`   ℹ️ Registered Authorities: ${complianceRes.data.sources.length} sources (India Code, SCI, eCourts, Gazette)`);
+  }
+
   console.log('\n========================================');
   console.log(`📊 SUMMARY: ${passed} Passed, ${failed} Failed`);
   console.log('========================================\n');

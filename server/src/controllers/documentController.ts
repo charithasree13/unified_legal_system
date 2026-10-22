@@ -5,6 +5,12 @@ import fs from 'fs';
 import { Judgement, Law, AuditLog, ImportLog } from '../models/Schemas';
 import { runLegalLibraryImporter } from '../scripts/importLegalLibrary';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { 
+  checkRateLimit, 
+  fetchDynamicActProvision, 
+  resolveJudgmentAccess, 
+  LEGAL_SOURCES_COMPLIANCE_REGISTER 
+} from '../services/legalDocumentFetcher';
 
 // Setup file upload paths
 const UPLOADS_DIR = path.join(__dirname, '../../uploads');
@@ -813,4 +819,69 @@ export const triggerLegalLibraryImport = async (req: AuthenticatedRequest, res: 
     });
   }
 };
+
+/**
+ * On-demand dynamic retrieval of statutory section provisions and judgment access rules.
+ * Does NOT persist complete document bodies into MongoDB.
+ */
+export const getDynamicDocumentContent = async (req: Request, res: Response) => {
+  try {
+    const clientIp = req.ip || req.socket.remoteAddress || '127.0.0.1';
+    const rateCheck = checkRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        success: false,
+        message: 'Rate limit exceeded for on-demand legal document retrieval. Please retry in 60 seconds.'
+      });
+    }
+
+    const { type, actId, judgmentId, sectionNumber, sourceUrl, neutralCitation } = req.query;
+
+    if (type === 'law') {
+      if (!actId) {
+        return res.status(400).json({ success: false, message: 'actId is required for Bare Act statutory retrieval.' });
+      }
+      const sec = String(sectionNumber || '1');
+      const result = await fetchDynamicActProvision(String(actId), sec);
+      return res.status(200).json({
+        success: true,
+        provision: result,
+        rateLimitRemaining: rateCheck.remaining
+      });
+    } else if (type === 'judgement' || type === 'judgment') {
+      const result = await resolveJudgmentAccess(
+        String(judgmentId || ''),
+        String(sourceUrl || ''),
+        neutralCitation ? String(neutralCitation) : undefined
+      );
+      return res.status(200).json({
+        success: true,
+        access: result,
+        rateLimitRemaining: rateCheck.remaining
+      });
+    } else {
+      return res.status(400).json({ success: false, message: 'Invalid type parameter. Expected "law" or "judgement".' });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error?.message || 'Error fetching dynamic document content.' });
+  }
+};
+
+/**
+ * Sources & Copyright Compliance Register
+ * Details authorized Government of India & Superior Court repositories, statutory exceptions under Section 52(1)(q), and terms of access.
+ */
+export const getSourcesComplianceRegister = async (req: Request, res: Response) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      complianceNotice: "All statutory enactments and judicial judgments accessible through Elite Legal Desk are sourced directly from authorized Government of India and superior judicial registries under Section 52(1)(q) of the Indian Copyright Act, 1957. Proprietary databases, unauthorized editorial headnotes, and commercial commentary are strictly excluded.",
+      sources: LEGAL_SOURCES_COMPLIANCE_REGISTER,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: 'Error retrieving legal compliance register.' });
+  }
+};
+
 

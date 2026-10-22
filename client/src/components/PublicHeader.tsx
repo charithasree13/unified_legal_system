@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sun, Moon, Menu, X, LogIn, UserPlus, LogOut, User, LayoutDashboard, Search } from 'lucide-react';
+import { Sun, Moon, Menu, X, LogIn, UserPlus, LogOut, User, LayoutDashboard, Search, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 interface PublicHeaderProps {
@@ -104,6 +104,23 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({ onOpenAuthModal }) =
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
+
+          {/* Official Inauguration Ceremony Replay Trigger */}
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof (window as any).showLaunchCurtain === 'function') {
+                (window as any).showLaunchCurtain();
+              } else {
+                window.location.href = '/?relaunch=true';
+              }
+            }}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold text-[#8C6D2D] dark:text-[#F3D279] bg-[#FAF4E6] dark:bg-[#2B2314] border border-[#D4AF37]/60 hover:bg-[#F3E7C9] dark:hover:bg-[#3D311A] rounded-lg transition-all cursor-pointer shadow-xs"
+            title="Experience or Replay the Grand Inauguration Launch"
+          >
+            <Sparkles size={13} className="text-[#D4AF37]" />
+            <span className="hidden sm:inline">Launch Ceremony</span>
+          </button>
 
           {/* Dark Mode Toggle */}
           <button

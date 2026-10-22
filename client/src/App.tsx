@@ -31,6 +31,7 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy';
 
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { AuthModal } from './components/AuthModal';
+import { GrandLaunchCurtain } from './components/GrandLaunchCurtain';
 
 // Protected Feature Wrapper (Intercepts unauthenticated visitors & checks role authorization)
 const ProtectedRoute: React.FC<{ 
@@ -104,6 +105,7 @@ export const App: React.FC = () => {
 
   return (
     <BrowserRouter>
+      <GrandLaunchCurtain />
       <Routes>
         {/* Public Legal Documentation Routes */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
