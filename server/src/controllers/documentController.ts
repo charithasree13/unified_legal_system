@@ -9,7 +9,11 @@ import {
   checkRateLimit, 
   fetchDynamicActProvision, 
   resolveJudgmentAccess, 
-  LEGAL_SOURCES_COMPLIANCE_REGISTER 
+  LEGAL_SOURCES_COMPLIANCE_REGISTER,
+  STATUTORY_PROVISION_REGISTRY,
+  searchLiveExternalActs,
+  searchLiveExternalJudgments,
+  fetchDynamicDocumentContent
 } from '../services/legalDocumentFetcher';
 
 // Setup file upload paths
@@ -78,14 +82,17 @@ function isValidUrlString(urlStr?: string): boolean {
 
 export const getJudgements = async (req: Request, res: Response) => {
   try {
-    const { search, court, state, judge, year, subject, page = '1', limit = '10', sort = 'newest' } = req.query;
+    const { search, court, state, judge, year, subject, citation, caseNumber, page = '1', limit = '10', sort = 'newest' } = req.query;
+    const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
+    const limitNum = Math.max(1, parseInt(String(limit), 10) || 10);
     
-    let allRecords = await Judgement.find({});
+    // 1. Query Local DB Records
+    let localRecords = await Judgement.find({});
 
-    // Filter by Search Query (Case name, party name, court, judge, citation, case no, act, section, topic, keyword)
+    // Filter local records by search and criteria
     if (search) {
       const term = String(search).toLowerCase().trim();
-      allRecords = allRecords.filter((doc: any) => {
+      localRecords = localRecords.filter((doc: any) => {
         const titleMatch = doc.title?.toLowerCase().includes(term);
         const petMatch = doc.petitioner?.toLowerCase().includes(term);
         const respMatch = doc.respondent?.toLowerCase().includes(term);
@@ -104,46 +111,73 @@ export const getJudgements = async (req: Request, res: Response) => {
       });
     }
 
-    // Filter by specific fields
     if (court) {
       const cStr = String(court).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.court?.toLowerCase().includes(cStr));
+      localRecords = localRecords.filter((doc: any) => doc.court?.toLowerCase().includes(cStr));
     }
     if (state) {
       const sStr = String(state).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.state?.toLowerCase().includes(sStr));
+      localRecords = localRecords.filter((doc: any) => doc.state?.toLowerCase().includes(sStr));
     }
     if (judge) {
       const jStr = String(judge).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.judge?.toLowerCase().includes(jStr) || doc.bench?.toLowerCase().includes(jStr));
+      localRecords = localRecords.filter((doc: any) => doc.judge?.toLowerCase().includes(jStr) || doc.bench?.toLowerCase().includes(jStr));
     }
     if (year) {
       const yNum = Number(year);
       if (!isNaN(yNum)) {
-        allRecords = allRecords.filter((doc: any) => Number(doc.year) === yNum);
+        localRecords = localRecords.filter((doc: any) => Number(doc.year) === yNum);
       }
     }
     if (subject) {
       const subjStr = String(subject).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.subject?.toLowerCase() === subjStr || doc.subject?.toLowerCase().includes(subjStr));
+      localRecords = localRecords.filter((doc: any) => doc.subject?.toLowerCase() === subjStr || doc.subject?.toLowerCase().includes(subjStr));
     }
 
-    // Sorting
+    // 2. Query Live External Judicial Sources (e-SCR / SCI / Open Legal Registry)
+    const externalResult = await searchLiveExternalJudgments(
+      String(search || ''),
+      pageNum,
+      limitNum,
+      {
+        court: court ? String(court) : undefined,
+        state: state ? String(state) : undefined,
+        judge: judge ? String(judge) : undefined,
+        year: year ? String(year) : undefined,
+        subject: subject ? String(subject) : undefined,
+        citation: citation ? String(citation) : undefined,
+        caseNumber: caseNumber ? String(caseNumber) : undefined
+      }
+    );
+
+    // 3. Deduplicate External results against Local records
+    const localKeys = new Set(localRecords.map((d: any) => d.canonicalKey || generateJudgementCanonicalKey(d.court, d.caseNumber, d.neutralCitation, d.year)));
+    const uniqueExternal = externalResult.items.filter((item: any) => {
+      const k = item.canonicalKey || generateJudgementCanonicalKey(item.court, item.caseNumber, item.neutralCitation, item.year);
+      return !localKeys.has(k);
+    });
+
+    let combinedRecords: any[] = [];
+    if (pageNum === 1) {
+      combinedRecords = [...localRecords, ...uniqueExternal];
+    } else {
+      // If higher page, external results directly supply paginated items
+      combinedRecords = uniqueExternal.length > 0 ? uniqueExternal : localRecords.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+    }
+
+    // 4. Sorting
     if (sort === 'newest') {
-      allRecords.sort((a: any, b: any) => (b.year || 0) - (a.year || 0) || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      combinedRecords.sort((a: any, b: any) => (b.year || 0) - (a.year || 0) || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
     } else if (sort === 'oldest') {
-      allRecords.sort((a: any, b: any) => (a.year || 0) - (b.year || 0) || new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
+      combinedRecords.sort((a: any, b: any) => (a.year || 0) - (b.year || 0) || new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
     } else if (sort === 'title') {
-      allRecords.sort((a: any, b: any) => String(a.title || '').localeCompare(String(b.title || '')));
+      combinedRecords.sort((a: any, b: any) => String(a.title || '').localeCompare(String(b.title || '')));
     }
 
-    // Server-Side Pagination
-    const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-    const limitNum = Math.max(1, parseInt(String(limit), 10) || 10);
-    const total = allRecords.length;
+    // 5. Total count & server-side pagination
+    const total = Math.max(localRecords.length, externalResult.totalReported || combinedRecords.length);
     const totalPages = Math.ceil(total / limitNum) || 1;
-    const startIndex = (pageNum - 1) * limitNum;
-    const paginatedItems = allRecords.slice(startIndex, startIndex + limitNum);
+    const paginatedItems = pageNum === 1 ? combinedRecords.slice(0, limitNum) : combinedRecords.slice(0, limitNum);
 
     return res.status(200).json({
       success: true,
@@ -153,7 +187,9 @@ export const getJudgements = async (req: Request, res: Response) => {
         page: pageNum,
         limit: limitNum,
         totalPages
-      }
+      },
+      sourceStatus: externalResult.sourceStatus,
+      coverageNotice: "Results federated from Digital Supreme Court Reports (e-SCR), High Court Judicial Registries, and verified public domain repositories under Section 52(1)(q) of the Indian Copyright Act, 1957."
     });
   } catch (error: any) {
     console.error('Error retrieving judgements:', error);
@@ -164,7 +200,36 @@ export const getJudgements = async (req: Request, res: Response) => {
 export const getJudgementById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const doc = await Judgement.findById(id);
+    let doc = await Judgement.findById(id);
+
+    // If not in local database but has an external doc ID (e.g. ext_jud_...)
+    if (!doc && id.startsWith('ext_')) {
+      const cleanId = id.replace(/^ext_jud_/, '');
+      const dynamicDoc = await fetchDynamicDocumentContent(cleanId, 'judgement');
+      if (dynamicDoc && dynamicDoc.success) {
+        return res.status(200).json({
+          success: true,
+          judgement: {
+            _id: id,
+            title: dynamicDoc.title,
+            court: dynamicDoc.courtOrAuthority,
+            year: new Date().getFullYear(),
+            legalStatus: 'Public Judicial Record',
+            sourceAuthority: dynamicDoc.courtOrAuthority,
+            sourceUrl: `https://indiankanoon.org/doc/${cleanId}/`,
+            officialSourceUrl: dynamicDoc.officialSourceUrl,
+            summary: {
+              background: dynamicDoc.content.slice(0, 400),
+              issues: 'Official Superior Court Determination',
+              fullSummaryText: dynamicDoc.content.slice(0, 600)
+            },
+            fullContent: dynamicDoc.content,
+            isDynamic: true
+          }
+        });
+      }
+    }
+
     if (!doc) {
       return res.status(404).json({ success: false, message: 'Judgement record not found.' });
     }
@@ -429,13 +494,16 @@ export const deleteJudgement = async (req: AuthenticatedRequest, res: Response) 
 export const getLaws = async (req: Request, res: Response) => {
   try {
     const { search, category, jurisdiction, actStatus, year, yearRange, letter, page = '1', limit = '10', sort = 'newest' } = req.query;
+    const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
+    const limitNum = Math.max(1, parseInt(String(limit), 10) || 10);
     
-    let allRecords = await Law.find({});
+    // 1. Query Local DB Records
+    let localRecords = await Law.find({});
 
-    // Filter by search term across titles, actName, actNumber, category, ministry, jurisdiction, chapters & sections
+    // Filter local records by search query across fields
     if (search) {
       const term = String(search).toLowerCase().trim();
-      allRecords = allRecords.filter((doc: any) => {
+      localRecords = localRecords.filter((doc: any) => {
         const titleMatch = doc.title?.toLowerCase().includes(term) || doc.actName?.toLowerCase().includes(term);
         const shortTitleMatch = doc.shortTitle?.toLowerCase().includes(term);
         const actNoMatch = doc.actNumber?.toLowerCase().includes(term);
@@ -461,7 +529,7 @@ export const getLaws = async (req: Request, res: Response) => {
     if (letter) {
       const l = String(letter).toUpperCase().trim();
       if (l.length === 1 && l >= 'A' && l <= 'Z') {
-        allRecords = allRecords.filter((doc: any) => {
+        localRecords = localRecords.filter((doc: any) => {
           const rawTitle = (doc.title || doc.actName || doc.shortTitle || '').trim().replace(/^the\s+/i, '');
           return rawTitle.toUpperCase().startsWith(l);
         });
@@ -470,26 +538,26 @@ export const getLaws = async (req: Request, res: Response) => {
 
     if (category) {
       const catStr = String(category).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.category?.toLowerCase() === catStr || doc.category?.toLowerCase().includes(catStr));
+      localRecords = localRecords.filter((doc: any) => doc.category?.toLowerCase() === catStr || doc.category?.toLowerCase().includes(catStr));
     }
     if (jurisdiction) {
       const jurStr = String(jurisdiction).toLowerCase();
-      allRecords = allRecords.filter((doc: any) => doc.jurisdiction?.toLowerCase().includes(jurStr));
+      localRecords = localRecords.filter((doc: any) => doc.jurisdiction?.toLowerCase().includes(jurStr));
     }
     if (actStatus) {
-      allRecords = allRecords.filter((doc: any) => doc.actStatus === String(actStatus));
+      localRecords = localRecords.filter((doc: any) => doc.actStatus === String(actStatus));
     }
     if (year) {
       const yNum = Number(year);
       if (!isNaN(yNum)) {
-        allRecords = allRecords.filter((doc: any) => Number(doc.year) === yNum);
+        localRecords = localRecords.filter((doc: any) => Number(doc.year) === yNum);
       }
     }
 
     // Year Range Browsing Filter
     if (yearRange) {
       const yrRangeStr = String(yearRange).toLowerCase().trim();
-      allRecords = allRecords.filter((doc: any) => {
+      localRecords = localRecords.filter((doc: any) => {
         const y = Number(doc.year || 0);
         if (yrRangeStr === '2020-2026') return y >= 2020 && y <= 2026;
         if (yrRangeStr === '2010-2019') return y >= 2010 && y <= 2019;
@@ -501,22 +569,47 @@ export const getLaws = async (req: Request, res: Response) => {
       });
     }
 
-    // Sorting
-    if (sort === 'newest') {
-      allRecords.sort((a: any, b: any) => (b.year || 0) - (a.year || 0) || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-    } else if (sort === 'oldest') {
-      allRecords.sort((a: any, b: any) => (a.year || 0) - (b.year || 0) || new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
-    } else if (sort === 'title') {
-      allRecords.sort((a: any, b: any) => String(a.title || a.actName || '').localeCompare(String(b.title || b.actName || '')));
+    // 2. Query Live External India Code & Authorized Legislative Repositories
+    const externalResult = await searchLiveExternalActs(
+      String(search || ''),
+      pageNum,
+      limitNum,
+      {
+        jurisdiction: jurisdiction ? String(jurisdiction) : undefined,
+        category: category ? String(category) : undefined,
+        letter: letter ? String(letter) : undefined,
+        year: year ? String(year) : undefined
+      }
+    );
+
+    // 3. Deduplicate External results against Local records
+    const localKeys = new Set(localRecords.map((d: any) => d.canonicalKey || generateLawCanonicalKey(d.title, d.actNumber, d.year, d.jurisdiction)));
+    const uniqueExternal = externalResult.items.filter((item: any) => {
+      const k = item.canonicalKey || generateLawCanonicalKey(item.title, item.actNumber, item.year, item.jurisdiction);
+      return !localKeys.has(k);
+    });
+
+    let combinedRecords: any[] = [];
+    if (pageNum === 1) {
+      combinedRecords = [...localRecords, ...uniqueExternal];
+    } else {
+      // If higher page, external results directly supply paginated items
+      combinedRecords = uniqueExternal.length > 0 ? uniqueExternal : localRecords.slice((pageNum - 1) * limitNum, pageNum * limitNum);
     }
 
-    // Server-Side Pagination
-    const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-    const limitNum = Math.max(1, parseInt(String(limit), 10) || 10);
-    const total = allRecords.length;
+    // 4. Sorting
+    if (sort === 'newest') {
+      combinedRecords.sort((a: any, b: any) => (b.year || 0) - (a.year || 0) || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+    } else if (sort === 'oldest') {
+      combinedRecords.sort((a: any, b: any) => (a.year || 0) - (b.year || 0) || new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
+    } else if (sort === 'title') {
+      combinedRecords.sort((a: any, b: any) => String(a.title || a.actName || '').localeCompare(String(b.title || b.actName || '')));
+    }
+
+    // 5. Total count & server-side pagination
+    const total = Math.max(localRecords.length, externalResult.totalReported || combinedRecords.length);
     const totalPages = Math.ceil(total / limitNum) || 1;
-    const startIndex = (pageNum - 1) * limitNum;
-    const paginatedItems = allRecords.slice(startIndex, startIndex + limitNum);
+    const paginatedItems = pageNum === 1 ? combinedRecords.slice(0, limitNum) : combinedRecords.slice(0, limitNum);
 
     return res.status(200).json({
       success: true,
@@ -526,7 +619,9 @@ export const getLaws = async (req: Request, res: Response) => {
         page: pageNum,
         limit: limitNum,
         totalPages
-      }
+      },
+      sourceStatus: externalResult.sourceStatus,
+      coverageNotice: "Results federated from India Code Digital Repository (Legislative Department, Ministry of Law and Justice) and official Gazette notifications under Section 52(1)(q) of the Indian Copyright Act, 1957."
     });
   } catch (error: any) {
     console.error('Error retrieving bare acts:', error);
@@ -537,7 +632,37 @@ export const getLaws = async (req: Request, res: Response) => {
 export const getLawById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const doc = await Law.findById(id);
+    let doc = await Law.findById(id);
+
+    // If not in local database but has an external doc ID (e.g. ext_law_...)
+    if (!doc && id.startsWith('ext_')) {
+      const cleanId = id.replace(/^ext_law_/, '');
+      const dynamicDoc = await fetchDynamicDocumentContent(cleanId, 'law');
+      if (dynamicDoc && dynamicDoc.success) {
+        return res.status(200).json({
+          success: true,
+          law: {
+            _id: id,
+            title: dynamicDoc.title,
+            actName: dynamicDoc.title,
+            shortTitle: dynamicDoc.title,
+            year: new Date().getFullYear(),
+            jurisdiction: 'Central / All India',
+            actStatus: 'CURRENTLY_IN_FORCE',
+            category: 'Statutory Law',
+            ministry: dynamicDoc.courtOrAuthority,
+            sourceAuthority: 'India Code / Authorised Legislative Repository',
+            sourceUrl: `https://indiankanoon.org/doc/${cleanId}/`,
+            officialSourceUrl: dynamicDoc.officialSourceUrl,
+            description: dynamicDoc.content.slice(0, 400),
+            fullContent: dynamicDoc.content,
+            chapters: [],
+            isDynamic: true
+          }
+        });
+      }
+    }
+
     if (!doc) {
       return res.status(404).json({ success: false, message: 'Bare Act record not found.' });
     }
@@ -835,28 +960,48 @@ export const getDynamicDocumentContent = async (req: Request, res: Response) => 
       });
     }
 
-    const { type, actId, judgmentId, sectionNumber, sourceUrl, neutralCitation } = req.query;
+    const { type, actId, judgmentId, docId, sectionNumber, sourceUrl, neutralCitation } = req.query;
+    const documentIdentifier = String(docId || actId || judgmentId || '');
 
     if (type === 'law') {
-      if (!actId) {
-        return res.status(400).json({ success: false, message: 'actId is required for Bare Act statutory retrieval.' });
+      if (!documentIdentifier) {
+        return res.status(400).json({ success: false, message: 'actId or docId is required for Bare Act statutory retrieval.' });
       }
-      const sec = String(sectionNumber || '1');
-      const result = await fetchDynamicActProvision(String(actId), sec);
+      const sec = sectionNumber ? String(sectionNumber) : undefined;
+      
+      // If it's a pre-compiled provision in the registry
+      if (sec && STATUTORY_PROVISION_REGISTRY[documentIdentifier]) {
+        const result = await fetchDynamicActProvision(documentIdentifier, sec);
+        return res.status(200).json({
+          success: true,
+          provision: result,
+          rateLimitRemaining: rateCheck.remaining
+        });
+      }
+
+      // Otherwise fetch dynamically on demand
+      const fullResult = await fetchDynamicDocumentContent(documentIdentifier, 'law', sec);
       return res.status(200).json({
         success: true,
-        provision: result,
+        provision: fullResult,
         rateLimitRemaining: rateCheck.remaining
       });
     } else if (type === 'judgement' || type === 'judgment') {
-      const result = await resolveJudgmentAccess(
-        String(judgmentId || ''),
+      const accessResult = await resolveJudgmentAccess(
+        documentIdentifier,
         String(sourceUrl || ''),
         neutralCitation ? String(neutralCitation) : undefined
       );
+
+      let contentResult = null;
+      if (documentIdentifier && (documentIdentifier.startsWith('ext_') || /^\d+$/.test(documentIdentifier))) {
+        contentResult = await fetchDynamicDocumentContent(documentIdentifier, 'judgement');
+      }
+
       return res.status(200).json({
         success: true,
-        access: result,
+        access: accessResult,
+        content: contentResult,
         rateLimitRemaining: rateCheck.remaining
       });
     } else {

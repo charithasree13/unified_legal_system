@@ -627,6 +627,15 @@ export const Documents: React.FC = () => {
   const [dynamicProvisionData, setDynamicProvisionData] = useState<any | null>(null);
   const [dynamicProvisionError, setDynamicProvisionError] = useState('');
 
+  // Live Federated Search & Source Coverage indicators
+  const [sourceStatus, setSourceStatus] = useState<any>(null);
+
+  // Dynamic Full Document loading states (for external acts and judgments without DB full-text)
+  const [fullDocumentLoading, setFullDocumentLoading] = useState(false);
+  const [fullDocumentText, setFullDocumentText] = useState('');
+  const [fullDocumentMeta, setFullDocumentMeta] = useState<any>(null);
+  const [fullDocumentError, setFullDocumentError] = useState('');
+
   // Compliance Register Modal States
   const [showComplianceModal, setShowComplianceModal] = useState(false);
   const [complianceData, setComplianceData] = useState<any | null>(null);
@@ -708,6 +717,10 @@ export const Documents: React.FC = () => {
 
   const API_BASE = import.meta.env.VITE_API_URL || '';
 
+  const hasActiveFilters = Boolean(
+    debouncedSearch || courtFilter || yearFilter || yearRangeFilter || letterFilter || categoryFilter || actStatusFilter || sortFilter !== 'newest'
+  );
+
   const fetchDocuments = useCallback(async () => {
     setLoading(true);
     try {
@@ -736,20 +749,22 @@ export const Documents: React.FC = () => {
       const data = await res.json();
       if (res.ok && data.success) {
         setApiError('');
+        setSourceStatus(data.sourceStatus || null);
         if (tab === 'judgement') {
           const list = data.judgements || [];
-          setJudgements(list.length > 0 ? list : (debouncedSearch ? [] : INITIAL_JUDGEMENTS));
-          setTotalRecords(data.pagination?.total ?? (debouncedSearch ? 0 : INITIAL_JUDGEMENTS.length));
+          setJudgements(list.length > 0 ? list : (hasActiveFilters ? [] : INITIAL_JUDGEMENTS));
+          setTotalRecords(data.pagination?.total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_JUDGEMENTS.length)));
           setTotalPages(data.pagination?.totalPages || 1);
         } else {
           const list = data.laws || [];
-          setLaws(list.length > 0 ? list : (debouncedSearch ? [] : INITIAL_LAWS));
-          setTotalRecords(data.pagination?.total ?? (debouncedSearch ? 0 : INITIAL_LAWS.length));
+          setLaws(list.length > 0 ? list : (hasActiveFilters ? [] : INITIAL_LAWS));
+          setTotalRecords(data.pagination?.total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_LAWS.length)));
           setTotalPages(data.pagination?.totalPages || 1);
         }
       } else {
         // Fallback gracefully
-        if (!debouncedSearch) {
+        setSourceStatus(null);
+        if (!hasActiveFilters) {
           setJudgements(INITIAL_JUDGEMENTS);
           setLaws(INITIAL_LAWS);
           setTotalRecords(tab === 'judgement' ? INITIAL_JUDGEMENTS.length : INITIAL_LAWS.length);
@@ -762,7 +777,8 @@ export const Documents: React.FC = () => {
         }
       }
     } catch (err: any) {
-      if (!debouncedSearch) {
+      setSourceStatus(null);
+      if (!hasActiveFilters) {
         setJudgements(INITIAL_JUDGEMENTS);
         setLaws(INITIAL_LAWS);
         setTotalRecords(tab === 'judgement' ? INITIAL_JUDGEMENTS.length : INITIAL_LAWS.length);
@@ -776,7 +792,7 @@ export const Documents: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, token, tab, debouncedSearch, courtFilter, yearFilter, yearRangeFilter, letterFilter, categoryFilter, actStatusFilter, sortFilter, page, limit]);
+  }, [API_BASE, token, tab, debouncedSearch, courtFilter, yearFilter, yearRangeFilter, letterFilter, categoryFilter, actStatusFilter, sortFilter, page, limit, hasActiveFilters]);
 
   useEffect(() => {
     fetchDocuments();
@@ -1009,18 +1025,45 @@ export const Documents: React.FC = () => {
     setUploadError('');
   };
 
+  const loadDynamicFullDocument = async (docId: string, docType: 'judgement' | 'law') => {
+    setFullDocumentLoading(true);
+    setFullDocumentError('');
+    setFullDocumentText('');
+    setFullDocumentMeta(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/documents/dynamic-content?type=${docType}&docId=${encodeURIComponent(docId)}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.document) {
+        setFullDocumentText(data.document.fullText || data.document.text || data.document.headline || '');
+        setFullDocumentMeta(data.document);
+      } else {
+        setFullDocumentError(data.message || 'Complete text accessible via official registry link below.');
+      }
+    } catch (err: any) {
+      setFullDocumentError('Network issue retrieving dynamic document.');
+    } finally {
+      setFullDocumentLoading(false);
+    }
+  };
+
   const openReaderModal = (doc: any) => {
     setReadingDoc(doc);
     setSelectedChapterIdx(0);
     setSelectedSectionIdx(0);
     setCopiedCitation(false);
+    setFullDocumentText('');
+    setFullDocumentError('');
+    setFullDocumentMeta(null);
 
-    // If reading a Bare Act, immediately load the first section dynamically
-    if (doc.chapters && doc.chapters.length > 0 && doc.chapters[0].sections && doc.chapters[0].sections.length > 0) {
+    // If reading a Bare Act that has structured chapters & sections, load first section dynamically
+    if (tab === 'law' && doc.chapters && doc.chapters.length > 0 && doc.chapters[0].sections && doc.chapters[0].sections.length > 0) {
       const firstSec = doc.chapters[0].sections[0];
       loadDynamicSectionContent(doc._id, firstSec.sectionNumber);
     } else {
-      setDynamicProvisionData(null);
+      // For external Bare Acts without pre-parsed chapters OR for any Judgment, load authentic full text dynamically
+      loadDynamicFullDocument(doc._id, tab);
     }
   };
 
@@ -1039,6 +1082,7 @@ export const Documents: React.FC = () => {
     setTimeout(() => setCopiedCitation(false), 2000);
   };
 
+  // Clear all filters handler
   const clearAllFilters = () => {
     setSearch('');
     setDebouncedSearch('');
@@ -1051,10 +1095,6 @@ export const Documents: React.FC = () => {
     setSortFilter('newest');
     setPage(1);
   };
-
-  const hasActiveFilters = Boolean(
-    debouncedSearch || courtFilter || yearFilter || yearRangeFilter || letterFilter || categoryFilter || actStatusFilter || sortFilter !== 'newest'
-  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-8 font-sans">
@@ -1414,6 +1454,37 @@ export const Documents: React.FC = () => {
                   >
                     Reset All Filters
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* LIVE DISCOVERY & RESULT COUNT SUMMARY BAR */}
+            {((tab === 'law' && laws.length > 0) || (tab === 'judgement' && judgements.length > 0)) && (
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">
+                    Showing {tab === 'law' ? laws.length : judgements.length} of {totalRecords} {tab === 'law' ? 'Bare Acts' : 'Judgments'}
+                  </span>
+                  {page > 1 && (
+                    <span className="text-slate-500 font-mono text-xs">
+                      (Page {page} of {totalPages})
+                    </span>
+                  )}
+                  {hasActiveFilters && (
+                    <span className="text-amber-600 dark:text-amber-400 font-medium">
+                      • Filtered search
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20 text-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Live {tab === 'law' ? 'India Code' : 'Judicial Registry'} Federation Active
+                  </span>
+                  <span className="text-slate-400 text-[11px] hidden md:inline">
+                    Zero Persistent Full-Text DB Storage (Sec 52(1)(q))
+                  </span>
                 </div>
               </div>
             )}
@@ -1956,6 +2027,70 @@ export const Documents: React.FC = () => {
                   </div>
                 )}
 
+                {/* FULL STATUTORY ACT VIEWER (FOR LIVE INDIA CODE ACTS WITHOUT PRE-PARSED CHAPTERS) */}
+                {tab === 'law' && (!readingDoc.chapters || readingDoc.chapters.length === 0) && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                      <h3 className="font-serif font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                        <BookOpen size={18} className="text-amber-500" />
+                        Statutory Text & Legislative Details
+                      </h3>
+                      <span className="text-xs text-slate-500 font-mono">
+                        Authorised India Code Record
+                      </span>
+                    </div>
+
+                    {fullDocumentLoading ? (
+                      <div className="py-12 flex flex-col items-center justify-center space-y-3 text-slate-500">
+                        <RefreshCw size={24} className="animate-spin text-amber-500" />
+                        <p className="text-xs font-semibold">Retrieving statutory enactment on demand from India Code portal...</p>
+                      </div>
+                    ) : fullDocumentText ? (
+                      <div className="space-y-4">
+                        <div className={`whitespace-pre-wrap leading-relaxed font-sans bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-xs ${
+                          readerFontSize === 'large' ? 'text-base' : readerFontSize === 'xlarge' ? 'text-lg' : 'text-xs'
+                        }`}>
+                          {fullDocumentText}
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-200 dark:border-slate-800">
+                          <span>Retrieved dynamically on demand (Zero persistent database storage)</span>
+                          <a
+                            href={readingDoc.sourceUrl || "https://www.indiacode.gov.in/"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-bold"
+                          >
+                            <span>View Full Act & Schedules on India Code</span>
+                            <ArrowUpRight size={14} />
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-slate-700 dark:text-slate-300 text-xs space-y-3">
+                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold">
+                          <Info size={16} />
+                          <span>Enactment Discovered from Government of India Legislative Registry</span>
+                        </div>
+                        <p>
+                          This statutory enactment ({readingDoc.actName || readingDoc.title}) is catalogued from the official India Code portal. Full statutory schedules and gazette copies can be directly inspected on the government portal.
+                        </p>
+                        <div>
+                          <a
+                            href={readingDoc.sourceUrl || "https://www.indiacode.gov.in/"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs"
+                          >
+                            <ExternalLink size={14} />
+                            <span>Open Full Enactment on India Code Portal</span>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* STRUCTURED ELITE LEGAL DESK SUMMARY (FOR JUDGMENTS) */}
                 {tab === 'judgement' && readingDoc.summary && (
                   <div className="space-y-4 p-6 rounded-xl bg-amber-500/5 border border-amber-500/20">
@@ -2032,6 +2167,63 @@ export const Documents: React.FC = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+
+                {/* FULL JUDICIAL TEXT / RATIO DECIDENDI (FOR JUDGMENTS) */}
+                {tab === 'judgement' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                      <h3 className="font-serif font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <Scale size={16} className="text-amber-500" />
+                        Official Judicial Record / Judgment Text
+                      </h3>
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        Public Domain Judicial Ruling • Sec 52(1)(q)
+                      </span>
+                    </div>
+
+                    {fullDocumentLoading ? (
+                      <div className="py-8 flex flex-col items-center justify-center space-y-2 text-slate-500">
+                        <RefreshCw size={20} className="animate-spin text-amber-500" />
+                        <p className="text-xs font-semibold">Retrieving official judicial text on demand from Court Registry...</p>
+                      </div>
+                    ) : fullDocumentText ? (
+                      <div className="space-y-3">
+                        <div className={`whitespace-pre-wrap leading-relaxed font-sans bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-xs ${
+                          readerFontSize === 'large' ? 'text-base' : readerFontSize === 'xlarge' ? 'text-lg' : 'text-xs'
+                        }`}>
+                          {fullDocumentText}
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+                          <span>Retrieved on demand (Zero full document storage in DB)</span>
+                          <a
+                            href={readingDoc.sourceUrl || "https://main.sci.gov.in/"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-bold"
+                          >
+                            <span>Verify Original Signed Record</span>
+                            <ArrowUpRight size={14} />
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs flex items-center justify-between gap-3">
+                        <span className="text-slate-600 dark:text-slate-400">
+                          To view the certified signed court copy, access the official court registry link.
+                        </span>
+                        <a
+                          href={readingDoc.sourceUrl || "https://main.sci.gov.in/"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex-shrink-0"
+                        >
+                          <ExternalLink size={12} />
+                          <span>Court Registry Link</span>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
 
