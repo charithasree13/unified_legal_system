@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Users, Scale, Calculator, Gavel, BookOpen, MessageSquare,
   FileText, ShieldCheck, Landmark, Compass, Calendar, Search,
-  ArrowRight, ShieldAlert, CheckCircle2, Lock, Sparkles, Building2, PhoneCall
+  ArrowRight, ShieldAlert, CheckCircle2, Lock, Sparkles, PhoneCall
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { FounderSection } from '../components/FounderSection';
@@ -123,18 +123,6 @@ export const PublicDashboard: React.FC = () => {
       path: '/directory',
       iconBg: 'bg-[#39665B]/15 text-[#39665B] dark:text-[#81B8AB] border-[#39665B]/30',
       cardClass: 'card-directory'
-    },
-    {
-      id: 'services',
-      title: 'Legal Services & Notary',
-      category: 'Protected (Sign In)',
-      isProtected: true,
-      icon: Building2,
-      description: 'Civil litigation support, land title verification, notary statutory attestations, bank legal panel advisory.',
-      actionText: 'Explore Legal Services',
-      path: '/directory',
-      iconBg: 'bg-[#8C6927]/15 text-[#8C6927] dark:text-[#E3C27D] border-[#8C6927]/30',
-      cardClass: 'card-services'
     },
     {
       id: 'laws',
@@ -305,7 +293,7 @@ export const PublicDashboard: React.FC = () => {
                 className="btn-primary flex items-center gap-2 cursor-pointer text-xs sm:text-sm"
               >
                 <BookOpen size={16} />
-                <span>Explore Legal Services</span>
+                <span>Explore Legal Modules</span>
               </a>
 
               <button
