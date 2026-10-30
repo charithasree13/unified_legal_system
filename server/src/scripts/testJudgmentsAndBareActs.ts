@@ -33,12 +33,14 @@ async function runTests() {
       const status = res.status;
       const data = await res.json().catch(() => ({}));
 
-      if (status === expectedStatus) {
+      const isMatch = Array.isArray(expectedStatus) ? (expectedStatus as any).includes(status) : status === expectedStatus;
+
+      if (isMatch) {
         console.log(`✅ PASS: [${name}] (Status: ${status})`);
         passed++;
         return { data, status };
       } else {
-        console.error(`❌ FAIL: [${name}] Expected: ${expectedStatus}, Got: ${status}. Data:`, data);
+        console.error(`❌ FAIL: [${name}] Expected: ${JSON.stringify(expectedStatus)}, Got: ${status}. Data:`, data);
         failed++;
         return { data, status };
       }
@@ -94,6 +96,8 @@ async function runTests() {
     neutralCitation: "2026 INSC 412",
     sourceUrl: "https://main.sci.gov.in/supremecourt/2026/judgement_composite_appeal.pdf"
   };
+  // Ensure the baseline record exists
+  await testReq('Seed Baseline Judgment', '/api/documents/judgements', 'POST', adminToken, dupJudPayload, [201, 409] as any);
   await testReq('Prevent Duplicate Judgment Cataloging', '/api/documents/judgements', 'POST', adminToken, dupJudPayload, 409);
 
   const dupActPayload = {
@@ -104,6 +108,8 @@ async function runTests() {
     jurisdiction: "Central / All India",
     actNumber: "Act No. 45 of 2023"
   };
+  // Ensure the baseline act exists
+  await testReq('Seed Baseline Bare Act', '/api/documents/laws', 'POST', adminToken, dupActPayload, [201, 409] as any);
   await testReq('Prevent Duplicate Bare Act Cataloging', '/api/documents/laws', 'POST', adminToken, dupActPayload, 409);
 
   console.log('\n⚡ 4. DYNAMIC ON-DEMAND RETRIEVAL & COMPLIANCE TESTS (Zero Persistent Full-Doc DB Storage):');

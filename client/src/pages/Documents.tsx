@@ -50,6 +50,69 @@ export const CONTROLLED_COURTS = [
   'Other Courts'
 ];
 
+export const EXPANDED_COURTS_AND_TRIBUNALS = [
+  {
+    group: 'Apex Court',
+    items: ['Supreme Court of India']
+  },
+  {
+    group: 'High Courts & Benches',
+    items: [
+      'High Court of Delhi',
+      'High Court of Bombay',
+      'High Court of Madras',
+      'High Court of Calcutta',
+      'High Court of Allahabad',
+      'High Court of Karnataka',
+      'High Court of Andhra Pradesh',
+      'High Court of Kerala',
+      'High Court of Gujarat',
+      'High Court of Telangana',
+      'High Court of Punjab and Haryana',
+      'High Court of Rajasthan',
+      'High Court of Madhya Pradesh',
+      'High Court of Patna',
+      'High Court of Gauhati',
+      'High Court of Orissa'
+    ]
+  },
+  {
+    group: 'Specialized Judicial Tribunals & Appellate Commissions',
+    items: [
+      'National Company Law Appellate Tribunal (NCLAT)',
+      'National Company Law Tribunal (NCLT)',
+      'National Green Tribunal (NGT)',
+      'Income Tax Appellate Tribunal (ITAT)',
+      'Customs, Excise and Service Tax Appellate Tribunal (CESTAT)',
+      'Central Administrative Tribunal (CAT)',
+      'National Consumer Disputes Redressal Commission (NCDRC)',
+      'Appellate Tribunal for Electricity (APTEL)',
+      'Telecom Disputes Settlement and Appellate Tribunal (TDSAT)',
+      'Armed Forces Tribunal (AFT)'
+    ]
+  },
+  {
+    group: 'Subordinate & District Courts',
+    items: [
+      'District & Sessions Courts (eCourts Integrated)'
+    ]
+  }
+];
+
+export const CONTROLLED_JURISDICTIONS = [
+  'Central / All India',
+  'State - Andhra Pradesh',
+  'State - Maharashtra',
+  'State - Delhi',
+  'State - Tamil Nadu',
+  'State - Karnataka',
+  'State - Uttar Pradesh',
+  'State - West Bengal',
+  'State - Gujarat',
+  'State - Telangana',
+  'State - Kerala'
+];
+
 // VERIFIED FALLBACK DATA (In case backend network is offline or loading)
 const INITIAL_JUDGEMENTS = [
   {
@@ -600,6 +663,7 @@ export const Documents: React.FC = () => {
   
   // Filter states
   const [courtFilter, setCourtFilter] = useState('');
+  const [jurisdictionFilter, setJurisdictionFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [yearRangeFilter, setYearRangeFilter] = useState('');
   const [letterFilter, setLetterFilter] = useState('');
@@ -629,6 +693,10 @@ export const Documents: React.FC = () => {
 
   // Live Federated Search & Source Coverage indicators
   const [sourceStatus, setSourceStatus] = useState<any>(null);
+
+  // Free-First Engine Live Provider Status State & Modal
+  const [providersStatus, setProvidersStatus] = useState<any | null>(null);
+  const [showProviderCoverageModal, setShowProviderCoverageModal] = useState(false);
 
   // Dynamic Full Document loading states (for external acts and judgments without DB full-text)
   const [fullDocumentLoading, setFullDocumentLoading] = useState(false);
@@ -709,6 +777,7 @@ export const Documents: React.FC = () => {
     setLetterFilter('');
     setYearRangeFilter('');
     setCourtFilter('');
+    setJurisdictionFilter('');
     setCategoryFilter('');
     setActStatusFilter('');
     setPage(1);
@@ -718,7 +787,7 @@ export const Documents: React.FC = () => {
   const API_BASE = import.meta.env.VITE_API_URL || '';
 
   const hasActiveFilters = Boolean(
-    debouncedSearch || courtFilter || yearFilter || yearRangeFilter || letterFilter || categoryFilter || actStatusFilter || sortFilter !== 'newest'
+    debouncedSearch || courtFilter || jurisdictionFilter || yearFilter || yearRangeFilter || letterFilter || categoryFilter || actStatusFilter || sortFilter !== 'newest'
   );
 
   const fetchDocuments = useCallback(async () => {
@@ -727,6 +796,7 @@ export const Documents: React.FC = () => {
       const queryParams = new URLSearchParams();
       if (debouncedSearch) queryParams.append('search', debouncedSearch);
       if (courtFilter) queryParams.append('court', courtFilter);
+      if (jurisdictionFilter && tab === 'law') queryParams.append('jurisdiction', jurisdictionFilter);
       if (yearFilter) queryParams.append('year', yearFilter);
       if (letterFilter && tab === 'law') queryParams.append('letter', letterFilter);
       if (yearRangeFilter && tab === 'law') queryParams.append('yearRange', yearRangeFilter);
@@ -736,30 +806,76 @@ export const Documents: React.FC = () => {
       queryParams.append('page', String(page));
       queryParams.append('limit', String(limit));
 
-      const endpoint = tab === 'judgement' 
-        ? `${API_BASE}/api/documents/judgements?${queryParams.toString()}`
-        : `${API_BASE}/api/documents/laws?${queryParams.toString()}`;
+      let list: any[] = [];
+      let total = 0;
+      let totalP = 1;
+      let sourceStat = null;
+      let fetchedOk = false;
 
-      const res = await fetch(endpoint, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      // 1. Try Free-First Legal Research API first
+      try {
+        const legalResearchEndpoint = tab === 'judgement'
+          ? `${API_BASE}/api/legal-research/search?type=judgments&${queryParams.toString()}`
+          : `${API_BASE}/api/legal-research/acts/search?${queryParams.toString()}`;
+
+        const lrRes = await fetch(legalResearchEndpoint, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const lrData = await lrRes.json();
+
+        if (lrRes.ok && lrData.success) {
+          fetchedOk = true;
+          sourceStat = lrData.sourceStatus || null;
+          if (tab === 'judgement') {
+            list = lrData.judgments || [];
+            total = lrData.pagination?.total ?? list.length;
+            totalP = lrData.pagination?.totalPages || 1;
+          } else {
+            list = lrData.acts || [];
+            total = lrData.pagination?.total ?? list.length;
+            totalP = lrData.pagination?.totalPages || 1;
+          }
         }
-      });
+      } catch (err) {
+        console.warn('Legal research API error, checking fallback:', err);
+      }
 
-      const data = await res.json();
-      if (res.ok && data.success) {
+      // 2. Fallback to documents endpoint if legal-research was not ok
+      if (!fetchedOk) {
+        const legacyEndpoint = tab === 'judgement' 
+          ? `${API_BASE}/api/documents/judgements?${queryParams.toString()}`
+          : `${API_BASE}/api/documents/laws?${queryParams.toString()}`;
+
+        const res = await fetch(legacyEndpoint, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          fetchedOk = true;
+          sourceStat = data.sourceStatus || null;
+          if (tab === 'judgement') {
+            list = data.judgements || [];
+            total = data.pagination?.total ?? list.length;
+            totalP = data.pagination?.totalPages || 1;
+          } else {
+            list = data.laws || [];
+            total = data.pagination?.total ?? list.length;
+            totalP = data.pagination?.totalPages || 1;
+          }
+        }
+      }
+
+      if (fetchedOk) {
         setApiError('');
-        setSourceStatus(data.sourceStatus || null);
+        setSourceStatus(sourceStat);
         if (tab === 'judgement') {
-          const list = data.judgements || [];
           setJudgements(list.length > 0 ? list : (hasActiveFilters ? [] : INITIAL_JUDGEMENTS));
-          setTotalRecords(data.pagination?.total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_JUDGEMENTS.length)));
-          setTotalPages(data.pagination?.totalPages || 1);
+          setTotalRecords(total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_JUDGEMENTS.length)));
+          setTotalPages(totalP || 1);
         } else {
-          const list = data.laws || [];
           setLaws(list.length > 0 ? list : (hasActiveFilters ? [] : INITIAL_LAWS));
-          setTotalRecords(data.pagination?.total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_LAWS.length)));
-          setTotalPages(data.pagination?.totalPages || 1);
+          setTotalRecords(total ?? (list.length > 0 ? list.length : (hasActiveFilters ? 0 : INITIAL_LAWS.length)));
+          setTotalPages(totalP || 1);
         }
       } else {
         // Fallback gracefully
@@ -792,14 +908,29 @@ export const Documents: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, token, tab, debouncedSearch, courtFilter, yearFilter, yearRangeFilter, letterFilter, categoryFilter, actStatusFilter, sortFilter, page, limit, hasActiveFilters]);
+  }, [API_BASE, token, tab, debouncedSearch, courtFilter, jurisdictionFilter, yearFilter, yearRangeFilter, letterFilter, categoryFilter, actStatusFilter, sortFilter, page, limit, hasActiveFilters]);
+
+  const fetchProvidersStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/legal-research/providers/status`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setProvidersStatus(data);
+      }
+    } catch (err) {
+      console.warn('Could not fetch provider status:', err);
+    }
+  }, [API_BASE, token]);
 
   useEffect(() => {
     fetchDocuments();
+    fetchProvidersStatus();
     if (isAdmin) fetchDataHealth();
     const saved = localStorage.getItem('legal_bookmarked_docs');
     if (saved) setBookmarkedDocs(JSON.parse(saved));
-  }, [fetchDocuments, isAdmin]);
+  }, [fetchDocuments, fetchProvidersStatus, isAdmin]);
 
   const fetchDataHealth = async () => {
     try {
@@ -839,6 +970,25 @@ export const Documents: React.FC = () => {
     setDynamicProvisionError('');
     try {
       const secNumOnly = sectionNumber.replace(/^section\s+/i, '').trim();
+
+      // 1. Try Free-First Legal Research API first
+      try {
+        const lrRes = await fetch(`${API_BASE}/api/legal-research/acts/${encodeURIComponent(actId)}/sections/${encodeURIComponent(secNumOnly)}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const lrData = await lrRes.json();
+        if (lrRes.ok && lrData.success && lrData.section) {
+          setDynamicProvisionData({
+            ...lrData.section,
+            sourceNotice: lrData.sourceNotice
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Legal research section fetch fallback:', err);
+      }
+
+      // 2. Fallback to documents dynamic content endpoint
       const res = await fetch(`${API_BASE}/api/documents/dynamic-content?type=law&actId=${encodeURIComponent(actId)}&sectionNumber=${encodeURIComponent(secNumOnly)}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1031,6 +1181,31 @@ export const Documents: React.FC = () => {
     setFullDocumentText('');
     setFullDocumentMeta(null);
     try {
+      // 1. Try Free-First Legal Research API first
+      try {
+        const lrEndpoint = docType === 'judgement' 
+          ? `${API_BASE}/api/legal-research/judgments/${encodeURIComponent(docId)}`
+          : `${API_BASE}/api/legal-research/acts/${encodeURIComponent(docId)}`;
+        const lrRes = await fetch(lrEndpoint, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const lrData = await lrRes.json();
+        if (lrRes.ok && lrData.success) {
+          if (docType === 'judgement' && lrData.judgment) {
+            setFullDocumentText(lrData.judgment.fullText || lrData.judgment.ratioDecidendi || lrData.judgment.summary?.courtReasoning || '');
+            setFullDocumentMeta(lrData.judgment);
+            return;
+          } else if (docType === 'law' && lrData.act) {
+            setFullDocumentText(lrData.act.statementOfObjects || lrData.act.fullText || '');
+            setFullDocumentMeta(lrData.act);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Legal research document fetch fallback:', err);
+      }
+
+      // 2. Fallback to documents dynamic content endpoint
       const res = await fetch(`${API_BASE}/api/documents/dynamic-content?type=${docType}&docId=${encodeURIComponent(docId)}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1087,6 +1262,7 @@ export const Documents: React.FC = () => {
     setSearch('');
     setDebouncedSearch('');
     setCourtFilter('');
+    setJurisdictionFilter('');
     setYearFilter('');
     setYearRangeFilter('');
     setLetterFilter('');
@@ -1128,31 +1304,22 @@ export const Documents: React.FC = () => {
             {/* HEADER ACTIONS */}
             <div className="flex items-center gap-3 flex-shrink-0 flex-wrap">
               <button
-                onClick={fetchComplianceRegister}
+                onClick={() => setShowProviderCoverageModal(true)}
                 className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs border border-slate-300 dark:border-slate-700 shadow-sm transition-all cursor-pointer"
-                title="View Official Source Attribution & Legal Copyright Compliance"
+                title="View Provider Coverage, Free-First Policies, Disclaimers & Official Registries"
               >
-                <ShieldCheck size={16} className="text-emerald-500" />
-                Sources & Compliance Register
+                <Layers size={16} className="text-amber-500" />
+                Coverage & Providers
               </button>
 
               {isAdmin && (
-                <>
-                  <button
-                    onClick={() => { setShowHealthModal(true); fetchDataHealth(); }}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs border border-slate-300 dark:border-slate-700 shadow-sm transition-all cursor-pointer"
-                  >
-                    <ShieldAlert size={16} className="text-amber-500" />
-                    Data Health
-                  </button>
-                  <button
-                    onClick={() => { setShowUploadModal(true); setUploadType(tab); }}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
-                  >
-                    <CloudUpload size={16} />
-                    + {tab === 'judgement' ? 'Add Judgement' : 'Add Bare Act'}
-                  </button>
-                </>
+                <button
+                  onClick={() => { setShowUploadModal(true); setUploadType(tab); }}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                >
+                  <CloudUpload size={16} />
+                  + {tab === 'judgement' ? 'Add Judgement' : 'Add Bare Act'}
+                </button>
               )}
             </div>
           </div>
@@ -1191,12 +1358,67 @@ export const Documents: React.FC = () => {
           </div>
         </div>
 
+        {/* FREE-FIRST LEGAL TECHNOLOGY PROVIDER STATUS BAR */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <ShieldCheck size={16} className="text-emerald-500" />
+              <span>Free-First Engine:</span>
+            </span>
+
+            {/* India Code Status */}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-500/20 text-[11px]" title="Central & State Bare Acts from official India Code repository">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              India Code (Free)
+            </span>
+
+            {/* e-SCR / SCI Status */}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 font-semibold border border-blue-500/20 text-[11px]" title="Supreme Court Judgments via Digital Supreme Court Reports (1950-Present)">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              e-SCR & SCI (Free)
+            </span>
+
+            {/* 10 Tribunals */}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-400 font-semibold border border-purple-500/20 text-[11px]" title="10 Specialized Judicial Tribunals & Appellate Commissions">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+              10 Tribunals (Free)
+            </span>
+
+            {/* Indian Kanoon Status */}
+            {providersStatus?.providers?.find((p: any) => p.providerId === 'indian_kanoon')?.status === 'AVAILABLE_FREE' ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-500/20 text-[11px]" title="Indian Kanoon API Connected under Free Developer Allowance">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Indian Kanoon API (Dev Tier)
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold border border-amber-500/20 text-[11px]" title="Indian Kanoon token not configured; official court registries fallback active">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                Indian Kanoon (Auth Not Set • Registry Fallback Active)
+              </span>
+            )}
+
+            {/* eCourts Commercial Status */}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-semibold border border-slate-200 dark:border-slate-700 text-[11px]" title="Commercial pay-per-hit endpoints disabled pursuant to Free-First Policy">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              eCourts Commercial (Disabled • Paid Policy)
+            </span>
+          </div>
+
+          <button
+            onClick={() => setShowProviderCoverageModal(true)}
+            className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:text-amber-500 font-bold hover:underline cursor-pointer flex-shrink-0"
+          >
+            <Info size={14} />
+            <span>Coverage & Limitations Report</span>
+          </button>
+        </div>
+
         {/* SEARCH & FILTERS CONTROL TOOLBAR */}
         <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-md space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
             
             {/* Universal Search Input (Debounced 350ms) */}
-            <div className="md:col-span-5 relative">
+            <div className={tab === 'judgement' ? "md:col-span-5 relative" : "md:col-span-4 relative"}>
               <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -1219,7 +1441,7 @@ export const Documents: React.FC = () => {
               )}
             </div>
 
-            {/* Court Filter (Judgments) or Enforcement Status (Bare Acts) */}
+            {/* Court Filter (Judgments) or Jurisdiction & Enforcement Status (Bare Acts) */}
             {tab === 'judgement' ? (
               <div className="md:col-span-3">
                 <select
@@ -1227,23 +1449,41 @@ export const Documents: React.FC = () => {
                   onChange={(e) => { setCourtFilter(e.target.value); setPage(1); }}
                   className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
                 >
-                  <option value="">All Courts & Benches</option>
-                  {CONTROLLED_COURTS.map(c => <option key={c} value={c}>{c}</option>)}
+                  <option value="">All Courts & Tribunals</option>
+                  {EXPANDED_COURTS_AND_TRIBUNALS.map(grp => (
+                    <optgroup key={grp.group} label={grp.group}>
+                      {grp.items.map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
               </div>
             ) : (
-              <div className="md:col-span-3">
-                <select
-                  value={actStatusFilter}
-                  onChange={(e) => { setActStatusFilter(e.target.value); setPage(1); }}
-                  className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
-                >
-                  <option value="">All Enforcement Statuses</option>
-                  <option value="CURRENTLY_IN_FORCE">Currently In Force</option>
-                  <option value="AMENDED">Amended Enactments</option>
-                  <option value="REPEALED">Repealed / Superseded Enactments</option>
-                </select>
-              </div>
+              <>
+                <div className="md:col-span-2">
+                  <select
+                    value={jurisdictionFilter}
+                    onChange={(e) => { setJurisdictionFilter(e.target.value); setPage(1); }}
+                    className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="">All Jurisdictions</option>
+                    {CONTROLLED_JURISDICTIONS.map(jur => <option key={jur} value={jur}>{jur}</option>)}
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <select
+                    value={actStatusFilter}
+                    onChange={(e) => { setActStatusFilter(e.target.value); setPage(1); }}
+                    className="w-full py-2.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="">All Enforcement Statuses</option>
+                    <option value="CURRENTLY_IN_FORCE">Currently In Force</option>
+                    <option value="AMENDED">Amended Enactments</option>
+                    <option value="REPEALED">Repealed / Superseded Enactments</option>
+                  </select>
+                </div>
+              </>
             )}
 
             {/* Area of Law / Category Filter */}
@@ -1339,6 +1579,11 @@ export const Documents: React.FC = () => {
                 {courtFilter && (
                   <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold border border-blue-500/20">
                     Court: {courtFilter}
+                  </span>
+                )}
+                {jurisdictionFilter && (
+                  <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-500/20">
+                    Jurisdiction: {jurisdictionFilter}
                   </span>
                 )}
                 {categoryFilter && (
@@ -1815,6 +2060,101 @@ export const Documents: React.FC = () => {
               {/* Modal Body */}
               <div className="p-6 overflow-y-auto space-y-6 flex-1 text-slate-800 dark:text-slate-200 text-sm">
                 
+                {/* MANDATORY UNOFFICIAL RESEARCH COPY DISCLAIMER */}
+                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+                  <AlertCircle size={16} className="text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong className="block font-bold uppercase tracking-wider text-[10px] text-amber-700 dark:text-amber-400">
+                      Unofficial Research Record — Not a Court-Certified Copy
+                    </strong>
+                    <p className="text-[11px] mt-0.5 leading-relaxed text-slate-700 dark:text-slate-300">
+                      This legal document is provided for research, academic, and professional guidance. It does not constitute a certified court-sealed copy or official legislative parchment. Certified copies should be obtained from the respective court registry or the Directorate of Printing.
+                    </p>
+                  </div>
+                </div>
+
+                {/* VISIBLE SOURCE ATTRIBUTION BADGE & LINKING (COMPLIES WITH INDIAN KANOON & OFFICIAL SOURCE TERMS) */}
+                {(readingDoc.provider === 'indian_kanoon' || readingDoc.sourceNotice?.includes('Indian Kanoon') || readingDoc.sourceAuthority?.includes('Indian Kanoon')) ? (
+                  <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-start justify-between gap-3 text-xs">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Scale size={16} className="text-blue-500" />
+                        <strong className="font-bold text-blue-700 dark:text-blue-300 text-xs uppercase tracking-wider">
+                          Source: Indian Kanoon Legal API (Visible Attribution)
+                        </strong>
+                      </div>
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Data retrieved via Indian Kanoon API pursuant to their terms of service. Indian Kanoon requires clear, visible attribution on all rendered data.
+                      </p>
+                    </div>
+                    <a
+                      href={readingDoc.sourceUrl || "https://indiankanoon.org"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs flex-shrink-0"
+                    >
+                      <span>View on Indian Kanoon</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                ) : (readingDoc.provider === 'india_code' || tab === 'law') ? (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+                      <ShieldCheck size={16} className="text-emerald-500 flex-shrink-0" />
+                      <span className="text-[11px]">
+                        <strong>Official Statutory Source:</strong> India Code (NIC / Ministry of Law and Justice, Govt. of India). Published under Section 52(1)(q)(ii) Indian Copyright Act, 1957.
+                      </span>
+                    </div>
+                    <a
+                      href={readingDoc.officialSourceUrl || readingDoc.sourceUrl || "https://www.indiacode.nic.in/"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-600 dark:text-emerald-400 hover:underline font-bold text-xs flex items-center gap-1 flex-shrink-0"
+                    >
+                      <span>Verify on India Code</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                ) : (readingDoc.provider === 'ecourts_official' || readingDoc.court?.includes('Supreme Court')) ? (
+                  <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-blue-800 dark:text-blue-300">
+                      <Gavel size={16} className="text-blue-500 flex-shrink-0" />
+                      <span className="text-[11px]">
+                        <strong>Official Judicial Source:</strong> Digital Supreme Court Reports (e-SCR) / Supreme Court of India Registry.
+                      </span>
+                    </div>
+                    <a
+                      href={readingDoc.sourceUrl || "https://escr.sci.gov.in/"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline font-bold text-xs flex items-center gap-1 flex-shrink-0"
+                    >
+                      <span>e-SCR Portal</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <Landmark size={16} className="text-amber-500 flex-shrink-0" />
+                      <span className="text-[11px]">
+                        <strong>Official Authority Source:</strong> {readingDoc.sourceAuthority || readingDoc.court || 'Public Judicial Repository'}.
+                      </span>
+                    </div>
+                    {readingDoc.sourceUrl && (
+                      <a
+                        href={readingDoc.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-600 dark:text-amber-400 hover:underline font-bold text-xs flex items-center gap-1 flex-shrink-0"
+                      >
+                        <span>Original Registry Portal</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 {/* VERIFIED LEGAL METADATA BOX */}
                 <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-2">
@@ -1984,6 +2324,50 @@ export const Documents: React.FC = () => {
                                     {sub.text}
                                   </div>
                                 ))}
+                              </div>
+                            )}
+
+                            {/* Old-to-New Statutory Provision Mapping & Related Provisions */}
+                            {dynamicProvisionData.relatedProvisions && dynamicProvisionData.relatedProvisions.length > 0 && (
+                              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2 mt-3">
+                                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+                                  <Layers size={16} className="text-amber-600 dark:text-amber-400" />
+                                  <strong className="text-xs uppercase tracking-wider font-bold">
+                                    Related Provisions & Old-to-New Statutory References:
+                                  </strong>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                                  {dynamicProvisionData.relatedProvisions.map((rel: any, rIdx: number) => (
+                                    <div key={rIdx} className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-amber-500/20 text-xs">
+                                      <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-mono mb-1">
+                                        <span>{rel.relationship || 'Statutory Reference'}</span>
+                                        {rel.era && <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded">{rel.era}</span>}
+                                      </div>
+                                      <div className="font-bold text-slate-900 dark:text-white">
+                                        {rel.provision || rel.targetSection}
+                                      </div>
+                                      {rel.notes && (
+                                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1">
+                                          {rel.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Legislative Amendments & Gazette Notifications */}
+                            {dynamicProvisionData.amendments && dynamicProvisionData.amendments.length > 0 && (
+                              <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs space-y-1 mt-2">
+                                <span className="font-bold text-[11px] text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                                  Statutory Amendments & Gazette Notifications:
+                                </span>
+                                <ul className="list-disc list-inside space-y-0.5 text-slate-600 dark:text-slate-400 text-[11px]">
+                                  {dynamicProvisionData.amendments.map((am: string, amIdx: number) => (
+                                    <li key={amIdx}>{am}</li>
+                                  ))}
+                                </ul>
                               </div>
                             )}
 
@@ -2666,6 +3050,208 @@ export const Documents: React.FC = () => {
                 >
                   {ingestingData ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
                   Execute Legal Data Ingestion Pipeline
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* FREE-FIRST LEGAL TECHNOLOGY PROVIDER COVERAGE, BILLING & LIMITATIONS MODAL */}
+        {showProviderCoverageModal && (
+          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+              
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    <Scale size={24} />
+                  </span>
+                  <div>
+                    <h2 className="font-serif font-bold text-xl text-slate-900 dark:text-white">
+                      Free-First Legal Research: Provider Coverage & Billing Report
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Transparent accounting of upstream APIs, billing status, coverage limitations, and official source registries.
+                    </p>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setShowProviderCoverageModal(false)}
+                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* FREE-ONLY TECHNOLOGY POLICY CALLOUT */}
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-900 dark:text-emerald-200 space-y-2">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400" />
+                  <strong className="block font-bold uppercase text-[11px] tracking-wider text-emerald-700 dark:text-emerald-300">
+                    Strict Free-First & Zero Unexpected Charges Policy
+                  </strong>
+                </div>
+                <p className="leading-relaxed">
+                  Elite Legal Desk is built on a <strong>Free-First architecture</strong>. All commercial endpoints requiring payment (such as per-hit paid aggregators like <code>ecourtsindia.com</code>) are <strong>explicitly disabled in server configuration</strong>. We do not purchase API credits, subscribe to paid plans, or trigger billed endpoints. Where automated free API coverage is unavailable or rate-limited, the system seamlessly links directly to verified official government repositories (India Code, Supreme Court e-SCR, High Court and Tribunal portals).
+                </p>
+              </div>
+
+              {/* INTEGRATED PROVIDERS STATUS TABLE */}
+              <div className="space-y-3 text-xs">
+                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs flex items-center gap-2">
+                  <Globe size={16} className="text-amber-500" />
+                  Provider Integration & Billing Status Matrix
+                </h3>
+
+                <div className="space-y-3">
+                  {/* Provider 1: India Code */}
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">India Code (NIC / Ministry of Law & Justice)</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          100% FREE (NO FEES)
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                          ACTIVE
+                        </span>
+                      </div>
+                      <a href="https://www.indiacode.nic.in/" target="_blank" rel="noopener noreferrer" className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-semibold text-xs">
+                        <span>indiacode.nic.in</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                      <strong>Coverage:</strong> Central Acts (1836 to present), published State Enactments, statutory section outlines, rules, regulations, and legislative amendment histories.
+                    </p>
+                    <p className="text-slate-500 text-[11px]">
+                      <strong>Legal & Attribution Basis:</strong> Public legislative reproduction under Section 52(1)(q)(ii) Indian Copyright Act, 1957. Fetched dynamically on-demand with zero persistent MongoDB full-text storage.
+                    </p>
+                  </div>
+
+                  {/* Provider 2: e-SCR & Supreme Court Registry */}
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">Digital Supreme Court Reports (e-SCR) & SCI Portal</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          100% FREE (OFFICIAL)
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                          ACTIVE
+                        </span>
+                      </div>
+                      <a href="https://escr.sci.gov.in/" target="_blank" rel="noopener noreferrer" className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-semibold text-xs">
+                        <span>escr.sci.gov.in</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                      <strong>Coverage:</strong> Supreme Court of India judgments (1950 to present), Neutral Citations (e.g. 2026 INSC 412), division and constitution bench orders.
+                    </p>
+                    <p className="text-slate-500 text-[11px]">
+                      <strong>Legal & Attribution Basis:</strong> Public judicial records published by the Supreme Court of India under Article 129 of the Constitution.
+                    </p>
+                  </div>
+
+                  {/* Provider 3: Indian Kanoon API */}
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">Indian Kanoon Legal API</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                          DEV TESTING TIER ONLY
+                        </span>
+                        {providersStatus?.providers?.find((p: any) => p.providerId === 'indian_kanoon')?.status === 'AVAILABLE_FREE' ? (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                            TOKEN CONFIGURED
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            FALLBACK MODE (REGISTRY DIRECT)
+                          </span>
+                        )}
+                      </div>
+                      <a href="https://api.indiankanoon.org/documentation/" target="_blank" rel="noopener noreferrer" className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-semibold text-xs">
+                        <span>api.indiankanoon.org</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                      <strong>Billing Evaluation:</strong> Indian Kanoon offers an initial developer testing tier with temporary credit allowances. Commercial packages charge per query. Pursuant to our free-only policy, our adapter operates strictly within free developer allowances and never charges fees or triggers paid accounts.
+                    </p>
+                    <p className="text-slate-500 text-[11px]">
+                      <strong>Mandatory Attribution Terms:</strong> Indian Kanoon API terms mandate visible, clickable attribution whenever data is rendered. This requirement is enforced across all modal views and cards.
+                    </p>
+                  </div>
+
+                  {/* Provider 4: eCourts Commercial API */}
+                  <div className="p-4 rounded-xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/20 space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">eCourtsIndia Commercial API (ecourtsindia.com)</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                          PAID PER-HIT ($0.05 - $0.15)
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-500 border border-red-500/20">
+                          DISABLED PER POLICY
+                        </span>
+                      </div>
+                      <a href="https://ecourtsindia.com" target="_blank" rel="noopener noreferrer" className="text-red-600 dark:text-red-400 hover:underline flex items-center gap-1 font-semibold text-xs">
+                        <span>ecourtsindia.com</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                      <strong>Billing Condition:</strong> <code>ecourtsindia.com</code> is a third-party commercial reseller requiring pay-per-hit billing and credit card authorization.
+                    </p>
+                    <p className="text-red-700 dark:text-red-300 font-semibold text-[11px]">
+                      <strong>Action Taken:</strong> Hardcoded as <code>DISABLED_PAID_ENDPOINT</code> in the server billing registry. Official free National Judicial Data Grid (NJDG) and eCourts Services (<code>services.ecourts.gov.in</code>) are referenced instead.
+                    </p>
+                  </div>
+
+                  {/* Provider 5: 10 Specialized Tribunals */}
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">Specialized Judicial Tribunals & Appellate Commissions</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                          10 TRIBUNALS (FREE)
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-500 border border-purple-500/20">
+                          ACTIVE
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                      Integrated coverage of 10 specialized judicial bodies: <strong>NCLAT</strong> (Insolvency & Company Appeals), <strong>NCLT</strong>, <strong>NGT</strong> (Green/Environmental), <strong>ITAT</strong> (Income Tax), <strong>CESTAT</strong> (Customs & Excise), <strong>CAT</strong> (Administrative), <strong>NCDRC</strong> (Consumer Disputes), <strong>APTEL</strong> (Electricity), <strong>TDSAT</strong> (Telecom & Broadcasting), and <strong>AFT</strong> (Armed Forces).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* REAL COVERAGE LIMITATIONS & AVAILABILITY STATUS */}
+              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-900 dark:text-amber-200 space-y-2">
+                <strong className="block font-bold uppercase text-[11px] tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                  <AlertCircle size={14} /> Explicit Coverage Limitations & Availability Disclosure
+                </strong>
+                <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed">
+                  <li><strong>No Full Coverage Claim:</strong> We do not claim that every judgment, order, or state gazette instrument is available. Availability is constrained by what official government bodies have digitized and made accessible.</li>
+                  <li><strong>Subordinate & Lower Courts:</strong> District and taluk court orders vary significantly in digitization; official Case Information Network (CNR) search via <code>services.ecourts.gov.in</code> is linked where orders cannot be indexed directly.</li>
+                  <li><strong>Zero Persistent Document Storage:</strong> In compliance with copyright exceptions and API terms, no full-text judgments or Bare Act documents are stored in MongoDB. Documents are retrieved dynamically on-demand with temporary in-memory RAM caching.</li>
+                  <li><strong>Unofficial Copies:</strong> All documents displayed are unofficial copies intended for research. Court-certified copies must be obtained from the respective registry.</li>
+                </ul>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowProviderCoverageModal(false)}
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs cursor-pointer"
+                >
+                  Close Coverage Report
                 </button>
               </div>
 

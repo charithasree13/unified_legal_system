@@ -13,6 +13,8 @@
  */
 
 import https from 'https';
+import { legalResearchService } from './legalResearch/legalResearchService';
+import { STATUTORY_SECTION_PROVISION_REGISTRY } from './legalResearch/providers/indiaCodeAdapter';
 
 interface CacheEntry<T> {
   data: T;
@@ -502,7 +504,7 @@ export interface ExternalSearchResult<T> {
 
 /**
  * Live search for Indian Statutory Bare Acts (Central & State Acts, Rules, Amendments)
- * Uses India Code search references and open statutory repository
+ * Uses India Code search references and open statutory repository via LegalResearchService
  */
 export async function searchLiveExternalActs(
   query: string,
@@ -510,164 +512,57 @@ export async function searchLiveExternalActs(
   limit = 10,
   filters?: { jurisdiction?: string; category?: string; letter?: string; year?: string }
 ): Promise<ExternalSearchResult<any>> {
-  const cacheKey = `ext_law_search:${(query || '').toLowerCase()}:${page}:${limit}:${JSON.stringify(filters || {})}`;
-  const cached = memoryCache.get(cacheKey);
-  if (cached && Date.now() < cached.expiry) {
-    return cached.data;
-  }
+  const result = await legalResearchService.searchActs({
+    search: query,
+    page,
+    limit,
+    jurisdiction: filters?.jurisdiction,
+    category: filters?.category,
+    letter: filters?.letter,
+    year: filters?.year
+  });
 
-  let searchTerms = (query || '').trim();
-  if (filters?.letter) {
-    searchTerms = `${filters.letter}* ${searchTerms}`.trim();
-  }
-  if (filters?.jurisdiction && filters.jurisdiction !== 'Central / All India') {
-    searchTerms = `${filters.jurisdiction} ${searchTerms}`.trim();
-  }
-  if (filters?.category && filters.category !== 'Other Laws' && filters.category !== 'Statutory Law') {
-    searchTerms = `${filters.category} ${searchTerms}`.trim();
-  }
-  if (filters?.year) {
-    searchTerms = `${searchTerms} ${filters.year}`.trim();
-  }
-
-  // If completely empty, default to Central Acts overview
-  if (!searchTerms) {
-    searchTerms = 'Central Acts of India';
-  }
-
-  const kanoonPage = Math.max(0, page - 1);
-  const encodedQuery = encodeURIComponent(`${searchTerms} doctypes:laws`);
-  const url = `https://indiankanoon.org/search/?formInput=${encodedQuery}&pagenum=${kanoonPage}`;
-
-  try {
-    const res = await fetchExternalUrl(url, 7000);
-    if (res.status !== 200) {
-      return {
-        items: [],
-        totalReported: 0,
-        sourceStatus: {
-          indiaCode: 'ONLINE_CONNECTED',
-          judicialRegistry: 'ONLINE_CONNECTED',
-          repository: `HTTP_${res.status}`
-        }
-      };
+  return {
+    items: result.acts.map(act => ({
+      _id: `ext_law_${act.id}`,
+      canonicalKey: act.canonicalKey,
+      title: act.title,
+      actName: act.actName,
+      shortTitle: act.shortTitle,
+      actNumber: act.actNumber,
+      year: act.year,
+      enactmentDate: act.enactmentDate || `${act.year}-01-01`,
+      commencementDate: act.commencementDate || `${act.year}-01-01`,
+      ministry: act.ministry,
+      jurisdiction: act.jurisdiction,
+      actStatus: act.actStatus,
+      category: act.category,
+      longTitle: act.description,
+      description: act.description,
+      sourceAuthority: act.sourceAuthority,
+      sourceUrl: act.officialSourceUrl,
+      officialSourceUrl: act.officialSourceUrl,
+      rightsStatus: 'Official Public Statutory Record — Section 52(1)(q) Indian Copyright Act, 1957',
+      lastVerified: new Date().toISOString().split('T')[0],
+      totalSections: act.totalSections,
+      chapters: act.chapters || [],
+      rulesAndRegulations: act.rulesAndRegulations || [],
+      amendments: act.amendments || [],
+      isInlineViewable: true,
+      isExternalSource: true
+    })),
+    totalReported: result.pagination.total,
+    sourceStatus: {
+      indiaCode: 'ONLINE_CONNECTED',
+      judicialRegistry: 'ONLINE_CONNECTED',
+      repository: 'ONLINE_CONNECTED'
     }
-
-    // Extract total count string e.g. "1 - 10 of 9970"
-    let totalReported = 0;
-    const countMatch = res.body.match(/class="results-count"[^>]*>([\s\S]*?)<\/span>/i);
-    if (countMatch) {
-      const countText = stripHtml(countMatch[1]);
-      const numMatch = countText.match(/of\s+([0-9,]+)/i);
-      if (numMatch) {
-        totalReported = parseInt(numMatch[1].replace(/,/g, ''), 10) || 0;
-      }
-    }
-
-    const items: any[] = [];
-    const articleRegex = /<article class="result"[\s\S]*?<h4 class="result_title">[\s\S]*?<a href="\/doc(?:\/|fragment\/)(\d+)\/[^"]*"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/h4>([\s\S]*?)<\/article>/g;
-    let match;
-
-    while ((match = articleRegex.exec(res.body)) !== null) {
-      const docId = match[1];
-      const rawTitle = stripHtml(match[2]);
-      const bodySnippet = match[3];
-
-      const sourceMatch = bodySnippet.match(/class="docsource"[^>]*>([\s\S]*?)<\/span>/i);
-      const docSource = sourceMatch ? stripHtml(sourceMatch[1]) : 'Government of India / State Legislature';
-
-      const headlineMatch = bodySnippet.match(/class="headline"[^>]*>([\s\S]*?)<\/div>/i);
-      const headline = headlineMatch ? stripHtml(headlineMatch[1]) : '';
-
-      // Clean title
-      const cleanTitle = rawTitle.replace(/\s+on\s+\d{1,2}\s+[A-Za-z]+,?\s+\d{4}/i, '').trim();
-
-      // Determine jurisdiction: Central vs State
-      const isCentral = docSource.toLowerCase().includes('union') || 
-                        docSource.toLowerCase().includes('central') || 
-                        (!docSource.toLowerCase().includes('state') && !docSource.toLowerCase().includes('high court'));
-      
-      let jurisdiction = isCentral ? 'Central / All India' : docSource.replace(/\s*-\s*(?:Act|Section)/gi, '').trim();
-      if (!jurisdiction.toLowerCase().startsWith('state') && !isCentral) {
-        jurisdiction = `State of ${jurisdiction}`;
-      }
-
-      // Year extraction
-      const yearMatch = cleanTitle.match(/\b(18\d{2}|19\d{2}|20\d{2})\b/);
-      const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
-
-      // Act number extraction
-      const actNoMatch = headline.match(/Act\s+No\.?\s*(\d+\s+of\s+\d{4})/i) || cleanTitle.match(/Act\s+No\.?\s*(\d+\s+of\s+\d{4})/i);
-      const actNumber = actNoMatch ? `Act No. ${actNoMatch[1]}` : `Act of ${year}`;
-
-      // Repeal / Amendment status
-      const isRepealed = cleanTitle.toLowerCase().includes('repealed') || headline.toLowerCase().includes('repealed by') || headline.toLowerCase().includes('stands repealed');
-      const isAmended = cleanTitle.toLowerCase().includes('amended') || cleanTitle.toLowerCase().includes('amendment') || headline.toLowerCase().includes('as amended');
-      const actStatus = isRepealed ? 'REPEALED' : isAmended ? 'AMENDED' : 'CURRENTLY_IN_FORCE';
-
-      const category = filters?.category || inferLegalCategory(cleanTitle + ' ' + headline);
-
-      // Official India Code Portal URL for this Act
-      const indiaCodeSearchUrl = `https://www.indiacode.gov.in/simple-search?query=${encodeURIComponent(cleanTitle)}`;
-      const canonicalKey = generateLawCanonicalKey(cleanTitle, actNumber, year, jurisdiction);
-
-      items.push({
-        _id: `ext_law_${docId}`,
-        canonicalKey,
-        title: cleanTitle,
-        actName: cleanTitle,
-        shortTitle: cleanTitle,
-        actNumber,
-        year,
-        enactmentDate: `${year}-01-01`,
-        commencementDate: `${year}-01-01`,
-        ministry: isCentral ? 'Ministry of Law and Justice, Govt. of India' : `${jurisdiction} Legislative Assembly`,
-        jurisdiction,
-        actStatus,
-        category,
-        longTitle: headline || cleanTitle,
-        description: headline || `Statutory enactment from official legislative repository. Enacted by ${jurisdiction}.`,
-        sourceAuthority: 'India Code / Authorised Legislative Repository',
-        sourceUrl: `https://indiankanoon.org/doc/${docId}/`,
-        officialSourceUrl: indiaCodeSearchUrl,
-        rightsStatus: 'Official Public Statutory Record — Section 52(1)(q) Indian Copyright Act, 1957',
-        isInlineViewable: true,
-        isExternalSource: true,
-        chapters: []
-      });
-    }
-
-    const result: ExternalSearchResult<any> = {
-      items,
-      totalReported: Math.max(totalReported, items.length),
-      sourceStatus: {
-        indiaCode: 'ONLINE_CONNECTED',
-        judicialRegistry: 'ONLINE_CONNECTED',
-        repository: 'OK'
-      }
-    };
-
-    memoryCache.set(cacheKey, {
-      data: result,
-      expiry: Date.now() + CACHE_TTL_MS
-    });
-
-    return result;
-  } catch (err: any) {
-    return {
-      items: [],
-      totalReported: 0,
-      sourceStatus: {
-        indiaCode: 'ONLINE_CONNECTED',
-        judicialRegistry: 'ONLINE_CONNECTED',
-        repository: `ERROR: ${err.message}`
-      }
-    };
-  }
+  };
 }
 
 /**
- * Live search for Indian Court Judgments (Supreme Court & High Courts)
+ * Live search for Indian Court Judgments (Supreme Court, High Courts, Tribunals)
+ * Federated via LegalResearchService adhering to Free-First Legal Research Policy.
  */
 export async function searchLiveExternalJudgments(
   query: string,
@@ -675,168 +570,74 @@ export async function searchLiveExternalJudgments(
   limit = 10,
   filters?: { court?: string; state?: string; judge?: string; year?: string; subject?: string; citation?: string; caseNumber?: string }
 ): Promise<ExternalSearchResult<any>> {
-  const cacheKey = `ext_jud_search:${(query || '').toLowerCase()}:${page}:${limit}:${JSON.stringify(filters || {})}`;
-  const cached = memoryCache.get(cacheKey);
-  if (cached && Date.now() < cached.expiry) {
-    return cached.data;
-  }
+  const searchRes = await legalResearchService.search({
+    search: query,
+    type: 'judgments',
+    page,
+    limit,
+    court: filters?.court,
+    state: filters?.state,
+    judge: filters?.judge,
+    year: filters?.year,
+    subject: filters?.subject,
+    citation: filters?.citation,
+    caseNumber: filters?.caseNumber
+  });
 
-  let searchTerms = (query || '').trim();
-  if (filters?.citation) searchTerms = `${filters.citation} ${searchTerms}`.trim();
-  if (filters?.caseNumber) searchTerms = `${filters.caseNumber} ${searchTerms}`.trim();
-  if (filters?.judge) searchTerms = `${filters.judge} ${searchTerms}`.trim();
-  if (filters?.court && filters.court !== 'Other Courts') searchTerms = `${filters.court} ${searchTerms}`.trim();
-  if (filters?.subject && filters.subject !== 'Other Laws') searchTerms = `${filters.subject} ${searchTerms}`.trim();
-  if (filters?.year) searchTerms = `${searchTerms} ${filters.year}`.trim();
+  const judgments = searchRes.results.judgments || [];
 
-  // If empty on page load, search Supreme Court landmark precedents
-  if (!searchTerms) {
-    searchTerms = 'Supreme Court of India Constitution Bench';
-  }
-
-  const kanoonPage = Math.max(0, page - 1);
-  const encodedQuery = encodeURIComponent(`${searchTerms} doctypes:judgments`);
-  const url = `https://indiankanoon.org/search/?formInput=${encodedQuery}&pagenum=${kanoonPage}`;
-
-  try {
-    const res = await fetchExternalUrl(url, 7000);
-    if (res.status !== 200) {
-      return {
-        items: [],
-        totalReported: 0,
-        sourceStatus: {
-          indiaCode: 'ONLINE_CONNECTED',
-          judicialRegistry: `HTTP_${res.status}`,
-          repository: `HTTP_${res.status}`
-        }
-      };
+  return {
+    items: judgments.map(j => ({
+      _id: j.id.startsWith('ext_jud_') ? j.id : `ext_jud_${j.id}`,
+      canonicalKey: j.canonicalKey,
+      title: j.title,
+      petitioner: j.petitioner || 'Petitioner',
+      respondent: j.respondent || 'Respondent',
+      court: j.court,
+      state: j.state,
+      judge: j.judge || 'Division Bench',
+      bench: j.bench || j.judge || 'Division Bench',
+      caseNumber: j.caseNumber || 'Civil Appeal',
+      appealNumber: j.appealNumber,
+      neutralCitation: j.neutralCitation,
+      equivalentCitations: j.equivalentCitations || [],
+      judgmentDate: j.decisionDate,
+      year: j.year,
+      judgmentType: j.judgmentType,
+      subject: j.subject,
+      actsInvolved: j.actsInvolved || [],
+      sectionsConsidered: j.sectionsConsidered || [],
+      keywords: j.keywords || [],
+      caseOutcome: j.caseOutcome || 'Decided',
+      sourceAuthority: j.source.providerName,
+      sourceUrl: j.source.sourceUrl,
+      officialSourceUrl: j.source.officialSourceUrl,
+      pdfUrl: j.source.officialSourceUrl,
+      legalStatus: 'Public Judicial Record',
+      lastVerified: new Date().toISOString().split('T')[0],
+      fileName: `${j.title.replace(/[^a-z0-9]/gi, '_')}.pdf`,
+      uploadedBy: j.source.providerName,
+      summary: j.summary || {
+        background: `Judicial judgment delivered by the ${j.court}.`,
+        issues: `Determination of statutory questions and principles before the ${j.court}.`,
+        relevantLaw: j.subject,
+        courtReasoning: `Court observations and reasoning in ${j.title}.`,
+        holding: `Official judicial determination by ${j.court}.`,
+        keyPrinciple: `Guiding precedent established in ${j.title}.`,
+        outcome: j.caseOutcome || 'Decided',
+        fullSummaryText: j.title
+      },
+      source: j.source,
+      isInlineViewable: true,
+      isExternalSource: true
+    })),
+    totalReported: searchRes.pagination.total,
+    sourceStatus: {
+      indiaCode: 'ONLINE_CONNECTED',
+      judicialRegistry: 'ONLINE_CONNECTED',
+      repository: 'ONLINE_CONNECTED'
     }
-
-    let totalReported = 0;
-    const countMatch = res.body.match(/class="results-count"[^>]*>([\s\S]*?)<\/span>/i);
-    if (countMatch) {
-      const countText = stripHtml(countMatch[1]);
-      const numMatch = countText.match(/of\s+([0-9,]+)/i);
-      if (numMatch) {
-        totalReported = parseInt(numMatch[1].replace(/,/g, ''), 10) || 0;
-      }
-    }
-
-    const items: any[] = [];
-    const articleRegex = /<article class="result"[\s\S]*?<h4 class="result_title">[\s\S]*?<a href="\/doc(?:\/|fragment\/)(\d+)\/[^"]*"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/h4>([\s\S]*?)<\/article>/g;
-    let match;
-
-    while ((match = articleRegex.exec(res.body)) !== null) {
-      const docId = match[1];
-      const rawTitle = stripHtml(match[2]);
-      const bodySnippet = match[3];
-
-      const sourceMatch = bodySnippet.match(/class="docsource"[^>]*>([\s\S]*?)<\/span>/i);
-      const court = sourceMatch ? stripHtml(sourceMatch[1]) : (filters?.court || 'Supreme Court of India');
-
-      const headlineMatch = bodySnippet.match(/class="headline"[^>]*>([\s\S]*?)<\/div>/i);
-      const headline = headlineMatch ? stripHtml(headlineMatch[1]) : '';
-
-      // Date & Year extraction
-      const dateMatch = rawTitle.match(/on\s+(\d{1,2}\s+[A-Za-z]+,?\s+\d{4})/i) || rawTitle.match(/(\d{4})/);
-      const judgmentDate = dateMatch ? dateMatch[1] : '';
-      const yearMatch = rawTitle.match(/\b(19\d{2}|20\d{2})\b/);
-      const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
-
-      // Clean Title
-      const cleanTitle = rawTitle.replace(/\s+on\s+\d{1,2}\s+[A-Za-z]+,?\s+\d{4}/i, '').trim();
-
-      // Parties extraction
-      let petitioner = 'Petitioner';
-      let respondent = 'Respondent';
-      const vsMatch = cleanTitle.split(/\s+(?:vs\.?|v\.?|versus)\s+/i);
-      if (vsMatch.length >= 2) {
-        petitioner = vsMatch[0].trim();
-        respondent = vsMatch[1].trim();
-      }
-
-      // Neutral Citation
-      const isSci = court.toLowerCase().includes('supreme court');
-      const neutralCitation = `${year} INSC ${docId.substring(0, 4)}`;
-
-      // Subject extraction
-      const subject = filters?.subject || inferLegalCategory(cleanTitle + ' ' + headline);
-
-      // Official Registry URL
-      const officialUrl = isSci ? `https://main.sci.gov.in/` : `https://services.ecourts.gov.in/`;
-      const canonicalKey = generateJudgementCanonicalKey(court, `Doc-${docId}`, neutralCitation, year);
-
-      items.push({
-        _id: `ext_jud_${docId}`,
-        canonicalKey,
-        title: cleanTitle,
-        petitioner,
-        respondent,
-        court,
-        state: filters?.state,
-        judge: filters?.judge || 'Bench of the Superior Court',
-        bench: 'Division / Constitutional Bench',
-        caseNumber: `Record ID ${docId}`,
-        appealNumber: `Appeal Ref ${docId}`,
-        neutralCitation,
-        equivalentCitations: [neutralCitation],
-        judgmentDate: judgmentDate || `${year}-01-01`,
-        year,
-        judgmentType: 'Judicial Ruling',
-        subject,
-        actsInvolved: [subject],
-        sectionsConsidered: [],
-        keywords: [subject, court, `${year}`],
-        caseOutcome: 'Decided',
-        sourceAuthority: court,
-        sourceUrl: `https://indiankanoon.org/doc/${docId}/`,
-        pdfUrl: `https://indiankanoon.org/doc/${docId}/`,
-        legalStatus: 'Public Judicial Record',
-        lastVerified: new Date().toISOString().split('T')[0],
-        fileName: `${cleanTitle.replace(/[^a-z0-9]/gi, '_')}.pdf`,
-        uploadedBy: 'Official Judicial Repository Registry',
-        summary: {
-          background: headline || `Judicial judgment delivered by the ${court}.`,
-          issues: `Determination of statutory questions and principles before the ${court}.`,
-          relevantLaw: subject,
-          courtReasoning: headline || `Court observations and reasoning in ${cleanTitle}.`,
-          holding: headline ? headline.slice(0, 250) : `Official judicial determination by ${court}.`,
-          keyPrinciple: headline ? headline.slice(0, 200) : `Guiding precedent established in ${cleanTitle}.`,
-          outcome: 'Decided',
-          fullSummaryText: headline || cleanTitle
-        },
-        isInlineViewable: true,
-        isExternalSource: true
-      });
-    }
-
-    const result: ExternalSearchResult<any> = {
-      items,
-      totalReported: Math.max(totalReported, items.length),
-      sourceStatus: {
-        indiaCode: 'ONLINE_CONNECTED',
-        judicialRegistry: 'ONLINE_CONNECTED',
-        repository: 'OK'
-      }
-    };
-
-    memoryCache.set(cacheKey, {
-      data: result,
-      expiry: Date.now() + CACHE_TTL_MS
-    });
-
-    return result;
-  } catch (err: any) {
-    return {
-      items: [],
-      totalReported: 0,
-      sourceStatus: {
-        indiaCode: 'ONLINE_CONNECTED',
-        judicialRegistry: 'ONLINE_CONNECTED',
-        repository: `ERROR: ${err.message}`
-      }
-    };
-  }
+  };
 }
 
 /**
@@ -867,7 +668,7 @@ export async function fetchDynamicDocumentContent(
     };
   }
 
-  // 1. If it's a known pre-compiled statutory provision (BNS, BNSS, BSA, CPC, etc.)
+  // 1. If it's a known pre-compiled statutory provision in the legacy registry
   if (type === 'law' && STATUTORY_PROVISION_REGISTRY[docId] && sectionNumber) {
     const prov = await fetchDynamicActProvision(docId, sectionNumber);
     return {
@@ -883,60 +684,51 @@ export async function fetchDynamicDocumentContent(
     };
   }
 
-  // 2. Fetch external document on demand from authorized repository
-  const cleanId = docId.replace(/^ext_(?:jud|law)_/, '');
-  if (/^\d+$/.test(cleanId)) {
-    try {
-      const url = `https://indiankanoon.org/doc/${cleanId}/`;
-      const res = await fetchExternalUrl(url, 9000);
-      if (res.status === 200) {
-        const titleMatch = res.body.match(/<title>([\s\S]*?)<\/title>/i);
-        const title = titleMatch ? stripHtml(titleMatch[1]) : 'Official Legal Record';
-
-        const docSourceMatch = res.body.match(/class="docsource[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-        const courtOrAuthority = docSourceMatch ? stripHtml(docSourceMatch[1]) : (type === 'law' ? 'India Code / Legislative Department' : 'Supreme Court / High Court Registry');
-
-        const bodyMatch = res.body.match(/<div class="judgments">([\s\S]*?)<\/div>\s*<\/div>/i) ||
-                          res.body.match(/<div class="doc_body">([\s\S]*?)<\/div>/i) ||
-                          res.body.match(/<pre[^>]*>([\s\S]*?)<\/pre>/i);
-
-        const rawContent = bodyMatch ? bodyMatch[1] : res.body;
-        const cleaned = rawContent
-          .replace(/<p[^>]*>/gi, '\n\n')
-          .replace(/<\/p>/gi, '')
-          .replace(/<br\s*\/?>/gi, '\n')
-          .replace(/<blockquote[^>]*>/gi, '\n> ')
-          .replace(/<\/blockquote>/gi, '\n')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/[ \t]+/g, ' ')
-          .replace(/\n\s*\n\s*\n+/g, '\n\n')
-          .trim();
-
-        const result = {
-          success: true,
-          docId,
-          title,
-          courtOrAuthority,
-          content: cleaned || 'Full statutory text viewable through authoritative India Code digital handle.',
-          officialSourceUrl: `https://www.indiacode.gov.in/simple-search?query=${encodeURIComponent(title)}`,
-          statutoryBasis: 'Section 52(1)(q) Indian Copyright Act, 1957 (Public Domain Official Text)',
-          isCached: false,
-          fetchedAt: new Date().toISOString()
-        };
-
-        memoryCache.set(cacheKey, {
-          data: result,
-          expiry: Date.now() + CACHE_TTL_MS
-        });
-
-        return result;
-      }
-    } catch (err) {
-      // Fall through to fallback
+  // 2. If it's a statutory section lookup via LegalResearchService
+  if (type === 'law' && sectionNumber) {
+    const sec = await legalResearchService.getSectionById(docId, sectionNumber);
+    if (sec) {
+      const result = {
+        success: true,
+        docId,
+        title: `${sec.actTitle} — ${sec.heading}`,
+        courtOrAuthority: sec.sourceAuthority,
+        content: sec.content,
+        officialSourceUrl: sec.officialSourceUrl,
+        isCached: false,
+        statutoryBasis: 'Section 52(1)(q) Indian Copyright Act, 1957 (Public Domain Official Text)',
+        fetchedAt: new Date().toISOString()
+      };
+      memoryCache.set(cacheKey, { data: result, expiry: Date.now() + CACHE_TTL_MS });
+      return result;
     }
   }
 
-  // 3. Fallback descriptor
+  // 3. If it's a judgment lookup via LegalResearchService
+  if (type === 'judgement' || type === 'judgment') {
+    const cleanId = docId.replace(/^ext_jud_/, '');
+    const judgment = await legalResearchService.getJudgmentById(cleanId);
+    if (judgment) {
+      const content = judgment.content || 
+        `${judgment.title}\n\nCourt: ${judgment.court}\nBench: ${judgment.bench || judgment.judge || 'Bench'}\nCitation: ${judgment.neutralCitation || 'N/A'}\nDecision Date: ${judgment.decisionDate || 'N/A'}\n\nKEY PRINCIPLE:\n${judgment.summary?.keyPrinciple || 'Precedent established by the court.'}\n\nHOLDING:\n${judgment.summary?.holding || 'Decision rendered on merits.'}\n\nBACKGROUND & REASONING:\n${judgment.summary?.background || ''}\n${judgment.summary?.courtReasoning || ''}\n\nOfficial certified copy viewable via original judicial portal: ${judgment.source.officialSourceUrl}`;
+
+      const result = {
+        success: true,
+        docId,
+        title: judgment.title,
+        courtOrAuthority: judgment.court,
+        content,
+        officialSourceUrl: judgment.source.officialSourceUrl,
+        isCached: false,
+        statutoryBasis: 'Section 52(1)(q)(iv) Indian Copyright Act, 1957 (Public Judicial Record)',
+        fetchedAt: new Date().toISOString()
+      };
+      memoryCache.set(cacheKey, { data: result, expiry: Date.now() + CACHE_TTL_MS });
+      return result;
+    }
+  }
+
+  // 4. Fallback descriptor with official repository guidance
   const fallback = {
     success: true,
     docId,
@@ -956,3 +748,4 @@ export async function fetchDynamicDocumentContent(
 
   return fallback;
 }
+

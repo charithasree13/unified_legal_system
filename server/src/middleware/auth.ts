@@ -71,10 +71,14 @@ export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Res
     try {
       let isVerified = req.user.isVerified === true;
       
-      if (!isVerified) {
-        const dbUser = await User.findById(req.user.id);
-        if (dbUser && (dbUser.isVerified === true || dbUser.verificationStatus === 'APPROVED')) {
-          isVerified = true;
+      if (!isVerified && req.user.id) {
+        try {
+          const dbUser = await User.findById(req.user.id);
+          if (dbUser && (dbUser.isVerified === true || dbUser.verificationStatus === 'APPROVED')) {
+            isVerified = true;
+          }
+        } catch (idErr) {
+          // If id is not an ObjectId (e.g. test string mock), skip findById gracefully
         }
       }
 
@@ -93,7 +97,7 @@ export const requireAdminOrAdvocate = async (req: AuthenticatedRequest, res: Res
       if (!isVerified) {
         return res.status(403).json({
           success: false,
-          message: 'Access Denied: Your Advocate account is pending Admin verification. Access to the Old Acts → New Acts Converter is restricted until your account is approved by an Admin.'
+          message: 'Access Denied: Your Advocate account is pending Admin verification. Access to Judgments & Bare Acts Legal Research is restricted until your account is approved by an Admin.'
         });
       }
     } catch (err) {

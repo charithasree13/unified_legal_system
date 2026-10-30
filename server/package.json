@@ -14,7 +14,8 @@
     "smtp:test": "ts-node --transpile-only src/scripts/testSmtp.ts",
     "mact:test": "ts-node --transpile-only src/scripts/testMotorAccident.ts && ts-node --transpile-only src/scripts/testMactAccessControl.ts",
     "principles:test": "ts-node --transpile-only src/scripts/testPrinciplesOfLaw.ts",
-    "judiciary:test": "ts-node --transpile-only src/scripts/testJudiciaryNotes.ts"
+    "judiciary:test": "ts-node --transpile-only src/scripts/testJudiciaryNotes.ts",
+    "legal:test": "ts-node --transpile-only src/scripts/testLegalResearchApi.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

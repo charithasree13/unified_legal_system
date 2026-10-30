@@ -30,6 +30,7 @@ import * as dictionaryCtrl from './controllers/dictionaryController';
 import * as principleOfLawCtrl from './controllers/principleOfLawController';
 import * as usefulLinksCtrl from './controllers/usefulLinksController';
 import * as judiciaryNoteCtrl from './controllers/judiciaryNoteController';
+import * as legalResearchCtrl from './controllers/legalResearchController';
 import { seedCourtFeeDatabase } from './seed/courtFeeSeedData';
 import { seedSectionMappingDatabase } from './seed/sectionMappingSeedData';
 import { seedLawsDatabase } from './seed/lawsSeedData';
@@ -114,6 +115,14 @@ app.delete('/api/advocates/:id', authenticateToken, requireAdmin, advCtrl.delete
 app.put('/api/advocates/:id/verify', authenticateToken, requireAdmin, advCtrl.verifyAdvocate);
 
 // DOCUMENTS / REPOSITORY (JUDGMENTS & BARE ACTS LEGAL LIBRARY)
+// FREE-FIRST LEGAL RESEARCH API INTEGRATION
+app.get('/api/legal-research/search', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.search);
+app.get('/api/legal-research/judgments/:id', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.getJudgmentById);
+app.get('/api/legal-research/acts/search', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.searchActs);
+app.get('/api/legal-research/acts/:id', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.getActById);
+app.get('/api/legal-research/acts/:id/sections/:sectionId', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.getSectionById);
+app.get('/api/legal-research/providers/status', authenticateToken, requireAdminOrAdvocate, legalResearchCtrl.getProvidersStatus);
+
 app.get('/api/documents/health', authenticateToken, requireAdminOrAdvocate, docCtrl.getLegalLibraryHealth);
 app.get('/api/legal/health', authenticateToken, requireAdminOrAdvocate, docCtrl.getLegalLibraryHealth);
 app.post('/api/documents/ingest', authenticateToken, requireAdmin, docCtrl.triggerLegalLibraryImport);
