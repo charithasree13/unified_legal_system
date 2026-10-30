@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { 
   FileText, Search, Download, Bookmark, ZoomIn, ZoomOut, Printer, 
   Tag, Calendar, Landmark, Scale, X, BookmarkCheck, Trash2,
-  Gavel, BookOpen, CloudUpload, Filter, Edit3, ShieldAlert, Sparkles, CheckCircle2, 
+  Gavel, BookOpen, CloudUpload, Filter, Edit3, Sparkles, CheckCircle2, 
   BookMarked, ChevronLeft, ChevronRight, AlertCircle, Info, RefreshCw, Check,
   ExternalLink, Copy, ShieldCheck, FileCheck, Layers, Eye, Book, Globe, Clock, Hash, HelpCircle, ArrowUpRight
 } from 'lucide-react';
@@ -704,11 +704,6 @@ export const Documents: React.FC = () => {
   const [fullDocumentMeta, setFullDocumentMeta] = useState<any>(null);
   const [fullDocumentError, setFullDocumentError] = useState('');
 
-  // Compliance Register Modal States
-  const [showComplianceModal, setShowComplianceModal] = useState(false);
-  const [complianceData, setComplianceData] = useState<any | null>(null);
-  const [loadingCompliance, setLoadingCompliance] = useState(false);
-
   // Admin Upload Modal States
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadType, setUploadType] = useState<'judgement' | 'law'>('judgement');
@@ -746,11 +741,6 @@ export const Documents: React.FC = () => {
   const [sumHolding, setSumHolding] = useState('');
   const [sumKeyPrinciple, setSumKeyPrinciple] = useState('');
   const [sumOutcome, setSumOutcome] = useState('');
-
-  // Admin Data Health & Ingestion States
-  const [showHealthModal, setShowHealthModal] = useState(false);
-  const [healthData, setHealthData] = useState<any>(null);
-  const [ingestingData, setIngestingData] = useState(false);
 
   // Search Debouncing (350ms delay)
   useEffect(() => {
@@ -927,39 +917,9 @@ export const Documents: React.FC = () => {
   useEffect(() => {
     fetchDocuments();
     fetchProvidersStatus();
-    if (isAdmin) fetchDataHealth();
     const saved = localStorage.getItem('legal_bookmarked_docs');
     if (saved) setBookmarkedDocs(JSON.parse(saved));
   }, [fetchDocuments, fetchProvidersStatus, isAdmin]);
-
-  const fetchDataHealth = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/api/documents/health`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setHealthData(data.health);
-      }
-    } catch (err) {}
-  };
-
-  const fetchComplianceRegister = async () => {
-    setLoadingCompliance(true);
-    setShowComplianceModal(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/documents/sources-compliance`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setComplianceData(data);
-      }
-    } catch (err) {}
-    finally {
-      setLoadingCompliance(false);
-    }
-  };
 
   /**
    * On-demand dynamic retrieval of statutory section provisions.
@@ -1002,28 +962,6 @@ export const Documents: React.FC = () => {
       setDynamicProvisionError('Network error retrieving dynamic provision.');
     } finally {
       setDynamicProvisionLoading(false);
-    }
-  };
-
-  const triggerDataIngestion = async () => {
-    setIngestingData(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/documents/ingest`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        addNotification('Ingestion Pipeline Completed', `Successfully processed legal database records.`, 'success');
-        fetchDocuments();
-        fetchDataHealth();
-      } else {
-        alert(data.message || 'Error running ingestion.');
-      }
-    } catch (err: any) {
-      alert('Network error running ingestion.');
-    } finally {
-      setIngestingData(false);
     }
   };
 
@@ -2624,156 +2562,6 @@ export const Documents: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* SOURCES & COPYRIGHT COMPLIANCE REGISTER MODAL */}
-        {showComplianceModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto">
-              
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    <ShieldCheck size={24} />
-                  </span>
-                  <div>
-                    <h2 className="font-serif font-bold text-xl text-slate-900 dark:text-white">
-                      Legal Sources & Copyright Compliance Register
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Authoritative Government of India and Judicial repositories integrated under Indian Copyright Law.
-                    </p>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => setShowComplianceModal(false)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              {/* STATUTORY COMPLIANCE STATEMENT */}
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-900 dark:text-emerald-200 space-y-2">
-                <strong className="block font-bold uppercase text-[11px] tracking-wider text-emerald-700 dark:text-emerald-300">
-                  Statutory Basis — Section 52(1)(q) of the Indian Copyright Act, 1957
-                </strong>
-                <p className="leading-relaxed">
-                  Under Section 52(1)(q) of the Copyright Act, 1957, the reproduction or publication of any matter published in any Official Gazette, any Act of a Legislature, or any judgment or order of a court, tribunal or other judicial authority does not constitute an infringement of copyright. Elite Legal Desk dynamically indexes authorized public records while maintaining strict source attribution.
-                </p>
-              </div>
-
-              {/* SOURCES TABLE */}
-              <div className="space-y-4 text-xs">
-                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs">
-                  Integrated Authoritative Sources & Permissions Register:
-                </h3>
-
-                <div className="space-y-3">
-                  {[
-                    {
-                      name: "India Code Digital Repository",
-                      authority: "Legislative Department, Ministry of Law and Justice, Government of India",
-                      portalUrl: "https://www.indiacode.gov.in/",
-                      legalBasis: "Section 52(1)(q)(i) & (ii) Copyright Act 1957",
-                      permittedUse: "Search, dynamic provision retrieval, citation verification, and direct digital handle links.",
-                      restrictions: "No persistent full-document database storage. Original section numbering and notes maintained.",
-                      status: "VERIFIED ACTIVE"
-                    },
-                    {
-                      name: "Digital Supreme Court Reports (e-SCR) & SCI Portal",
-                      authority: "Supreme Court of India Registry",
-                      portalUrl: "https://escr.sci.gov.in/",
-                      legalBasis: "Section 52(1)(q)(iv) Copyright Act 1957 & Article 129 Constitution of India",
-                      permittedUse: "Judicial research, neutral citation matching (INSC), and verified judicial links.",
-                      restrictions: "No hallucinated case details. Proprietary third-party editorial headnotes strictly excluded.",
-                      status: "VERIFIED ACTIVE"
-                    },
-                    {
-                      name: "eCourts Services & High Court Registries",
-                      authority: "e-Committee, Supreme Court of India & 25 High Courts",
-                      portalUrl: "https://services.ecourts.gov.in/",
-                      legalBasis: "Section 52(1)(q)(iv) Copyright Act 1957 & e-Courts Open Access Policy",
-                      permittedUse: "Case search by CNR, party name, year, and court; statutory provision indexing.",
-                      restrictions: "Authentication/CAPTCHAs respected. Deep link navigation provided for restricted files.",
-                      status: "VERIFIED ACTIVE"
-                    },
-                    {
-                      name: "The Gazette of India (e-Gazette)",
-                      authority: "Directorate of Printing, Government of India",
-                      portalUrl: "https://egazette.gov.in/",
-                      legalBasis: "Section 81 & 84 Evidence Act / Sec 80 BSA 2023",
-                      permittedUse: "Verification of enactment and commencement notification dates.",
-                      restrictions: "Direct attribution to official gazette notification numbers.",
-                      status: "VERIFIED ACTIVE"
-                    }
-                  ].map((src, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-slate-900 dark:text-white font-serif">{src.name}</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                            {src.status}
-                          </span>
-                        </div>
-                        <a
-                          href={src.portalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-semibold text-xs"
-                        >
-                          <span>{src.portalUrl}</span>
-                          <ExternalLink size={12} />
-                        </a>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
-                        <div>
-                          <strong className="text-slate-700 dark:text-slate-300 block">Authority:</strong>
-                          <span>{src.authority}</span>
-                        </div>
-                        <div>
-                          <strong className="text-slate-700 dark:text-slate-300 block">Statutory Exception:</strong>
-                          <span>{src.legalBasis}</span>
-                        </div>
-                        <div className="sm:col-span-2">
-                          <strong className="text-slate-700 dark:text-slate-300 block">Permitted Scope:</strong>
-                          <span>{src.permittedUse}</span>
-                        </div>
-                        <div className="sm:col-span-2">
-                          <strong className="text-amber-600 dark:text-amber-400 block">Operational Restrictions:</strong>
-                          <span>{src.restrictions}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* STRICT EXCLUSION STATEMENT */}
-              <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
-                <strong className="block text-slate-900 dark:text-slate-200 uppercase font-bold text-[11px]">
-                  Proprietary Commercial Databases & Anti-Scraping Policy:
-                </strong>
-                <p>
-                  Elite Legal Desk adheres strictly to lawful access and terms of service. We do NOT scrape, bypass paywalls, or reproduce proprietary editorial commentary from commercial databases such as Law365, SCC Online, Manupatra, or LiveLaw. All analytical summaries featured on this platform are original Elite Legal Desk work product.
-                </p>
-              </div>
-
-              <div className="pt-2 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowComplianceModal(false)}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs cursor-pointer"
-                >
-                  Close Compliance Register
-                </button>
-              </div>
-
-            </div>
-          </div>
-        )}
-
         {/* ADMIN CATALOGING MODAL */}
         {showUploadModal && isAdmin && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
@@ -2964,99 +2752,6 @@ export const Documents: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* ADMIN LEGAL LIBRARY DATA HEALTH & INGESTION MODAL */}
-        {showHealthModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto">
-              
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                    <ShieldAlert size={22} />
-                  </span>
-                  <div>
-                    <h2 className="font-serif font-bold text-xl text-slate-900 dark:text-white">
-                      Legal Library Data Health & Ingestion Pipeline
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Real-time database records, deduplication metrics, and automated ingestion control.
-                    </p>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => setShowHealthModal(false)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              {/* STATS CARDS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                      <Gavel size={14} /> Judgments Repository
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-bold text-[10px]">
-                      VERIFIED DB
-                    </span>
-                  </div>
-                  <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
-                    {healthData?.judgments?.total ?? totalRecords}
-                  </div>
-                  <div className="text-slate-500 dark:text-slate-400 text-[11px] space-y-0.5">
-                    <p>• Unique Canonical Keys: <strong>{healthData?.judgments?.uniqueCount ?? (healthData?.judgments?.total ?? totalRecords)}</strong></p>
-                    <p>• Duplicates Prevented: <strong>{healthData?.judgments?.duplicatesPrevented ?? 0}</strong></p>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                      <BookOpen size={14} /> Bare Acts & Statutory Library
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-bold text-[10px]">
-                      VERIFIED DB
-                    </span>
-                  </div>
-                  <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
-                    {healthData?.laws?.total ?? 10}
-                  </div>
-                  <div className="text-slate-500 dark:text-slate-400 text-[11px] space-y-0.5">
-                    <p>• Unique Canonical Keys: <strong>{healthData?.laws?.uniqueCount ?? (healthData?.laws?.total ?? 10)}</strong></p>
-                    <p>• Duplicates Prevented: <strong>{healthData?.laws?.duplicatesPrevented ?? 0}</strong></p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ACTION TRIGGER BUTTON */}
-              <div className="pt-2 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowHealthModal(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs cursor-pointer"
-                >
-                  Close Health Dashboard
-                </button>
-
-                <button
-                  type="button"
-                  disabled={ingestingData}
-                  onClick={triggerDataIngestion}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 cursor-pointer"
-                >
-                  {ingestingData ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                  Execute Legal Data Ingestion Pipeline
-                </button>
-              </div>
-
-            </div>
-          </div>
-        )}
-
         {/* FREE-FIRST LEGAL TECHNOLOGY PROVIDER COVERAGE, BILLING & LIMITATIONS MODAL */}
         {showProviderCoverageModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">

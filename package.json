@@ -4,6 +4,7 @@
   "description": "Unified Legal Professional Management System Root Workspace",
   "private": true,
   "scripts": {
+    "postinstall": "npm run install:all",
     "install:client": "npm install --prefix client",
     "install:server": "npm install --prefix server",
     "install:all": "npm run install:server && npm run install:client",
